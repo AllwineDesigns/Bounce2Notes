@@ -1,0 +1,664 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D3623260D0F684500981E51 /* ParticleSystemAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* ParticleSystemAppDelegate.mm */; };
+		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		2514C27B10084DCA00A42282 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27910084DCA00A42282 /* Shader.fsh */; };
+		2514C27C10084DCA00A42282 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27A10084DCA00A42282 /* Shader.vsh */; };
+		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
+		28EC4C5911D54ECE0027AA9F /* ParticleSystemViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */; };
+		28EC4C5A11D54ECE0027AA9F /* ParticleSystemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */; };
+		28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */; };
+		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
+		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		B204305A15488511006CAED1 /* ball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204304F15488511006CAED1 /* ball.jpg */; };
+		B204305B15488511006CAED1 /* ball1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305015488511006CAED1 /* ball1.jpg */; };
+		B204305C15488511006CAED1 /* ball2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305115488511006CAED1 /* ball2.jpg */; };
+		B204305D15488511006CAED1 /* ball4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305215488511006CAED1 /* ball4.jpg */; };
+		B204305E15488511006CAED1 /* ball8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305315488511006CAED1 /* ball8.jpg */; };
+		B204305F15488511006CAED1 /* ball16.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305415488511006CAED1 /* ball16.jpg */; };
+		B204306015488511006CAED1 /* ball32.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305515488511006CAED1 /* ball32.jpg */; };
+		B204306115488511006CAED1 /* ball64.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305615488511006CAED1 /* ball64.jpg */; };
+		B204306215488511006CAED1 /* ball128.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305715488511006CAED1 /* ball128.jpg */; };
+		B204306315488511006CAED1 /* ball256.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305815488511006CAED1 /* ball256.jpg */; };
+		B204306415488511006CAED1 /* ball512.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B204305915488511006CAED1 /* ball512.jpg */; };
+		B20430FC1549DEE9006CAED1 /* Matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430E21549DEE9006CAED1 /* Matrix.cpp */; };
+		B20430FE1549DEE9006CAED1 /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430E81549DEE9006CAED1 /* Transform.cpp */; };
+		B20430FF1549DEE9006CAED1 /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430EA1549DEE9006CAED1 /* Vector.cpp */; };
+		B20431001549DEE9006CAED1 /* matrix_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430EE1549DEE9006CAED1 /* matrix_impl.cpp */; };
+		B20431011549DEE9006CAED1 /* utility_impl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430F01549DEE9006CAED1 /* utility_impl.cpp */; };
+		B20431021549DEE9006CAED1 /* libChipmunk-iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20430F71549DEE9006CAED1 /* libChipmunk-iPhone.a */; };
+		B20431031549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20430F81549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a */; };
+		B20431041549DEE9006CAED1 /* Noise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430FB1549DEE9006CAED1 /* Noise.cpp */; };
+		B2343BBD15478C4C00AFF2A9 /* SimulationTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBC15478C4C00AFF2A9 /* SimulationTimer.m */; };
+		B2343BBF1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp */; };
+		B2343BC21547C9B100AFF2A9 /* ChipmunkSimulationShader.mm in Resources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
+		B2343CEA1547D9C200AFF2A9 /* ChipmunkSimulationShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
+		B276E49F1540F1430078737B /* Shader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* Shader.m */; };
+		B29630C915472C46009B483D /* BallShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C115471978009B483D /* BallShader.fsh */; };
+		B29630CA15472C46009B483D /* BallShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C31547199C009B483D /* BallShader.vsh */; };
+		B29630CC15473B80009B483D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B29630CB15473B80009B483D /* CoreGraphics.framework */; };
+		B29630CE1547572C009B483D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B29630CD1547572C009B483D /* CoreMotion.framework */; };
+		B2E464891545CDD3000F2F48 /* BasicParticleShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */; };
+		B2E464901545DC03000F2F48 /* BasicParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1D3623240D0F684500981E51 /* ParticleSystemAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystemAppDelegate.h; sourceTree = "<group>"; };
+		1D3623250D0F684500981E51 /* ParticleSystemAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ParticleSystemAppDelegate.mm; sourceTree = "<group>"; };
+		1D6058910D05DD3D006BFB54 /* ParticleSystem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParticleSystem.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2514C27910084DCA00A42282 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
+		2514C27A10084DCA00A42282 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
+		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		28EC4C5611D54ECE0027AA9F /* ParticleSystemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystemViewController.h; sourceTree = "<group>"; };
+		28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ParticleSystemViewController.mm; sourceTree = "<group>"; };
+		28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ParticleSystemViewController.xib; sourceTree = "<group>"; };
+		28FD14FC0DC6FC130079059D /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		28FD14FD0DC6FC130079059D /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
+		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* ParticleSystem_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem_Prefix.pch; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* ParticleSystem-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ParticleSystem-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		B204304F15488511006CAED1 /* ball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball.jpg; sourceTree = "<group>"; };
+		B204305015488511006CAED1 /* ball1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball1.jpg; sourceTree = "<group>"; };
+		B204305115488511006CAED1 /* ball2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball2.jpg; sourceTree = "<group>"; };
+		B204305215488511006CAED1 /* ball4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball4.jpg; sourceTree = "<group>"; };
+		B204305315488511006CAED1 /* ball8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball8.jpg; sourceTree = "<group>"; };
+		B204305415488511006CAED1 /* ball16.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball16.jpg; sourceTree = "<group>"; };
+		B204305515488511006CAED1 /* ball32.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball32.jpg; sourceTree = "<group>"; };
+		B204305615488511006CAED1 /* ball64.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball64.jpg; sourceTree = "<group>"; };
+		B204305715488511006CAED1 /* ball128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball128.jpg; sourceTree = "<group>"; };
+		B204305815488511006CAED1 /* ball256.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball256.jpg; sourceTree = "<group>"; };
+		B204305915488511006CAED1 /* ball512.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball512.jpg; sourceTree = "<group>"; };
+		B20430BA1549DEE9006CAED1 /* chipmunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk.h; sourceTree = "<group>"; };
+		B20430BB1549DEE9006CAED1 /* chipmunk_ffi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_ffi.h; sourceTree = "<group>"; };
+		B20430BC1549DEE9006CAED1 /* chipmunk_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_private.h; sourceTree = "<group>"; };
+		B20430BD1549DEE9006CAED1 /* chipmunk_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_types.h; sourceTree = "<group>"; };
+		B20430BE1549DEE9006CAED1 /* chipmunk_unsafe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_unsafe.h; sourceTree = "<group>"; };
+		B20430C01549DEE9006CAED1 /* cpConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpConstraint.h; sourceTree = "<group>"; };
+		B20430C11549DEE9006CAED1 /* cpDampedRotarySpring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpDampedRotarySpring.h; sourceTree = "<group>"; };
+		B20430C21549DEE9006CAED1 /* cpDampedSpring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpDampedSpring.h; sourceTree = "<group>"; };
+		B20430C31549DEE9006CAED1 /* cpGearJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpGearJoint.h; sourceTree = "<group>"; };
+		B20430C41549DEE9006CAED1 /* cpGrooveJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpGrooveJoint.h; sourceTree = "<group>"; };
+		B20430C51549DEE9006CAED1 /* cpPinJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpPinJoint.h; sourceTree = "<group>"; };
+		B20430C61549DEE9006CAED1 /* cpPivotJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpPivotJoint.h; sourceTree = "<group>"; };
+		B20430C71549DEE9006CAED1 /* cpRatchetJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpRatchetJoint.h; sourceTree = "<group>"; };
+		B20430C81549DEE9006CAED1 /* cpRotaryLimitJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpRotaryLimitJoint.h; sourceTree = "<group>"; };
+		B20430C91549DEE9006CAED1 /* cpSimpleMotor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpSimpleMotor.h; sourceTree = "<group>"; };
+		B20430CA1549DEE9006CAED1 /* cpSlideJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpSlideJoint.h; sourceTree = "<group>"; };
+		B20430CB1549DEE9006CAED1 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		B20430CC1549DEE9006CAED1 /* cpArbiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpArbiter.h; sourceTree = "<group>"; };
+		B20430CD1549DEE9006CAED1 /* cpBB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpBB.h; sourceTree = "<group>"; };
+		B20430CE1549DEE9006CAED1 /* cpBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpBody.h; sourceTree = "<group>"; };
+		B20430CF1549DEE9006CAED1 /* cpPolyShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpPolyShape.h; sourceTree = "<group>"; };
+		B20430D01549DEE9006CAED1 /* cpShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpShape.h; sourceTree = "<group>"; };
+		B20430D11549DEE9006CAED1 /* cpSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpSpace.h; sourceTree = "<group>"; };
+		B20430D21549DEE9006CAED1 /* cpSpatialIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpSpatialIndex.h; sourceTree = "<group>"; };
+		B20430D31549DEE9006CAED1 /* cpVect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cpVect.h; sourceTree = "<group>"; };
+		B20430D51549DEE9006CAED1 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Matrix.hpp; sourceTree = "<group>"; };
+		B20430D61549DEE9006CAED1 /* Noise.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Noise.hpp; sourceTree = "<group>"; };
+		B20430D71549DEE9006CAED1 /* Quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Quaternion.hpp; sourceTree = "<group>"; };
+		B20430D81549DEE9006CAED1 /* Vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vector.hpp; sourceTree = "<group>"; };
+		B20430DA1549DEE9006CAED1 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Matrix.hpp; sourceTree = "<group>"; };
+		B20430DB1549DEE9006CAED1 /* Quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Quaternion.hpp; sourceTree = "<group>"; };
+		B20430DC1549DEE9006CAED1 /* Vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vector.hpp; sourceTree = "<group>"; };
+		B20430DF1549DEE9006CAED1 /* Mathematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mathematics.h; sourceTree = "<group>"; };
+		B20430E11549DEE9006CAED1 /* Endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Endian.h; sourceTree = "<group>"; };
+		B20430E21549DEE9006CAED1 /* Matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Matrix.cpp; sourceTree = "<group>"; };
+		B20430E31549DEE9006CAED1 /* Matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Matrix.h; sourceTree = "<group>"; };
+		B20430E51549DEE9006CAED1 /* neon_matrix_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = neon_matrix_impl.cpp; sourceTree = "<group>"; };
+		B20430E61549DEE9006CAED1 /* neon_matrix_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = neon_matrix_impl.h; sourceTree = "<group>"; };
+		B20430E71549DEE9006CAED1 /* Quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quaternion.h; sourceTree = "<group>"; };
+		B20430E81549DEE9006CAED1 /* Transform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Transform.cpp; sourceTree = "<group>"; };
+		B20430E91549DEE9006CAED1 /* Transform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transform.h; sourceTree = "<group>"; };
+		B20430EA1549DEE9006CAED1 /* Vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vector.cpp; sourceTree = "<group>"; };
+		B20430EB1549DEE9006CAED1 /* Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vector.h; sourceTree = "<group>"; };
+		B20430ED1549DEE9006CAED1 /* common_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_macros.h; sourceTree = "<group>"; };
+		B20430EE1549DEE9006CAED1 /* matrix_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrix_impl.cpp; sourceTree = "<group>"; };
+		B20430EF1549DEE9006CAED1 /* matrix_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix_impl.h; sourceTree = "<group>"; };
+		B20430F01549DEE9006CAED1 /* utility_impl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utility_impl.cpp; sourceTree = "<group>"; };
+		B20430F11549DEE9006CAED1 /* utility_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility_impl.h; sourceTree = "<group>"; };
+		B20430F21549DEE9006CAED1 /* vfp_clobbers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vfp_clobbers.h; sourceTree = "<group>"; };
+		B20430F41549DEE9006CAED1 /* Macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
+		B20430F71549DEE9006CAED1 /* libChipmunk-iPhone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libChipmunk-iPhone.a"; sourceTree = "<group>"; };
+		B20430F81549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libChipmunk-iPhoneSimulator.a"; sourceTree = "<group>"; };
+		B20430FB1549DEE9006CAED1 /* Noise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Noise.cpp; sourceTree = "<group>"; };
+		B2343BBB15478C4C00AFF2A9 /* SimulationTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulationTimer.h; sourceTree = "<group>"; };
+		B2343BBC15478C4C00AFF2A9 /* SimulationTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimulationTimer.m; sourceTree = "<group>"; };
+		B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ChipmunkSimulation.cpp; sourceTree = "<group>"; };
+		B2343BC01547BD0A00AFF2A9 /* ChipmunkSimulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulation.h; sourceTree = "<group>"; };
+		B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChipmunkSimulationShader.mm; sourceTree = "<group>"; };
+		B2343BC31547C9CC00AFF2A9 /* ChipmunkSimulationShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulationShader.h; sourceTree = "<group>"; };
+		B276E499153DADC70078737B /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
+		B276E49E1540F1430078737B /* Shader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shader.m; sourceTree = "<group>"; };
+		B276E4A21540F14F0078737B /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		B29630C115471978009B483D /* BallShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = BallShader.fsh; sourceTree = "<group>"; };
+		B29630C31547199C009B483D /* BallShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = BallShader.vsh; sourceTree = "<group>"; };
+		B29630CB15473B80009B483D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B29630CD1547572C009B483D /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BasicParticleShader.mm; sourceTree = "<group>"; };
+		B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticleShader.h; sourceTree = "<group>"; };
+		B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicParticleSystem.cpp; sourceTree = "<group>"; };
+		B2E464951545DC2B000F2F48 /* BasicParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticleSystem.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29630CE1547572C009B483D /* CoreMotion.framework in Frameworks */,
+				B29630CC15473B80009B483D /* CoreGraphics.framework in Frameworks */,
+				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
+				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
+				B20431021549DEE9006CAED1 /* libChipmunk-iPhone.a in Frameworks */,
+				B20431031549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				B20430B71549DEE9006CAED1 /* fsa */,
+				B276E4A21540F14F0078737B /* Shader.h */,
+				B276E49E1540F1430078737B /* Shader.m */,
+				B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */,
+				B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */,
+				B2343BC31547C9CC00AFF2A9 /* ChipmunkSimulationShader.h */,
+				B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */,
+				B2343BC01547BD0A00AFF2A9 /* ChipmunkSimulation.h */,
+				B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp */,
+				B2E464951545DC2B000F2F48 /* BasicParticleSystem.h */,
+				B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */,
+				B276E499153DADC70078737B /* ParticleSystem.h */,
+				28FD14FC0DC6FC130079059D /* EAGLView.h */,
+				28FD14FD0DC6FC130079059D /* EAGLView.mm */,
+				1D3623240D0F684500981E51 /* ParticleSystemAppDelegate.h */,
+				1D3623250D0F684500981E51 /* ParticleSystemAppDelegate.mm */,
+				28EC4C5611D54ECE0027AA9F /* ParticleSystemViewController.h */,
+				28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */,
+				B2343BBB15478C4C00AFF2A9 /* SimulationTimer.h */,
+				B2343BBC15478C4C00AFF2A9 /* SimulationTimer.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D6058910D05DD3D006BFB54 /* ParticleSystem.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2514C27610084DB600A42282 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				2514C27910084DCA00A42282 /* Shader.fsh */,
+				2514C27A10084DCA00A42282 /* Shader.vsh */,
+				B29630C115471978009B483D /* BallShader.fsh */,
+				B29630C31547199C009B483D /* BallShader.vsh */,
+			);
+			name = Shaders;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+			isa = PBXGroup;
+			children = (
+				B29630CD1547572C009B483D /* CoreMotion.framework */,
+				B29630CB15473B80009B483D /* CoreGraphics.framework */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				2514C27610084DB600A42282 /* Shaders */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = CustomTemplate;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* ParticleSystem_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B204304F15488511006CAED1 /* ball.jpg */,
+				B204305015488511006CAED1 /* ball1.jpg */,
+				B204305115488511006CAED1 /* ball2.jpg */,
+				B204305215488511006CAED1 /* ball4.jpg */,
+				B204305315488511006CAED1 /* ball8.jpg */,
+				B204305415488511006CAED1 /* ball16.jpg */,
+				B204305515488511006CAED1 /* ball32.jpg */,
+				B204305615488511006CAED1 /* ball64.jpg */,
+				B204305715488511006CAED1 /* ball128.jpg */,
+				B204305815488511006CAED1 /* ball256.jpg */,
+				B204305915488511006CAED1 /* ball512.jpg */,
+				28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */,
+				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
+				8D1107310486CEB800E47090 /* ParticleSystem-Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				28FD15070DC6FC5B0079059D /* QuartzCore.framework */,
+				28FD14FF0DC6FC520079059D /* OpenGLES.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B20430B71549DEE9006CAED1 /* fsa */ = {
+			isa = PBXGroup;
+			children = (
+				B20430B81549DEE9006CAED1 /* include */,
+				B20430F51549DEE9006CAED1 /* lib */,
+				B20430F91549DEE9006CAED1 /* src */,
+			);
+			name = fsa;
+			path = ../../fsa;
+			sourceTree = "<group>";
+		};
+		B20430B81549DEE9006CAED1 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				B20430B91549DEE9006CAED1 /* chipmunk */,
+				B20430D41549DEE9006CAED1 /* fsa */,
+				B20430D91549DEE9006CAED1 /* iphone_book */,
+				B20430DD1549DEE9006CAED1 /* oolong */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		B20430B91549DEE9006CAED1 /* chipmunk */ = {
+			isa = PBXGroup;
+			children = (
+				B20430BA1549DEE9006CAED1 /* chipmunk.h */,
+				B20430BB1549DEE9006CAED1 /* chipmunk_ffi.h */,
+				B20430BC1549DEE9006CAED1 /* chipmunk_private.h */,
+				B20430BD1549DEE9006CAED1 /* chipmunk_types.h */,
+				B20430BE1549DEE9006CAED1 /* chipmunk_unsafe.h */,
+				B20430BF1549DEE9006CAED1 /* constraints */,
+				B20430CC1549DEE9006CAED1 /* cpArbiter.h */,
+				B20430CD1549DEE9006CAED1 /* cpBB.h */,
+				B20430CE1549DEE9006CAED1 /* cpBody.h */,
+				B20430CF1549DEE9006CAED1 /* cpPolyShape.h */,
+				B20430D01549DEE9006CAED1 /* cpShape.h */,
+				B20430D11549DEE9006CAED1 /* cpSpace.h */,
+				B20430D21549DEE9006CAED1 /* cpSpatialIndex.h */,
+				B20430D31549DEE9006CAED1 /* cpVect.h */,
+			);
+			path = chipmunk;
+			sourceTree = "<group>";
+		};
+		B20430BF1549DEE9006CAED1 /* constraints */ = {
+			isa = PBXGroup;
+			children = (
+				B20430C01549DEE9006CAED1 /* cpConstraint.h */,
+				B20430C11549DEE9006CAED1 /* cpDampedRotarySpring.h */,
+				B20430C21549DEE9006CAED1 /* cpDampedSpring.h */,
+				B20430C31549DEE9006CAED1 /* cpGearJoint.h */,
+				B20430C41549DEE9006CAED1 /* cpGrooveJoint.h */,
+				B20430C51549DEE9006CAED1 /* cpPinJoint.h */,
+				B20430C61549DEE9006CAED1 /* cpPivotJoint.h */,
+				B20430C71549DEE9006CAED1 /* cpRatchetJoint.h */,
+				B20430C81549DEE9006CAED1 /* cpRotaryLimitJoint.h */,
+				B20430C91549DEE9006CAED1 /* cpSimpleMotor.h */,
+				B20430CA1549DEE9006CAED1 /* cpSlideJoint.h */,
+				B20430CB1549DEE9006CAED1 /* util.h */,
+			);
+			path = constraints;
+			sourceTree = "<group>";
+		};
+		B20430D41549DEE9006CAED1 /* fsa */ = {
+			isa = PBXGroup;
+			children = (
+				B20430D51549DEE9006CAED1 /* Matrix.hpp */,
+				B20430D61549DEE9006CAED1 /* Noise.hpp */,
+				B20430D71549DEE9006CAED1 /* Quaternion.hpp */,
+				B20430D81549DEE9006CAED1 /* Vector.hpp */,
+			);
+			path = fsa;
+			sourceTree = "<group>";
+		};
+		B20430D91549DEE9006CAED1 /* iphone_book */ = {
+			isa = PBXGroup;
+			children = (
+				B20430DA1549DEE9006CAED1 /* Matrix.hpp */,
+				B20430DB1549DEE9006CAED1 /* Quaternion.hpp */,
+				B20430DC1549DEE9006CAED1 /* Vector.hpp */,
+			);
+			path = iphone_book;
+			sourceTree = "<group>";
+		};
+		B20430DD1549DEE9006CAED1 /* oolong */ = {
+			isa = PBXGroup;
+			children = (
+				B20430DE1549DEE9006CAED1 /* Include */,
+				B20430E01549DEE9006CAED1 /* Math */,
+				B20430F31549DEE9006CAED1 /* Utility */,
+			);
+			path = oolong;
+			sourceTree = "<group>";
+		};
+		B20430DE1549DEE9006CAED1 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				B20430DF1549DEE9006CAED1 /* Mathematics.h */,
+			);
+			path = Include;
+			sourceTree = "<group>";
+		};
+		B20430E01549DEE9006CAED1 /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				B20430E11549DEE9006CAED1 /* Endian.h */,
+				B20430E21549DEE9006CAED1 /* Matrix.cpp */,
+				B20430E31549DEE9006CAED1 /* Matrix.h */,
+				B20430E41549DEE9006CAED1 /* neonmath */,
+				B20430E71549DEE9006CAED1 /* Quaternion.h */,
+				B20430E81549DEE9006CAED1 /* Transform.cpp */,
+				B20430E91549DEE9006CAED1 /* Transform.h */,
+				B20430EA1549DEE9006CAED1 /* Vector.cpp */,
+				B20430EB1549DEE9006CAED1 /* Vector.h */,
+				B20430EC1549DEE9006CAED1 /* vfpmath */,
+			);
+			path = Math;
+			sourceTree = "<group>";
+		};
+		B20430E41549DEE9006CAED1 /* neonmath */ = {
+			isa = PBXGroup;
+			children = (
+				B20430E51549DEE9006CAED1 /* neon_matrix_impl.cpp */,
+				B20430E61549DEE9006CAED1 /* neon_matrix_impl.h */,
+			);
+			path = neonmath;
+			sourceTree = "<group>";
+		};
+		B20430EC1549DEE9006CAED1 /* vfpmath */ = {
+			isa = PBXGroup;
+			children = (
+				B20430ED1549DEE9006CAED1 /* common_macros.h */,
+				B20430EE1549DEE9006CAED1 /* matrix_impl.cpp */,
+				B20430EF1549DEE9006CAED1 /* matrix_impl.h */,
+				B20430F01549DEE9006CAED1 /* utility_impl.cpp */,
+				B20430F11549DEE9006CAED1 /* utility_impl.h */,
+				B20430F21549DEE9006CAED1 /* vfp_clobbers.h */,
+			);
+			path = vfpmath;
+			sourceTree = "<group>";
+		};
+		B20430F31549DEE9006CAED1 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				B20430F41549DEE9006CAED1 /* Macros.h */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		B20430F51549DEE9006CAED1 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				B20430F61549DEE9006CAED1 /* chipmunk */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		B20430F61549DEE9006CAED1 /* chipmunk */ = {
+			isa = PBXGroup;
+			children = (
+				B20430F71549DEE9006CAED1 /* libChipmunk-iPhone.a */,
+				B20430F81549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a */,
+			);
+			path = chipmunk;
+			sourceTree = "<group>";
+		};
+		B20430F91549DEE9006CAED1 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B20430FA1549DEE9006CAED1 /* fsa */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		B20430FA1549DEE9006CAED1 /* fsa */ = {
+			isa = PBXGroup;
+			children = (
+				B20430FB1549DEE9006CAED1 /* Noise.cpp */,
+			);
+			path = fsa;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D6058900D05DD3D006BFB54 /* ParticleSystem */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "ParticleSystem" */;
+			buildPhases = (
+				1D60588D0D05DD3D006BFB54 /* Resources */,
+				1D60588E0D05DD3D006BFB54 /* Sources */,
+				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ParticleSystem;
+			productName = ParticleSystem;
+			productReference = 1D6058910D05DD3D006BFB54 /* ParticleSystem.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ParticleSystem" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D6058900D05DD3D006BFB54 /* ParticleSystem */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D60588D0D05DD3D006BFB54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B29630C915472C46009B483D /* BallShader.fsh in Resources */,
+				B29630CA15472C46009B483D /* BallShader.vsh in Resources */,
+				2514C27B10084DCA00A42282 /* Shader.fsh in Resources */,
+				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
+				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
+				28EC4C5A11D54ECE0027AA9F /* ParticleSystemViewController.xib in Resources */,
+				B2343BC21547C9B100AFF2A9 /* ChipmunkSimulationShader.mm in Resources */,
+				B204305A15488511006CAED1 /* ball.jpg in Resources */,
+				B204305B15488511006CAED1 /* ball1.jpg in Resources */,
+				B204305C15488511006CAED1 /* ball2.jpg in Resources */,
+				B204305D15488511006CAED1 /* ball4.jpg in Resources */,
+				B204305E15488511006CAED1 /* ball8.jpg in Resources */,
+				B204305F15488511006CAED1 /* ball16.jpg in Resources */,
+				B204306015488511006CAED1 /* ball32.jpg in Resources */,
+				B204306115488511006CAED1 /* ball64.jpg in Resources */,
+				B204306215488511006CAED1 /* ball128.jpg in Resources */,
+				B204306315488511006CAED1 /* ball256.jpg in Resources */,
+				B204306415488511006CAED1 /* ball512.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D60588E0D05DD3D006BFB54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B2343CEA1547D9C200AFF2A9 /* ChipmunkSimulationShader.mm in Sources */,
+				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				1D3623260D0F684500981E51 /* ParticleSystemAppDelegate.mm in Sources */,
+				28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */,
+				28EC4C5911D54ECE0027AA9F /* ParticleSystemViewController.mm in Sources */,
+				B276E49F1540F1430078737B /* Shader.m in Sources */,
+				B2E464891545CDD3000F2F48 /* BasicParticleShader.mm in Sources */,
+				B2E464901545DC03000F2F48 /* BasicParticleSystem.cpp in Sources */,
+				B2343BBD15478C4C00AFF2A9 /* SimulationTimer.m in Sources */,
+				B2343BBF1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp in Sources */,
+				B20430FC1549DEE9006CAED1 /* Matrix.cpp in Sources */,
+				B20430FE1549DEE9006CAED1 /* Transform.cpp in Sources */,
+				B20430FF1549DEE9006CAED1 /* Vector.cpp in Sources */,
+				B20431001549DEE9006CAED1 /* matrix_impl.cpp in Sources */,
+				B20431011549DEE9006CAED1 /* utility_impl.cpp in Sources */,
+				B20431041549DEE9006CAED1 /* Noise.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1D6058940D05DD3E006BFB54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
+				INFOPLIST_FILE = "ParticleSystem-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../fsa/lib/chipmunk\"/**";
+				PRODUCT_NAME = ParticleSystem;
+			};
+			name = Debug;
+		};
+		1D6058950D05DD3E006BFB54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
+				INFOPLIST_FILE = "ParticleSystem-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../fsa/lib/chipmunk\"/**";
+				PRODUCT_NAME = ParticleSystem;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Users/jallwine/fsa/include;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SDKROOT = iphoneos;
+				use_marm = "-marm";
+				"use_marm[sdk=iphonesimulator*][arch=*]" = "";
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Users/jallwine/fsa/include;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				SDKROOT = iphoneos;
+				use_marm = "-marm";
+				"use_marm[sdk=iphonesimulator*][arch=*]" = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "ParticleSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058940D05DD3E006BFB54 /* Debug */,
+				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ParticleSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
