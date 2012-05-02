@@ -17,7 +17,7 @@ varying float intensityVarying;
 
 void main()
 {
-    gl_Position = vec4(position.x, position.y*.6666667, 0, 1);
+    gl_Position = vec4(position.x, position.y*.75, 0, 1);
     colorVarying = color;
     uvVarying = uv;
     intensityVarying = intensity;

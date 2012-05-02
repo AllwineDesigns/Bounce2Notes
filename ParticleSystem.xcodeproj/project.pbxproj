@@ -42,11 +42,16 @@
 		B2343BBF1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.cpp */; };
 		B2343BC21547C9B100AFF2A9 /* ChipmunkSimulationShader.mm in Resources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
 		B2343CEA1547D9C200AFF2A9 /* ChipmunkSimulationShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
+		B2454B4B154CDF5600FB5576 /* FSAMultiGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */; };
 		B276E49F1540F1430078737B /* Shader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* Shader.m */; };
+		B294478F1551E7B8003D1431 /* icon2_72.png in Resources */ = {isa = PBXBuildFile; fileRef = B294478E1551E7B8003D1431 /* icon2_72.png */; };
+		B29447911551E7BE003D1431 /* icon2_144.png in Resources */ = {isa = PBXBuildFile; fileRef = B29447901551E7BE003D1431 /* icon2_144.png */; };
 		B29630C915472C46009B483D /* BallShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C115471978009B483D /* BallShader.fsh */; };
 		B29630CA15472C46009B483D /* BallShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C31547199C009B483D /* BallShader.vsh */; };
 		B29630CC15473B80009B483D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B29630CB15473B80009B483D /* CoreGraphics.framework */; };
 		B29630CE1547572C009B483D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B29630CD1547572C009B483D /* CoreMotion.framework */; };
+		B2B8A321155061FF0048AEF9 /* icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2B8A320155061FF0048AEF9 /* icon72.png */; };
+		B2B8A323155062010048AEF9 /* icon144.png in Resources */ = {isa = PBXBuildFile; fileRef = B2B8A322155062010048AEF9 /* icon144.png */; };
 		B2E464891545CDD3000F2F48 /* BasicParticleShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */; };
 		B2E464901545DC03000F2F48 /* BasicParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */; };
 /* End PBXBuildFile section */
@@ -140,13 +145,19 @@
 		B2343BC01547BD0A00AFF2A9 /* ChipmunkSimulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulation.h; sourceTree = "<group>"; };
 		B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChipmunkSimulationShader.mm; sourceTree = "<group>"; };
 		B2343BC31547C9CC00AFF2A9 /* ChipmunkSimulationShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulationShader.h; sourceTree = "<group>"; };
+		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
+		B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAMultiGestureRecognizer.m; sourceTree = "<group>"; };
 		B276E499153DADC70078737B /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
 		B276E49E1540F1430078737B /* Shader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shader.m; sourceTree = "<group>"; };
 		B276E4A21540F14F0078737B /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		B294478E1551E7B8003D1431 /* icon2_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon2_72.png; sourceTree = "<group>"; };
+		B29447901551E7BE003D1431 /* icon2_144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon2_144.png; sourceTree = "<group>"; };
 		B29630C115471978009B483D /* BallShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = BallShader.fsh; sourceTree = "<group>"; };
 		B29630C31547199C009B483D /* BallShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = BallShader.vsh; sourceTree = "<group>"; };
 		B29630CB15473B80009B483D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		B29630CD1547572C009B483D /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		B2B8A320155061FF0048AEF9 /* icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon72.png; sourceTree = "<group>"; };
+		B2B8A322155062010048AEF9 /* icon144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon144.png; sourceTree = "<group>"; };
 		B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BasicParticleShader.mm; sourceTree = "<group>"; };
 		B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticleShader.h; sourceTree = "<group>"; };
 		B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicParticleSystem.cpp; sourceTree = "<group>"; };
@@ -191,6 +202,8 @@
 				28FD14FD0DC6FC130079059D /* EAGLView.mm */,
 				1D3623240D0F684500981E51 /* ParticleSystemAppDelegate.h */,
 				1D3623250D0F684500981E51 /* ParticleSystemAppDelegate.mm */,
+				B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */,
+				B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */,
 				28EC4C5611D54ECE0027AA9F /* ParticleSystemViewController.h */,
 				28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */,
 				B2343BBB15478C4C00AFF2A9 /* SimulationTimer.h */,
@@ -221,6 +234,10 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				B29447901551E7BE003D1431 /* icon2_144.png */,
+				B294478E1551E7B8003D1431 /* icon2_72.png */,
+				B2B8A322155062010048AEF9 /* icon144.png */,
+				B2B8A320155061FF0048AEF9 /* icon72.png */,
 				B29630CD1547572C009B483D /* CoreMotion.framework */,
 				B29630CB15473B80009B483D /* CoreGraphics.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
@@ -458,9 +475,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* ParticleSystem */ = {
+		1D6058900D05DD3D006BFB54 /* Bounce */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "ParticleSystem" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bounce" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -470,7 +487,7 @@
 			);
 			dependencies = (
 			);
-			name = ParticleSystem;
+			name = Bounce;
 			productName = ParticleSystem;
 			productReference = 1D6058910D05DD3D006BFB54 /* ParticleSystem.app */;
 			productType = "com.apple.product-type.application";
@@ -497,7 +514,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* ParticleSystem */,
+				1D6058900D05DD3D006BFB54 /* Bounce */,
 			);
 		};
 /* End PBXProject section */
@@ -525,6 +542,10 @@
 				B204306215488511006CAED1 /* ball128.jpg in Resources */,
 				B204306315488511006CAED1 /* ball256.jpg in Resources */,
 				B204306415488511006CAED1 /* ball512.jpg in Resources */,
+				B2B8A321155061FF0048AEF9 /* icon72.png in Resources */,
+				B2B8A323155062010048AEF9 /* icon144.png in Resources */,
+				B294478F1551E7B8003D1431 /* icon2_72.png in Resources */,
+				B29447911551E7BE003D1431 /* icon2_144.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +572,7 @@
 				B20431001549DEE9006CAED1 /* matrix_impl.cpp in Sources */,
 				B20431011549DEE9006CAED1 /* utility_impl.cpp in Sources */,
 				B20431041549DEE9006CAED1 /* Noise.cpp in Sources */,
+				B2454B4B154CDF5600FB5576 /* FSAMultiGestureRecognizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -571,9 +593,10 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
 				INFOPLIST_FILE = "ParticleSystem-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../fsa/lib/chipmunk\"/**";
 				PRODUCT_NAME = ParticleSystem;
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -589,9 +612,10 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
 				INFOPLIST_FILE = "ParticleSystem-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../fsa/lib/chipmunk\"/**";
 				PRODUCT_NAME = ParticleSystem;
+				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -600,6 +624,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -610,7 +635,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
 				use_marm = "-marm";
 				"use_marm[sdk=iphonesimulator*][arch=*]" = "";
 			};
@@ -620,6 +647,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -631,7 +659,9 @@
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
 				use_marm = "-marm";
 				"use_marm[sdk=iphonesimulator*][arch=*]" = "";
 			};
@@ -640,7 +670,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "ParticleSystem" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bounce" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,

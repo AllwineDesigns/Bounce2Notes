@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
                BuildableName = "ParticleSystem.app"
-               BlueprintName = "ParticleSystem"
+               BlueprintName = "Bounce"
                ReferencedContainer = "container:ParticleSystem.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -34,7 +34,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
             BuildableName = "ParticleSystem.app"
-            BlueprintName = "ParticleSystem"
+            BlueprintName = "Bounce"
             ReferencedContainer = "container:ParticleSystem.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -47,13 +47,14 @@
       buildConfiguration = "Release"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      enablesOpenGLESFrameCapture = "YES"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
             BuildableName = "ParticleSystem.app"
-            BlueprintName = "ParticleSystem"
+            BlueprintName = "Bounce"
             ReferencedContainer = "container:ParticleSystem.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,7 +72,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
             BuildableName = "ParticleSystem.app"
-            BlueprintName = "ParticleSystem"
+            BlueprintName = "Bounce"
             ReferencedContainer = "container:ParticleSystem.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

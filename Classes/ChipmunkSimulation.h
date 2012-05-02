@@ -22,6 +22,7 @@ enum {
 struct BallData {
     vec4 color;
     float intensity;
+    vec2 last_vel;
     
     BallData(vec4 c) : color(c), intensity(0.) {}
 };
@@ -38,11 +39,13 @@ protected:
     std::vector<cpShape*> shapes;
     std::vector<cpBody*> bodies;
     
-//    std::vector<cpBody*> grabberBodies;
-//    std::vector<cpShape*> grabberShapes;
+    std::vector<cpBody*> grabberBodies;
+    std::vector<cpShape*> grabberShapes;
     
-//    std::vector<cpBody*> creatingBodies;
-//    std::vector<cpShape*> creatingShapes;
+    std::vector<cpBody*> creatingBodies;
+    std::vector<cpShape*> creatingShapes;
+    
+    
 
     vec2 gravity;
     void next();
@@ -51,9 +54,16 @@ public:
     ChipmunkSimulation();
     ~ChipmunkSimulation();
     
+    void addVelocityToBallsAt(const vec2& loc, const vec2& vel, float radius);
+    void removeBallsAt(const vec2& loc, float radius);
+    void addBallAt(const vec2& loc);
+    void addBallWithVelocity(const vec2& loc, const vec2& vel);
+    bool isBallAt(const vec2& loc);
+    bool anyBallsAt(const vec2& loc, float radius);
     void setGravity(const vec2& g);
     void addToVelocity(const vec2& v);
     void step(float t);
+    
     unsigned int numBalls();
     cpShape* const* shapesPointer();
     cpBody* const* bodiesPointer();

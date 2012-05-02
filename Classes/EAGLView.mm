@@ -31,6 +31,7 @@
     self = [super initWithCoder:coder];
 	if (self)
     {
+        //self.contentScaleFactor = 2;
         self.multipleTouchEnabled = YES;
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         

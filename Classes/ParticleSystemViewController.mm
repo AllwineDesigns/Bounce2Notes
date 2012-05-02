@@ -44,12 +44,17 @@
     
     motionManager = [[CMMotionManager alloc] init];
     [motionManager startAccelerometerUpdates];
-    
+        
 //    psystem = new BasicParticleSystem();
 //    shader = [[BasicParticleShader alloc] initWithParticleSystem:psystem];
     simulation = new ChipmunkSimulation();
     shader = [[ChipmunkSimulationShader alloc] initWithChipmunkSimulation:simulation];
-
+    
+    multiGestureRecognizer = [[FSAMultiGestureRecognizer alloc] initWithTarget:self];
+    [self.view addGestureRecognizer:multiGestureRecognizer];
+    
+    [multiGestureRecognizer release];
+    
     animating = FALSE;
     animationFrameInterval = 2;
     self.displayLink = nil;
@@ -61,7 +66,7 @@
     // Tear down context.
     if ([EAGLContext currentContext] == context)
         [EAGLContext setCurrentContext:nil];
-    
+
     [lastUpdate release];
     [context release];
     [shader release];
@@ -69,6 +74,94 @@
     delete simulation;
     
     [super dealloc];
+}
+
+-(void)singleTap:(FSAMultiGesture*)gesture {
+    vec2 loc(gesture.location);
+    
+//    loc /= 160;
+    loc /= 384;
+    loc.y *= -1;
+    loc.x -= 1;
+//    loc.y += 1.5;
+    loc.y += 1.33333333333;
+
+    if(!simulation->isBallAt(loc)) {
+        simulation->addBallAt(loc);
+    }
+}
+-(void)doubleTap:(FSAMultiGesture*)gesture {
+    vec2 loc(gesture.location);
+    
+//    loc /= 160;
+    loc /= 384;
+    loc.y *= -1;
+    loc.x -= 1;
+//    loc.y += 1.5;
+    loc.y += 1.33333333333;
+
+        
+    simulation->removeBallsAt(loc, .1);
+}
+
+-(void)twoFingerSingleTap:(FSAMultiGesture*)gesture {
+    NSLog(@"in two finger single tap\n");
+}
+-(void)twoFingerDoubleTap:(FSAMultiGesture*)gesture {
+    NSLog(@"in two finger double tap\n");
+}
+
+-(void)flick: (FSAMultiGesture*)gesture {
+    vec2 loc(gesture.location);
+    
+//    loc /= 160;
+    loc /= 384;
+    loc.y *= -1;
+    loc.x -= 1;
+//    loc.y += 1.5;
+    loc.y += 1.33333333333;
+    
+    vec2 loc2(gesture.beginLocation);
+    
+//    loc2 /= 160;
+    loc2 /= 384;
+    loc2.y *= -1;
+    loc2.x -= 1;
+//    loc2.y += 1.5;
+    loc2.y += 1.33333333333;
+    
+    vec2 vel = (loc-loc2);
+    vel *= 100*(gesture.timestamp-gesture.beginTimestamp);
+
+    if(simulation->anyBallsAt(loc2, .1)) {
+        simulation->addVelocityToBallsAt(loc2, vel, .3);
+    } else {
+        simulation->addBallWithVelocity(loc2, vel);
+    }
+}
+-(void)twoFingerFlick: (FSAMultiGesture*)gesture {
+    NSLog(@"in two finger flick\n");
+}
+
+-(void)drag: (FSAMultiGesture*)gesture {
+    NSLog(@"in drag\n");
+}
+
+-(void)endDrag: (FSAMultiGesture*)gesture {
+    NSLog(@"in endDrag\n");
+}
+
+-(void)cancelDrag: (FSAMultiGesture*)gesture {
+    NSLog(@"in cancelDrag\n");
+}
+-(void)twoFingerDrag: (FSAMultiGesture*)gesture {
+    NSLog(@"in two finger drag\n");
+}
+-(void)endTwoFingerDrag: (FSAMultiGesture*)gesture {
+    NSLog(@"in end two finger drag\n");
+}
+-(void)cancelTwoFingerDrag: (FSAMultiGesture*)gesture {
+    NSLog(@"in cancel two finger drag\n");
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -145,18 +238,7 @@
     }
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//    NSLog(@"In touchesBegan - event: %@\n\n\n", event);
-}
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-//    NSLog(@"In touchesMoved - event: %@\n\n\n", event);
-}
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-//    NSLog(@"In touchesEnded - event: %@\n\n\n", event);
-}
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-//    NSLog(@"In touchesCancelled - event: %@\n\n\n", event);
-}
+
 
 - (void)drawFrame
 {

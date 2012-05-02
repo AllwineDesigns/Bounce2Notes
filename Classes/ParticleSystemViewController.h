@@ -16,6 +16,7 @@
 #import <OpenGLES/ES2/glext.h>
 
 //#import "BasicParticleShader.h"
+#import "FSAMultiGestureRecognizer.h"
 #import "ChipmunkSimulationShader.h"
 
 @interface ParticleSystemViewController : UIViewController
@@ -28,9 +29,12 @@
     NSDate *lastUpdate;
     CMMotionManager *motionManager;
     
+    FSAMultiGestureRecognizer *multiGestureRecognizer;
+
     BOOL animating;
     NSInteger animationFrameInterval;
     CADisplayLink *displayLink;
+
 }
 
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
