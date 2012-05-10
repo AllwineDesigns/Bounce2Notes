@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-const float FSA_FLICK_THRESHOLD = .3;
-const float FSA_TAP_THRESHOLD = .2;
+extern const float FSA_LONGTAP_THRESHOLD;
+extern const float FSA_FLICK_THRESHOLD;
+extern const float FSA_TAP_THRESHOLD;
 
 @interface FSAOneFingerTouch : NSObject {
     UITouch *touch;

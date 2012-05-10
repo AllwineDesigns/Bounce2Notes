@@ -13,6 +13,8 @@
 		<string></string>
 		<string>icon2_72.png</string>
 		<string>icon2_144.png</string>
+		<string>icon2_57.png</string>
+		<string>icon2_114.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -23,6 +25,8 @@
 				<string></string>
 				<string>icon2_72.png</string>
 				<string>icon2_144.png</string>
+				<string>icon2_57.png</string>
+				<string>icon2_114.png</string>
 			</array>
 		</dict>
 	</dict>

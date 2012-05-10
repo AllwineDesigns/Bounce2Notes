@@ -21,12 +21,38 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/FSAMultiGestureRecognizer.m"
-         timestampString = "357493115.092425"
+         timestampString = "358313164.385456"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "453"
-         endingLineNumber = "453"
+         startingLineNumber = "457"
+         endingLineNumber = "457"
          landmarkName = "-touchesEnded:withEvent:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/SoundManager.h"
+         timestampString = "358198813.765073"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "18"
+         endingLineNumber = "18"
+         landmarkName = "sounds"
+         landmarkType = "19">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/SoundManager.m"
+         timestampString = "358216964.755737"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "68"
+         endingLineNumber = "68"
+         landmarkName = "-playSound:volume:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

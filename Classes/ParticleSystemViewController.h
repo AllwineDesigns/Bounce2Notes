@@ -16,7 +16,8 @@
 #import <OpenGLES/ES2/glext.h>
 
 //#import "BasicParticleShader.h"
-#import "FSAMultiGestureRecognizer.h"
+//#import "FSAMultiGestureRecognizer.h"
+#import "FSAMultiTapAndDragRecognizer.h"
 #import "ChipmunkSimulationShader.h"
 
 @interface ParticleSystemViewController : UIViewController
@@ -29,8 +30,10 @@
     NSDate *lastUpdate;
     CMMotionManager *motionManager;
     
-    FSAMultiGestureRecognizer *multiGestureRecognizer;
+//    FSAMultiGestureRecognizer *multiGestureRecognizer;
+    FSAMultiTapAndDragRecognizer *multiTapAndDragRecognizer;
 
+    float aspect;
     BOOL animating;
     NSInteger animationFrameInterval;
     CADisplayLink *displayLink;
@@ -42,5 +45,6 @@
 
 - (void)startAnimation;
 - (void)stopAnimation;
+- (void)pixels2sim: (vec2&) loc;
 
 @end

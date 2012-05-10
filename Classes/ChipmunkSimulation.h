@@ -7,7 +7,7 @@
 //
 
 #pragma once
-
+#import "SoundManager.h"
 #include <chipmunk/chipmunk.h>
 #include <fsa/Vector.hpp>
 #include <vector>
@@ -23,6 +23,7 @@ struct BallData {
     vec4 color;
     float intensity;
     vec2 last_vel;
+    int note;
     
     BallData(vec4 c) : color(c), intensity(0.) {}
 };
@@ -39,23 +40,24 @@ protected:
     std::vector<cpShape*> shapes;
     std::vector<cpBody*> bodies;
     
-    std::vector<cpBody*> grabberBodies;
-    std::vector<cpShape*> grabberShapes;
+    CFMutableDictionaryRef creating;
+    CFMutableDictionaryRef grabbing;
     
-    std::vector<cpBody*> creatingBodies;
-    std::vector<cpShape*> creatingShapes;
-    
-    
+    SoundManager* sound_manager;
 
     vec2 gravity;
     void next();
+    
+    cpShape* getShapeAt(const vec2& v);
 
 public:
-    ChipmunkSimulation();
+    ChipmunkSimulation(float aspect);
     ~ChipmunkSimulation();
     
     void addVelocityToBallsAt(const vec2& loc, const vec2& vel, float radius);
-    void removeBallsAt(const vec2& loc, float radius);
+    void removeBallAt(const vec2& loc);
+    void toggleStaticAt(const vec2& loc);
+    void addStaticBallAt(const vec2& loc);
     void addBallAt(const vec2& loc);
     void addBallWithVelocity(const vec2& loc, const vec2& vel);
     bool isBallAt(const vec2& loc);
@@ -63,6 +65,15 @@ public:
     void setGravity(const vec2& g);
     void addToVelocity(const vec2& v);
     void step(float t);
+    
+    void creatingBallAt(const vec2& loc, float radius, void* uniqueId);
+    void createBall(void* uniqueId);
+    
+    void grabbingBallsAt(const vec2& loc, void* uniqueId);
+    void releaseBalls(void* uniqueId);
+    
+        
+    SoundManager* getSoundManager();
     
     unsigned int numBalls();
     cpShape* const* shapesPointer();

@@ -44,16 +44,23 @@
     
     motionManager = [[CMMotionManager alloc] init];
     [motionManager startAccelerometerUpdates];
+    
+    CGRect frame = [self.view frame];
+    aspect = frame.size.width/frame.size.height;
         
 //    psystem = new BasicParticleSystem();
 //    shader = [[BasicParticleShader alloc] initWithParticleSystem:psystem];
-    simulation = new ChipmunkSimulation();
-    shader = [[ChipmunkSimulationShader alloc] initWithChipmunkSimulation:simulation];
+    simulation = new ChipmunkSimulation(aspect);
+    shader = [[ChipmunkSimulationShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
     
-    multiGestureRecognizer = [[FSAMultiGestureRecognizer alloc] initWithTarget:self];
-    [self.view addGestureRecognizer:multiGestureRecognizer];
+//    multiGestureRecognizer = [[FSAMultiGestureRecognizer alloc] initWithTarget:self];
+//    [self.view addGestureRecognizer:multiGestureRecognizer];
     
-    [multiGestureRecognizer release];
+//    [multiGestureRecognizer release];
+    
+    multiTapAndDragRecognizer = [[FSAMultiTapAndDragRecognizer alloc] initWithTarget:self];
+    [self.view addGestureRecognizer:multiTapAndDragRecognizer];
+    [multiTapAndDragRecognizer release];
     
     animating = FALSE;
     animationFrameInterval = 2;
@@ -76,59 +83,52 @@
     [super dealloc];
 }
 
--(void)singleTap:(FSAMultiGesture*)gesture {
-    vec2 loc(gesture.location);
-    
-//    loc /= 160;
-    loc /= 384;
+-(void)pixels2sim:(vec2&)loc {
+    float width = self.view.frame.size.width;
+    loc /= .5*width;
     loc.y *= -1;
     loc.x -= 1;
-//    loc.y += 1.5;
-    loc.y += 1.33333333333;
+    loc.y += 1./aspect;
+}
 
-    if(!simulation->isBallAt(loc)) {
+-(void)singleTap:(FSAMultiGesture*)gesture {
+    vec2 loc(gesture.location);
+    [self pixels2sim:loc];
+
+    if(simulation->isBallAt(loc)) {
+        simulation->removeBallAt(loc);
+    } else {
         simulation->addBallAt(loc);
     }
 }
+-(void)longTap:(FSAMultiGesture*)gesture {
+    vec2 loc(gesture.location);
+    [self pixels2sim:loc];
+    
+    if(simulation->isBallAt(loc)) {
+        simulation->toggleStaticAt(loc);
+    } else {
+        simulation->addStaticBallAt(loc);
+    }
+}
+
+/*
 -(void)doubleTap:(FSAMultiGesture*)gesture {
     vec2 loc(gesture.location);
     
-//    loc /= 160;
-    loc /= 384;
-    loc.y *= -1;
-    loc.x -= 1;
-//    loc.y += 1.5;
-    loc.y += 1.33333333333;
-
+    [self pixels2sim:loc];
         
     simulation->removeBallsAt(loc, .1);
 }
 
--(void)twoFingerSingleTap:(FSAMultiGesture*)gesture {
-    NSLog(@"in two finger single tap\n");
-}
--(void)twoFingerDoubleTap:(FSAMultiGesture*)gesture {
-    NSLog(@"in two finger double tap\n");
-}
+ */
 
 -(void)flick: (FSAMultiGesture*)gesture {
     vec2 loc(gesture.location);
-    
-//    loc /= 160;
-    loc /= 384;
-    loc.y *= -1;
-    loc.x -= 1;
-//    loc.y += 1.5;
-    loc.y += 1.33333333333;
+    [self pixels2sim:loc];
     
     vec2 loc2(gesture.beginLocation);
-    
-//    loc2 /= 160;
-    loc2 /= 384;
-    loc2.y *= -1;
-    loc2.x -= 1;
-//    loc2.y += 1.5;
-    loc2.y += 1.33333333333;
+    [self pixels2sim:loc2];
     
     vec2 vel = (loc-loc2);
     vel *= 100*(gesture.timestamp-gesture.beginTimestamp);
@@ -139,29 +139,26 @@
         simulation->addBallWithVelocity(loc2, vel);
     }
 }
--(void)twoFingerFlick: (FSAMultiGesture*)gesture {
-    NSLog(@"in two finger flick\n");
-}
+
 
 -(void)drag: (FSAMultiGesture*)gesture {
-    NSLog(@"in drag\n");
+//    NSLog(@"in drag\n");
+    vec2 loc(gesture.beginLocation);
+    [self pixels2sim:loc];
+    vec2 loc2(gesture.location);
+    [self pixels2sim:loc2];
+    loc2 -= loc;
+    float radius = loc2.length() > 1 ? 1 : loc2.length();
+    
+    simulation->creatingBallAt(loc, radius, gesture);
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
-    NSLog(@"in endDrag\n");
+    simulation->createBall(gesture);
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
     NSLog(@"in cancelDrag\n");
-}
--(void)twoFingerDrag: (FSAMultiGesture*)gesture {
-    NSLog(@"in two finger drag\n");
-}
--(void)endTwoFingerDrag: (FSAMultiGesture*)gesture {
-    NSLog(@"in end two finger drag\n");
-}
--(void)cancelTwoFingerDrag: (FSAMultiGesture*)gesture {
-    NSLog(@"in cancel two finger drag\n");
 }
 
 - (void)viewWillAppear:(BOOL)animated

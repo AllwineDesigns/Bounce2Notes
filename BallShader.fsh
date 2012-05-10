@@ -12,8 +12,6 @@ varying lowp float intensityVarying;
 
 uniform lowp sampler2D texture;
 
-const lowp vec4 one = vec4(1.,1.,1.,1.);
-
 void main()
 {
     lowp vec4 texColor = texture2D(texture, uvVarying);
