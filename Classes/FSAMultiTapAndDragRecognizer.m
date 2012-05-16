@@ -57,6 +57,7 @@
 
 - (void)doSingleTap:(FSAOneFingerTouch*)oft { 
     FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
+
     gesture.location = [oft.touch locationInView:self.view];
     gesture.beginLocation = oft.beginLocation;
     gesture.timestamp = oft.touch.timestamp;
@@ -80,6 +81,8 @@
     }
     gesture.location = [oft.touch locationInView:self.view];
     gesture.timestamp = oft.touch.timestamp;
+    CGPoint last_loc = [oft.touch previousLocationInView:self.view];
+    gesture.velocity = CGPointMake(gesture.location.x-last_loc.x, gesture.location.y-last_loc.y);
 
     [target performSelector:@selector(drag:) withObject:gesture];
 }
@@ -165,9 +168,9 @@
             [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTap:) object:oft];
             CFDictionaryRemoveValue(delayedLongTaps, oft);
         }
-        if(oft.touch.tapCount > 0) {
+        if(oft.touch.tapCount > 0 && !CFDictionaryContainsKey(dragGestures, oft)) {
             [self doSingleTap:oft];
-        } else { // tapCount == 0
+        } else {
             if(oft.touch.timestamp-oft.beginTimestamp > FSA_FLICK_THRESHOLD) {
                 CGPoint loc = [oft.touch locationInView:self.view];
                 CGPoint begin = oft.beginLocation;

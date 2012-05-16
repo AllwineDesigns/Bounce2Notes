@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 John Allwine. All rights reserved.
 //
 
+// Uses AVAudioPlayer objects to play sounds
+
 #import "SoundManager.h"
 
 @implementation SoundManager

@@ -17,7 +17,6 @@ extern const float FSA_TAP_THRESHOLD;
     NSTimeInterval beginTimestamp;
     CGPoint beginLocation;
 }
-
 @property (retain,nonatomic) UITouch* touch;
 @property (nonatomic) NSTimeInterval beginTimestamp;
 @property (nonatomic) CGPoint beginLocation;
@@ -50,11 +49,13 @@ extern const float FSA_TAP_THRESHOLD;
 @interface FSAMultiGesture : NSObject {
     CGPoint beginLocation;
     CGPoint location;
+    CGPoint velocity;
     NSTimeInterval beginTimestamp;
     NSTimeInterval timestamp;
 }
 @property (nonatomic) CGPoint beginLocation;
 @property (nonatomic) CGPoint location;
+@property (nonatomic) CGPoint velocity;
 @property (nonatomic) NSTimeInterval beginTimestamp;
 @property (nonatomic) NSTimeInterval timestamp;
 @end

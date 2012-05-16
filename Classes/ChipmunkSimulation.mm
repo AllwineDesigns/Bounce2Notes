@@ -8,6 +8,7 @@
 
 #include "ChipmunkSimulation.h"
 #include <fsa/Noise.hpp>
+#include <chipmunk/chipmunk_unsafe.h>
 
 int collisionBegin(cpArbiter *arb, cpSpace *space, void *data) {
     return 1;
@@ -45,87 +46,82 @@ int preSolve(cpArbiter *arb, cpSpace *space, void *data) {
 }
 void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
     ChipmunkSimulation *simulation = (ChipmunkSimulation*)data;
-    unsigned int numBalls = simulation->numBalls();
+
     cpBody *body1;
     cpBody *body2;
     cpShape *shape1;
     cpShape *shape2;
     cpArbiterGetBodies(arb, &body1, &body2);
     cpArbiterGetShapes(arb, &shape1, &shape2);
-    
+        
     cpCollisionType t1 = cpShapeGetCollisionType(shape1);
     cpCollisionType t2 = cpShapeGetCollisionType(shape2);
 
-    cpVect impulse = cpArbiterTotalImpulseWithFriction(arb);
-    vec2 imp(impulse.x, impulse.y);
-    float ke = .05*imp.length()/sqrt(numBalls)*15; 
-//    float ke = .1*cpArbiterTotalKE(arb);
-    
-    if(t1 == BALL_TYPE && t2 == BALL_TYPE) {
-        ke *= .5;
-    }
-    
-    BOOL isStatic1 = NO;
-    BOOL isStatic2 = NO;
+    float ke = 0; 
     
     BallData* ballData1 = (BallData*)cpBodyGetUserData(body1);
     BallData* ballData2 = (BallData*)cpBodyGetUserData(body2);
-
+    
+    int note1 = -1;
+    int note2 = -1;
+    
+    float vol1;
+    float vol2;
     
     if(t1 == BALL_TYPE) {
         BallData* ballData = ballData1;
-        cpVect vel = cpBodyGetVel(body1);
-        vec2 v(vel.x, vel.y);
         
-        float mag = v.length();
-        float dot = v.dot(ballData->last_vel);
+        float radius = cpCircleShapeGetRadius(shape1);
         float last_mag = ballData->last_vel.length();
-
-        if(dot < -.1 || mag-last_mag > .1) {
-            ballData->intensity = 1.2*mag > 2 ? 2 : 1.2*mag;
-        } else if(cpBodyIsStatic(body1)) {
-            isStatic1 = YES;
-        }
-//        ballData->intensity = .5*(ballData->intensity+mag);
-//        ballData->intensity += ke;
         
-//        [simulation->getSounds()[ballData->note] play];
-        float vol = (.25*ballData->intensity > 1) ? 1 : (.25*ballData->intensity);
-        if(vol > .07) {
-          //  [simulation->getSoundManager() playSound:ballData->note volume:vol];
-        }
+        ke += (last_mag*last_mag);
     }
 
     if(t2 == BALL_TYPE) {
         BallData* ballData = ballData2;
         cpVect vel = cpBodyGetVel(body2);
-        vec2 v(vel.x, vel.y);
+        vec2 v(vel);
         
-        float mag = v.length();
-        float dot = v.dot(ballData->last_vel);
+        float radius = cpCircleShapeGetRadius(shape2);
         float last_mag = ballData->last_vel.length();
+        ke += (last_mag*last_mag);
+    }
+    
+    if(t1 == BALL_TYPE && t2 == BALL_TYPE) {
+        ke *= .5;
+    }
+    
+    if(t1 == BALL_TYPE) {
+        float radius = cpCircleShapeGetRadius(shape1);
+        note1 = (1-radius)*(1-radius)*[simulation->getAudioPlayer() numSounds];
 
-        if(dot < -.1 || mag-last_mag > .1) {
-            ballData->intensity = 1.2*mag > 2 ? 2 : 1.2*mag;
-        } else if(cpBodyIsStatic(body2)) {
-            isStatic2 = YES;
+        vol1 = .1*(radius*ke > 1 ? 1 : radius*ke);
+
+        if(vol1 > 0.001) {
+            [simulation->getAudioPlayer() playSound:note1 volume:vol1];
         }
-//        ballData->intensity = .5*(ballData->intensity+mag);
-//        ballData->intensity += ke;
-//        [simulation->getSounds()[ballData->note] play];
-        float vol = (.25*ballData->intensity > 1) ? 1 : (.25*ballData->intensity);
-        if(vol > .07) {
-         //   [simulation->getSoundManager() playSound:ballData->note volume:vol];
+        
+        ballData1->intensity += .05*ke/radius;
+        if(ballData1->intensity > 2.2) {
+            ballData1->intensity = 2.2;
         }
     }
     
-    if(isStatic1) {
-        ballData1->intensity = 2*ballData2->intensity;
+    if(t2 == BALL_TYPE) {
+
+        float radius = cpCircleShapeGetRadius(shape2);
+        note2 = (1-radius)*(1-radius)*[simulation->getAudioPlayer() numSounds];
+        vol2 = .1*(radius*ke > 1 ? 1 : radius*ke);
+        if(vol2 > 0.001) {
+            [simulation->getAudioPlayer() playSound:note2 volume:vol2];
+        }
+        
+        ballData2->intensity += .05*ke/radius;
+        if(ballData2->intensity > 2.2) {
+            ballData2->intensity = 2.2;
+        }
     }
-    
-    if(isStatic2) {
-        ballData2->intensity = 2*ballData1->intensity;
-    }
+
 }
 void separate(cpArbiter *arb, cpSpace *space, void *data) {
     
@@ -182,7 +178,18 @@ void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 }
 
 ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0) {
-    sound_manager = [[SoundManager alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
+   // sound_manager = [[SoundManager alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
+ //  audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
+
+//    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"e", @"g", @"a", @"c2", nil]];
+//    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"c_2", @"e_2", @"g_2", @"a_2", @"c_3", nil]];
+//    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"b_1", @"c_2", nil]];
+    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"marimba_c1", @"marimba_e1", @"marimba_g1", @"marimba_a1", @"marimba_c2", nil]];
+
+
+//    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"guitarStereo", nil]];
+
+    [audio_player startAUGraph];
     
     creating = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
     grabbing = CFDictionaryCreateMutable(NULL, 0, NULL, NULL);
@@ -207,10 +214,10 @@ ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0
     left = cpSegmentShapeNew(space->staticBody, cpv(-2.1, inv_aspect), cpv(-2.1, -inv_aspect), 1.11);
 
     
-    cpShapeSetFriction(bottom,0.);
-    cpShapeSetFriction(top, 0.);
-    cpShapeSetFriction(right, 0.);
-    cpShapeSetFriction(left, 0.);
+    cpShapeSetFriction(bottom,.1);
+    cpShapeSetFriction(top, .1);
+    cpShapeSetFriction(right, .1);
+    cpShapeSetFriction(left, .1);
     
     cpShapeSetElasticity(bottom,1.);
     cpShapeSetElasticity(top, 1.);
@@ -233,11 +240,11 @@ ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0
         cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
         cpFloat mass = 100*radius*radius;
 
-        cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+        cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
         BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
        
         HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), 360.*random(64.28327*i), .4, .05*random(736.2827*i)+.75   );
-        ballData->note = (int)8*random(928.2837776222*i);
+        ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
 
 //        ballData->color = vec4((ballData->color.x+1)*.4,(ballData->color.y+1)*.4,(ballData->color.z+1)*.4,1);
 //        sqrt( 0.241*R^2 + 0.691*G^2 + 0.068*B^2 )
@@ -265,7 +272,7 @@ ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0
         cpBodySetUserData(ballBody, ballData);
 
         cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
-        cpShapeSetFriction(ballShape, 0.);
+        cpShapeSetFriction(ballShape, .1);
         cpShapeSetElasticity(ballShape, .95);
         cpShapeSetCollisionType(ballShape, BALL_TYPE);
         
@@ -280,9 +287,13 @@ static void getShapesQueryFunc(cpShape *shape, cpContactPointSet *points, void* 
     shapes->push_back(shape);
 }
 
-SoundManager* ChipmunkSimulation::getSoundManager() {
-    return sound_manager;
+FSAAudioPlayer* ChipmunkSimulation::getAudioPlayer() {
+    return audio_player;
 }
+
+//SoundManager* ChipmunkSimulation::getSoundManager() {
+//    return sound_manager;
+//}
 
 void ChipmunkSimulation::next() {
     cpSpaceStep(space, dt);
@@ -373,6 +384,38 @@ cpShape* ChipmunkSimulation::getShapeAt(const vec2& loc) {
 
 void ChipmunkSimulation::removeBallAt(const vec2& loc) {
     cpShape* shape = getShapeAt(loc);
+    
+    bool ballBeingGrabbedOrCreated = false;
+    int size = CFDictionaryGetCount(grabbing);
+    CFTypeRef *keysTypeRef = (CFTypeRef *) malloc( size * sizeof(CFTypeRef) );
+    CFDictionaryGetKeysAndValues(grabbing, (const void **) keysTypeRef, NULL);
+    const void **keys = (const void **) keysTypeRef;
+    for(int i = 0; i < size; ++i) {
+        cpShape *grabbedShape = (cpShape*)CFDictionaryGetValue(grabbing, keys[i]);
+        if(grabbedShape == shape) {
+            ballBeingGrabbedOrCreated = true;
+            break;
+        }
+    }
+    free(keys);
+    
+    size = CFDictionaryGetCount(creating);
+    keysTypeRef = (CFTypeRef *) malloc( size * sizeof(CFTypeRef) );
+    CFDictionaryGetKeysAndValues(creating, (const void **) keysTypeRef, NULL);
+    keys = (const void **) keysTypeRef;
+    
+    for(int i = 0; i < size; ++i) {
+        cpShape* s = (cpShape*)CFDictionaryGetValue(creating, keys[i]);
+        if(s == shape) {
+            ballBeingGrabbedOrCreated = true;
+            break;
+        }
+    }
+    free(keys);
+    
+    if(ballBeingGrabbedOrCreated) {
+        return;
+    }
 
     if(shape != NULL) {
         cpBody* body = cpShapeGetBody(shape);
@@ -406,10 +449,10 @@ void ChipmunkSimulation::addBallWithVelocity(const vec2& loc, const vec2& vel) {
     cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
     cpFloat mass = 100*radius*radius;
     
-    cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+    cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
     BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
     HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), 360.*random(64.28327*i), .4, .05*random(736.2827*i)+.75   );
-    ballData->note = (int)8*random(928.2837776222*i);
+    ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
     ballData->intensity = 2;
 
     /*
@@ -441,7 +484,7 @@ void ChipmunkSimulation::addBallWithVelocity(const vec2& loc, const vec2& vel) {
     //    cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
     cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
     
-    cpShapeSetFriction(ballShape, 0.);
+    cpShapeSetFriction(ballShape, .1);
     cpShapeSetElasticity(ballShape, .95);
     cpShapeSetCollisionType(ballShape, BALL_TYPE);
     
@@ -454,10 +497,10 @@ void ChipmunkSimulation::addBallAt(const vec2& loc) {
     cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
     cpFloat mass = 100*radius*radius;
     
-    cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+    cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
     BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
     HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), 360.*random(64.28327*i), .4, .05*random(736.2827*i)+.75   );
-    ballData->note = (int)8*random(928.2837776222*i);
+    ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
     ballData->intensity = 2;
 
     /*
@@ -488,7 +531,7 @@ void ChipmunkSimulation::addBallAt(const vec2& loc) {
     
     cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
 
-    cpShapeSetFriction(ballShape, 0.);
+    cpShapeSetFriction(ballShape, .1);
     cpShapeSetElasticity(ballShape, .95);
     cpShapeSetCollisionType(ballShape, BALL_TYPE);
     cpSpaceReindexStatic(space);
@@ -504,7 +547,7 @@ void ChipmunkSimulation::toggleStaticAt(const vec2& loc) {
     if(cpBodyIsStatic(body)) {
         float radius = cpCircleShapeGetRadius(shape);
         float mass = 100*radius*radius;
-        cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+        cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
         BallData *data = (BallData*)cpBodyGetUserData(body);
         cpVect pos = cpBodyGetPos(body);
         cpVect vel = cpBodyGetVel(body);
@@ -516,7 +559,7 @@ void ChipmunkSimulation::toggleStaticAt(const vec2& loc) {
         cpBodySetVelLimit(new_body, 5);
         cpBodySetUserData(new_body, data);
         
-        cpShapeSetFriction(new_shape, 0.);
+        cpShapeSetFriction(new_shape,.1);
         cpShapeSetElasticity(new_shape, .95);
         cpShapeSetCollisionType(new_shape, BALL_TYPE);
         
@@ -543,7 +586,7 @@ void ChipmunkSimulation::toggleStaticAt(const vec2& loc) {
         cpBodySetPos(new_body, pos);
         cpBodySetUserData(new_body, data);
         
-        cpShapeSetFriction(new_shape, 0.);
+        cpShapeSetFriction(new_shape, .1);
         cpShapeSetElasticity(new_shape, .95);
         cpShapeSetCollisionType(new_shape, BALL_TYPE);
         
@@ -572,7 +615,7 @@ void ChipmunkSimulation::addStaticBallAt(const vec2& loc) {
 //    cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
     BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
     HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), 360.*random(64.28327*i), .4, .05*random(736.2827*i)+.75   );
-    ballData->note = (int)8*random(928.2837776222*i);
+    ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
     ballData->intensity = 4;
     
     /*
@@ -603,7 +646,7 @@ void ChipmunkSimulation::addStaticBallAt(const vec2& loc) {
     
     cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
     
-    cpShapeSetFriction(ballShape, 0.);
+    cpShapeSetFriction(ballShape, .1);
     cpShapeSetElasticity(ballShape, .95);
     cpShapeSetCollisionType(ballShape, BALL_TYPE);
     cpSpaceReindexStatic(space);
@@ -623,42 +666,131 @@ void ChipmunkSimulation::step(float t) {
     time_remainder = t;
 }
 
+/*
+bool ChipmunkSimulation::isGrabbingBall(void *uniqueId) {
+    return CFDictionaryContainsKey(grabbing, uniqueId);
+}
+
+void ChipmunkSimulation::grabbingBallAt(const vec2& loc, void *uniqueId) {
+    if(CFDictionaryContainsKey(grabbing, uniqueId)) {
+        GrabData *gdata = (GrabData*)CFDictionaryGetValue(grabbing, uniqueId);
+        cpBody *body = cpShapeGetBody(gdata->grabbingShape);
+        
+        cpBodySetPos(body, (cpVect&)loc);
+       // cpBodySetVel(body, (cpVect&)vel);
+        cpSpaceReindexShapesForBody(space, body);
+    } else {
+        cpShape* shape = getShapeAt(loc);
+        cpBody* body = cpShapeGetBody(shape);
+        if(!cpBodyIsStatic(body)) {
+            GrabData *gdata = new GrabData;
+            gdata->grabbedShape = shape;
+         //   float mass = 99999;
+       //     float moment = cpMomentForCircle(mass, 0, .1, cpvzero);
+            
+            cpBody *grabbing_body = cpBodyNewStatic();
+            cpBodySetPos(grabbing_body, (cpVect&)loc);
+            
+            BallData *data = new BallData(vec4(1,1,1,1));
+            cpBodySetUserData(grabbing_body, data);
+            gdata->grabbingShape = cpSpaceAddShape(space, cpCircleShapeNew(grabbing_body, .1, cpvzero));
+            cpShapeSetSensor(gdata->grabbingShape, true);
+            
+            cpVect pos1 = cpBodyGetPos(body);
+            cpVect pos2 = cpBodyGetPos(grabbing_body);
+            
+            vec2 pos1v(pos1);
+            vec2 pos2v(pos2);
+            vec2 diff = pos1v-pos2v;
+            
+            gdata->constraint = cpPinJointNew(body, grabbing_body, cpvzero, cpvzero);
+        //    cpPinJointSetDist(gdata->constraint, 0);
+           // gdata->constraint = cpDampedSpringNew(body, grabbing_body, cpvzero, cpvzero, diff.length(), 10000, 100);
+
+            cpSpaceAddConstraint(space, gdata->constraint);
+            CFDictionarySetValue(grabbing, uniqueId, gdata);
+        }
+    }
+}
+void ChipmunkSimulation::releaseBall(void* uniqueId) {
+    GrabData *gdata = (GrabData*)CFDictionaryGetValue(grabbing, uniqueId);
+    cpSpaceRemoveConstraint(space, gdata->constraint);
+    cpSpaceRemoveShape(space, gdata->grabbingShape);
+    cpBody *grabbingBody = cpShapeGetBody(gdata->grabbingShape);
+
+    cpConstraintFree(gdata->constraint);
+    cpShapeFree(gdata->grabbingShape);
+    cpBodyFree(grabbingBody);
+    
+    delete gdata;
+    CFDictionaryRemoveValue(grabbing, uniqueId);
+}
+ */
+
+bool ChipmunkSimulation::isGrabbingBall(void *uniqueId) {
+    return CFDictionaryContainsKey(grabbing, uniqueId);
+}
+
+void ChipmunkSimulation::grabbingBallAt(const vec2& loc, const vec2& vel, void *uniqueId) {
+    if(CFDictionaryContainsKey(grabbing, uniqueId)) {
+        cpShape *shape = (cpShape*)CFDictionaryGetValue(grabbing, uniqueId);
+        cpBody *body = cpShapeGetBody(shape);
+        
+        vec2 f(vel);
+        
+        f *= 100;
+        
+        cpBodySetPos(body, (cpVect&)loc);
+        cpBodySetVel(body, (cpVect&)vel);
+        cpSpaceReindexShapesForBody(space, body);
+    } else {
+        cpShape* shape = getShapeAt(loc);
+        cpBody* body = cpShapeGetBody(shape);
+        if(!cpBodyIsStatic(body)) {
+            cpSpaceRemoveBody(space, body);
+        }
+        CFDictionarySetValue(grabbing, uniqueId, shape);
+    }
+}
+void ChipmunkSimulation::releaseBall(const vec2& vel, void* uniqueId) {
+    cpShape* shape = (cpShape*)CFDictionaryGetValue(grabbing, uniqueId);
+    cpBody* body = cpShapeGetBody(shape);
+    if(cpBodyIsStatic(body)) {
+        cpBodySetVel(body, cpvzero);
+    } else {
+        cpSpaceAddBody(space, body);
+        cpBodySetVel(body, (cpVect&)vel);
+    }
+    
+    CFDictionaryRemoveValue(grabbing, uniqueId);
+}
+
+bool ChipmunkSimulation::isCreatingBall(void *uniqueId) {
+    return CFDictionaryContainsKey(creating, uniqueId);
+}
+
 void ChipmunkSimulation::creatingBallAt(const vec2& loc, float radius, void* uniqueId) {
     if(CFDictionaryContainsKey(creating, uniqueId)) {
         cpShape *shape = (cpShape*)CFDictionaryGetValue(creating, uniqueId);
-        cpSpaceRemoveShape(space,shape);
-        cpShapeFree(shape);
-        
-        cpBody* body = cpShapeGetBody(shape);
-        cpShape *new_shape = cpSpaceAddShape(space, cpCircleShapeNew(body, radius, cpvzero));
-        
-        cpShapeSetFriction(new_shape, 0.);
-        cpShapeSetElasticity(new_shape, .95);
-        cpShapeSetCollisionType(new_shape, BALL_TYPE);
-        
-        for(int i = shapes.size()-1; i >= 0; i--) {
-            if(shapes[i] == shape) {
-                shapes[i] = new_shape;
-            }
-        }
-        CFDictionarySetValue(creating, uniqueId, new_shape);
+        cpCircleShapeSetRadius(shape, radius);
+        cpSpaceReindexShapesForBody(space, cpShapeGetBody(shape));
     } else {
-       // NSLog(@"first time dragged - %@\n", uniqueId);
+        // NSLog(@"first time dragged - %@\n", uniqueId);
         float i = loc.x*loc.y;        
         BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
         HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), 360.*random(64.28327*i), .4, .05*random(736.2827*i)+.75   );
-        ballData->note = (int)8*random(928.2837776222*i);
+        ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
         ballData->intensity = 2;
-                
+        
         cpBody *ballBody = cpBodyNewStatic();
-            
+        
         cpBodySetPos(ballBody, (const cpVect&)loc);
         cpBodySetVelLimit(ballBody, 5);
         cpBodySetUserData(ballBody, ballData);
         
         cpShape *ballShape = cpSpaceAddShape(space, cpCircleShapeNew(ballBody, radius, cpvzero));
         
-        cpShapeSetFriction(ballShape, 0.);
+        cpShapeSetFriction(ballShape, .1);
         cpShapeSetElasticity(ballShape, .95);
         cpShapeSetCollisionType(ballShape, BALL_TYPE);
         cpSpaceReindexStatic(space);
@@ -669,6 +801,24 @@ void ChipmunkSimulation::creatingBallAt(const vec2& loc, float radius, void* uni
     }
 }
 
+void ChipmunkSimulation::cancelBall(void *uniqueId) {
+    if(CFDictionaryContainsKey(creating, uniqueId)) {
+        cpShape *shape = (cpShape*)CFDictionaryGetValue(creating, uniqueId);
+        cpBody *body = cpShapeGetBody(shape);
+        for(int i = shapes.size()-1; i >= 0; i--) {
+            if(shapes[i] == shape) {
+                shapes.erase(shapes.begin()+i);
+                bodies.erase(bodies.begin()+i);
+            }
+        }
+        CFDictionaryRemoveValue(creating, uniqueId);
+        
+        cpSpaceRemoveShape(space, shape);
+        cpShapeFree(shape);
+        cpBodyFree(body);
+    }
+}
+
 void ChipmunkSimulation::createBall(void* uniqueId) {
     if(CFDictionaryContainsKey(creating, uniqueId)) {
         cpShape *shape = (cpShape*)CFDictionaryGetValue(creating, uniqueId);
@@ -676,7 +826,7 @@ void ChipmunkSimulation::createBall(void* uniqueId) {
         
         float radius = cpCircleShapeGetRadius(shape);
         float mass = 100*radius*radius;
-        cpFloat moment = cpMomentForCircle(mass, 0, radius, cpvzero);
+        cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
         BallData *data = (BallData*)cpBodyGetUserData(body);
         cpVect pos = cpBodyGetPos(body);
         cpVect vel = cpBodyGetVel(body);
@@ -688,7 +838,7 @@ void ChipmunkSimulation::createBall(void* uniqueId) {
         cpBodySetVelLimit(new_body, 5);
         cpBodySetUserData(new_body, data);
         
-        cpShapeSetFriction(new_shape, 0.);
+        cpShapeSetFriction(new_shape, .1);
         cpShapeSetElasticity(new_shape, .95);
         cpShapeSetCollisionType(new_shape, BALL_TYPE);
         
@@ -723,7 +873,8 @@ cpBody* const* ChipmunkSimulation::bodiesPointer() {
 }
 
 ChipmunkSimulation::~ChipmunkSimulation() {
-    [sound_manager release];
+//    [sound_manager release];
+    [audio_player release];
     
     CFRelease(creating);
     CFRelease(grabbing);

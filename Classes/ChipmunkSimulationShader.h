@@ -15,9 +15,12 @@ struct ChipmunkVertex {
     std::vector<unsigned int> indices;
     float aspect;
     
+    GLint patternLoc;
     GLint textureLoc; 
     GLint aspectLoc;
+    
     GLuint texture;
+    GLuint pattern;
 }
 
 -(id)initWithChipmunkSimulation: (ChipmunkSimulation*)s aspect:(float)aspect;

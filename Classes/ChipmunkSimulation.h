@@ -7,7 +7,8 @@
 //
 
 #pragma once
-#import "SoundManager.h"
+//#import "SoundManager.h"
+#import "FSAAudioPlayer.h"
 #include <chipmunk/chipmunk.h>
 #include <fsa/Vector.hpp>
 #include <vector>
@@ -43,7 +44,9 @@ protected:
     CFMutableDictionaryRef creating;
     CFMutableDictionaryRef grabbing;
     
-    SoundManager* sound_manager;
+   // SoundManager* sound_manager;
+    FSAAudioPlayer *audio_player;
+    
 
     vec2 gravity;
     void next();
@@ -66,14 +69,21 @@ public:
     void addToVelocity(const vec2& v);
     void step(float t);
     
+    bool isCreatingBall(void* uniqueId);
     void creatingBallAt(const vec2& loc, float radius, void* uniqueId);
     void createBall(void* uniqueId);
+    void cancelBall(void* uniqueId);
     
-    void grabbingBallsAt(const vec2& loc, void* uniqueId);
-    void releaseBalls(void* uniqueId);
+    bool isGrabbingBall(void* uniqueId);
+//    void grabbingBallAt(const vec2& loc, void* uniqueId);
+    void grabbingBallAt(const vec2& loc, const vec2& vel, void* uniqueId);
+    void releaseBall(const vec2& vel, void* uniqueId);
+
+//    void releaseBall(void* uniqueId);
     
         
-    SoundManager* getSoundManager();
+ //   SoundManager* getSoundManager();
+    FSAAudioPlayer* getAudioPlayer();
     
     unsigned int numBalls();
     cpShape* const* shapesPointer();

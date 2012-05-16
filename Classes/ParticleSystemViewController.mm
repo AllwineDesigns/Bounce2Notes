@@ -36,6 +36,7 @@
     
 	self.context = aContext;
 	[aContext release];
+    NSLog(@"%@", [[UIDevice currentDevice] model]);
 	
     [(EAGLView *)self.view setContext:context];
     [(EAGLView *)self.view setFramebuffer];
@@ -90,8 +91,15 @@
     loc.x -= 1;
     loc.y += 1./aspect;
 }
+-(void)vectorPixels2sim:(vec2&)loc {
+    float width = self.view.frame.size.width;
+    loc /= .5*width;
+    loc.y *= -1;
+}
 
 -(void)singleTap:(FSAMultiGesture*)gesture {
+    NSLog(@"singleTap\n");
+
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
 
@@ -102,6 +110,7 @@
     }
 }
 -(void)longTap:(FSAMultiGesture*)gesture {
+    NSLog(@"longTap\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
@@ -124,6 +133,7 @@
  */
 
 -(void)flick: (FSAMultiGesture*)gesture {
+    NSLog(@"flick\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
@@ -147,18 +157,58 @@
     [self pixels2sim:loc];
     vec2 loc2(gesture.location);
     [self pixels2sim:loc2];
+    vec2 endLoc(loc2);
     loc2 -= loc;
     float radius = loc2.length() > 1 ? 1 : loc2.length();
     
-    simulation->creatingBallAt(loc, radius, gesture);
+    vec2 vel(gesture.velocity);
+    [self vectorPixels2sim:vel];
+    
+    vel *= 100;
+
+        
+    if(simulation->isGrabbingBall(gesture)) {
+//        simulation->grabbingBallAt(endLoc, gesture);
+        simulation->grabbingBallAt(endLoc, vel, gesture);
+
+    } else if(simulation->isCreatingBall(gesture)) {
+        simulation->creatingBallAt(loc, radius, gesture);
+    } else if(simulation->isBallAt(loc)){
+        simulation->grabbingBallAt(loc, cpvzero, gesture);
+    } else {
+        simulation->creatingBallAt(loc, radius, gesture);
+    }
+
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
-    simulation->createBall(gesture);
+    vec2 vel(gesture.velocity);
+    [self vectorPixels2sim:vel];
+    
+    vel *= 100;
+
+    
+    if(simulation->isCreatingBall(gesture)) {
+        simulation->createBall(gesture);
+    } else if(simulation->isGrabbingBall(gesture)) {
+        simulation->releaseBall(vel, gesture);
+        NSLog(@"%f, %f\n", vel.x, vel.y);
+
+    }
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
-    NSLog(@"in cancelDrag\n");
+    vec2 vel(gesture.velocity);
+    [self vectorPixels2sim:vel];
+    
+    vel *= 100;
+    
+    if(simulation->isCreatingBall(gesture)) {
+        simulation->createBall(gesture);
+    } else if(simulation->isGrabbingBall(gesture)) {
+        simulation->releaseBall(vel, gesture);
+        NSLog(@"%f, %f\n", vel.x, vel.y);
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated

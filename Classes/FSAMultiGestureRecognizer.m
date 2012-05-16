@@ -10,7 +10,7 @@
 #import <UIKit/UIGestureRecognizerSubclass.h>
 
 const float FSA_LONGTAP_THRESHOLD = .5;
-const float FSA_FLICK_THRESHOLD = .3;
+const float FSA_FLICK_THRESHOLD = .2;
 const float FSA_TAP_THRESHOLD = .2;
 
 @implementation FSAOneFingerTouch
@@ -143,6 +143,7 @@ const float FSA_TAP_THRESHOLD = .2;
 @implementation FSAMultiGesture
 @synthesize beginLocation;
 @synthesize location;
+@synthesize velocity;
 @synthesize beginTimestamp;
 @synthesize timestamp;
 @end

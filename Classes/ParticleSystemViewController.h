@@ -32,7 +32,7 @@
     
 //    FSAMultiGestureRecognizer *multiGestureRecognizer;
     FSAMultiTapAndDragRecognizer *multiTapAndDragRecognizer;
-
+    
     float aspect;
     BOOL animating;
     NSInteger animationFrameInterval;
@@ -46,5 +46,7 @@
 - (void)startAnimation;
 - (void)stopAnimation;
 - (void)pixels2sim: (vec2&) loc;
+- (void)vectorPixels2sim: (vec2&) vec;
+
 
 @end
