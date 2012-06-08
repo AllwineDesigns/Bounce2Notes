@@ -25,8 +25,7 @@ static OSStatus inputRenderCallback (void *inRefCon,
                                      UInt32 inBusNumber,
                                      UInt32 inNumberFrames,
                                      AudioBufferList *ioData) {
-    
-    FSASoundList* soundList = (FSASoundList*)inRefCon;
+    FSAAudioCallbackData* callbackData = (FSAAudioCallbackData*)inRefCon;
     
     AudioUnitSampleType *outSamplesChannelLeft = (AudioUnitSampleType *) ioData->mBuffers[0].mData;
     AudioUnitSampleType *outSamplesChannelRight = (AudioUnitSampleType *) ioData->mBuffers[1].mData;
@@ -34,10 +33,24 @@ static OSStatus inputRenderCallback (void *inRefCon,
     memset(outSamplesChannelLeft, 0, inNumberFrames*sizeof(AudioUnitSampleType));
     memset(outSamplesChannelRight, 0, inNumberFrames*sizeof(AudioUnitSampleType));
     
-    FSASound* pool = soundList->pool;
+    FSASoundList* soundList = callbackData->soundList;
+    
+    if([callbackData->pending_lock tryLock]) {
+        if(soundList->pending_tail != NULL) {
+            soundList->pending_tail->next = soundList->playing->next;
+            soundList->playing->next = soundList->pending_head->next;
+            soundList->pending_tail = NULL;
+            soundList->pending_head->next = NULL;
+        }
+        [callbackData->pending_lock unlock];
+    }
     
     FSASound* prev = soundList->playing;
     FSASound* sound = prev->next;
+    
+    FSASound finished_head;
+    finished_head.next = NULL;
+    FSASound* finished_tail = NULL;
     
     if(sound == NULL) {
         *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
@@ -51,9 +64,6 @@ static OSStatus inputRenderCallback (void *inRefCon,
         Float32 volume = sound->volume;
         UInt32 frameCount = sound->data->frameCount;
         for (UInt32 frameNumber = 0; frameNumber < inNumberFrames && sampleNumber < frameCount; ++frameNumber) {
-         //   outSamplesChannelLeft[frameNumber] = volume*dataInLeft[sampleNumber];
-         //   outSamplesChannelRight[frameNumber] = volume*dataInRight[sampleNumber];
-
             outSamplesChannelLeft[frameNumber] += volume*dataInLeft[sampleNumber];
             outSamplesChannelRight[frameNumber] += volume*dataInRight[sampleNumber];
             
@@ -65,8 +75,11 @@ static OSStatus inputRenderCallback (void *inRefCon,
             // finished playing sound, take it out of the playing list
             // and add it back into the sound pool
             prev->next = sound->next;
-            sound->next = pool->next;
-            pool->next = sound;
+            sound->next = finished_head.next;
+            finished_head.next = sound;
+            if(finished_tail == NULL) {
+                finished_tail = sound;
+            }
             
             sound = prev->next;
         } else {
@@ -76,26 +89,16 @@ static OSStatus inputRenderCallback (void *inRefCon,
 
     }
     
-    /*
-    for (UInt32 frameNumber = 0; frameNumber < inNumberFrames; ++frameNumber) {
-        if(outSamplesChannelLeft[frameNumber] > FSA_MAX_AUDIO_SAMPLE) {
-            outSamplesChannelLeft[frameNumber] = FSA_MAX_AUDIO_SAMPLE;
+    if(finished_tail != NULL) {
+        [callbackData->finished_lock lock];
+        finished_tail->next = soundList->finished_head->next;
+        soundList->finished_head->next = finished_head.next;
+        if(soundList->finished_tail == NULL) {
+            soundList->finished_tail = finished_tail;
         }
-        
-        if(outSamplesChannelRight[frameNumber] > FSA_MAX_AUDIO_SAMPLE) {
-            outSamplesChannelRight[frameNumber] = FSA_MAX_AUDIO_SAMPLE;
-        }
-        
-        if(outSamplesChannelRight[frameNumber] < -FSA_MAX_AUDIO_SAMPLE) {
-            outSamplesChannelRight[frameNumber] = -FSA_MAX_AUDIO_SAMPLE;
-        }
-        
-        if(outSamplesChannelRight[frameNumber] < -FSA_MAX_AUDIO_SAMPLE) {
-            outSamplesChannelRight[frameNumber] = -FSA_MAX_AUDIO_SAMPLE;
-        }
+        [callbackData->finished_lock unlock];
     }
-    */
-    
+
     return noErr;
 }
 
@@ -177,8 +180,12 @@ void audioRouteChangeListenerCallback (
 #pragma mark -
 #pragma mark Initialize
 
-// Get the app ready for playback.
 - (id) initWithSounds: (NSArray*)files {
+    return [self initWithSounds:files volume:1];
+}
+
+// Get the app ready for playback.
+- (id) initWithSounds: (NSArray*)files volume: (float)v {
     
     self = [super init];
     
@@ -187,10 +194,18 @@ void audioRouteChangeListenerCallback (
     self.interruptedDuringPlayback = NO;
     numSounds = [files count];
     
+    volumeMultiply = v;
+    
     [self setupAudioSession];
     [self setupStereoStreamFormat];
     [self readAudioFilesIntoMemory:files];
     [self setupSoundList];
+    
+    callbackData.soundList = &soundList;
+    callbackData.pending_lock = [[NSLock alloc] init];
+    callbackData.finished_lock = [[NSLock alloc] init];
+    callbackData.player = self;
+    
     [self configureAndInitializeAudioProcessingGraph];
     
     return self;
@@ -244,7 +259,7 @@ void audioRouteChangeListenerCallback (
     // Obtain the actual hardware sample rate and store it for later use in the audio processing graph.
     self.graphSampleRate = [mySession currentHardwareSampleRate];
     
-    self.ioBufferDuration = .05;
+    self.ioBufferDuration = .005;
     [mySession setPreferredIOBufferDuration: ioBufferDuration
                                       error: &audioSessionError];
     
@@ -279,15 +294,6 @@ void audioRouteChangeListenerCallback (
 }
 
 - (void) setupSoundList {
-    FSASound *playing_head = (FSASound*)malloc(sizeof(FSASound));
-    playing_head->next = NULL;
-    
-    FSASound *pool_head = (FSASound*)malloc(sizeof(FSASound));
-    pool_head->next = NULL;
-    
-    soundList.playing = playing_head;
-    soundList.pool = pool_head;
-    
     NSString *device = machineName();
     NSLog(@"%@\n", device);
     int max_sounds = 20;
@@ -295,12 +301,19 @@ void audioRouteChangeListenerCallback (
         max_sounds = 20;
     } else if([device isEqualToString:@"iPad3,3"]) {
         max_sounds = 100;
-    }    
+    }
+    
+    FSASound *heads = (FSASound*)calloc(4+max_sounds,sizeof(FSASound));
+    
+    soundList.playing = &heads[0];
+    soundList.pending_head = &heads[1];
+    soundList.finished_head = &heads[2];
+    soundList.pool = &heads[3];
     
     for(int i = 0; i < max_sounds; ++i) {
-        FSASound *sound = (FSASound*)malloc(sizeof(FSASound));
-        sound->next = pool_head->next;
-        pool_head->next = sound;
+        FSASound *sound = &heads[4+i];
+        sound->next = soundList.pool->next;
+        soundList.pool->next = sound;
     }
 }
 
@@ -308,7 +321,7 @@ void audioRouteChangeListenerCallback (
 #pragma mark Read audio files into memory
 
 - (void) readAudioFilesIntoMemory: (NSArray*)files {
-    soundData = (FSASoundData*)malloc([files count]*sizeof(FSASoundData));
+    soundData = (FSASoundData*)calloc([files count],sizeof(FSASoundData));
     
     int i = 0;
     for (NSString *file in files)  {
@@ -360,6 +373,13 @@ void audioRouteChangeListenerCallback (
             //    hold the right channel audio data
             soundData[i].left = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
             soundData[i].right = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
+            
+            if(soundData[i].left == NULL) {
+                NSLog(@"error allocating memory for left channel data for sound %@", audioFile);
+            }
+            if(soundData[i].right == NULL) {
+                NSLog(@"error allocating memory for right channel data for sound %@", audioFile);
+            }
             importFormat = stereoStreamFormat;
         } else {
             
@@ -550,7 +570,7 @@ void audioRouteChangeListenerCallback (
     // Setup the struture that contains the input render callback 
     AURenderCallbackStruct inputCallbackStruct;
     inputCallbackStruct.inputProc        = &inputRenderCallback;
-    inputCallbackStruct.inputProcRefCon  = &soundList;
+    inputCallbackStruct.inputProcRefCon  = &callbackData;
         
     // Set a callback for the specified node's specified input
     result = AUGraphSetNodeInputCallback (
@@ -594,9 +614,52 @@ void audioRouteChangeListenerCallback (
 }
 
 - (void) playSound:(UInt32)index volume:(Float32)volume {
-    if(soundList.pool->next == NULL) { 
+    if(!(index >= 0 && index < self.numSounds)) {
+        NSLog(@"%d\n", index);
+    }
+    assert(index >= 0 && index < self.numSounds);
+    volume *= volumeMultiply;
+    [callbackData.finished_lock lock];
+    if(soundList.finished_tail != NULL) {
+        soundList.finished_tail->next = soundList.pool->next;
+        soundList.pool->next = soundList.finished_head->next;
+        soundList.finished_head->next = NULL;
+        soundList.finished_tail = NULL;
+    }
+    [callbackData.finished_lock unlock];
+    
+    [callbackData.pending_lock lock];
+    
+    for(int i = 0; i < self.numSounds; i++) {
+        if(soundData[i].left == NULL || soundData[i].right == NULL) {
+            NSLog(@"%d\n", i);
+            NSLog(@"sound data is corrupted prior to adding pending sound\n");
+        }
+    }
+    
+    // see if this sound already exists and hasn't started playing yet
+    FSASound* pl = soundList.pending_head->next;
+    FSASound *same_sound = NULL;
+    while(pl != NULL) {
+        if(pl->data == &soundData[index] && pl->sampleNumber == 0) {
+            same_sound = pl;
+            break;
+        }
+        pl = pl->next;
+    }
+    
+    if(same_sound != NULL) {
+        // if it does, just increase the volume
+        if(same_sound->numSounds < 4) {
+            same_sound->volume += volume;
+            same_sound->numSounds++;
+            if(same_sound->volume > .5) {
+                same_sound->volume = .5;
+            }
+        }
+    } else if(soundList.pool->next == NULL) { 
         // if pool is empty, and volume is higher than the lowest volume sound that just started playing, than replace that sound with this one
-        FSASound* sound = soundList.playing->next;
+        FSASound* sound = soundList.pending_head->next;
         FSASound* min_sound = NULL;
         float min_vol = 999999;
         
@@ -610,6 +673,7 @@ void audioRouteChangeListenerCallback (
         
         if(min_sound != NULL) {
             if(min_sound->volume < volume) {
+                min_sound->numSounds = 1;
                 min_sound->volume = volume;
                 min_sound->data = &soundData[index];
             }
@@ -619,13 +683,26 @@ void audioRouteChangeListenerCallback (
         FSASound* sound = soundList.pool->next;
         soundList.pool->next = sound->next;
     
-        sound->next = soundList.playing->next;
-        soundList.playing->next = sound;
+        sound->next = soundList.pending_head->next;
+        soundList.pending_head->next = sound;
     
         sound->volume = volume;
         sound->data = &soundData[index];
         sound->sampleNumber = 0;
+        sound->numSounds = 1;
+        
+        if(soundList.pending_tail == NULL) {
+            soundList.pending_tail = sound;
+        }
     }
+    
+    for(int i = 0; i < self.numSounds; i++) {
+        if(soundData[i].left == NULL || soundData[i].right == NULL) {
+            NSLog(@"sound data is corrupted after adding pending sound\n");
+        }
+    }
+    
+    [callbackData.pending_lock unlock];
 }
 
 
@@ -757,7 +834,12 @@ void audioRouteChangeListenerCallback (
 #pragma mark Deallocate
 
 - (void) dealloc {
+    [callbackData.finished_lock release];
+    [callbackData.pending_lock release];
     
+    callbackData.finished_lock = nil;
+    callbackData.pending_lock = nil;
+
     FSASound *node = soundList.playing;
     while(node != NULL) {
         FSASound *next = node->next;
@@ -767,6 +849,22 @@ void audioRouteChangeListenerCallback (
     }
     
     node = soundList.pool;
+    while(node != NULL) {
+        FSASound *next = node->next;
+        
+        free(node);
+        node = next;
+    }
+    
+    node = soundList.pending_head;
+    while(node != NULL) {
+        FSASound *next = node->next;
+        
+        free(node);
+        node = next;
+    }
+    
+    node = soundList.finished_head;
     while(node != NULL) {
         FSASound *next = node->next;
         

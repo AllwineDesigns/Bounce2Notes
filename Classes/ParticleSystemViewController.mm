@@ -53,7 +53,8 @@
 //    shader = [[BasicParticleShader alloc] initWithParticleSystem:psystem];
     simulation = new ChipmunkSimulation(aspect);
     shader = [[ChipmunkSimulationShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
-    
+    stationaryShader = [[ChipmunkSimulationStationaryShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
+
 //    multiGestureRecognizer = [[FSAMultiGestureRecognizer alloc] initWithTarget:self];
 //    [self.view addGestureRecognizer:multiGestureRecognizer];
     
@@ -78,6 +79,7 @@
     [lastUpdate release];
     [context release];
     [shader release];
+    [stationaryShader release];
 //    delete psystem;
     delete simulation;
     
@@ -98,42 +100,57 @@
 }
 
 -(void)singleTap:(FSAMultiGesture*)gesture {
-    NSLog(@"singleTap\n");
-
+//    NSLog(@"single tap\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
 
-    if(simulation->isBallAt(loc)) {
-        simulation->removeBallAt(loc);
-    } else {
-        simulation->addBallAt(loc);
-    }
-}
--(void)longTap:(FSAMultiGesture*)gesture {
-    NSLog(@"longTap\n");
-    vec2 loc(gesture.location);
-    [self pixels2sim:loc];
-    
-    if(simulation->isBallAt(loc)) {
-        simulation->toggleStaticAt(loc);
-    } else {
-        simulation->addStaticBallAt(loc);
+    if(!simulation->isBallParticipatingInGestureAt(loc)) {
+        if(simulation->isBallAt(loc)) {
+            simulation->removeBallAt(loc);
+        } else {
+            simulation->addBallAt(loc);
+        }
     }
 }
 
-/*
--(void)doubleTap:(FSAMultiGesture*)gesture {
-    vec2 loc(gesture.location);
-    
+
+-(void)beginDrag: (FSAMultiGesture*)gesture {
+#ifndef BOUNCE_LITE
+//    NSLog(@"begin drag\n");
+    vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
-        
-    simulation->removeBallsAt(loc, .1);
+    
+    if(simulation->isBallBeingCreatedOrGrabbedAt(loc)) {
+        simulation->beginTransformingBallAt(loc, gesture);
+    } else if(simulation->isBallAt(loc) && !simulation->isBallBeingTransformedAt(loc)) {
+        simulation->beginGrabbingBallAt(loc, gesture);
+    }
+#endif
 }
 
- */
+-(void)longTouch:(FSAMultiGesture*)gesture {
+#ifndef BOUNCE_LITE
+//    NSLog(@"long hold\n");
+
+    vec2 loc(gesture.location);
+    [self pixels2sim:loc];
+    
+    if(simulation->isTransformingBall(gesture)) {
+        simulation->makeTransformingBallStationary(loc, gesture);
+    } else if(simulation->isGrabbingBall(gesture)) {
+        simulation->grabbingBallAt(loc, vec2(0,0), gesture);
+        simulation->makeStationary(loc, gesture);
+    } else if(simulation->isCreatingBall(gesture)) {
+        simulation->beginGrabbing(loc, gesture);
+    } else {
+        simulation->createStationaryBallAt(loc, gesture);
+    }
+#endif
+}
 
 -(void)flick: (FSAMultiGesture*)gesture {
-    NSLog(@"flick\n");
+#ifndef BOUNCE_LITE
+//    NSLog(@"flick\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
@@ -142,17 +159,19 @@
     
     vec2 vel = (loc-loc2);
     vel *= 100*(gesture.timestamp-gesture.beginTimestamp);
-
-    if(simulation->anyBallsAt(loc2, .1)) {
+    if(simulation->isStationaryBallAt(loc2)) {
+        simulation->addVelocityToBallAt(loc2, vel);
+    } else if(simulation->anyBallsAt(loc2, .1)) {
         simulation->addVelocityToBallsAt(loc2, vel, .3);
     } else {
         simulation->addBallWithVelocity(loc2, vel);
     }
+#endif
 }
 
-
 -(void)drag: (FSAMultiGesture*)gesture {
-//    NSLog(@"in drag\n");
+#ifndef BOUNCE_LITE
+//    NSLog(@"drag\n");
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
     vec2 loc2(gesture.location);
@@ -160,55 +179,59 @@
     vec2 endLoc(loc2);
     loc2 -= loc;
     float radius = loc2.length() > 1 ? 1 : loc2.length();
+    radius = radius <= .01 ? .01 : radius;
     
     vec2 vel(gesture.velocity);
     [self vectorPixels2sim:vel];
     
-    vel *= 100;
-
-        
-    if(simulation->isGrabbingBall(gesture)) {
-//        simulation->grabbingBallAt(endLoc, gesture);
+    vel *= 50;
+    
+    if(simulation->isTransformingBall(gesture)) {
+        simulation->transformBallAt(endLoc, gesture);
+    } else if(simulation->isGrabbingBall(gesture)) {
         simulation->grabbingBallAt(endLoc, vel, gesture);
-
-    } else if(simulation->isCreatingBall(gesture)) {
-        simulation->creatingBallAt(loc, radius, gesture);
-    } else if(simulation->isBallAt(loc)){
-        simulation->grabbingBallAt(loc, cpvzero, gesture);
-    } else {
-        simulation->creatingBallAt(loc, radius, gesture);
+    } else  {
+        simulation->creatingBallAt(loc, endLoc, gesture);
     }
+#endif
 
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
+#ifndef BOUNCE_LITE
+//    NSLog(@"end drag\n");
     vec2 vel(gesture.velocity);
     [self vectorPixels2sim:vel];
     
-    vel *= 100;
+    vel *= 50;
 
-    
-    if(simulation->isCreatingBall(gesture)) {
+    if(simulation->isTransformingBall(gesture)) {
+        simulation->beginGrabbingTransformingBall(gesture);
+    } else if(simulation->isCreatingBall(gesture)) {
         simulation->createBall(gesture);
     } else if(simulation->isGrabbingBall(gesture)) {
         simulation->releaseBall(vel, gesture);
-        NSLog(@"%f, %f\n", vel.x, vel.y);
 
     }
+#endif
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
+#ifndef BOUNCE_LITE
+ //   NSLog(@"cancel drag\n");
     vec2 vel(gesture.velocity);
     [self vectorPixels2sim:vel];
     
-    vel *= 100;
+    vel *= 50;
     
-    if(simulation->isCreatingBall(gesture)) {
-        simulation->createBall(gesture);
+    if(simulation->isTransformingBall(gesture)) {
+        simulation->beginGrabbingTransformingBall(gesture);
+    } else if(simulation->isCreatingBall(gesture)) {
+        simulation->cancelBall(gesture);
     } else if(simulation->isGrabbingBall(gesture)) {
         simulation->releaseBall(vel, gesture);
-        NSLog(@"%f, %f\n", vel.x, vel.y);
     }
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -322,6 +345,7 @@
     simulation->setGravity(accel);
     simulation->step(timeSinceLastDraw);
     [shader updateAndDraw];
+    [stationaryShader updateAndDraw];
 
     [(EAGLView *)self.view presentFramebuffer];
 }

@@ -11,7 +11,6 @@
 
 @interface FSAMultiTapAndDragRecognizer : UIGestureRecognizer {    
     CFMutableDictionaryRef oneFingerTouches;
-    CFMutableDictionaryRef delayedLongTaps;
     CFMutableDictionaryRef dragGestures;
     id target;
 }

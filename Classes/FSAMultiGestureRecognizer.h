@@ -8,15 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-extern const float FSA_LONGTAP_THRESHOLD;
+extern const float FSA_LONGTOUCH_THRESHOLD;
 extern const float FSA_FLICK_THRESHOLD;
 extern const float FSA_TAP_THRESHOLD;
 
 @interface FSAOneFingerTouch : NSObject {
+    BOOL hasDragged;
+    BOOL hasLongTouched;
     UITouch *touch;
     NSTimeInterval beginTimestamp;
     CGPoint beginLocation;
 }
+@property (nonatomic) BOOL hasDragged;
+@property (nonatomic) BOOL hasLongTouched;
 @property (retain,nonatomic) UITouch* touch;
 @property (nonatomic) NSTimeInterval beginTimestamp;
 @property (nonatomic) CGPoint beginLocation;

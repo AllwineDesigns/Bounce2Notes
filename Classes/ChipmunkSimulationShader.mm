@@ -22,7 +22,9 @@ enum {
   
 //    NSArray* images = [NSArray arrayWithObjects:@"ball.jpg", @"ball512.jpg", @"ball256.jpg", @"ball128.jpg", @"ball64.jpg", @"ball32.jpg", @"ball16.jpg", @"ball8.jpg", @"ball4.jpg", @"ball2.jpg", @"ball1.jpg", nil];
 
-    NSArray* images = [NSArray arrayWithObjects:@"ball.jpg", nil];
+//    NSArray* images = [NSArray arrayWithObjects:@"ball.jpg", nil];
+    NSArray* images = [NSArray arrayWithObjects:@"ball_nocenterglow.jpg", nil];
+
 
     int level = 0;
     
@@ -53,8 +55,16 @@ enum {
     {
         glGenTextures(1, &pattern);
         glBindTexture(GL_TEXTURE_2D, pattern);
-        //  UIImage* image = [UIImage imageNamed:@"soft_circle.jpg"];
-        UIImage* image = [UIImage imageNamed:@"whirl.jpg"];
+        UIImage* image = [UIImage imageNamed:@"spiral.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"squares.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"stripes.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"sections.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"black.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"white.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"checkered.jpg"];
+  //      UIImage* image = [UIImage imageNamed:@"weave.jpg"];
+
+
         
         GLubyte* imageData = (GLubyte*)malloc(image.size.width * image.size.height * 4);
         
@@ -109,10 +119,9 @@ enum {
         
         const cpShape* shape = shapes[i];
         const cpBody* body = bodies[i];
-        
-        bool isStatic = cpBodyIsStatic(body);
-        
+                
         BallData *ballData = (BallData*)cpBodyGetUserData(body);
+
         float radius = 2*cpCircleShapeGetRadius(shape);
         cpVect pos = cpBodyGetPos(body);
         vec2 position(pos.x, pos.y);
@@ -125,10 +134,10 @@ enum {
       //  }
         float intensity = ballData->intensity;
 
-        vec2 tr = vec2(radius, radius);
-        vec2 tl = vec2(-radius, radius);
-        vec2 bl = vec2(-radius, -radius);
-        vec2 br = vec2(radius, -radius);
+        vec2 tr = vec2(radius, radius)+ballData->tr;
+        vec2 tl = vec2(-radius, radius)+ballData->tl;
+        vec2 bl = vec2(-radius, -radius)+ballData->bl;
+        vec2 br = vec2(radius, -radius)+ballData->br;
         
         tr.rotate(-angle);
         tl.rotate(-angle);

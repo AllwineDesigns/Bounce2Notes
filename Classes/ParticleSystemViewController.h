@@ -19,6 +19,7 @@
 //#import "FSAMultiGestureRecognizer.h"
 #import "FSAMultiTapAndDragRecognizer.h"
 #import "ChipmunkSimulationShader.h"
+#import "ChipmunkSimulationStationaryShader.h"
 
 @interface ParticleSystemViewController : UIViewController
 {
@@ -27,6 +28,8 @@
 //    BasicParticleSystem *psystem;
     ChipmunkSimulation *simulation;
     ChipmunkSimulationShader *shader;
+    ChipmunkSimulationStationaryShader *stationaryShader;
+
     NSDate *lastUpdate;
     CMMotionManager *motionManager;
     

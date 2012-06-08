@@ -17,21 +17,46 @@ typedef struct {
 
 typedef struct FSASound {
     UInt32 sampleNumber;
+    UInt32 numSounds;
     Float32 volume;
     FSASoundData* data;
     struct FSASound* next;
 } FSASound;
 
 typedef struct FSASoundList {
-    FSASound* playing;
-    FSASound* pool;
+    FSASound* playing;  // sounds that the audio callback has started playing. The render callback function has
+                        // full access to this list (no synchronization necessary)
+    FSASound* pool;     // uninitialized sounds that are available for playing. Only the playSound method has
+                        // access to the pool (no synchronization necessary).
+    
+    FSASound* pending_head;  // sounds that we've indicated that we want to play, but haven't started playing
+    FSASound* pending_tail;  // tail of the pending sounds, so its fast to put them all on the playing list
+                             // A lock is necessary to access these.
+    
+    FSASound* finished_head; // sounds that have finished playing and need to be put back into the pool
+    FSASound* finished_tail; // tail of finished sounds, so its fast to put them back into the pool
+                             // A lock is necessary to access these.
 } FSASoundList;
+
+@class FSAAudioPlayer;
+
+typedef struct FSAAudioCallbackData {
+    FSASoundList *soundList;
+    NSLock *pending_lock;
+    NSLock *finished_lock;
+    
+    FSAAudioPlayer *player;
+} FSAAudioCallbackData;
 
 @interface FSAAudioPlayer : NSObject <AVAudioSessionDelegate> {
     Float64 graphSampleRate;
     Float64 ioBufferDuration;
     FSASoundData* soundData;
     FSASoundList soundList;
+    float volumeMultiply;
+    
+    FSAAudioCallbackData callbackData;
+    
     int numSounds;
     
     AudioStreamBasicDescription     stereoStreamFormat;
@@ -51,6 +76,8 @@ typedef struct FSASoundList {
 @property                       AudioUnit                   ioUnit;
 
 -(id)initWithSounds:(NSArray*)files;
+-(id)initWithSounds:(NSArray*)files volume: (float)v;
+
 - (void) setupAudioSession;
 - (void) setupStereoStreamFormat;
 - (void) setupSoundList;

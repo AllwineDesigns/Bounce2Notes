@@ -10,11 +10,22 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string></string>
-		<string>icon2_72.png</string>
-		<string>icon2_144.png</string>
-		<string>icon2_57.png</string>
-		<string>icon2_114.png</string>
+		<string>bounce_icon72.png</string>
+		<string>bounce_icon144.png</string>
+		<string>bounce_icon57.png</string>
+		<string>bounce_icon114.png</string>
+		<string>Default-Landscape@2x~ipad.png</string>
+		<string>Default-Portrait@2x~ipad.png</string>
+		<string>Default-Portrait@2x~ipad.png</string>
+		<string>Default.png</string>
+		<string>Default@2x.png</string>
+		<string>Default@2x.png</string>
+		<string>Default-Portrait~ipad.png</string>
+		<string>Default-Portrait@2x~ipad.png</string>
+		<string>Default-Portrait~ipad.png</string>
+		<string>Default-Portrait@2x~ipad.png</string>
+		<string>Default-Landscape~ipad.png</string>
+		<string>Default-Landscape@2x~ipad.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -22,22 +33,35 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string></string>
-				<string>icon2_72.png</string>
-				<string>icon2_144.png</string>
-				<string>icon2_57.png</string>
-				<string>icon2_114.png</string>
+				<string>bounce_icon72.png</string>
+				<string>bounce_icon144.png</string>
+				<string>bounce_icon57.png</string>
+				<string>bounce_icon114.png</string>
+				<string>Default-Landscape@2x~ipad.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default.png</string>
+				<string>Default@2x.png</string>
+				<string>Default@2x.png</string>
+				<string>Default-Portrait~ipad.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default-Portrait~ipad.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default-Landscape~ipad.png</string>
+				<string>Default-Landscape@2x~ipad.png</string>
 			</array>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>Allwine.Bounce</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>Bounce!!</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>

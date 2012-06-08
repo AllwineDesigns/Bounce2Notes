@@ -1,0 +1,13 @@
+Bounce is a game which captivates children of all ages. Balls of various colors bounce around the screen making musical notes as they collide with other balls. Bounce is fully multitouch enabled so multiple people can interact with the simulation at the same time. Users interact with the simulation by tilting the device, tapping, flicking and dragging.
+
+Controls:
+Tap on empty space to create a ball of random size.
+Flick on empty space to shoot a ball in the direction of the flick.
+Drag on empty space to create a ball of any size.
+
+Tap on a ball to delete it.
+Flick a ball to fling it in the direction of the flick.
+Drag a ball to move it around.
+Hold a ball still to lock it in place.
+
+Designed and implemented by an FX artist who worked on movies such as How to Train Your Dragon, Megamind and Madagascar 3.

@@ -16,7 +16,6 @@ uniform lowp sampler2D pattern;
 void main()
 {
     lowp vec4 patColor = texture2D(pattern, uvVarying);
-    lowp vec4 invPatColor = vec4(1.,1.,1.,1.)-patColor;
     
     lowp vec4 texColor = texture2D(texture, uvVarying);
     lowp float r = texColor.r;
@@ -25,7 +24,9 @@ void main()
      
     lowp float t = intensityVarying*g;
     lowp float t2 = b*t;
-    lowp vec4 col = t*colorVarying+r*colorVarying*(patColor+.5*invPatColor);
+    lowp vec4 col;
+    col = (t+.3*b)*colorVarying+r*colorVarying*patColor;
+
     col += vec4(t2,t2,t2,0.);
     col.a = r;
 
