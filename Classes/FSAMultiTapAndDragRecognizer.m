@@ -8,6 +8,17 @@
 
 #import "FSAMultiTapAndDragRecognizer.h"
 #import <UIKit/UIGestureRecognizerSubclass.h>
+#import <sys/utsname.h>
+
+NSString*
+machineName2()
+{
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    
+    return [NSString stringWithCString:systemInfo.machine
+                              encoding:NSUTF8StringEncoding];
+}
 
 @implementation FSAMultiTapAndDragRecognizer
 
@@ -23,6 +34,18 @@
     oneFingerTouches = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, & kCFTypeDictionaryValueCallBacks);
 
     dragGestures = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    
+    threeFingerTopDrags = [[NSMutableSet alloc] initWithCapacity:3];
+    threeFingerBottomDrags = [[NSMutableSet alloc] initWithCapacity:3];
+    threeFingerLeftDrags = [[NSMutableSet alloc] initWithCapacity:3];
+    threeFingerRightDrags = [[NSMutableSet alloc] initWithCapacity:3];
+    
+    edgeWidth = 30;
+    NSString *device = machineName2();
+    if([device hasPrefix:@"iPad"]) {
+        edgeWidth = 100;
+    }
+
         
     self.state = UIGestureRecognizerStatePossible;
     [super initWithTarget:self action:@selector(handle)];
@@ -36,6 +59,12 @@
 
     CFRelease(dragGestures);
     dragGestures = nil;
+    
+    [threeFingerTopDrags release]; threeFingerTopDrags = nil;
+    [threeFingerBottomDrags release]; threeFingerBottomDrags = nil;
+    [threeFingerLeftDrags release]; threeFingerLeftDrags = nil;
+    [threeFingerRightDrags release]; threeFingerRightDrags = nil;
+
 
     [super dealloc];
 }
@@ -51,15 +80,201 @@
 }
 
 - (void)doSingleTap:(FSAOneFingerTouch*)oft { 
-    FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
+    if(oft.isThreeFingerDrag) {
+        if([threeFingerTopDrags containsObject:oft]) {
+            if([threeFingerTopDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+            } else {
+                [threeFingerTopDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerBottomDrags containsObject:oft]) {
+            if([threeFingerBottomDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+            } else {
+                [threeFingerBottomDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            if([threeFingerLeftDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+            } else {
+                [threeFingerLeftDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerRightDrags containsObject:oft]) {
+            if([threeFingerRightDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+            } else {
+                [threeFingerRightDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        }
+    } else {
+        FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
+        
+        gesture.location = [oft.touch locationInView:self.view];
+        gesture.beginLocation = oft.beginLocation;
+        gesture.timestamp = oft.touch.timestamp;
+        gesture.beginTimestamp = oft.beginTimestamp;
+        [gesture autorelease];
+        [target performSelector:@selector(singleTap:) withObject:gesture];
+        CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+    }
+}
 
-    gesture.location = [oft.touch locationInView:self.view];
-    gesture.beginLocation = oft.beginLocation;
-    gesture.timestamp = oft.touch.timestamp;
-    gesture.beginTimestamp = oft.beginTimestamp;
-    [gesture autorelease];
-    [target performSelector:@selector(singleTap:) withObject:gesture];
-    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+-(void)doBeginThreeFingerDrag: (NSSet*)drags from:(FSAMultiGestureSide)side {
+    CGPoint beginLocation = [((FSAOneFingerTouch*)[drags anyObject]).touch locationInView:self.view];
+    NSTimeInterval beginTimestamp = ((FSAOneFingerTouch*)[drags anyObject]).beginTimestamp;
+    
+    CGPoint location = beginLocation;
+    NSTimeInterval timestamp = beginTimestamp;
+    
+    for(FSAOneFingerTouch *oft in drags) {
+        [self doCancelDrag:oft];
+        oft.isThreeFingerDrag = YES;
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+
+        CGPoint loc = [oft.touch locationInView:self.view];
+        if(oft.beginTimestamp < beginTimestamp) {
+            beginTimestamp = oft.beginTimestamp;
+        }
+        if(oft.touch.timestamp > timestamp) {
+            timestamp = oft.touch.timestamp;
+        }
+        
+        if(loc.x < beginLocation.x) {
+            beginLocation.x = loc.x;
+        }
+        
+        if(loc.y < beginLocation.y) {
+            beginLocation.y = loc.y;
+        }
+        
+        if(loc.x > location.x) {
+            location.x = loc.x;
+        }
+        
+        if(loc.y > location.y) {
+            location.y = loc.y;
+        }
+    }
+    
+    FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
+    gesture.location = location;
+    gesture.beginLocation = beginLocation;
+    gesture.timestamp = timestamp;
+    gesture.beginTimestamp = beginTimestamp;
+    gesture.side = side;
+    
+    for(FSAOneFingerTouch *oft in drags) {
+        CFDictionarySetValue(dragGestures, oft, gesture);
+    }
+    [gesture release];
+    
+    [target performSelector:@selector(beginThreeFingerDrag:) withObject:gesture];
+}
+
+-(void)doThreeFingerDrag: (NSSet*)drags from:(FSAMultiGestureSide)side {
+    CGPoint beginLocation = [((FSAOneFingerTouch*)[drags anyObject]).touch locationInView:self.view];
+    NSTimeInterval beginTimestamp = ((FSAOneFingerTouch*)[drags anyObject]).beginTimestamp;
+    
+    CGPoint location = beginLocation;
+    NSTimeInterval timestamp = beginTimestamp;
+    
+    for(FSAOneFingerTouch *oft in drags) {
+        CGPoint loc = [oft.touch locationInView:self.view];
+        if(oft.beginTimestamp < beginTimestamp) {
+            beginTimestamp = oft.beginTimestamp;
+        }
+        if(oft.touch.timestamp > timestamp) {
+            timestamp = oft.touch.timestamp;
+        }
+        
+        if(loc.x < beginLocation.x) {
+            beginLocation.x = loc.x;
+        }
+        
+        if(loc.y < beginLocation.y) {
+            beginLocation.y = loc.y;
+        }
+        
+        if(loc.x > location.x) {
+            location.x = loc.x;
+        }
+        
+        if(loc.y > location.y) {
+            location.y = loc.y;
+        }
+    }
+    
+    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, [drags anyObject]);
+
+    gesture.location = location;
+    gesture.beginLocation = beginLocation;
+    gesture.timestamp = timestamp;
+    gesture.beginTimestamp = beginTimestamp;
+    gesture.side = side;
+    
+    [target performSelector:@selector(threeFingerDrag:) withObject:gesture];
+}
+
+-(void)doEndThreeFingerDrag: (NSMutableSet*)drags from:(FSAMultiGestureSide)side {
+    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, [drags anyObject]);
+    gesture.side = side;
+    
+    [target performSelector:@selector(endThreeFingerDrag:) withObject:gesture];
+
+    NSArray *ofts = [drags allObjects];
+    for(FSAOneFingerTouch *oft in ofts) {
+        CFDictionaryRemoveValue(oneFingerTouches, oft);
+        CFDictionaryRemoveValue(dragGestures, oft); 
+        [drags removeObject:oft];
+    }
+    
+}
+
+-(void)doCancelThreeFingerDrag: (NSMutableSet*)drags from:(FSAMultiGestureSide)side {
+    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, [drags anyObject]);
+    gesture.side = side;
+    
+    [target performSelector:@selector(cancelThreeFingerDrag:) withObject:gesture];
+    
+    NSArray *ofts = [drags allObjects];
+    for(FSAOneFingerTouch *oft in ofts) {
+        CFDictionaryRemoveValue(oneFingerTouches, oft);
+        CFDictionaryRemoveValue(dragGestures, oft); 
+        [drags removeObject:oft];
+    }
+}
+
+-(BOOL)isThreeFingerDrag: (NSSet*)drags {
+    return ((FSAOneFingerTouch*)[drags anyObject]).isThreeFingerDrag;
+}
+
+-(BOOL)addOneFingerTouch: (FSAOneFingerTouch*)oft toThreeFingerDrags: (NSMutableSet*)drags {
+    if([drags count] < 3 && ![self isThreeFingerDrag:drags]) {
+        float timestamp = oft.beginTimestamp;
+        
+        NSArray *ofts = [drags allObjects];
+        for(FSAOneFingerTouch *o in ofts) {
+            if(timestamp-o.beginTimestamp > FSA_THREE_FINGER_THRESHOLD) {
+                [drags removeObject:o];
+            }
+        }
+        [drags addObject:oft];
+        
+        if([drags count] == 3) {
+            return YES;
+        }
+    }
+    
+    return NO;
+
 }
 
 -(void)doBeginDrag:(FSAOneFingerTouch*)oft {
@@ -73,59 +288,191 @@
     CFDictionarySetValue(dragGestures, oft, gesture);
     [gesture release];
     [target performSelector:@selector(beginDrag:) withObject:gesture];
+        
+    if(oft.beginLocation.y < edgeWidth) {
+        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerTopDrags]) {
+            [self doBeginThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+        }
+    } else if(oft.beginLocation.y > self.view.frame.size.height-edgeWidth) {
+        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerBottomDrags]) {
+            [self doBeginThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+        }
+    } else if(oft.beginLocation.x > self.view.frame.size.width-edgeWidth) {
+        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerRightDrags]) {
+            [self doBeginThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+        }
+    } else if(oft.beginLocation.x < edgeWidth) {
+        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerLeftDrags]) {
+            [self doBeginThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+        }
+    }
 }
 
 -(void)doDrag:(FSAOneFingerTouch*)oft {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
-    [self performSelector:@selector(doLongTouch:) withObject:oft afterDelay:FSA_LONGTOUCH_THRESHOLD];
-    
-    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
-    oft.hasDragged = YES;
-    
-    gesture.location = [oft.touch locationInView:self.view];
-    gesture.timestamp = oft.touch.timestamp;
-    CGPoint last_loc = [oft.touch previousLocationInView:self.view];
-    gesture.velocity = CGPointMake(gesture.location.x-last_loc.x, gesture.location.y-last_loc.y);
-
-    [target performSelector:@selector(drag:) withObject:gesture];
-}
-
--(void)doEndDrag:(FSAOneFingerTouch*)oft {  
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
-
-    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
-    gesture.location = [oft.touch locationInView:self.view];
-    gesture.timestamp = oft.touch.timestamp;
-    
-    [target performSelector:@selector(endDrag:) withObject:gesture];
-    
-    CFDictionaryRemoveValue(oneFingerTouches, oft);
-    CFDictionaryRemoveValue(dragGestures, oft);
-
-}
-
--(void)doCancelDrag:(FSAOneFingerTouch*)oft {
-    if(CFDictionaryContainsKey(dragGestures, oft)) {
+    if(oft.isThreeFingerDrag) {
+        
+        if([threeFingerTopDrags containsObject:oft]) {
+            [self doThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+        } else if([threeFingerBottomDrags containsObject:oft]) {
+            [self doThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            [self doThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+        } else if([threeFingerRightDrags containsObject:oft]) {
+            [self doThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+        }
+    } else {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+        [self performSelector:@selector(doLongTouch:) withObject:oft afterDelay:FSA_LONGTOUCH_THRESHOLD];
+        
+        FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
+        oft.hasDragged = YES;
+        
+        gesture.location = [oft.touch locationInView:self.view];
+        gesture.timestamp = oft.touch.timestamp;
+        CGPoint last_loc = [oft.touch previousLocationInView:self.view];
+        gesture.velocity = CGPointMake(gesture.location.x-last_loc.x, gesture.location.y-last_loc.y);
+        
+        [target performSelector:@selector(drag:) withObject:gesture];
+    }
+}
 
+-(void)doEndDrag:(FSAOneFingerTouch*)oft {
+    if(oft.isThreeFingerDrag) {
+        if([threeFingerTopDrags containsObject:oft]) {
+            if([threeFingerTopDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+            } else {
+                [threeFingerTopDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerBottomDrags containsObject:oft]) {
+            if([threeFingerBottomDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+            } else {
+                [threeFingerBottomDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            if([threeFingerLeftDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+            } else {
+                [threeFingerLeftDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerRightDrags containsObject:oft]) {
+            if([threeFingerRightDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+            } else {
+                [threeFingerRightDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        }
+    } else {
+        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+        
         FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
         gesture.location = [oft.touch locationInView:self.view];
         gesture.timestamp = oft.touch.timestamp;
         
-        [target performSelector:@selector(cancelDrag:) withObject:gesture];
+        [target performSelector:@selector(endDrag:) withObject:gesture];
+        
+        CFDictionaryRemoveValue(oneFingerTouches, oft);
         CFDictionaryRemoveValue(dragGestures, oft);
+    }
+
+}
+
+-(void)doCancelDrag:(FSAOneFingerTouch*)oft {
+    if(oft.isThreeFingerDrag) {
+        if([threeFingerTopDrags containsObject:oft]) {
+            if([threeFingerTopDrags count] == 1) {
+                [self doCancelThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+            } else {
+                [threeFingerTopDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerBottomDrags containsObject:oft]) {
+            if([threeFingerBottomDrags count] == 1) {
+                [self doCancelThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+            } else {
+                [threeFingerBottomDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            if([threeFingerLeftDrags count] == 1) {
+                [self doCancelThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+            } else {
+                [threeFingerLeftDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerRightDrags containsObject:oft]) {
+            if([threeFingerRightDrags count] == 1) {
+                [self doCancelThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+            } else {
+                [threeFingerRightDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        }
+    } else {
+        if(CFDictionaryContainsKey(dragGestures, oft)) {
+            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+            
+            FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
+            gesture.location = [oft.touch locationInView:self.view];
+            gesture.timestamp = oft.touch.timestamp;
+            
+            [target performSelector:@selector(cancelDrag:) withObject:gesture];
+            CFDictionaryRemoveValue(dragGestures, oft);
+        }
     }
 }
 
 -(void)doFlick:(FSAOneFingerTouch*)oft {
-    FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
-    gesture.location = [oft.touch locationInView:self.view];
-    gesture.beginLocation = oft.beginLocation;
-    gesture.timestamp = oft.touch.timestamp;
-    gesture.beginTimestamp = oft.beginTimestamp;
-    [target performSelector:@selector(flick:) withObject:gesture];
-    [gesture release];
-    CFDictionaryRemoveValue(oneFingerTouches, oft);
+    if(oft.isThreeFingerDrag) {
+        if([threeFingerTopDrags containsObject:oft]) {
+            if([threeFingerTopDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+            } else {
+                [threeFingerTopDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerBottomDrags containsObject:oft]) {
+            if([threeFingerBottomDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+            } else {
+                [threeFingerBottomDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            if([threeFingerLeftDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+            } else {
+                [threeFingerLeftDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        } else if([threeFingerRightDrags containsObject:oft]) {
+            if([threeFingerRightDrags count] == 1) {
+                [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+            } else {
+                [threeFingerRightDrags removeObject:oft];
+                CFDictionaryRemoveValue(oneFingerTouches, oft);
+                CFDictionaryRemoveValue(dragGestures, oft);
+            }
+        }
+    } else {
+ 
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
