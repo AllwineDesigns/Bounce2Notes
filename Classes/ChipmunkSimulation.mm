@@ -473,19 +473,15 @@ ChipmunkSimulation::ChipmunkSimulation(float a) : dt(.02), time_remainder(0) {
     cpSpaceAddShape(space, killRightShape);
     cpSpaceAddShape(space, killLeftShape);
     
-    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
-
-    int notes[20] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11 }
     
 //    for(int i = 0; i < 300; i++) {
-    for(int i = 0; i < 20; i++) {
+    for(int i = 0; i < 1; i++) {
 
         cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
         cpFloat mass = 100*radius*radius;
 
         cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
-     //   BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
-        BallData* ballData = new BallData(0, , random(342.123*i), 1.));
+        BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
        
         HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), BOUNCE_DEFAULT_HUE, BOUNCE_DEFAULT_SATURATION, BOUNCE_DEFAULT_VALUE   );
         ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
