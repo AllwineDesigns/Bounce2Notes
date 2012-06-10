@@ -9,12 +9,14 @@
 #import "FSAMultiGestureRecognizer.h"
 #import <UIKit/UIGestureRecognizerSubclass.h>
 
+const float FSA_THREE_FINGER_THRESHOLD = .4;
 const float FSA_LONGTOUCH_THRESHOLD = .4;
 const float FSA_FLICK_THRESHOLD = .2;
 const float FSA_TAP_THRESHOLD = .2;
 
 @implementation FSAOneFingerTouch
 
+@synthesize isThreeFingerDrag;
 @synthesize hasLongTouched;
 @synthesize hasDragged;
 @synthesize touch;
@@ -27,6 +29,8 @@ const float FSA_TAP_THRESHOLD = .2;
     return one_finger;
 }
 -(id)initWithTouch:(UITouch *)to atTimestamp:(NSTimeInterval)t {
+    self.hasLongTouched = NO;
+    self.isThreeFingerDrag = NO;
     self.hasDragged = NO;
     self.touch = to;
     self.beginLocation = [to locationInView:nil];
@@ -144,6 +148,7 @@ const float FSA_TAP_THRESHOLD = .2;
 @end
 
 @implementation FSAMultiGesture
+@synthesize side;
 @synthesize beginLocation;
 @synthesize location;
 @synthesize velocity;

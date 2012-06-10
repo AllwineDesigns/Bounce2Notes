@@ -157,6 +157,14 @@
 		B280578E156C1ACE00C2E7A2 /* ChipmunkSimulationStationaryShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2805784156C171000C2E7A2 /* ChipmunkSimulationStationaryShader.mm */; };
 		B2805798156C427F00C2E7A2 /* stationary.png in Resources */ = {isa = PBXBuildFile; fileRef = B2805797156C427F00C2E7A2 /* stationary.png */; };
 		B28057A01570033800C2E7A2 /* ball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B280579F1570033800C2E7A2 /* ball.jpg */; };
+		B28AE1E31583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */; };
+		B28AE1E41583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */; };
+		B28AE1E61583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */; };
+		B28AE1E71583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */; };
+		B28AE1E91583B20400C6487A /* BounceKillBoxShader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
+		B28AE1EA1583B20400C6487A /* BounceKillBoxShader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
+		B28AE1EB1583B78200C6487A /* BounceKillBoxShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
+		B28AE1EC1583B78E00C6487A /* BounceKillBoxShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
 		B294478F1551E7B8003D1431 /* icon2_72.png in Resources */ = {isa = PBXBuildFile; fileRef = B294478E1551E7B8003D1431 /* icon2_72.png */; };
 		B29447911551E7BE003D1431 /* icon2_144.png in Resources */ = {isa = PBXBuildFile; fileRef = B29447901551E7BE003D1431 /* icon2_144.png */; };
 		B29630C915472C46009B483D /* BallShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C115471978009B483D /* BallShader.fsh */; };
@@ -216,7 +224,7 @@
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* ParticleSystem_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem_Prefix.pch; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* ParticleSystem-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ParticleSystem-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Bounce-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Bounce-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		B20430BA1549DEE9006CAED1 /* chipmunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk.h; sourceTree = "<group>"; };
 		B20430BB1549DEE9006CAED1 /* chipmunk_ffi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_ffi.h; sourceTree = "<group>"; };
 		B20430BC1549DEE9006CAED1 /* chipmunk_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_private.h; sourceTree = "<group>"; };
@@ -284,8 +292,8 @@
 		B2343BC01547BD0A00AFF2A9 /* ChipmunkSimulation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulation.h; sourceTree = "<group>"; };
 		B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChipmunkSimulationShader.mm; sourceTree = "<group>"; };
 		B2343BC31547C9CC00AFF2A9 /* ChipmunkSimulationShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulationShader.h; sourceTree = "<group>"; };
-		B23F134215703AEF00FE4D09 /* Bounce copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B23F134415703AEF00FE4D09 /* Bounce copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bounce copy2-Info.plist"; path = "/Users/jallwine/Documents/iPhoneApps/ParticleSystem/Bounce copy2-Info.plist"; sourceTree = "<absolute>"; };
+		B23F134215703AEF00FE4D09 /* Bounce Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B23F134415703AEF00FE4D09 /* Bounce Lite-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bounce Lite-Info.plist"; path = "/Users/jallwine/Documents/iPhoneApps/ParticleSystem/Bounce Lite-Info.plist"; sourceTree = "<absolute>"; };
 		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
 		B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAMultiGestureRecognizer.m; sourceTree = "<group>"; };
 		B276E499153DADC70078737B /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
@@ -331,7 +339,10 @@
 		B280578A156C181B00C2E7A2 /* StationaryShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = StationaryShader.vsh; sourceTree = "<group>"; };
 		B2805797156C427F00C2E7A2 /* stationary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary.png; sourceTree = "<group>"; };
 		B280579F1570033800C2E7A2 /* ball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball.jpg; sourceTree = "<group>"; };
-		B28057FF1570361F00C2E7A2 /* Bounce copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bounce copy-Info.plist"; path = "/Users/jallwine/Documents/iPhoneApps/ParticleSystem/Bounce copy-Info.plist"; sourceTree = "<absolute>"; };
+		B28AE1E11583B0FB00C6487A /* BounceKillBoxShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceKillBoxShader.h; sourceTree = "<group>"; };
+		B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceKillBoxShader.mm; sourceTree = "<group>"; };
+		B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BounceKillBoxShader.fsh; path = Shaders/BounceKillBoxShader.fsh; sourceTree = "<group>"; };
+		B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BounceKillBoxShader.vsh; path = Shaders/BounceKillBoxShader.vsh; sourceTree = "<group>"; };
 		B294478E1551E7B8003D1431 /* icon2_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon2_72.png; sourceTree = "<group>"; };
 		B29447901551E7BE003D1431 /* icon2_144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon2_144.png; sourceTree = "<group>"; };
 		B29630C115471978009B483D /* BallShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = BallShader.fsh; sourceTree = "<group>"; };
@@ -414,6 +425,8 @@
 				B276E49E1540F1430078737B /* Shader.m */,
 				B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */,
 				B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */,
+				B28AE1E11583B0FB00C6487A /* BounceKillBoxShader.h */,
+				B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */,
 				B2343BC31547C9CC00AFF2A9 /* ChipmunkSimulationShader.h */,
 				B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */,
 				B2805786156C173200C2E7A2 /* ChipmunkSimulationStationaryShader.h */,
@@ -449,7 +462,7 @@
 			isa = PBXGroup;
 			children = (
 				1D6058910D05DD3D006BFB54 /* Bounce.app */,
-				B23F134215703AEF00FE4D09 /* Bounce copy.app */,
+				B23F134215703AEF00FE4D09 /* Bounce Lite.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -459,6 +472,8 @@
 			children = (
 				2514C27910084DCA00A42282 /* Shader.fsh */,
 				2514C27A10084DCA00A42282 /* Shader.vsh */,
+				B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */,
+				B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */,
 				B29630C115471978009B483D /* BallShader.fsh */,
 				B29630C31547199C009B483D /* BallShader.vsh */,
 				B2805788156C181100C2E7A2 /* StationaryShader.fsh */,
@@ -484,8 +499,6 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				B28057FF1570361F00C2E7A2 /* Bounce copy-Info.plist */,
-				B23F134415703AEF00FE4D09 /* Bounce copy2-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -511,11 +524,11 @@
 				B2E8B53C157047DD00318FFC /* bounce_icon57.png */,
 				B2E8B53D157047DD00318FFC /* bounce_icon72.png */,
 				B2E8B53E157047DD00318FFC /* bounce_icon114.png */,
-				B2805749156749BC00C2E7A2 /* a_2.caf */,
 				B2E8B53F157047DD00318FFC /* bounce_icon144.png */,
 				B280579F1570033800C2E7A2 /* ball.jpg */,
 				B2805797156C427F00C2E7A2 /* stationary.png */,
 				B2805748156749BC00C2E7A2 /* a_1.caf */,
+				B2805749156749BC00C2E7A2 /* a_2.caf */,
 				B280574A156749BC00C2E7A2 /* a_3.caf */,
 				B280574B156749BC00C2E7A2 /* b_1.caf */,
 				B280574C156749BC00C2E7A2 /* b_2.caf */,
@@ -555,7 +568,8 @@
 				B294478E1551E7B8003D1431 /* icon2_72.png */,
 				28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
-				8D1107310486CEB800E47090 /* ParticleSystem-Info.plist */,
+				8D1107310486CEB800E47090 /* Bounce-Info.plist */,
+				B23F134415703AEF00FE4D09 /* Bounce Lite-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -789,7 +803,7 @@
 			);
 			name = "Bounce Lite";
 			productName = ParticleSystem;
-			productReference = B23F134215703AEF00FE4D09 /* Bounce copy.app */;
+			productReference = B23F134215703AEF00FE4D09 /* Bounce Lite.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -825,6 +839,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B28AE1EB1583B78200C6487A /* BounceKillBoxShader.vsh in Resources */,
 				B280578C156C1AC400C2E7A2 /* StationaryShader.fsh in Resources */,
 				B280578D156C1AC400C2E7A2 /* StationaryShader.vsh in Resources */,
 				B29630C915472C46009B483D /* BallShader.fsh in Resources */,
@@ -891,6 +906,7 @@
 				B2E8B57B1570866F00318FFC /* Default-Landscape@2x~ipad.png in Resources */,
 				B2BB88C01574557900689E05 /* spiral.jpg in Resources */,
 				B2BB88C4157460E600689E05 /* ball_nocenterglow.jpg in Resources */,
+				B28AE1E61583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -898,6 +914,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B28AE1EC1583B78E00C6487A /* BounceKillBoxShader.vsh in Resources */,
 				B23F12EA15703AEF00FE4D09 /* StationaryShader.fsh in Resources */,
 				B23F12EB15703AEF00FE4D09 /* StationaryShader.vsh in Resources */,
 				B23F12EC15703AEF00FE4D09 /* BallShader.fsh in Resources */,
@@ -959,6 +976,7 @@
 				B2E8B573157060B000318FFC /* Default-Portrait@2x~ipad.png in Resources */,
 				B2E8B57C1570988800318FFC /* Default-Landscape@2x~ipad.png in Resources */,
 				B2E8B57D1570989300318FFC /* Default-Landscape~ipad.png in Resources */,
+				B28AE1E71583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -989,6 +1007,8 @@
 				B21A93F3155B34E2002D2BEE /* FSAMultiTapAndDragRecognizer.m in Sources */,
 				B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */,
 				B2D073AC1560C1880001DF70 /* BounceSimulation.m in Sources */,
+				B28AE1E31583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */,
+				B28AE1E91583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1016,6 +1036,8 @@
 				B23F133015703AEF00FE4D09 /* FSAMultiTapAndDragRecognizer.m in Sources */,
 				B23F133115703AEF00FE4D09 /* FSAAudioPlayer.m in Sources */,
 				B23F133215703AEF00FE4D09 /* BounceSimulation.m in Sources */,
+				B28AE1E41583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */,
+				B28AE1EA1583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1041,8 +1063,8 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
-				INFOPLIST_FILE = "ParticleSystem-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				INFOPLIST_FILE = "Bounce-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"/**",
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"",
@@ -1062,7 +1084,8 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 					armv6,
 				);
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: John Allwine";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: John Allwine";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
@@ -1071,19 +1094,108 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
-				INFOPLIST_FILE = "ParticleSystem-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				INFOPLIST_FILE = "Bounce-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../fsa/lib/chipmunk\"/**",
+					"\"$(SRCROOT)/../fsa/lib/chipmunk\"",
+				);
+				PRODUCT_NAME = Bounce;
+				PROVISIONING_PROFILE = "E711CB22-FC33-49CE-9817-D9B5267ECC96";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E711CB22-FC33-49CE-9817-D9B5267ECC96";
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B226739C1582874100464124 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					armv6,
+				);
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Users/jallwine/fsa/include;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
+				PROVISIONING_PROFILE = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				use_marm = "-marm";
+				"use_marm[sdk=iphonesimulator*][arch=*]" = "";
+			};
+			name = "Ad Hoc";
+		};
+		B226739D1582874100464124 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					armv6,
+				);
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: John Allwine";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
+				INFOPLIST_FILE = "Bounce-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"/**",
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"",
 				);
 				PRODUCT_NAME = Bounce;
 				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A9CCCBA2-6ADC-4D1E-A242-8B47BE21D6E4";
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
-			name = Release;
+			name = "Ad Hoc";
+		};
+		B226739E1582874100464124 /* Ad Hoc */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = (
+					"$(ARCHS_STANDARD_32_BIT)",
+					armv6,
+				);
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = BOUNCE_LITE;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
+				INFOPLIST_FILE = "Bounce Lite-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)/../fsa/lib/chipmunk\"/**",
+					"\"$(SRCROOT)/../fsa/lib/chipmunk\"",
+				);
+				PRODUCT_NAME = "Bounce Lite";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = "Ad Hoc";
 		};
 		B23F134015703AEF00FE4D09 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1106,13 +1218,13 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
-				INFOPLIST_FILE = "Bounce copy2-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				INFOPLIST_FILE = "Bounce Lite-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"/**",
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"",
 				);
-				PRODUCT_NAME = "Bounce copy";
+				PRODUCT_NAME = "Bounce Lite";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1125,6 +1237,8 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 					armv6,
 				);
+				CODE_SIGN_IDENTITY = "iPhone Distribution: John Allwine";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: John Allwine";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
@@ -1133,13 +1247,15 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = /Users/jallwine/Documents/iPhoneApps/fsa/include;
-				INFOPLIST_FILE = "Bounce copy2-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				INFOPLIST_FILE = "Bounce Lite-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"/**",
 					"\"$(SRCROOT)/../fsa/lib/chipmunk\"",
 				);
-				PRODUCT_NAME = "Bounce copy";
+				PRODUCT_NAME = "Bounce Lite";
+				PROVISIONING_PROFILE = "6DA870D0-3082-41B5-9A67-05CC6856CFCC";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6DA870D0-3082-41B5-9A67-05CC6856CFCC";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1206,6 +1322,7 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				B226739D1582874100464124 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1215,6 +1332,7 @@
 			buildConfigurations = (
 				B23F134015703AEF00FE4D09 /* Debug */,
 				B23F134115703AEF00FE4D09 /* Release */,
+				B226739E1582874100464124 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1224,6 +1342,7 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				B226739C1582874100464124 /* Ad Hoc */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

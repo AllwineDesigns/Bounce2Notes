@@ -11,6 +11,8 @@
 #import "ParticleSystemViewController.h"
 #import "EAGLView.h"
 
+#define BOUNCE_LITE_MAX_BALLS 15
+
 @interface ParticleSystemViewController ()
 @property (nonatomic, retain) EAGLContext *context;
 @property (nonatomic, assign) CADisplayLink *displayLink;
@@ -43,6 +45,9 @@
     
     lastUpdate = [[NSDate alloc] init];
     
+    alertView = [[UIAlertView alloc] initWithTitle:@"Upgrade to full version" message:@"You must have the full version to create more balls." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Buy!", @"Dismiss All",  nil];
+    dismissAllUpgradeAlerts = NO;
+    
     motionManager = [[CMMotionManager alloc] init];
     [motionManager startAccelerometerUpdates];
     
@@ -54,6 +59,8 @@
     simulation = new ChipmunkSimulation(aspect);
     shader = [[ChipmunkSimulationShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
     stationaryShader = [[ChipmunkSimulationStationaryShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
+    
+    killBoxShader = [[BounceKillBoxShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
 
 //    multiGestureRecognizer = [[FSAMultiGestureRecognizer alloc] initWithTarget:self];
 //    [self.view addGestureRecognizer:multiGestureRecognizer];
@@ -76,10 +83,12 @@
     if ([EAGLContext currentContext] == context)
         [EAGLContext setCurrentContext:nil];
 
+    [alertView release];
     [lastUpdate release];
     [context release];
     [shader release];
     [stationaryShader release];
+    [killBoxShader release];
 //    delete psystem;
     delete simulation;
     
@@ -108,14 +117,160 @@
         if(simulation->isBallAt(loc)) {
             simulation->removeBallAt(loc);
         } else {
+            
+#ifdef BOUNCE_LITE
+            if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS) {
+                simulation->addBallAt(loc);
+            } else {
+                [self displayUpgradeAlert];
+            }
+#else
             simulation->addBallAt(loc);
+#endif
         }
     }
 }
 
+-(void)displayUpgradeAlert {
+    if(!dismissAllUpgradeAlerts) {
+        [alertView show];
+    }
+}
+
+-(void)alertView: (UIAlertView*)view clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 2:
+            dismissAllUpgradeAlerts = YES;
+        case 0:    
+            break;
+            
+        default:
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/bounce!!/id530767513?ls=1&mt=8"]];
+            break;
+    }
+}
+
+-(void)beginThreeFingerDrag: (FSAMultiGesture*)gesture {
+    //NSLog(@"begin three finger drag\n");
+    vec2 loc(gesture.location);
+    vec2 loc2(gesture.beginLocation);
+    [self pixels2sim:loc];
+    [self pixels2sim:loc2];
+
+    if(!simulation->isRemovingBalls()) {
+        switch(gesture.side) {
+            case FSA_TOP:
+                simulation->beginRemovingBallsTop(loc.y);
+                break;
+            case FSA_BOTTOM:
+                simulation->beginRemovingBallsBottom(loc2.y);
+                break;
+            case FSA_LEFT:
+                simulation->beginRemovingBallsLeft(loc.x);
+                break;
+            case FSA_RIGHT:
+                simulation->beginRemovingBallsRight(loc2.x);
+                break;
+                
+        }
+    }
+}
+
+-(void)threeFingerDrag: (FSAMultiGesture*)gesture {
+  //  NSLog(@"three finger drag\n");
+    vec2 loc(gesture.location);
+    vec2 loc2(gesture.beginLocation);
+    [self pixels2sim:loc];
+    [self pixels2sim:loc2];
+
+    switch(gesture.side) {
+        case FSA_TOP:
+            if(simulation->isRemovingBallsTop()) {
+                simulation->updateRemovingBallsTop(loc.y);
+            }
+            break;
+        case FSA_BOTTOM:
+            if(simulation->isRemovingBallsBottom()) {
+                simulation->updateRemovingBallsBottom(loc2.y);
+            }
+            break;
+        case FSA_LEFT:
+            if(simulation->isRemovingBallsLeft()) {
+                simulation->updateRemovingBallsLeft(loc.x);
+            }
+            break;
+        case FSA_RIGHT:
+            if(simulation->isRemovingBallsRight()) {
+                simulation->updateRemovingBallsRight(loc2.x);
+            }
+            break;
+            
+    }
+
+}
+
+-(void)endThreeFingerDrag: (FSAMultiGesture*)gesture {
+  //  NSLog(@"end three finger drag\n");
+    vec2 loc(gesture.location);
+    [self pixels2sim:loc];
+    switch(gesture.side) {
+        case FSA_TOP:
+            if(simulation->isRemovingBallsTop()) {
+                simulation->endRemovingBallsTop();
+            }
+            break;
+        case FSA_BOTTOM:
+            if(simulation->isRemovingBallsBottom()) {
+                simulation->endRemovingBallsBottom();
+            }
+            break;
+        case FSA_LEFT:
+            if(simulation->isRemovingBallsLeft()) {
+                simulation->endRemovingBallsLeft();
+            }
+            break;
+        case FSA_RIGHT:
+            if(simulation->isRemovingBallsRight()) {
+                simulation->endRemovingBallsRight();
+            }
+            break;
+            
+    }
+
+}
+
+-(void)cancelThreeFingerDrag: (FSAMultiGesture*)gesture {
+//    NSLog(@"cancel three finger drag\n");
+    vec2 loc(gesture.location);
+    [self pixels2sim:loc];
+    switch(gesture.side) {
+        case FSA_TOP:
+            if(simulation->isRemovingBallsTop()) {
+                simulation->endRemovingBallsTop();
+            }
+            break;
+        case FSA_BOTTOM:
+            if(simulation->isRemovingBallsBottom()) {
+                simulation->endRemovingBallsBottom();
+            }
+            break;
+        case FSA_LEFT:
+            if(simulation->isRemovingBallsLeft()) {
+                simulation->endRemovingBallsLeft();
+            }
+            break;
+        case FSA_RIGHT:
+            if(simulation->isRemovingBallsRight()) {
+                simulation->endRemovingBallsRight();
+            }
+            break;
+            
+    }
+
+}
+
 
 -(void)beginDrag: (FSAMultiGesture*)gesture {
-#ifndef BOUNCE_LITE
 //    NSLog(@"begin drag\n");
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
@@ -125,11 +280,9 @@
     } else if(simulation->isBallAt(loc) && !simulation->isBallBeingTransformedAt(loc)) {
         simulation->beginGrabbingBallAt(loc, gesture);
     }
-#endif
 }
 
 -(void)longTouch:(FSAMultiGesture*)gesture {
-#ifndef BOUNCE_LITE
 //    NSLog(@"long hold\n");
 
     vec2 loc(gesture.location);
@@ -143,13 +296,21 @@
     } else if(simulation->isCreatingBall(gesture)) {
         simulation->beginGrabbing(loc, gesture);
     } else {
+        
+#ifdef BOUNCE_LITE
+        if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS) {
+            simulation->createStationaryBallAt(loc, gesture);
+        } else {
+            [self displayUpgradeAlert];
+        }
+#else
         simulation->createStationaryBallAt(loc, gesture);
-    }
+        
 #endif
+    }
 }
 
 -(void)flick: (FSAMultiGesture*)gesture {
-#ifndef BOUNCE_LITE
 //    NSLog(@"flick\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
@@ -158,19 +319,27 @@
     [self pixels2sim:loc2];
     
     vec2 vel = (loc-loc2);
+
     vel *= 100*(gesture.timestamp-gesture.beginTimestamp);
     if(simulation->isStationaryBallAt(loc2)) {
         simulation->addVelocityToBallAt(loc2, vel);
     } else if(simulation->anyBallsAt(loc2, .1)) {
         simulation->addVelocityToBallsAt(loc2, vel, .3);
     } else {
+#ifdef BOUNCE_LITE
+        if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS) {
+            simulation->addBallWithVelocity(loc2, vel);
+        } else {
+            [self displayUpgradeAlert];
+        }
+#else
         simulation->addBallWithVelocity(loc2, vel);
-    }
+
 #endif
+    }
 }
 
 -(void)drag: (FSAMultiGesture*)gesture {
-#ifndef BOUNCE_LITE
 //    NSLog(@"drag\n");
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
@@ -191,14 +360,21 @@
     } else if(simulation->isGrabbingBall(gesture)) {
         simulation->grabbingBallAt(endLoc, vel, gesture);
     } else  {
-        simulation->creatingBallAt(loc, endLoc, gesture);
-    }
+#ifdef BOUNCE_LITE
+        if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS || simulation->isCreatingBall(gesture)) {
+            simulation->creatingBallAt(loc, endLoc, gesture);
+
+        } else {
+            [self displayUpgradeAlert];
+        }
+#else
+        simulation->creatingBallAt(loc, endLoc, gesture);        
 #endif
+    }
 
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
-#ifndef BOUNCE_LITE
 //    NSLog(@"end drag\n");
     vec2 vel(gesture.velocity);
     [self vectorPixels2sim:vel];
@@ -213,11 +389,9 @@
         simulation->releaseBall(vel, gesture);
 
     }
-#endif
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
-#ifndef BOUNCE_LITE
  //   NSLog(@"cancel drag\n");
     vec2 vel(gesture.velocity);
     [self vectorPixels2sim:vel];
@@ -231,7 +405,6 @@
     } else if(simulation->isGrabbingBall(gesture)) {
         simulation->releaseBall(vel, gesture);
     }
-#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -346,6 +519,9 @@
     simulation->step(timeSinceLastDraw);
     [shader updateAndDraw];
     [stationaryShader updateAndDraw];
+    [killBoxShader updateAndDraw];
+    
+    
 
     [(EAGLView *)self.view presentFramebuffer];
 }

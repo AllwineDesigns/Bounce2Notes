@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B23F12E815703AEF00FE4D09"
-               BuildableName = "Bounce copy.app"
+               BuildableName = "Bounce Lite.app"
                BlueprintName = "Bounce Lite"
                ReferencedContainer = "container:ParticleSystem.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B23F12E815703AEF00FE4D09"
-            BuildableName = "Bounce copy.app"
+            BuildableName = "Bounce Lite.app"
             BlueprintName = "Bounce Lite"
             ReferencedContainer = "container:ParticleSystem.xcodeproj">
          </BuildableReference>
@@ -46,12 +46,13 @@
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
+      enablesOpenGLESFrameCapture = "YES"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B23F12E815703AEF00FE4D09"
-            BuildableName = "Bounce copy.app"
+            BuildableName = "Bounce Lite.app"
             BlueprintName = "Bounce Lite"
             ReferencedContainer = "container:ParticleSystem.xcodeproj">
          </BuildableReference>
@@ -69,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B23F12E815703AEF00FE4D09"
-            BuildableName = "Bounce copy.app"
+            BuildableName = "Bounce Lite.app"
             BlueprintName = "Bounce Lite"
             ReferencedContainer = "container:ParticleSystem.xcodeproj">
          </BuildableReference>

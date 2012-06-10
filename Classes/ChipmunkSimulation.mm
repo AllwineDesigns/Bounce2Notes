@@ -10,19 +10,40 @@
 #include <fsa/Noise.hpp>
 #include <chipmunk/chipmunk_unsafe.h>
 
-#ifdef BOUNCE_LITE
-#define BOUNCE_DEFAULT_HUE 242
-#define BOUNCE_DEFAULT_VALUE .25*random(736.2827*i)+.5
-#define BOUNCE_DEFAULT_SATURATION .5
-#define BOUNCE_DEFAULT_SOUNDS [NSArray arrayWithObjects:@"a_1", nil]
-#define BOUNCE_DEFAULT_VOLUME 10
-#else
 #define BOUNCE_DEFAULT_HUE 360.*random(64.28327*i)
 #define BOUNCE_DEFAULT_VALUE .05*random(736.2827*i)+.75
 #define BOUNCE_DEFAULT_SATURATION .4
 #define BOUNCE_DEFAULT_SOUNDS [NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"b_1", @"c_2", nil]
 #define BOUNCE_DEFAULT_VOLUME 10
-#endif
+
+int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
+    ChipmunkSimulation *simulation = (ChipmunkSimulation*)data;
+    cpBody *body1;
+    cpShape *shape1;
+    
+    cpBody *body2;
+    cpShape *shape2;
+    cpArbiterGetBodies(arb, &body1, &body2);
+    cpArbiterGetShapes(arb, &shape1, &shape2);
+        
+    if(simulation->killTop && shape2 == simulation->killTopShape && !simulation->isShapeParticipatingInGesture(shape1)) {
+        simulation->queueRemoveBall(shape1);
+    }
+    
+    if(simulation->killBottom && shape2 == simulation->killBottomShape && !simulation->isShapeParticipatingInGesture(shape1)) {
+        simulation->queueRemoveBall(shape1);
+    }
+    
+    if(simulation->killLeft && shape2 == simulation->killLeftShape && !simulation->isShapeParticipatingInGesture(shape1)) {
+        simulation->queueRemoveBall(shape1);
+    }
+    
+    if(simulation->killRight && shape2 == simulation->killRightShape && !simulation->isShapeParticipatingInGesture(shape1)) {
+        simulation->queueRemoveBall(shape1);
+    }
+    
+    return 1;
+}
 
 int collisionBegin(cpArbiter *arb, cpSpace *space, void *data) {
     return 1;
@@ -70,7 +91,7 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
         
     cpCollisionType t1 = cpShapeGetCollisionType(shape1);
     cpCollisionType t2 = cpShapeGetCollisionType(shape2);
-
+    
     float ke = 0; 
 
     BallData* ballData1 = (BallData*)cpBodyGetUserData(body1);
@@ -363,13 +384,13 @@ void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 	}
 }
 
-ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0) {
+ChipmunkSimulation::ChipmunkSimulation(float a) : dt(.02), time_remainder(0) {
    // sound_manager = [[SoundManager alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
  //  audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
 
 //    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"e", @"g", @"a", @"c2", nil]];
-//    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"c_2", @"e_2", @"g_2", @"a_2", @"c_3", nil]];
-    audio_player = [[FSAAudioPlayer alloc] initWithSounds:BOUNCE_DEFAULT_SOUNDS volume:BOUNCE_DEFAULT_VOLUME];
+    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
+//    audio_player = [[FSAAudioPlayer alloc] initWithSounds:BOUNCE_DEFAULT_SOUNDS volume:BOUNCE_DEFAULT_VOLUME];
  //   audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"marimba_c1", @"marimba_e1", @"marimba_g1", @"marimba_a1", @"marimba_c2", nil]];
 //    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"marimba_a1", nil]];
 
@@ -388,18 +409,44 @@ ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0
     
 //    cpSpaceUseSpatialHash(space, .3, 3000);
     
-    cpSpaceSetDefaultCollisionHandler(space, collisionBegin, preSolve, postSolve, separate, this);
+    cpSpaceAddCollisionHandler(space, BALL_TYPE, BALL_TYPE, collisionBegin, preSolve, postSolve, separate, this);
+    cpSpaceAddCollisionHandler(space, BALL_TYPE, WALL_TYPE, collisionBegin, preSolve, postSolve, separate, this);
+//    cpSpaceSetDefaultCollisionHandler(space, collisionBegin, preSolve, postSolve, separate, this);
+//    cpSpaceAddCollisionHandler(space, BALL_TYPE, KILL_TYPE, NULL, presolve_kill, NULL, NULL, this);
+
 
 //    bottom = cpSegmentShapeNew(space->staticBody, cpv(-1, -2.6), cpv(1, -2.6), 1.11);
 //    top = cpSegmentShapeNew(space->staticBody, cpv(-1, 2.6), cpv(1, 2.6), 1.11);
 //    right = cpSegmentShapeNew(space->staticBody, cpv(2.1, 1.5), cpv(2.1, -1.5), 1.11);
 //    left = cpSegmentShapeNew(space->staticBody, cpv(-2.1, 1.5), cpv(-2.1, -1.5), 1.11);
-    float inv_aspect = 1./aspect;
+    aspect = a;
+    inv_aspect = 1./aspect;
     bottom = cpSegmentShapeNew(space->staticBody, cpv(-1, -inv_aspect-1.1), cpv(1, -inv_aspect-1.1), 1.11);
     top = cpSegmentShapeNew(space->staticBody, cpv(-1, inv_aspect+1.1), cpv(1, inv_aspect+1.1), 1.11);
     right = cpSegmentShapeNew(space->staticBody, cpv(2.1, inv_aspect), cpv(2.1, -inv_aspect), 1.11);
     left = cpSegmentShapeNew(space->staticBody, cpv(-2.1, inv_aspect), cpv(-2.1, -inv_aspect), 1.11);
-
+    
+    killBody = cpBodyNew(9999, 99999);
+    
+    killTopShape = cpSegmentShapeNew(killBody, cpv(-1, inv_aspect), cpv(1,inv_aspect), 0);
+    killBottomShape = cpSegmentShapeNew(killBody, cpv(-1, -inv_aspect), cpv(1,-inv_aspect), 0);
+    killLeftShape = cpSegmentShapeNew(killBody, cpv(-1, inv_aspect), cpv(-1,-inv_aspect), 0);
+    killRightShape = cpSegmentShapeNew(killBody, cpv(1, inv_aspect), cpv(1,-inv_aspect), 0);
+    
+    killTop = false;
+    killBottom = false;
+    killLeft = false;
+    killRight = false;
+    
+    cpShapeSetSensor(killTopShape, true);
+    cpShapeSetSensor(killBottomShape, true);
+    cpShapeSetSensor(killRightShape, true);
+    cpShapeSetSensor(killLeftShape, true);
+    
+    cpShapeSetCollisionType(killTopShape,KILL_TOP_TYPE);
+    cpShapeSetCollisionType(killBottomShape, KILL_BOTTOM_TYPE);
+    cpShapeSetCollisionType(killLeftShape, KILL_LEFT_TYPE);
+    cpShapeSetCollisionType(killRightShape, KILL_RIGHT_TYPE);
     
     cpShapeSetFriction(bottom,.1);
     cpShapeSetFriction(top, .1);
@@ -421,14 +468,24 @@ ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0
     cpSpaceAddShape(space, right);
     cpSpaceAddShape(space, left);
     
+    cpSpaceAddShape(space, killBottomShape);
+    cpSpaceAddShape(space, killTopShape);
+    cpSpaceAddShape(space, killRightShape);
+    cpSpaceAddShape(space, killLeftShape);
+    
+    audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
+
+    int notes[20] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11 }
+    
 //    for(int i = 0; i < 300; i++) {
-    for(int i = 0; i < 1; i++) {
+    for(int i = 0; i < 20; i++) {
 
         cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
         cpFloat mass = 100*radius*radius;
 
         cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
-        BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
+     //   BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
+        BallData* ballData = new BallData(0, , random(342.123*i), 1.));
        
         HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), BOUNCE_DEFAULT_HUE, BOUNCE_DEFAULT_SATURATION, BOUNCE_DEFAULT_VALUE   );
         ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
@@ -474,7 +531,9 @@ ChipmunkSimulation::ChipmunkSimulation(float aspect) : dt(.02), time_remainder(0
 
 static void getShapesQueryFunc(cpShape *shape, cpContactPointSet *points, void* data) {
     std::vector<cpShape*> *shapes = (std::vector<cpShape*>*)data;
-    shapes->push_back(shape);
+    if(!cpShapeGetSensor(shape)) {
+        shapes->push_back(shape);
+    }
 }
 
 FSAAudioPlayer* ChipmunkSimulation::getAudioPlayer() {
@@ -484,6 +543,39 @@ FSAAudioPlayer* ChipmunkSimulation::getAudioPlayer() {
 //SoundManager* ChipmunkSimulation::getSoundManager() {
 //    return sound_manager;
 //}
+
+void ChipmunkSimulation::queueRemoveBall(cpShape *shape) {
+    bool hasShape = false;
+    std::vector<cpShape*>::iterator itr = removeShapesQueue.begin();
+    while(itr != removeShapesQueue.end()) {
+        if(*itr == shape) {
+            hasShape = true;
+            break;
+        }
+        ++itr;
+    }
+    
+    if(!hasShape) {
+        removeShapesQueue.push_back(shape);
+    }
+}
+
+void ChipmunkSimulation::removeBall(cpShape *shape) {
+    cpBody *body = cpShapeGetBody(shape);
+    if(cpSpaceContainsBody(space, body)) {
+        cpSpaceRemoveBody(space, body);
+    }
+    cpSpaceRemoveShape(space, shape);
+    for(int i = shapes.size()-1; i >= 0; i--) {
+        if(shapes[i] == shape) {
+            shapes.erase(shapes.begin()+i);
+            bodies.erase(bodies.begin()+i);
+        }
+    }
+    
+    cpShapeFree(shape);
+    cpBodyFree(body);
+}
 
 void ChipmunkSimulation::next() {
     cpSpaceStep(space, dt);
@@ -575,7 +667,7 @@ bool ChipmunkSimulation::isBallAt(const vec2& loc) {
 
 static void shapeQueryFunc(cpShape *shape, cpContactPointSet *points, void* data) {
     cpBody *body = cpShapeGetBody(shape);
-    if(body != NULL && !cpBodyIsStatic(body)) {
+    if(body != NULL && !cpBodyIsStatic(body) && !cpShapeGetSensor(shape)) {
         vec2 v(cpBodyGetVel(body));
         v += *(vec2*)data;
         cpBodySetVel(body, (const cpVect&)v);
@@ -583,28 +675,26 @@ static void shapeQueryFunc(cpShape *shape, cpContactPointSet *points, void* data
 }
 
 bool ChipmunkSimulation::anyBallsAt(const vec2& loc, float radius) {
-    cpBody *b = cpBodyNew(1,1);
-    cpBodySetPos(b, (const cpVect&)loc);
-    cpShape *sensor = cpCircleShapeNew(b, radius, cpvzero);
-    
-    bool ret = cpSpaceShapeQuery(space, sensor, NULL, NULL);
-    cpShapeFree(sensor);
-    cpBodyFree(b);
-    return ret;
+    cpBody *body = cpBodyNew(1, 1);
+    cpBodySetPos(body, (const cpVect&)loc);
+    cpShape *sensor = cpCircleShapeNew(body, radius, cpvzero);
+    std::vector<cpShape*> shapes;
+    cpSpaceShapeQuery(space, sensor, getShapesQueryFunc, (void*)&shapes);
+    return shapes.size() > 0;
 }
 
 cpShape* ChipmunkSimulation::getShapeAt(const vec2& loc) {
     cpBody *body = cpBodyNew(1, 1);
     cpBodySetPos(body, (const cpVect&)loc);
     cpShape *sensor = cpCircleShapeNew(body, .05, cpvzero);
-    std::vector<cpShape*> del_shapes;
-    cpSpaceShapeQuery(space, sensor, getShapesQueryFunc, (void*)&del_shapes);
-    std::vector<cpShape*>::iterator itr = del_shapes.begin();
+    std::vector<cpShape*> shapes;
+    cpSpaceShapeQuery(space, sensor, getShapesQueryFunc, (void*)&shapes);
+    std::vector<cpShape*>::iterator itr = shapes.begin();
     
     cpShape *closestShape = NULL;
     float min_dist = 99999;
     
-    while(itr != del_shapes.end()) {
+    while(itr != shapes.end()) {
         if(bottom == *itr || top == *itr || left == *itr || right == *itr) {
             ++itr;
             continue;
@@ -894,6 +984,19 @@ void ChipmunkSimulation::addBallAt(const vec2& loc) {
 }
 
 void ChipmunkSimulation::step(float t) {
+    std::vector<cpShape*>::iterator itr = removeShapesQueue.begin();
+    while(itr != removeShapesQueue.end()) {
+        if(!isShapeParticipatingInGesture(*itr)) {
+            float radius = cpCircleShapeGetRadius(*itr);
+            int note = (1-radius)*(1-radius)*[getAudioPlayer() numSounds];
+
+            [audio_player playSound:note volume:.2];
+            removeBall(*itr);
+        }
+        ++itr;
+    }
+    removeShapesQueue.clear();
+    
     t += time_remainder;
     
     if(t > 10*dt) {
@@ -1317,6 +1420,8 @@ void ChipmunkSimulation::transformBallAt(const vec2& loc, void* uniqueId) {
         float yp = scale*(o.x*sin(rotation)+o.y*cos(rotation))+translate.y+M.y;
         
         cpBody *body = cpShapeGetBody(gdata->shape);
+        BallData *data = (BallData*)cpBodyGetUserData(body);
+        
         CGPoint pos;
         pos.x = xp;
         pos.y = yp;
@@ -1328,7 +1433,15 @@ void ChipmunkSimulation::transformBallAt(const vec2& loc, void* uniqueId) {
         cpBodySetVel(body, (cpVect&)vel);
         
         cpBodySetPos(body, pos);
-        cpCircleShapeSetRadius(gdata->shape, gdata->radius*scale > 1 ? 1 : gdata->radius*scale);
+        
+        float radius = gdata->radius*scale > 1 ? 1 : gdata->radius*scale;
+        int note = (1-radius)*(1-radius)*[getAudioPlayer() numSounds];
+        if(data->note != note) {
+            [audio_player playSound:note volume:.2];
+            data->note = note;
+        }
+
+        cpCircleShapeSetRadius(gdata->shape, radius);
         cpBodySetAngle(body, gdata->rotation+rotation);
     }
 
@@ -1367,6 +1480,108 @@ void ChipmunkSimulation::beginGrabbingTransformingBall(void* uniqueId) {
     }
 }
 
+void ChipmunkSimulation::beginRemovingBallsTop(float y) {
+    topY = y;
+    killTop = true;
+    cpSegmentShapeSetRadius(killTopShape, inv_aspect-y);
+    cpSpaceReindexShape(space, killTopShape);
+    cpSpaceAddCollisionHandler(space, BALL_TYPE, KILL_TOP_TYPE, NULL, presolve_kill, NULL, NULL, this);
+
+}
+void ChipmunkSimulation::updateRemovingBallsTop(float y) {
+    topY = y;
+    cpSegmentShapeSetRadius(killTopShape, inv_aspect-y);
+    cpSpaceReindexShape(space, killTopShape);
+
+    
+}
+void ChipmunkSimulation::endRemovingBallsTop() {
+    killTop = false;
+    cpSpaceRemoveCollisionHandler(space, BALL_TYPE, KILL_TOP_TYPE);
+}
+
+void ChipmunkSimulation::beginRemovingBallsBottom(float y) {
+    bottomY = y;
+    killBottom = true;
+    cpSegmentShapeSetRadius(killBottomShape, y+inv_aspect);
+    cpSpaceReindexShape(space, killBottomShape);
+    cpSpaceAddCollisionHandler(space, BALL_TYPE, KILL_BOTTOM_TYPE, NULL, presolve_kill, NULL, NULL, this);
+}
+void ChipmunkSimulation::updateRemovingBallsBottom(float y) {
+    bottomY = y;
+    cpSegmentShapeSetRadius(killBottomShape, y+inv_aspect);
+    cpSpaceReindexShape(space, killBottomShape);
+
+}
+void ChipmunkSimulation::endRemovingBallsBottom() {
+    killBottom = false;
+    cpSpaceRemoveCollisionHandler(space, BALL_TYPE, KILL_BOTTOM_TYPE);
+}
+
+void ChipmunkSimulation::beginRemovingBallsLeft(float x) {
+    killLeft = true;
+    leftX = x;
+    cpSegmentShapeSetRadius(killLeftShape, x+1);
+    cpSpaceReindexShape(space, killLeftShape);
+    cpSpaceAddCollisionHandler(space, BALL_TYPE, KILL_LEFT_TYPE, NULL, presolve_kill, NULL, NULL, this);
+}
+void ChipmunkSimulation::updateRemovingBallsLeft(float x) {
+    leftX = x;
+    cpSegmentShapeSetRadius(killLeftShape, x+1);
+    cpSpaceReindexShape(space, killLeftShape);
+}
+void ChipmunkSimulation::endRemovingBallsLeft() {
+    killLeft = false;
+    cpSpaceRemoveCollisionHandler(space, BALL_TYPE, KILL_LEFT_TYPE);
+}
+
+void ChipmunkSimulation::beginRemovingBallsRight(float x) {
+    killRight = true;
+    rightX = x;
+    cpSegmentShapeSetRadius(killRightShape, 1-x);
+    cpSpaceReindexShape(space, killRightShape);
+    cpSpaceAddCollisionHandler(space, BALL_TYPE, KILL_RIGHT_TYPE, NULL, presolve_kill, NULL, NULL, this);
+}
+void ChipmunkSimulation::updateRemovingBallsRight(float x) {
+    cpSegmentShapeSetRadius(killRightShape, 1-x);
+    rightX = x;
+    cpSpaceReindexShape(space, killRightShape);
+}
+void ChipmunkSimulation::endRemovingBallsRight() {
+    killRight = false;
+    cpSpaceRemoveCollisionHandler(space, BALL_TYPE, KILL_RIGHT_TYPE);
+}
+
+bool ChipmunkSimulation::isRemovingBallsTop() {
+    return killTop;
+}
+bool ChipmunkSimulation::isRemovingBallsBottom() {
+    return killBottom;
+}
+bool ChipmunkSimulation::isRemovingBallsLeft() {
+    return killLeft;
+}
+bool ChipmunkSimulation::isRemovingBallsRight() {
+    return killRight;
+}
+bool ChipmunkSimulation::isRemovingBalls() {
+    return killTop || killBottom || killLeft || killRight;
+}
+
+
+float ChipmunkSimulation::removingBallsTopY() {
+    return killTop ? topY : 2;
+}
+float ChipmunkSimulation::removingBallsBottomY() {
+    return killBottom ? bottomY : -2;
+}
+float ChipmunkSimulation::removingBallsLeftX() {
+    return killLeft ? leftX : -2;
+}
+float ChipmunkSimulation::removingBallsRightX() {
+    return killRight ? rightX : 2;
+}
+
 void ChipmunkSimulation::setGravity(const vec2& accel) {
     cpSpaceSetGravity(space, (const CGPoint&)accel);
 }
@@ -1388,6 +1603,22 @@ ChipmunkSimulation::~ChipmunkSimulation() {
     [audio_player release];
     
     CFRelease(gestures);
+    
+    cpSpaceRemoveShape(space, killTopShape);
+    cpSpaceRemoveShape(space, killBottomShape);
+    cpSpaceRemoveShape(space, killLeftShape);
+    cpSpaceRemoveShape(space, killRightShape);
+    
+    cpBodyFree(killBody);
+    cpShapeFree(killTopShape);
+    cpShapeFree(killBottomShape);
+    cpShapeFree(killLeftShape);
+    cpShapeFree(killRightShape);
+    
+    cpSpaceRemoveShape(space, bottom);
+    cpSpaceRemoveShape(space, top);
+    cpSpaceRemoveShape(space, left);
+    cpSpaceRemoveShape(space, right);
     
     cpShapeFree(bottom);
     cpShapeFree(top);

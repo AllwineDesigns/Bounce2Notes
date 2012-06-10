@@ -20,6 +20,7 @@
 #import "FSAMultiTapAndDragRecognizer.h"
 #import "ChipmunkSimulationShader.h"
 #import "ChipmunkSimulationStationaryShader.h"
+#import "BounceKillBoxShader.h"
 
 @interface ParticleSystemViewController : UIViewController
 {
@@ -29,6 +30,8 @@
     ChipmunkSimulation *simulation;
     ChipmunkSimulationShader *shader;
     ChipmunkSimulationStationaryShader *stationaryShader;
+    BounceKillBoxShader *killBoxShader;
+
 
     NSDate *lastUpdate;
     CMMotionManager *motionManager;
@@ -40,7 +43,9 @@
     BOOL animating;
     NSInteger animationFrameInterval;
     CADisplayLink *displayLink;
-
+    
+    UIAlertView *alertView;
+    BOOL dismissAllUpgradeAlerts;
 }
 
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
@@ -50,6 +55,7 @@
 - (void)stopAnimation;
 - (void)pixels2sim: (vec2&) loc;
 - (void)vectorPixels2sim: (vec2&) vec;
+- (void)displayUpgradeAlert;
 
 
 @end

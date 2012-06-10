@@ -12,6 +12,13 @@
 @interface FSAMultiTapAndDragRecognizer : UIGestureRecognizer {    
     CFMutableDictionaryRef oneFingerTouches;
     CFMutableDictionaryRef dragGestures;
+    NSMutableSet *threeFingerTopDrags;
+    NSMutableSet *threeFingerLeftDrags;
+    NSMutableSet *threeFingerBottomDrags;
+    NSMutableSet *threeFingerRightDrags;
+    
+    float edgeWidth;
+    
     id target;
 }
 @property (retain, nonatomic) id target;

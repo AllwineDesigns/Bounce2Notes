@@ -8,17 +8,27 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    FSA_TOP,
+    FSA_BOTTOM,
+    FSA_LEFT,
+    FSA_RIGHT
+} FSAMultiGestureSide;
+
+extern const float FSA_THREE_FINGER_THRESHOLD;
 extern const float FSA_LONGTOUCH_THRESHOLD;
 extern const float FSA_FLICK_THRESHOLD;
 extern const float FSA_TAP_THRESHOLD;
 
 @interface FSAOneFingerTouch : NSObject {
+    BOOL isThreeFingerDrag;
     BOOL hasDragged;
     BOOL hasLongTouched;
     UITouch *touch;
     NSTimeInterval beginTimestamp;
     CGPoint beginLocation;
 }
+@property (nonatomic) BOOL isThreeFingerDrag;
 @property (nonatomic) BOOL hasDragged;
 @property (nonatomic) BOOL hasLongTouched;
 @property (retain,nonatomic) UITouch* touch;
@@ -51,12 +61,14 @@ extern const float FSA_TAP_THRESHOLD;
 @end
 
 @interface FSAMultiGesture : NSObject {
+    FSAMultiGestureSide side;
     CGPoint beginLocation;
     CGPoint location;
     CGPoint velocity;
     NSTimeInterval beginTimestamp;
     NSTimeInterval timestamp;
 }
+@property (nonatomic) FSAMultiGestureSide side;
 @property (nonatomic) CGPoint beginLocation;
 @property (nonatomic) CGPoint location;
 @property (nonatomic) CGPoint velocity;

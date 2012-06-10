@@ -79,51 +79,27 @@ machineName2()
     [target performSelector:@selector(longTouch:) withObject:gesture];
 }
 
-- (void)doSingleTap:(FSAOneFingerTouch*)oft { 
-    if(oft.isThreeFingerDrag) {
+- (void)doSingleTap:(FSAOneFingerTouch*)oft {     
+    FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
+    
+    gesture.location = [oft.touch locationInView:self.view];
+    gesture.beginLocation = oft.beginLocation;
+    gesture.timestamp = oft.touch.timestamp;
+    gesture.beginTimestamp = oft.beginTimestamp;
+    [gesture autorelease];
+    [target performSelector:@selector(singleTap:) withObject:gesture];
+    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+    
+    if(!oft.isThreeFingerDrag) {
         if([threeFingerTopDrags containsObject:oft]) {
-            if([threeFingerTopDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
-            } else {
-                [threeFingerTopDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerTopDrags removeObject:oft];
         } else if([threeFingerBottomDrags containsObject:oft]) {
-            if([threeFingerBottomDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
-            } else {
-                [threeFingerBottomDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
-        } else if([threeFingerLeftDrags containsObject:oft]) {
-            if([threeFingerLeftDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
-            } else {
-                [threeFingerLeftDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerBottomDrags removeObject:oft];
         } else if([threeFingerRightDrags containsObject:oft]) {
-            if([threeFingerRightDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
-            } else {
-                [threeFingerRightDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerRightDrags removeObject:oft];
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            [threeFingerLeftDrags removeObject:oft];
         }
-    } else {
-        FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
-        
-        gesture.location = [oft.touch locationInView:self.view];
-        gesture.beginLocation = oft.beginLocation;
-        gesture.timestamp = oft.touch.timestamp;
-        gesture.beginTimestamp = oft.beginTimestamp;
-        [gesture autorelease];
-        [target performSelector:@selector(singleTap:) withObject:gesture];
-        CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
     }
 }
 
@@ -135,9 +111,9 @@ machineName2()
     NSTimeInterval timestamp = beginTimestamp;
     
     for(FSAOneFingerTouch *oft in drags) {
-        [self doCancelDrag:oft];
         oft.isThreeFingerDrag = YES;
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+
+        [self doCancelDrag:oft];
 
         CGPoint loc = [oft.touch locationInView:self.view];
         if(oft.beginTimestamp < beginTimestamp) {
@@ -231,7 +207,7 @@ machineName2()
 
     NSArray *ofts = [drags allObjects];
     for(FSAOneFingerTouch *oft in ofts) {
-        CFDictionaryRemoveValue(oneFingerTouches, oft);
+        CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
         CFDictionaryRemoveValue(dragGestures, oft); 
         [drags removeObject:oft];
     }
@@ -246,7 +222,7 @@ machineName2()
     
     NSArray *ofts = [drags allObjects];
     for(FSAOneFingerTouch *oft in ofts) {
-        CFDictionaryRemoveValue(oneFingerTouches, oft);
+        CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
         CFDictionaryRemoveValue(dragGestures, oft); 
         [drags removeObject:oft];
     }
@@ -288,190 +264,94 @@ machineName2()
     CFDictionarySetValue(dragGestures, oft, gesture);
     [gesture release];
     [target performSelector:@selector(beginDrag:) withObject:gesture];
-        
-    if(oft.beginLocation.y < edgeWidth) {
-        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerTopDrags]) {
-            [self doBeginThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
-        }
-    } else if(oft.beginLocation.y > self.view.frame.size.height-edgeWidth) {
-        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerBottomDrags]) {
-            [self doBeginThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
-        }
-    } else if(oft.beginLocation.x > self.view.frame.size.width-edgeWidth) {
-        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerRightDrags]) {
-            [self doBeginThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
-        }
-    } else if(oft.beginLocation.x < edgeWidth) {
-        if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerLeftDrags]) {
-            [self doBeginThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
-        }
-    }
 }
 
 -(void)doDrag:(FSAOneFingerTouch*)oft {
-    if(oft.isThreeFingerDrag) {
-        
-        if([threeFingerTopDrags containsObject:oft]) {
-            [self doThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
-        } else if([threeFingerBottomDrags containsObject:oft]) {
-            [self doThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
-        } else if([threeFingerLeftDrags containsObject:oft]) {
-            [self doThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
-        } else if([threeFingerRightDrags containsObject:oft]) {
-            [self doThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
-        }
-    } else {
-        [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
-        [self performSelector:@selector(doLongTouch:) withObject:oft afterDelay:FSA_LONGTOUCH_THRESHOLD];
-        
-        FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
-        oft.hasDragged = YES;
-        
-        gesture.location = [oft.touch locationInView:self.view];
-        gesture.timestamp = oft.touch.timestamp;
-        CGPoint last_loc = [oft.touch previousLocationInView:self.view];
-        gesture.velocity = CGPointMake(gesture.location.x-last_loc.x, gesture.location.y-last_loc.y);
-        
-        [target performSelector:@selector(drag:) withObject:gesture];
-    }
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+    [self performSelector:@selector(doLongTouch:) withObject:oft afterDelay:FSA_LONGTOUCH_THRESHOLD];
+    
+    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
+    oft.hasDragged = YES;
+    
+    gesture.location = [oft.touch locationInView:self.view];
+    gesture.timestamp = oft.touch.timestamp;
+    CGPoint last_loc = [oft.touch previousLocationInView:self.view];
+    gesture.velocity = CGPointMake(gesture.location.x-last_loc.x, gesture.location.y-last_loc.y);
+    
+    [target performSelector:@selector(drag:) withObject:gesture];
+    
 }
 
 -(void)doEndDrag:(FSAOneFingerTouch*)oft {
-    if(oft.isThreeFingerDrag) {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
+    
+    FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
+    gesture.location = [oft.touch locationInView:self.view];
+    gesture.timestamp = oft.touch.timestamp;
+    
+    [target performSelector:@selector(endDrag:) withObject:gesture];
+
+    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+    CFDictionaryRemoveValue(dragGestures, oft);
+    
+    if(!oft.isThreeFingerDrag) {
         if([threeFingerTopDrags containsObject:oft]) {
-            if([threeFingerTopDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
-            } else {
-                [threeFingerTopDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerTopDrags removeObject:oft];
         } else if([threeFingerBottomDrags containsObject:oft]) {
-            if([threeFingerBottomDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
-            } else {
-                [threeFingerBottomDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
-        } else if([threeFingerLeftDrags containsObject:oft]) {
-            if([threeFingerLeftDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
-            } else {
-                [threeFingerLeftDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerBottomDrags removeObject:oft];
         } else if([threeFingerRightDrags containsObject:oft]) {
-            if([threeFingerRightDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
-            } else {
-                [threeFingerRightDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerRightDrags removeObject:oft];
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            [threeFingerLeftDrags removeObject:oft];
         }
-    } else {
+    }
+}
+
+-(void)doCancelDrag:(FSAOneFingerTouch*)oft {
+    if(CFDictionaryContainsKey(dragGestures, oft)) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
         
         FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
         gesture.location = [oft.touch locationInView:self.view];
         gesture.timestamp = oft.touch.timestamp;
         
-        [target performSelector:@selector(endDrag:) withObject:gesture];
-        
-        CFDictionaryRemoveValue(oneFingerTouches, oft);
+        [target performSelector:@selector(cancelDrag:) withObject:gesture];
         CFDictionaryRemoveValue(dragGestures, oft);
     }
-
-}
-
--(void)doCancelDrag:(FSAOneFingerTouch*)oft {
-    if(oft.isThreeFingerDrag) {
+    
+    if(!oft.isThreeFingerDrag) {
         if([threeFingerTopDrags containsObject:oft]) {
-            if([threeFingerTopDrags count] == 1) {
-                [self doCancelThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
-            } else {
-                [threeFingerTopDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerTopDrags removeObject:oft];
         } else if([threeFingerBottomDrags containsObject:oft]) {
-            if([threeFingerBottomDrags count] == 1) {
-                [self doCancelThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
-            } else {
-                [threeFingerBottomDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
-        } else if([threeFingerLeftDrags containsObject:oft]) {
-            if([threeFingerLeftDrags count] == 1) {
-                [self doCancelThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
-            } else {
-                [threeFingerLeftDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerBottomDrags removeObject:oft];
         } else if([threeFingerRightDrags containsObject:oft]) {
-            if([threeFingerRightDrags count] == 1) {
-                [self doCancelThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
-            } else {
-                [threeFingerRightDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
-        }
-    } else {
-        if(CFDictionaryContainsKey(dragGestures, oft)) {
-            [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(doLongTouch:) object:oft];
-            
-            FSAMultiGesture *gesture = (FSAMultiGesture*)CFDictionaryGetValue(dragGestures, oft);
-            gesture.location = [oft.touch locationInView:self.view];
-            gesture.timestamp = oft.touch.timestamp;
-            
-            [target performSelector:@selector(cancelDrag:) withObject:gesture];
-            CFDictionaryRemoveValue(dragGestures, oft);
+            [threeFingerRightDrags removeObject:oft];
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            [threeFingerLeftDrags removeObject:oft];
         }
     }
 }
 
 -(void)doFlick:(FSAOneFingerTouch*)oft {
-    if(oft.isThreeFingerDrag) {
+    FSAMultiGesture *gesture = [[FSAMultiGesture alloc] init];
+    gesture.location = [oft.touch locationInView:self.view];
+    gesture.beginLocation = oft.beginLocation;
+    gesture.timestamp = oft.touch.timestamp;
+    gesture.beginTimestamp = oft.beginTimestamp;
+    [target performSelector:@selector(flick:) withObject:gesture];
+    [gesture release];
+
+    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+    if(!oft.isThreeFingerDrag) {
         if([threeFingerTopDrags containsObject:oft]) {
-            if([threeFingerTopDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
-            } else {
-                [threeFingerTopDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerTopDrags removeObject:oft];
         } else if([threeFingerBottomDrags containsObject:oft]) {
-            if([threeFingerBottomDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
-            } else {
-                [threeFingerBottomDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
-        } else if([threeFingerLeftDrags containsObject:oft]) {
-            if([threeFingerLeftDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
-            } else {
-                [threeFingerLeftDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerBottomDrags removeObject:oft];
         } else if([threeFingerRightDrags containsObject:oft]) {
-            if([threeFingerRightDrags count] == 1) {
-                [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
-            } else {
-                [threeFingerRightDrags removeObject:oft];
-                CFDictionaryRemoveValue(oneFingerTouches, oft);
-                CFDictionaryRemoveValue(dragGestures, oft);
-            }
+            [threeFingerRightDrags removeObject:oft];
+        } else if([threeFingerLeftDrags containsObject:oft]) {
+            [threeFingerLeftDrags removeObject:oft];
         }
-    } else {
- 
     }
 }
 
@@ -481,6 +361,23 @@ machineName2()
         CFDictionaryAddValue(oneFingerTouches, oft.touch, oft);
 
         [self doBeginDrag:oft];
+        if(oft.beginLocation.y < edgeWidth) {
+            if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerTopDrags]) {
+                [self doBeginThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+            }
+        } else if(oft.beginLocation.y > self.view.frame.size.height-edgeWidth) {
+            if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerBottomDrags]) {
+                [self doBeginThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+            }
+        } else if(oft.beginLocation.x > self.view.frame.size.width-edgeWidth) {
+            if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerRightDrags]) {
+                [self doBeginThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+            }
+        } else if(oft.beginLocation.x < edgeWidth) {
+            if([self addOneFingerTouch:oft toThreeFingerDrags:threeFingerLeftDrags]) {
+                [self doBeginThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+            }
+        }
     }
 }
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -492,6 +389,39 @@ machineName2()
         } else {
             NSLog(@"unknown touch: %@", touch);
         }
+    }
+    
+    NSArray *curTouches = [currentOneFingerTouches allObjects];
+    BOOL doTop = NO;
+    BOOL doBottom = NO;
+    BOOL doLeft = NO;
+    BOOL doRight = NO;
+    for(FSAOneFingerTouch* oft in curTouches) {
+        if(oft.isThreeFingerDrag) {
+            if([threeFingerTopDrags containsObject:oft]) {
+                doTop = YES;
+                [currentOneFingerTouches removeObject:oft];
+            } else if([threeFingerBottomDrags containsObject:oft]) {
+                doBottom = YES;
+                [currentOneFingerTouches removeObject:oft];
+            } else if([threeFingerLeftDrags containsObject:oft]) {
+                doLeft = YES;
+                [currentOneFingerTouches removeObject:oft];
+            } else if([threeFingerRightDrags containsObject:oft]) {
+                doRight = YES;
+                [currentOneFingerTouches removeObject:oft];
+            }
+        }
+    }
+    
+    if(doTop) {
+        [self doThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+    } else if(doBottom) {
+        [self doThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+    } else if(doRight) {
+        [self doThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+    } else if(doLeft) {
+        [self doThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
     }
     
     for(FSAOneFingerTouch* oft in currentOneFingerTouches) {
@@ -518,28 +448,70 @@ machineName2()
         }
     }
     
+    //NSLog(@"current one finger touches: %@\n", oneFingerTouches);
+    
     for(FSAOneFingerTouch* oft in currentOneFingerTouches) {
-        if(oft.touch.tapCount > 0 && !oft.hasDragged && !oft.hasLongTouched) {
-            [self doCancelDrag:oft];
-            [self doSingleTap:oft];
+        if(oft.isThreeFingerDrag) {
+            if([threeFingerTopDrags containsObject:oft]) {
+                if([threeFingerTopDrags count] == 1) {
+                    [self doEndThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+                } else {
+                    [threeFingerTopDrags removeObject:oft];
+                    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            } else if([threeFingerBottomDrags containsObject:oft]) {
+                if([threeFingerBottomDrags count] == 1) {
+                    [self doEndThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+                } else {
+                    [threeFingerBottomDrags removeObject:oft];
+                    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            } else if([threeFingerLeftDrags containsObject:oft]) {
+                if([threeFingerLeftDrags count] == 1) {
+                    [self doEndThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+                } else {
+                    [threeFingerLeftDrags removeObject:oft];
+                    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            } else if([threeFingerRightDrags containsObject:oft]) {
+                if([threeFingerRightDrags count] == 1) {
+                    [self doEndThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+                } else {
+                    [threeFingerRightDrags removeObject:oft];
+                    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            }
         } else {
-            if(oft.touch.timestamp-oft.beginTimestamp > FSA_FLICK_THRESHOLD) {
-                CGPoint begin = oft.beginLocation;
-                CGPoint end = [oft.touch locationInView:self.view];
-                end.x -= begin.x;
-                end.y -= begin.y;
-                
-                float dist = sqrt(end.x*end.x+end.y*end.y);
+            if(oft.touch.tapCount > 0 && !oft.hasDragged && !oft.hasLongTouched) {
+                [self doCancelDrag:oft];
+                [self doSingleTap:oft];
+            } else {
+                if(oft.touch.timestamp-oft.beginTimestamp > FSA_FLICK_THRESHOLD) {
+                    CGPoint begin = oft.beginLocation;
+                    CGPoint end = [oft.touch locationInView:self.view];
+                    end.x -= begin.x;
+                    end.y -= begin.y;
+                    
+                    float dist = sqrt(end.x*end.x+end.y*end.y);
 
-                if(dist >= 1) {
-                    [self doEndDrag:oft];
+                    if(dist >= 1) {
+                        [self doEndDrag:oft];
+                    } else {
+                        [self doCancelDrag:oft];
+
+                        CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+                    }
                 } else {
                     [self doCancelDrag:oft];
-                    CFDictionaryRemoveValue(oneFingerTouches, oft);
+
+                    CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
+
+                    [self doFlick:oft];
                 }
-            } else {
-                [self doCancelDrag:oft];
-                [self doFlick:oft];
             }
         }
     }
@@ -558,7 +530,40 @@ machineName2()
     }
     
     for(FSAOneFingerTouch* oft in currentOneFingerTouches) {
-        [self doCancelDrag:oft];
+        if(oft.isThreeFingerDrag) {
+            if([threeFingerTopDrags containsObject:oft]) {
+                if([threeFingerTopDrags count] == 1) {
+                    [self doCancelThreeFingerDrag:threeFingerTopDrags from:FSA_TOP];
+                } else {
+                    [threeFingerTopDrags removeObject:oft];
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            } else if([threeFingerBottomDrags containsObject:oft]) {
+                if([threeFingerBottomDrags count] == 1) {
+                    [self doCancelThreeFingerDrag:threeFingerBottomDrags from:FSA_BOTTOM];
+                } else {
+                    [threeFingerBottomDrags removeObject:oft];
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            } else if([threeFingerLeftDrags containsObject:oft]) {
+                if([threeFingerLeftDrags count] == 1) {
+                    [self doCancelThreeFingerDrag:threeFingerLeftDrags from:FSA_LEFT];
+                } else {
+                    [threeFingerLeftDrags removeObject:oft];
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            } else if([threeFingerRightDrags containsObject:oft]) {
+                if([threeFingerRightDrags count] == 1) {
+                    [self doCancelThreeFingerDrag:threeFingerRightDrags from:FSA_RIGHT];
+                } else {
+                    [threeFingerRightDrags removeObject:oft];
+                    CFDictionaryRemoveValue(dragGestures, oft);
+                }
+            }
+        } else {
+            [self doCancelDrag:oft];
+        }
+            
         CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
     }
 }

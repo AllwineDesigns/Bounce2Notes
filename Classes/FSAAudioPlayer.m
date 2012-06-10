@@ -656,6 +656,11 @@ void audioRouteChangeListenerCallback (
             if(same_sound->volume > .5) {
                 same_sound->volume = .5;
             }
+        } else if(same_sound->volume < volume) {
+            same_sound->volume = volume;
+            if(same_sound->volume > .5) {
+                same_sound->volume = .5;
+            }
         }
     } else if(soundList.pool->next == NULL) { 
         // if pool is empty, and volume is higher than the lowest volume sound that just started playing, than replace that sound with this one

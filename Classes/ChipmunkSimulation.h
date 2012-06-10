@@ -17,7 +17,11 @@ using namespace fsa;
 
 enum {
     WALL_TYPE,
-    BALL_TYPE
+    BALL_TYPE,
+    KILL_TOP_TYPE,
+    KILL_BOTTOM_TYPE,
+    KILL_LEFT_TYPE,
+    KILL_RIGHT_TYPE
 };
 
 struct GestureData {
@@ -73,8 +77,31 @@ protected:
     cpShape* top;
     cpShape* left;
     cpShape* right;
+    
+    cpShape* killTopShape;
+    cpShape* killBottomShape;
+    cpShape* killLeftShape;
+    cpShape* killRightShape;
+    
+    cpBody* killBody;
+    
+    bool killTop;
+    bool killBottom;
+    bool killLeft;
+    bool killRight;
+    
+    float topY;
+    float bottomY;
+    float leftX;
+    float rightX;
+    
+    float aspect;
+    float inv_aspect;
+    
     std::vector<cpShape*> shapes;
     std::vector<cpBody*> bodies;
+    
+    std::vector<cpShape*> removeShapesQueue;
     
     CFMutableDictionaryRef gestures;
     
@@ -95,6 +122,9 @@ protected:
     bool isShapeParticipatingInGesture(cpShape* shape);
     bool isShapeBeingCreatedOrGrabbed(cpShape* shape);
     bool isShapeBeingTransformed(cpShape* shape);
+    
+    void removeBall(cpShape *shape);
+    void queueRemoveBall(cpShape *shape);
     
 public:
     ChipmunkSimulation(float aspect);
@@ -137,13 +167,42 @@ public:
     void transformBallAt(const vec2& loc, void* uniqueId);
     void makeTransformingBallStationary(const vec2& loc, void* uniqueId);
     void beginGrabbingTransformingBall(void* uniqueId);
-        
+    
+    void beginRemovingBallsTop(float y);
+    void updateRemovingBallsTop(float y);
+    void endRemovingBallsTop();
+    
+    void beginRemovingBallsBottom(float y);
+    void updateRemovingBallsBottom(float y);
+    void endRemovingBallsBottom();
+    
+    void beginRemovingBallsLeft(float x);
+    void updateRemovingBallsLeft(float x);
+    void endRemovingBallsLeft();
+    
+    void beginRemovingBallsRight(float x);
+    void updateRemovingBallsRight(float x);
+    void endRemovingBallsRight();
+    
+    bool isRemovingBalls();
+    bool isRemovingBallsTop();
+    bool isRemovingBallsBottom();
+    bool isRemovingBallsLeft();
+    bool isRemovingBallsRight();
+    
+    float removingBallsTopY();
+    float removingBallsBottomY();
+    float removingBallsLeftX();
+    float removingBallsRightX();
+            
  //   SoundManager* getSoundManager();
     FSAAudioPlayer* getAudioPlayer();
     
     unsigned int numBalls();
     cpShape* const* shapesPointer();
     cpBody* const* bodiesPointer();
+    
+    friend int presolve_kill(cpArbiter *arb, cpSpace *space, void *data);
     
 };
 
