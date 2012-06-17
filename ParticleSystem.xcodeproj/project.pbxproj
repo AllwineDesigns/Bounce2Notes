@@ -48,7 +48,6 @@
 		B23F12F415703AEF00FE4D09 /* icon2_144.png in Resources */ = {isa = PBXBuildFile; fileRef = B29447901551E7BE003D1431 /* icon2_144.png */; };
 		B23F12F515703AEF00FE4D09 /* icon2_57.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A93F4155C2152002D2BEE /* icon2_57.png */; };
 		B23F12F615703AEF00FE4D09 /* icon2_114.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A93F5155C2152002D2BEE /* icon2_114.png */; };
-		B23F12F715703AEF00FE4D09 /* whirl.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D0739C155F7AA70001DF70 /* whirl.jpg */; };
 		B23F12F815703AEF00FE4D09 /* marimba_a1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571A1563336200C2E7A2 /* marimba_a1.caf */; };
 		B23F12F915703AEF00FE4D09 /* marimba_c1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571B1563336200C2E7A2 /* marimba_c1.caf */; };
 		B23F12FA15703AEF00FE4D09 /* marimba_c2.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571C1563336200C2E7A2 /* marimba_c2.caf */; };
@@ -104,7 +103,7 @@
 		B23F132F15703AEF00FE4D09 /* SoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A93CF15599CCE002D2BEE /* SoundManager.m */; };
 		B23F133015703AEF00FE4D09 /* FSAMultiTapAndDragRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A93F2155B34E1002D2BEE /* FSAMultiTapAndDragRecognizer.m */; };
 		B23F133115703AEF00FE4D09 /* FSAAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */; };
-		B23F133215703AEF00FE4D09 /* BounceSimulation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.m */; };
+		B23F133215703AEF00FE4D09 /* BounceSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.mm */; };
 		B23F133415703AEF00FE4D09 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */; };
 		B23F133515703AEF00FE4D09 /* libChipmunk-iPhone_armv6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B21A93FB155C6A1D002D2BEE /* libChipmunk-iPhone_armv6.a */; };
 		B23F133615703AEF00FE4D09 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B21A93BC1559954A002D2BEE /* AVFoundation.framework */; };
@@ -175,10 +174,17 @@
 		B2BB88C4157460E600689E05 /* ball_nocenterglow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2BB88C3157460E600689E05 /* ball_nocenterglow.jpg */; };
 		B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */; };
 		B2D07351155DAA4F0001DF70 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */; };
-		B2D0739D155F7AA70001DF70 /* whirl.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D0739C155F7AA70001DF70 /* whirl.jpg */; };
-		B2D073AC1560C1880001DF70 /* BounceSimulation.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.m */; };
+		B2D073AC1560C1880001DF70 /* BounceSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.mm */; };
 		B2E464891545CDD3000F2F48 /* BasicParticleShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */; };
 		B2E464901545DC03000F2F48 /* BasicParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */; };
+		B2E54A12158CC463009880FE /* FSATextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.m */; };
+		B2E54A13158CC463009880FE /* FSATextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.m */; };
+		B2E54A16158CED77009880FE /* FSAUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.m */; };
+		B2E54A17158CED77009880FE /* FSAUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.m */; };
+		B2E54A19158D45CC009880FE /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A18158D45CC009880FE /* square.jpg */; };
+		B2E54A1A158D45CC009880FE /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A18158D45CC009880FE /* square.jpg */; };
+		B2E54A1F158D4665009880FE /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A1E158D4665009880FE /* triangle.jpg */; };
+		B2E54A20158D4665009880FE /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A1E158D4665009880FE /* triangle.jpg */; };
 		B2E8B540157047DD00318FFC /* bounce_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53C157047DD00318FFC /* bounce_icon57.png */; };
 		B2E8B541157047DD00318FFC /* bounce_icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53D157047DD00318FFC /* bounce_icon72.png */; };
 		B2E8B542157047DD00318FFC /* bounce_icon114.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53E157047DD00318FFC /* bounce_icon114.png */; };
@@ -354,13 +360,18 @@
 		B2D0734D155D6A6F0001DF70 /* FSAAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAAudioPlayer.h; sourceTree = "<group>"; };
 		B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAAudioPlayer.m; sourceTree = "<group>"; };
 		B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		B2D0739C155F7AA70001DF70 /* whirl.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = whirl.jpg; sourceTree = "<group>"; };
 		B2D073AA1560C1870001DF70 /* BounceSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSimulation.h; sourceTree = "<group>"; };
-		B2D073AB1560C1870001DF70 /* BounceSimulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BounceSimulation.m; sourceTree = "<group>"; };
+		B2D073AB1560C1870001DF70 /* BounceSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSimulation.mm; sourceTree = "<group>"; };
 		B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BasicParticleShader.mm; sourceTree = "<group>"; };
 		B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticleShader.h; sourceTree = "<group>"; };
 		B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicParticleSystem.cpp; sourceTree = "<group>"; };
 		B2E464951545DC2B000F2F48 /* BasicParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticleSystem.h; sourceTree = "<group>"; };
+		B2E54A10158CC462009880FE /* FSATextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSATextureManager.h; sourceTree = "<group>"; };
+		B2E54A11158CC462009880FE /* FSATextureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSATextureManager.m; sourceTree = "<group>"; };
+		B2E54A14158CED0A009880FE /* FSAUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSAUtil.h; sourceTree = "<group>"; };
+		B2E54A15158CED76009880FE /* FSAUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAUtil.m; sourceTree = "<group>"; };
+		B2E54A18158D45CC009880FE /* square.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = square.jpg; sourceTree = "<group>"; };
+		B2E54A1E158D4665009880FE /* triangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = triangle.jpg; sourceTree = "<group>"; };
 		B2E8B53C157047DD00318FFC /* bounce_icon57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon57.png; sourceTree = "<group>"; };
 		B2E8B53D157047DD00318FFC /* bounce_icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon72.png; sourceTree = "<group>"; };
 		B2E8B53E157047DD00318FFC /* bounce_icon114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon114.png; sourceTree = "<group>"; };
@@ -433,8 +444,12 @@
 				B2805784156C171000C2E7A2 /* ChipmunkSimulationStationaryShader.mm */,
 				B2343BC01547BD0A00AFF2A9 /* ChipmunkSimulation.h */,
 				B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.mm */,
+				B2E54A10158CC462009880FE /* FSATextureManager.h */,
+				B2E54A11158CC462009880FE /* FSATextureManager.m */,
+				B2E54A14158CED0A009880FE /* FSAUtil.h */,
+				B2E54A15158CED76009880FE /* FSAUtil.m */,
 				B2D073AA1560C1870001DF70 /* BounceSimulation.h */,
-				B2D073AB1560C1870001DF70 /* BounceSimulation.m */,
+				B2D073AB1560C1870001DF70 /* BounceSimulation.mm */,
 				B21A93CE15599CCE002D2BEE /* SoundManager.h */,
 				B21A93CF15599CCE002D2BEE /* SoundManager.m */,
 				B2D0734D155D6A6F0001DF70 /* FSAAudioPlayer.h */,
@@ -515,6 +530,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B2E54A1E158D4665009880FE /* triangle.jpg */,
+				B2E54A18158D45CC009880FE /* square.jpg */,
 				B2BB88C3157460E600689E05 /* ball_nocenterglow.jpg */,
 				B2BB88BF1574557900689E05 /* spiral.jpg */,
 				B2E8B5441570496A00318FFC /* bounce_lite_icon57.png */,
@@ -561,7 +578,6 @@
 				B280571C1563336200C2E7A2 /* marimba_c2.caf */,
 				B280571D1563336200C2E7A2 /* marimba_e1.caf */,
 				B280571E1563336200C2E7A2 /* marimba_g1.caf */,
-				B2D0739C155F7AA70001DF70 /* whirl.jpg */,
 				B21A93F4155C2152002D2BEE /* icon2_57.png */,
 				B21A93F5155C2152002D2BEE /* icon2_114.png */,
 				B29447901551E7BE003D1431 /* icon2_144.png */,
@@ -853,7 +869,6 @@
 				B29447911551E7BE003D1431 /* icon2_144.png in Resources */,
 				B21A93F6155C2152002D2BEE /* icon2_57.png in Resources */,
 				B21A93F7155C2152002D2BEE /* icon2_114.png in Resources */,
-				B2D0739D155F7AA70001DF70 /* whirl.jpg in Resources */,
 				B280571F1563336200C2E7A2 /* marimba_a1.caf in Resources */,
 				B28057201563336200C2E7A2 /* marimba_c1.caf in Resources */,
 				B28057211563336200C2E7A2 /* marimba_c2.caf in Resources */,
@@ -907,6 +922,8 @@
 				B2BB88C01574557900689E05 /* spiral.jpg in Resources */,
 				B2BB88C4157460E600689E05 /* ball_nocenterglow.jpg in Resources */,
 				B28AE1E61583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
+				B2E54A19158D45CC009880FE /* square.jpg in Resources */,
+				B2E54A1F158D4665009880FE /* triangle.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -928,7 +945,6 @@
 				B23F12F415703AEF00FE4D09 /* icon2_144.png in Resources */,
 				B23F12F515703AEF00FE4D09 /* icon2_57.png in Resources */,
 				B23F12F615703AEF00FE4D09 /* icon2_114.png in Resources */,
-				B23F12F715703AEF00FE4D09 /* whirl.jpg in Resources */,
 				B23F12F815703AEF00FE4D09 /* marimba_a1.caf in Resources */,
 				B23F12F915703AEF00FE4D09 /* marimba_c1.caf in Resources */,
 				B23F12FA15703AEF00FE4D09 /* marimba_c2.caf in Resources */,
@@ -977,6 +993,8 @@
 				B2E8B57C1570988800318FFC /* Default-Landscape@2x~ipad.png in Resources */,
 				B2E8B57D1570989300318FFC /* Default-Landscape~ipad.png in Resources */,
 				B28AE1E71583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
+				B2E54A1A158D45CC009880FE /* square.jpg in Resources */,
+				B2E54A20158D4665009880FE /* triangle.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1006,9 +1024,11 @@
 				B21A93D015599CCE002D2BEE /* SoundManager.m in Sources */,
 				B21A93F3155B34E2002D2BEE /* FSAMultiTapAndDragRecognizer.m in Sources */,
 				B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */,
-				B2D073AC1560C1880001DF70 /* BounceSimulation.m in Sources */,
+				B2D073AC1560C1880001DF70 /* BounceSimulation.mm in Sources */,
 				B28AE1E31583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */,
 				B28AE1E91583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
+				B2E54A12158CC463009880FE /* FSATextureManager.m in Sources */,
+				B2E54A16158CED77009880FE /* FSAUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1035,9 +1055,11 @@
 				B23F132F15703AEF00FE4D09 /* SoundManager.m in Sources */,
 				B23F133015703AEF00FE4D09 /* FSAMultiTapAndDragRecognizer.m in Sources */,
 				B23F133115703AEF00FE4D09 /* FSAAudioPlayer.m in Sources */,
-				B23F133215703AEF00FE4D09 /* BounceSimulation.m in Sources */,
+				B23F133215703AEF00FE4D09 /* BounceSimulation.mm in Sources */,
 				B28AE1E41583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */,
 				B28AE1EA1583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
+				B2E54A13158CC463009880FE /* FSATextureManager.m in Sources */,
+				B2E54A17158CED77009880FE /* FSAUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,10 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
 
+@protocol FSAAudioDelegate
+-(void)playSound: (int)note volume: (float)vol;
+@end
+
 typedef struct {
     AudioUnitSampleType *left;
     AudioUnitSampleType *right;
@@ -58,6 +62,8 @@ typedef struct FSAAudioCallbackData {
     FSAAudioCallbackData callbackData;
     
     int numSounds;
+    
+    int myIndex;
     
     AudioStreamBasicDescription     stereoStreamFormat;
     AUGraph                         processingGraph;

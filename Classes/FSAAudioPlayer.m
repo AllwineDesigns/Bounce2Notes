@@ -7,17 +7,7 @@
 //
 
 #import "FSAAudioPlayer.h"
-#import <sys/utsname.h>
-
-NSString*
-machineName()
-{
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    
-    return [NSString stringWithCString:systemInfo.machine
-                              encoding:NSUTF8StringEncoding];
-}
+#import "FSAUtil.h"
 
 static OSStatus inputRenderCallback (void *inRefCon,
                                      AudioUnitRenderActionFlags *ioActionFlags,
@@ -195,6 +185,8 @@ void audioRouteChangeListenerCallback (
     numSounds = [files count];
     
     volumeMultiply = v;
+    
+    myIndex = 0;
     
     [self setupAudioSession];
     [self setupStereoStreamFormat];
@@ -613,10 +605,15 @@ void audioRouteChangeListenerCallback (
 
 }
 
+#define NOTES 81
+int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11, 
+    11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
+    11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
+    11,6,8,11,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11};
+
 - (void) playSound:(UInt32)index volume:(Float32)volume {
-    if(!(index >= 0 && index < self.numSounds)) {
-        NSLog(@"%d\n", index);
-    }
+    index = notes[myIndex];
+    myIndex = (myIndex+1)%NOTES;
     assert(index >= 0 && index < self.numSounds);
     volume *= volumeMultiply;
     [callbackData.finished_lock lock];

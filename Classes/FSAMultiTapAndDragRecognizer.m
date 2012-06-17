@@ -8,17 +8,7 @@
 
 #import "FSAMultiTapAndDragRecognizer.h"
 #import <UIKit/UIGestureRecognizerSubclass.h>
-#import <sys/utsname.h>
-
-NSString*
-machineName2()
-{
-    struct utsname systemInfo;
-    uname(&systemInfo);
-    
-    return [NSString stringWithCString:systemInfo.machine
-                              encoding:NSUTF8StringEncoding];
-}
+#import "FSAUtil.h"
 
 @implementation FSAMultiTapAndDragRecognizer
 
@@ -41,7 +31,7 @@ machineName2()
     threeFingerRightDrags = [[NSMutableSet alloc] initWithCapacity:3];
     
     edgeWidth = 30;
-    NSString *device = machineName2();
+    NSString *device = machineName();
     if([device hasPrefix:@"iPad"]) {
         edgeWidth = 100;
     }

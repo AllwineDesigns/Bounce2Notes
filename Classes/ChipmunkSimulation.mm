@@ -9,6 +9,8 @@
 #include "ChipmunkSimulation.h"
 #include <fsa/Noise.hpp>
 #include <chipmunk/chipmunk_unsafe.h>
+#import "FSAUtil.h"
+
 
 #define BOUNCE_DEFAULT_HUE 360.*random(64.28327*i)
 #define BOUNCE_DEFAULT_VALUE .05*random(736.2827*i)+.75
@@ -126,7 +128,8 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
     
     if(t1 == BALL_TYPE) {
         float radius = cpCircleShapeGetRadius(shape1);
-        note1 = (1-radius)*(1-radius)*[simulation->getAudioPlayer() numSounds];
+       // note1 = (1-radius)*(1-radius)*[simulation->getAudioPlayer() numSounds];
+        note1 = ballData1->note;
 
         vol1 = .1*(radius*ke > 1 ? 1 : radius*ke);
 
@@ -143,7 +146,8 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
     if(t2 == BALL_TYPE) {
 
         float radius = cpCircleShapeGetRadius(shape2);
-        note2 = (1-radius)*(1-radius)*[simulation->getAudioPlayer() numSounds];
+    //   note2 = (1-radius)*(1-radius)*[simulation->getAudioPlayer() numSounds];
+        note2 = ballData2->note;
         vol2 = .1*(radius*ke > 1 ? 1 : radius*ke);
         if(vol2 > 0.001) {
             [simulation->getAudioPlayer() playSound:note2 volume:vol2];
@@ -334,56 +338,6 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 
 }
 
-void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
-{
-	//NSLog(@"Hue %f",h);
-	int i;
-	float f, p, q, t;
-	if( s == 0 ) {
-		// achromatic (grey)
-		*r = *g = *b = v;
-		return;
-	}
-	h /= 60;			// sector 0 to 5
-	i = floor( h );
-	f = h - i;			// factorial part of h
-	p = v * ( 1 - s );
-	q = v * ( 1 - s * f );
-	t = v * ( 1 - s * ( 1 - f ) );
-	switch( i ) {
-		case 0:
-			*r = v;
-			*g = t;
-			*b = p;
-			break;
-		case 1:
-			*r = q;
-			*g = v;
-			*b = p;
-			break;
-		case 2:
-			*r = p;
-			*g = v;
-			*b = t;
-			break;
-		case 3:
-			*r = p;
-			*g = q;
-			*b = v;
-			break;
-		case 4:
-			*r = t;
-			*g = p;
-			*b = v;
-			break;
-		default:		// case 5:
-			*r = v;
-			*g = p;
-			*b = q;
-			break;
-	}
-}
-
 ChipmunkSimulation::ChipmunkSimulation(float a) : dt(.02), time_remainder(0) {
    // sound_manager = [[SoundManager alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
  //  audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c", @"d", @"e", @"f", @"g", @"a", @"b", @"c2", nil]];
@@ -473,19 +427,31 @@ ChipmunkSimulation::ChipmunkSimulation(float a) : dt(.02), time_remainder(0) {
     cpSpaceAddShape(space, killRightShape);
     cpSpaceAddShape(space, killLeftShape);
     
+    //audio_player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
+
+#define NOTES 81
+    int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11, 
+                        11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
+                        11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
+                        11,6,8,11,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11};
     
 //    for(int i = 0; i < 300; i++) {
-    for(int i = 0; i < 1; i++) {
+    for(int i = 0; i < NOTES; i++) {
 
-        cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
+      //  cpFloat radius = 1.5*(random(i*1.234)*.075+.05);
+        //cpFloat radius = (random(i*1.234)*.075+.05);
+
+        cpFloat radius = .02;
         cpFloat mass = 100*radius*radius;
 
         cpFloat moment = .02*cpMomentForCircle(mass, 0, radius, cpvzero);
         BallData* ballData = new BallData(vec4(random(64.7263*i), random(91.23819*i), random(342.123*i), 1.));
        
         HSVtoRGB(&(ballData->color.x), &(ballData->color.y), &(ballData->color.z), BOUNCE_DEFAULT_HUE, BOUNCE_DEFAULT_SATURATION, BOUNCE_DEFAULT_VALUE   );
-        ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
-        ballData->stationary = false;
+       // ballData->note = (int)[audio_player numSounds]*random(928.2837776222*i);
+        ballData->note = notes[i];
+
+        ballData->stationary = true;
 
 //        ballData->color = vec4((ballData->color.x+1)*.4,(ballData->color.y+1)*.4,(ballData->color.z+1)*.4,1);
 //        sqrt( 0.241*R^2 + 0.691*G^2 + 0.068*B^2 )
@@ -507,8 +473,14 @@ ChipmunkSimulation::ChipmunkSimulation(float a) : dt(.02), time_remainder(0) {
         */
 //        HSVtoRGB(&(ballData->color.x), &(ballData->color.x), &(ballData->color.x), 360.*random(64.28327*i), .5*random(273.2932*i), 1   );
         cpBody *ballBody = cpSpaceAddBody(space, cpBodyNew(mass, moment));
-        cpBodySetPos(ballBody, cpv(random(2.3234*i)-.5, random(4.59234*i)-.5));
-        cpBodySetVel(ballBody, cpv(5*(random(92.11234*i)-.5), 5*(random(23.234934*i)-.5)));
+//        cpBodySetPos(ballBody, cpv(random(2.3234*i)-.5, random(4.59234*i)-.5));
+        
+        float t = (float)i/(NOTES-1);
+        
+        float xt = (float)ballData->note/([audio_player numSounds]-1);
+        cpBodySetPos(ballBody, cpv(-(1-xt)+xt, 1.2*t-1.2*(1-t)));
+
+       // cpBodySetVel(ballBody, cpv(5*(random(92.11234*i)-.5), 5*(random(23.234934*i)-.5)));
         cpBodySetVelLimit(ballBody, 5);
         cpBodySetAngVelLimit(ballBody, 50);
 
@@ -521,6 +493,8 @@ ChipmunkSimulation::ChipmunkSimulation(float a) : dt(.02), time_remainder(0) {
         
         bodies.push_back(ballBody);
         shapes.push_back(ballShape);
+        
+        makeStatic(ballShape);
     }
     
 }
@@ -824,7 +798,8 @@ void ChipmunkSimulation::removeBallAt(const vec2& loc) {
     
     if(data->age >= 1) {
         float radius = cpCircleShapeGetRadius(shape);
-        int note = (1-radius)*(1-radius)*[getAudioPlayer() numSounds];
+    //    int note = (1-radius)*(1-radius)*[getAudioPlayer() numSounds];
+        int note = data->note;
         
         [getAudioPlayer() playSound:note volume:.2];
         
@@ -984,7 +959,10 @@ void ChipmunkSimulation::step(float t) {
     while(itr != removeShapesQueue.end()) {
         if(!isShapeParticipatingInGesture(*itr)) {
             float radius = cpCircleShapeGetRadius(*itr);
-            int note = (1-radius)*(1-radius)*[getAudioPlayer() numSounds];
+            cpBody *body = cpShapeGetBody(*itr);
+            BallData *data = (BallData*)cpBodyGetUserData(body);
+           // int note = (1-radius)*(1-radius)*[getAudioPlayer() numSounds];
+            int note = data->note;
 
             [audio_player playSound:note volume:.2];
             removeBall(*itr);

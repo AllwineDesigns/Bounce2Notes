@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "Classes/FSAAudioPlayer.m"
-         timestampString = "359665980.727943"
+         timestampString = "361004058.678049"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "636"
-         endingLineNumber = "636"
+         startingLineNumber = "643"
+         endingLineNumber = "643"
          landmarkName = "-playSound:volume:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -79,6 +79,19 @@
          startingLineNumber = "93"
          endingLineNumber = "93"
          landmarkName = "-getUniformLocations"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "Classes/BounceSimulation.mm"
+         timestampString = "361557841.034273"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "23"
+         endingLineNumber = "23"
+         landmarkName = "-initObject:at:withVelocity:withColor:withSize:inSpace:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
