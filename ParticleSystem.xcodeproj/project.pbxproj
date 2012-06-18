@@ -210,6 +210,16 @@
 		B2E8B57B1570866F00318FFC /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */; };
 		B2E8B57C1570988800318FFC /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */; };
 		B2E8B57D1570989300318FFC /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5781570866C00318FFC /* Default-Landscape~ipad.png */; };
+		B2F1D6B2158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */; };
+		B2F1D6B3158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */; };
+		B2F1D6B6158FE49C00EE06B9 /* BounceObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B5158FE49C00EE06B9 /* BounceObject.mm */; };
+		B2F1D6B7158FE49C00EE06B9 /* BounceObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B5158FE49C00EE06B9 /* BounceObject.mm */; };
+		B2F1D6BA158FE51200EE06B9 /* BounceArena.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B9158FE51200EE06B9 /* BounceArena.mm */; };
+		B2F1D6BB158FE51200EE06B9 /* BounceArena.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B9158FE51200EE06B9 /* BounceArena.mm */; };
+		B2F1D6BE158FE57C00EE06B9 /* BounceKillArena.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */; };
+		B2F1D6BF158FE57C00EE06B9 /* BounceKillArena.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */; };
+		B2F1D6C2158FE5E100EE06B9 /* BounceConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */; };
+		B2F1D6C3158FE5E100EE06B9 /* BounceConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -386,6 +396,16 @@
 		B2E8B572157060B000318FFC /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		B2E8B5781570866C00318FFC /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		B2F1D6B0158FE3EA00EE06B9 /* ChipmunkObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChipmunkObject.h; sourceTree = "<group>"; };
+		B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChipmunkObject.mm; sourceTree = "<group>"; };
+		B2F1D6B4158FE49C00EE06B9 /* BounceObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceObject.h; sourceTree = "<group>"; };
+		B2F1D6B5158FE49C00EE06B9 /* BounceObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceObject.mm; sourceTree = "<group>"; };
+		B2F1D6B8158FE51200EE06B9 /* BounceArena.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceArena.h; sourceTree = "<group>"; };
+		B2F1D6B9158FE51200EE06B9 /* BounceArena.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceArena.mm; sourceTree = "<group>"; };
+		B2F1D6BC158FE57C00EE06B9 /* BounceKillArena.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceKillArena.h; sourceTree = "<group>"; };
+		B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceKillArena.mm; sourceTree = "<group>"; };
+		B2F1D6C0158FE5E100EE06B9 /* BounceConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceConstants.h; sourceTree = "<group>"; };
+		B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BounceConstants.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -448,6 +468,16 @@
 				B2E54A11158CC462009880FE /* FSATextureManager.m */,
 				B2E54A14158CED0A009880FE /* FSAUtil.h */,
 				B2E54A15158CED76009880FE /* FSAUtil.m */,
+				B2F1D6B0158FE3EA00EE06B9 /* ChipmunkObject.h */,
+				B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */,
+				B2F1D6B4158FE49C00EE06B9 /* BounceObject.h */,
+				B2F1D6B5158FE49C00EE06B9 /* BounceObject.mm */,
+				B2F1D6B8158FE51200EE06B9 /* BounceArena.h */,
+				B2F1D6B9158FE51200EE06B9 /* BounceArena.mm */,
+				B2F1D6BC158FE57C00EE06B9 /* BounceKillArena.h */,
+				B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */,
+				B2F1D6C0158FE5E100EE06B9 /* BounceConstants.h */,
+				B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */,
 				B2D073AA1560C1870001DF70 /* BounceSimulation.h */,
 				B2D073AB1560C1870001DF70 /* BounceSimulation.mm */,
 				B21A93CE15599CCE002D2BEE /* SoundManager.h */,
@@ -1029,6 +1059,11 @@
 				B28AE1E91583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
 				B2E54A12158CC463009880FE /* FSATextureManager.m in Sources */,
 				B2E54A16158CED77009880FE /* FSAUtil.m in Sources */,
+				B2F1D6B2158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */,
+				B2F1D6B6158FE49C00EE06B9 /* BounceObject.mm in Sources */,
+				B2F1D6BA158FE51200EE06B9 /* BounceArena.mm in Sources */,
+				B2F1D6BE158FE57C00EE06B9 /* BounceKillArena.mm in Sources */,
+				B2F1D6C2158FE5E100EE06B9 /* BounceConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1060,6 +1095,11 @@
 				B28AE1EA1583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
 				B2E54A13158CC463009880FE /* FSATextureManager.m in Sources */,
 				B2E54A17158CED77009880FE /* FSAUtil.m in Sources */,
+				B2F1D6B3158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */,
+				B2F1D6B7158FE49C00EE06B9 /* BounceObject.mm in Sources */,
+				B2F1D6BB158FE51200EE06B9 /* BounceArena.mm in Sources */,
+				B2F1D6BF158FE57C00EE06B9 /* BounceKillArena.mm in Sources */,
+				B2F1D6C3158FE5E100EE06B9 /* BounceConstants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

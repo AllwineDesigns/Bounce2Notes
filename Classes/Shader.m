@@ -10,7 +10,11 @@
 @implementation Shader
 
 -(id)initWithShaderPaths: (NSString*) vert_shader fragShader: (NSString*)frag_shader {
-    [self loadShaders: vert_shader fragShader:frag_shader];
+    self = [super init];
+    
+    if(self) {
+        [self loadShaders: vert_shader fragShader:frag_shader];
+    }
     
     return self;
 }

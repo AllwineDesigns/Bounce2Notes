@@ -10,6 +10,9 @@
 #import <chipmunk/chipmunk.h>
 #import "FSAAudioPlayer.h"
 #import <fsa/Vector.hpp>
+#import "BounceObject.h"
+#import "BounceArena.h"
+#import "BounceKillArena.h"
 
 using namespace fsa;
 
@@ -22,101 +25,31 @@ typedef enum {
     KILL_RIGHT_TYPE
 } BounceObjectType;
 
-@interface ChipmunkObject : NSObject {
-    BOOL _isStationary;
-    
-    cpSpace *_space;
-    cpBody *_body;
-    NSMutableSet *_shapes;
-    int _numShapes;
-    
-    float _mass;
-    float _moment;
-}
-@property (nonatomic, readonly) cpSpace* space;
-@property (nonatomic, readonly) NSSet* shapes;
-@property (nonatomic, readonly) cpBody* body;
-@property (nonatomic) BOOL isStationary;
-
--(void)addShape:(cpShape*)shape;
--(void)removeShape:(cpShape*)shape;
-
--(const vec2)velocity;
--(void)setVelocity:(const vec2&)vel;
-
--(const vec2)position;
--(void)setPosition:(const vec2&)loc;
-
--(float)angle;
--(void)setAngle:(float)a;
-
--(float)angVel;
--(void)setAngVel:(float)a;
-
-@end
-
-@interface BounceObject : ChipmunkObject {   
-    vec4 _color;
-    
-    GLuint _shapeTexture;
-    GLuint _patternTexture;
-    
-    float _size;
-    
-    float _intensity;
-    
-    vec2 _vertOffsets[4];
-    vec2 _vertVels[4];
-    vec2 _vertUVs[4];
-}
-
-@property (nonatomic) vec4 color;
-@property (nonatomic, setter = resize:) float size;
-@property (nonatomic, readonly) GLuint shapeTexture;
-@property (nonatomic) GLuint patternTexture;
-
--(id)initRandomObjectAt: (const vec2&)loc inSpace:(cpSpace*)space;
--(id)initRandomObjectAt: (const vec2&)loc withVelocity:(const vec2&)vel inSpace:(cpSpace*)space;
--(id)initObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel withColor:(const vec4&)color withSize:(float)size inSpace:(cpSpace*)space;
-
--(void)resize:(float)s;
-
--(vec2*)vertOffsets;
--(vec2*)vertVels;
--(vec2*)vertUVs;
-
-@end
-
-@interface Ball : BounceObject {
-}
-@end
-
-@interface Square : BounceObject {
-}
-@end
-
-@interface Triangle : BounceObject {
-}
-@end
-
 @interface BounceSimulation : NSObject {
     id<FSAAudioDelegate>* _audioDelegate;
     
     cpSpace* _space;
     
     NSMutableSet *_objects;
+    NSMutableSet *_delayedRemoveObjects;
     NSMutableDictionary *_gestures;
-    
-    ChipmunkObject *arena;
+        
+    BounceArena *_arena;
+    BounceKillArena *_killArena;
     
     float _dt;
+    float _timeRemainder;
 }
 
 -(id)initWithRect: (CGRect)rect audioDelegate:(id<FSAAudioDelegate>*)delegate;
 -(void)addObject: (BounceObject*)object;
 -(void)removeObject: (BounceObject*)object;
 -(void)postSolveRemoveObject: (BounceObject*)object;
--(void)containsObject: (BounceObject*)object;
+-(BOOL)isObjectParticipatingInGesture: (BounceObject*)obj;
+-(BOOL)isObjectBeingCreatedOrGrabbed: (BounceObject*)obj;
+-(BOOL)isObjectBeingTransformed: (BounceObject*)obj;
+-(NSSet*)objectsAt: (const vec2&)loc withinRadius:(float)radius;
+-(BounceObject*)objectAt:(const vec2&)loc;
 
 -(void)step: (float)t;
 -(void)next;

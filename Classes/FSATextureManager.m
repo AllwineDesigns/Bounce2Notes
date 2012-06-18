@@ -13,7 +13,11 @@ static FSATextureManager* fsaTextureManager;
 @implementation FSATextureManager
 
 -(id)init {
-    textures = [[NSMutableDictionary alloc] initWithCapacity:5];
+    self = [super init];
+    
+    if(self) {
+        textures = [[NSMutableDictionary alloc] initWithCapacity:5];
+    }
     
     return self;
 }
