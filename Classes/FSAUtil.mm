@@ -8,6 +8,12 @@
 
 #import "FSAUtil.h"
 
+#import <sys/utsname.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 {
 	//NSLog(@"Hue %f",h);
@@ -57,5 +63,18 @@ void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 			break;
 	}
 }
+
+
+NSString* machineName() {
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    
+    return [NSString stringWithCString:systemInfo.machine
+                              encoding:NSUTF8StringEncoding];
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 

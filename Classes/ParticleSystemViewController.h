@@ -18,19 +18,23 @@
 //#import "BasicParticleShader.h"
 //#import "FSAMultiGestureRecognizer.h"
 #import "FSAMultiTapAndDragRecognizer.h"
-#import "ChipmunkSimulationShader.h"
-#import "ChipmunkSimulationStationaryShader.h"
-#import "BounceKillBoxShader.h"
+//#import "ChipmunkSimulationShader.h"
+//#import "ChipmunkSimulationStationaryShader.h"
+//#import "BounceKillBoxShader.h"
+#import "BounceSimulation.h"
+#import "FSAAudioPlayer.h"
 
-@interface ParticleSystemViewController : UIViewController
+@interface ParticleSystemViewController : UIViewController <FSAAudioDelegate>
 {
     EAGLContext *context;
 //    BasicParticleShader *shader;
 //    BasicParticleSystem *psystem;
-    ChipmunkSimulation *simulation;
-    ChipmunkSimulationShader *shader;
-    ChipmunkSimulationStationaryShader *stationaryShader;
-    BounceKillBoxShader *killBoxShader;
+//    ChipmunkSimulation *simulation;
+//    ChipmunkSimulationShader *shader;
+//    ChipmunkSimulationStationaryShader *stationaryShader;
+//    BounceKillBoxShader *killBoxShader;
+    
+    BounceSimulation *simulation;
 
 
     NSDate *lastUpdate;
@@ -38,6 +42,9 @@
     
 //    FSAMultiGestureRecognizer *multiGestureRecognizer;
     FSAMultiTapAndDragRecognizer *multiTapAndDragRecognizer;
+    
+    FSAShader *_objectShader;
+    FSAShader *_stationaryShader;
     
     float aspect;
     BOOL animating;

@@ -19,10 +19,12 @@
     self = [super init];
     
     if(self) {
-        _isInitializedRogue = NO;
+        _isRogue = NO;
         _shapes = (cpShape**)malloc(sizeof(cpShape*));
         _numShapes = 0;
         _allocatedShapes = 1;
+        
+        _space = NULL;
         
         _body = cpBodyNew(1, 1);
         _mass = 1;
@@ -34,7 +36,7 @@
     self = [super init];
     
     if(self) {
-        _isInitializedRogue = YES;
+        _isRogue = YES;
         _shapes = (cpShape**)malloc(sizeof(cpShape*));
         _numShapes = 0;
         _allocatedShapes = 1;
@@ -49,7 +51,7 @@
     self = [super init];
     
     if(self) {
-        _isInitializedRogue = NO;
+        _isRogue = NO;
         _shapes = (cpShape**)malloc(sizeof(cpShape*));
         _numShapes = 0;
         _allocatedShapes = 1;
@@ -82,7 +84,22 @@
         _shapes = (cpShape**)realloc(_shapes, _allocatedShapes*sizeof(cpShape*));
     }
     _shapes[_numShapes] = shape;
+    if(_space != NULL) {
+        cpSpaceAddShape(_space, shape);
+    }
     _numShapes++;
+}
+
+-(void)removeAllShapes {
+    if(_space != NULL) {
+        for(int i = 0; i < _numShapes; ++i) {
+            cpSpaceRemoveShape(_space, _shapes[i]);
+        }
+    }
+    for(int i = 0; i < _numShapes; ++i) {
+        cpShapeFree(_shapes[i]);
+    }
+    _numShapes = 0;
 }
 
 -(const vec2)velocity {
@@ -120,7 +137,7 @@
 
 -(void)addToSpace:(cpSpace*)space {
     _space = space;
-    if(!cpBodyIsStatic(_body) && !_isInitializedRogue) {
+    if(!cpBodyIsStatic(_body) && !_isRogue) {
         cpSpaceAddBody(_space, _body);
     }
     for(int i = 0; i < _numShapes; i++) {
@@ -136,6 +153,9 @@
     }
     
     _space = NULL;
+}
+-(BOOL)hasBeenAddedToSpace {
+    return _space != NULL;
 }
 
 -(float)mass {
@@ -162,11 +182,15 @@
     return cpBodyIsRogue(_body) && !cpBodyIsStatic(_body);
 }
 -(void)makeRogue { // if static, makes 
+    _isRogue = YES;
     if(cpBodyIsStatic(_body)) {
         [self makeSimulated];
     }
-    if(!cpBodyIsRogue(_body)) {
-        cpSpaceRemoveBody(_space, _body);
+    
+    if(_space != NULL) {
+        if(!cpBodyIsRogue(_body)) {
+            cpSpaceRemoveBody(_space, _body);
+        }
     }
     
     cpBodySetMass(_body, _mass);
@@ -177,23 +201,30 @@
     return cpBodyIsStatic(_body);
 }
 -(void)makeStatic {
-    if(!cpBodyIsRogue(_body)) {
-        cpSpaceRemoveBody(_space, _body);
+    _isRogue = NO;
+    if(_space != NULL) {
+        if(!cpBodyIsRogue(_body)) {
+            cpSpaceRemoveBody(_space, _body);
+        }
     }
     
     if(!cpBodyIsStatic(_body)) {
-        for(int i = 0; i < _numShapes; i++) {
-            cpSpaceRemoveShape(_space, _shapes[i]);
+        if(_space != NULL) {
+            for(int i = 0; i < _numShapes; i++) {
+                cpSpaceRemoveShape(_space, _shapes[i]);
+            }
         }
         
         CP_PRIVATE(_body->node).idleTime = (cpFloat)INFINITY;
         cpBodySetMass(_body, (cpFloat)INFINITY);
         cpBodySetMoment(_body, (cpFloat)INFINITY);
         
-        for(int i = 0; i < _numShapes; i++) {
-            cpSpaceAddShape(_space, _shapes[i]);
+        if(_space != NULL) {
+            for(int i = 0; i < _numShapes; i++) {
+                cpSpaceAddShape(_space, _shapes[i]);
+            }
+            cpSpaceReindexStatic(_space);
         }
-        cpSpaceReindexStatic(_space);
         
         cpBodySetVel(_body, cpvzero);
         cpBodySetAngVel(_body, 0);
@@ -206,24 +237,32 @@
 -(void)makeSimulated {
     bool wasStatic = cpBodyIsStatic(_body);
     
+    _isRogue = NO;
     if(cpBodyIsRogue(_body)) {
-        for(int i = 0; i < _numShapes; i++) {
-            cpSpaceRemoveShape(_space, _shapes[i]);
+        
+        if(_space != NULL) {
+            for(int i = 0; i < _numShapes; i++) {
+                cpSpaceRemoveShape(_space, _shapes[i]);
+            }
         }
         
         CP_PRIVATE(_body->node).idleTime = (cpFloat)0;
         cpBodySetMass(_body, _mass);
         cpBodySetMoment(_body, _moment);
         
-        for(int i = 0; i < _numShapes; i++) {
-            cpSpaceAddShape(_space, _shapes[i]);
+        if(_space != NULL) {
+            for(int i = 0; i < _numShapes; i++) {
+                cpSpaceAddShape(_space, _shapes[i]);
+            }
+            
+            
+            cpSpaceAddBody(_space, _body);
+            
+            if(wasStatic) {
+                cpSpaceReindexStatic(_space);
+            }
         }
-        
-        cpSpaceAddBody(_space, _body);
-        
-        if(wasStatic) {
-            cpSpaceReindexStatic(_space);
-        }
+
     }
 }
 

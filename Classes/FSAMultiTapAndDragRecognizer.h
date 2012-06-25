@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FSAMultiGestureRecognizer.h"
 
-@interface FSAMultiTapAndDragRecognizer : UIGestureRecognizer {    
+@interface FSAMultiTapAndDragRecognizer : NSObject {    
     CFMutableDictionaryRef oneFingerTouches;
     CFMutableDictionaryRef dragGestures;
     NSMutableSet *threeFingerTopDrags;
@@ -17,11 +17,19 @@
     NSMutableSet *threeFingerBottomDrags;
     NSMutableSet *threeFingerRightDrags;
     
+    UIView *view;
+    
     float edgeWidth;
     
     id target;
 }
+@property (retain, nonatomic) UIView* view;
 @property (retain, nonatomic) id target;
 -(id)initWithTarget:(id)target;
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event;
 
 @end

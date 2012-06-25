@@ -9,9 +9,15 @@
 #ifndef ParticleSystem_FSAUtil_h
 #define ParticleSystem_FSAUtil_h
 
-#import <sys/utsname.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 NSString* machineName();
+    
+#ifdef __cplusplus
+}
+#endif
 
 #endif

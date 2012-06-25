@@ -1,4 +1,4 @@
-#import "ChipmunkSimulationShader.h"
+//#import "ChipmunkSimulationShader.h"
 #import <QuartzCore/QuartzCore.h>
 
 enum {
@@ -83,18 +83,18 @@ enum {
     return [self initWithShaderPaths:@"BallShader" fragShader:@"BallShader"];
 }
 
--(void)bindAttributeLocations {
+-(void)bindAttributeLocations { /*
     glBindAttribLocation(program, ATTRIB_VERTEX, "position");
     glBindAttribLocation(program, ATTRIB_COLOR, "color");   
     glBindAttribLocation(program, ATTRIB_UV, "uv");
-    glBindAttribLocation(program, ATTRIB_INTENSITY, "intensity");
+    glBindAttribLocation(program, ATTRIB_INTENSITY, "intensity");*/
 }
 
--(void)getUniformLocations {
+-(void)getUniformLocations {/*
     textureLoc = glGetUniformLocation(program, "texture");
     patternLoc = glGetUniformLocation(program, "pattern");
 
-    aspectLoc = glGetUniformLocation(program, "aspect");
+    aspectLoc = glGetUniformLocation(program, "aspect");*/
 }
  
  //do quads

@@ -7,6 +7,7 @@
 //
 
 #import "BounceKillArena.h"
+#import "BounceSimulation.h"
 
 @implementation BounceKillArena
 

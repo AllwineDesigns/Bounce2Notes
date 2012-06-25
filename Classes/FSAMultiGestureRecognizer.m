@@ -29,16 +29,19 @@ const float FSA_TAP_THRESHOLD = .2;
     return one_finger;
 }
 -(id)initWithTouch:(UITouch *)to atTimestamp:(NSTimeInterval)t {
-    self.hasLongTouched = NO;
-    self.isThreeFingerDrag = NO;
-    self.hasDragged = NO;
-    self.touch = to;
-    self.beginLocation = [to locationInView:nil];
-    self.beginTimestamp = t;
+    hasLongTouched = NO;
+    isThreeFingerDrag = NO;
+    hasDragged = NO;
+    touch = to;
+    [touch retain];
+    beginLocation = [to locationInView:nil];
+    beginTimestamp = t;
     return self;
 }
 -(void)dealloc {
-    self.touch = nil;
+    [touch release]; 
+
+    touch = nil;
     [super dealloc];
 }
 @end

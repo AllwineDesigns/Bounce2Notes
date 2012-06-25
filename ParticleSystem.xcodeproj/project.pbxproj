@@ -25,6 +25,10 @@
 		B20431021549DEE9006CAED1 /* libChipmunk-iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20430F71549DEE9006CAED1 /* libChipmunk-iPhone.a */; };
 		B20431031549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20430F81549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a */; };
 		B20431041549DEE9006CAED1 /* Noise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430FB1549DEE9006CAED1 /* Noise.cpp */; };
+		B21A12FD15965E46005DFBA0 /* BounceGesture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21A12FC15965E46005DFBA0 /* BounceGesture.mm */; };
+		B21A12FE15965E46005DFBA0 /* BounceGesture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21A12FC15965E46005DFBA0 /* BounceGesture.mm */; };
+		B21A13061596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */; };
+		B21A13071596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */; };
 		B21A93BD1559954A002D2BEE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B21A93BC1559954A002D2BEE /* AVFoundation.framework */; };
 		B21A93D015599CCE002D2BEE /* SoundManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A93CF15599CCE002D2BEE /* SoundManager.m */; };
 		B21A93F3155B34E2002D2BEE /* FSAMultiTapAndDragRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A93F2155B34E1002D2BEE /* FSAMultiTapAndDragRecognizer.m */; };
@@ -32,18 +36,14 @@
 		B21A93F7155C2152002D2BEE /* icon2_114.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A93F5155C2152002D2BEE /* icon2_114.png */; };
 		B21A93FC155C6A1D002D2BEE /* libChipmunk-iPhone_armv6.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B21A93FB155C6A1D002D2BEE /* libChipmunk-iPhone_armv6.a */; };
 		B2343BBD15478C4C00AFF2A9 /* SimulationTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBC15478C4C00AFF2A9 /* SimulationTimer.m */; };
-		B2343BBF1547BCEF00AFF2A9 /* ChipmunkSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.mm */; };
-		B2343BC21547C9B100AFF2A9 /* ChipmunkSimulationShader.mm in Resources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
-		B2343CEA1547D9C200AFF2A9 /* ChipmunkSimulationShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
-		B23F12EA15703AEF00FE4D09 /* StationaryShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2805788156C181100C2E7A2 /* StationaryShader.fsh */; };
-		B23F12EB15703AEF00FE4D09 /* StationaryShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B280578A156C181B00C2E7A2 /* StationaryShader.vsh */; };
+		B23F12EA15703AEF00FE4D09 /* SingleObjectStationaryShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2805788156C181100C2E7A2 /* SingleObjectStationaryShader.fsh */; };
+		B23F12EB15703AEF00FE4D09 /* SingleObjectStationaryShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B280578A156C181B00C2E7A2 /* SingleObjectStationaryShader.vsh */; };
 		B23F12EC15703AEF00FE4D09 /* BallShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C115471978009B483D /* BallShader.fsh */; };
 		B23F12ED15703AEF00FE4D09 /* BallShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C31547199C009B483D /* BallShader.vsh */; };
 		B23F12EE15703AEF00FE4D09 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27910084DCA00A42282 /* Shader.fsh */; };
 		B23F12EF15703AEF00FE4D09 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27A10084DCA00A42282 /* Shader.vsh */; };
 		B23F12F015703AEF00FE4D09 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		B23F12F115703AEF00FE4D09 /* ParticleSystemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */; };
-		B23F12F215703AEF00FE4D09 /* ChipmunkSimulationShader.mm in Resources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
 		B23F12F315703AEF00FE4D09 /* icon2_72.png in Resources */ = {isa = PBXBuildFile; fileRef = B294478E1551E7B8003D1431 /* icon2_72.png */; };
 		B23F12F415703AEF00FE4D09 /* icon2_144.png in Resources */ = {isa = PBXBuildFile; fileRef = B29447901551E7BE003D1431 /* icon2_144.png */; };
 		B23F12F515703AEF00FE4D09 /* icon2_57.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A93F4155C2152002D2BEE /* icon2_57.png */; };
@@ -82,19 +82,13 @@
 		B23F131815703AEF00FE4D09 /* g_1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280575B156749BD00C2E7A2 /* g_1.caf */; };
 		B23F131915703AEF00FE4D09 /* g_2.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280575C156749BD00C2E7A2 /* g_2.caf */; };
 		B23F131A15703AEF00FE4D09 /* g_3.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280575D156749BD00C2E7A2 /* g_3.caf */; };
-		B23F131B15703AEF00FE4D09 /* stationary.png in Resources */ = {isa = PBXBuildFile; fileRef = B2805797156C427F00C2E7A2 /* stationary.png */; };
-		B23F131C15703AEF00FE4D09 /* ball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B280579F1570033800C2E7A2 /* ball.jpg */; };
-		B23F131F15703AEF00FE4D09 /* ChipmunkSimulationStationaryShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2805784156C171000C2E7A2 /* ChipmunkSimulationStationaryShader.mm */; };
-		B23F132015703AEF00FE4D09 /* ChipmunkSimulationShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2343BC11547C9B100AFF2A9 /* ChipmunkSimulationShader.mm */; };
 		B23F132115703AEF00FE4D09 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		B23F132215703AEF00FE4D09 /* ParticleSystemAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* ParticleSystemAppDelegate.mm */; };
 		B23F132315703AEF00FE4D09 /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */; };
 		B23F132415703AEF00FE4D09 /* ParticleSystemViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */; };
-		B23F132515703AEF00FE4D09 /* Shader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* Shader.m */; };
-		B23F132615703AEF00FE4D09 /* BasicParticleShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */; };
+		B23F132515703AEF00FE4D09 /* FSAShader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* FSAShader.m */; };
 		B23F132715703AEF00FE4D09 /* BasicParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */; };
 		B23F132815703AEF00FE4D09 /* SimulationTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBC15478C4C00AFF2A9 /* SimulationTimer.m */; };
-		B23F132915703AEF00FE4D09 /* ChipmunkSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2343BBE1547BCEF00AFF2A9 /* ChipmunkSimulation.mm */; };
 		B23F132A15703AEF00FE4D09 /* Matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430E21549DEE9006CAED1 /* Matrix.cpp */; };
 		B23F132B15703AEF00FE4D09 /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430E81549DEE9006CAED1 /* Transform.cpp */; };
 		B23F132C15703AEF00FE4D09 /* Vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B20430EA1549DEE9006CAED1 /* Vector.cpp */; };
@@ -116,7 +110,7 @@
 		B23F133D15703AEF00FE4D09 /* libChipmunk-iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20430F71549DEE9006CAED1 /* libChipmunk-iPhone.a */; };
 		B23F133E15703AEF00FE4D09 /* libChipmunk-iPhoneSimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B20430F81549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a */; };
 		B2454B4B154CDF5600FB5576 /* FSAMultiGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */; };
-		B276E49F1540F1430078737B /* Shader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* Shader.m */; };
+		B276E49F1540F1430078737B /* FSAShader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* FSAShader.m */; };
 		B280571F1563336200C2E7A2 /* marimba_a1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571A1563336200C2E7A2 /* marimba_a1.caf */; };
 		B28057201563336200C2E7A2 /* marimba_c1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571B1563336200C2E7A2 /* marimba_c1.caf */; };
 		B28057211563336200C2E7A2 /* marimba_c2.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571C1563336200C2E7A2 /* marimba_c2.caf */; };
@@ -151,17 +145,10 @@
 		B2805771156749BD00C2E7A2 /* g_1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280575B156749BD00C2E7A2 /* g_1.caf */; };
 		B2805772156749BD00C2E7A2 /* g_2.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280575C156749BD00C2E7A2 /* g_2.caf */; };
 		B2805773156749BD00C2E7A2 /* g_3.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280575D156749BD00C2E7A2 /* g_3.caf */; };
-		B280578C156C1AC400C2E7A2 /* StationaryShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2805788156C181100C2E7A2 /* StationaryShader.fsh */; };
-		B280578D156C1AC400C2E7A2 /* StationaryShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B280578A156C181B00C2E7A2 /* StationaryShader.vsh */; };
-		B280578E156C1ACE00C2E7A2 /* ChipmunkSimulationStationaryShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2805784156C171000C2E7A2 /* ChipmunkSimulationStationaryShader.mm */; };
-		B2805798156C427F00C2E7A2 /* stationary.png in Resources */ = {isa = PBXBuildFile; fileRef = B2805797156C427F00C2E7A2 /* stationary.png */; };
-		B28057A01570033800C2E7A2 /* ball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B280579F1570033800C2E7A2 /* ball.jpg */; };
-		B28AE1E31583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */; };
-		B28AE1E41583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */; };
+		B280578C156C1AC400C2E7A2 /* SingleObjectStationaryShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2805788156C181100C2E7A2 /* SingleObjectStationaryShader.fsh */; };
+		B280578D156C1AC400C2E7A2 /* SingleObjectStationaryShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B280578A156C181B00C2E7A2 /* SingleObjectStationaryShader.vsh */; };
 		B28AE1E61583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */; };
 		B28AE1E71583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */; };
-		B28AE1E91583B20400C6487A /* BounceKillBoxShader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
-		B28AE1EA1583B20400C6487A /* BounceKillBoxShader.vsh in Sources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
 		B28AE1EB1583B78200C6487A /* BounceKillBoxShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
 		B28AE1EC1583B78E00C6487A /* BounceKillBoxShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */; };
 		B294478F1551E7B8003D1431 /* icon2_72.png in Resources */ = {isa = PBXBuildFile; fileRef = B294478E1551E7B8003D1431 /* icon2_72.png */; };
@@ -170,21 +157,32 @@
 		B29630CA15472C46009B483D /* BallShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C31547199C009B483D /* BallShader.vsh */; };
 		B29630CC15473B80009B483D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B29630CB15473B80009B483D /* CoreGraphics.framework */; };
 		B29630CE1547572C009B483D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B29630CD1547572C009B483D /* CoreMotion.framework */; };
-		B2BB88C01574557900689E05 /* spiral.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2BB88BF1574557900689E05 /* spiral.jpg */; };
-		B2BB88C4157460E600689E05 /* ball_nocenterglow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2BB88C3157460E600689E05 /* ball_nocenterglow.jpg */; };
 		B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */; };
 		B2D07351155DAA4F0001DF70 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */; };
 		B2D073AC1560C1880001DF70 /* BounceSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.mm */; };
-		B2E464891545CDD3000F2F48 /* BasicParticleShader.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */; };
+		B2DE9DAB1590174000D23FAA /* FSAUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.mm */; };
+		B2DE9DAD15902B4600D23FAA /* spiral.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DAC15902B4600D23FAA /* spiral.jpg */; };
+		B2DE9DAE15902B4600D23FAA /* spiral.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DAC15902B4600D23FAA /* spiral.jpg */; };
+		B2DE9DD315926A8500D23FAA /* SingleObjectGlowShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */; };
+		B2DE9DD415926A8500D23FAA /* SingleObjectGlowShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */; };
+		B2DE9DD515926A8E00D23FAA /* SingleObjectGlowShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */; };
+		B2DE9DD615926A8E00D23FAA /* SingleObjectGlowShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */; };
+		B2DE9DE31592789200D23FAA /* stationary_ball.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE01592789200D23FAA /* stationary_ball.png */; };
+		B2DE9DE41592789200D23FAA /* stationary_ball.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE01592789200D23FAA /* stationary_ball.png */; };
+		B2DE9DE51592789200D23FAA /* stationary_square.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE11592789200D23FAA /* stationary_square.png */; };
+		B2DE9DE61592789200D23FAA /* stationary_square.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE11592789200D23FAA /* stationary_square.png */; };
+		B2DE9DE71592789200D23FAA /* stationary_triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE21592789200D23FAA /* stationary_triangle.png */; };
+		B2DE9DE81592789200D23FAA /* stationary_triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE21592789200D23FAA /* stationary_triangle.png */; };
+		B2DE9DEC159278BB00D23FAA /* ball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE9159278BB00D23FAA /* ball.jpg */; };
+		B2DE9DED159278BB00D23FAA /* ball.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DE9159278BB00D23FAA /* ball.jpg */; };
+		B2DE9DEE159278BB00D23FAA /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DEA159278BB00D23FAA /* square.jpg */; };
+		B2DE9DEF159278BB00D23FAA /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DEA159278BB00D23FAA /* square.jpg */; };
+		B2E3CA751595488800805308 /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E3CA741595488800805308 /* triangle.jpg */; };
+		B2E3CA761595488800805308 /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E3CA741595488800805308 /* triangle.jpg */; };
 		B2E464901545DC03000F2F48 /* BasicParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */; };
 		B2E54A12158CC463009880FE /* FSATextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.m */; };
 		B2E54A13158CC463009880FE /* FSATextureManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.m */; };
-		B2E54A16158CED77009880FE /* FSAUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.m */; };
-		B2E54A17158CED77009880FE /* FSAUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.m */; };
-		B2E54A19158D45CC009880FE /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A18158D45CC009880FE /* square.jpg */; };
-		B2E54A1A158D45CC009880FE /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A18158D45CC009880FE /* square.jpg */; };
-		B2E54A1F158D4665009880FE /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A1E158D4665009880FE /* triangle.jpg */; };
-		B2E54A20158D4665009880FE /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E54A1E158D4665009880FE /* triangle.jpg */; };
+		B2E54A17158CED77009880FE /* FSAUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.mm */; };
 		B2E8B540157047DD00318FFC /* bounce_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53C157047DD00318FFC /* bounce_icon57.png */; };
 		B2E8B541157047DD00318FFC /* bounce_icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53D157047DD00318FFC /* bounce_icon72.png */; };
 		B2E8B542157047DD00318FFC /* bounce_icon114.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53E157047DD00318FFC /* bounce_icon114.png */; };
@@ -220,6 +218,10 @@
 		B2F1D6BF158FE57C00EE06B9 /* BounceKillArena.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */; };
 		B2F1D6C2158FE5E100EE06B9 /* BounceConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */; };
 		B2F1D6C3158FE5E100EE06B9 /* BounceConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */; };
+		B2F1D6C5158FEF6400EE06B9 /* SingleObjectShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2F1D6C4158FEF6400EE06B9 /* SingleObjectShader.fsh */; };
+		B2F1D6C6158FEF6400EE06B9 /* SingleObjectShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2F1D6C4158FEF6400EE06B9 /* SingleObjectShader.fsh */; };
+		B2F1D6C8158FEF7700EE06B9 /* SingleObjectShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2F1D6C7158FEF7700EE06B9 /* SingleObjectShader.vsh */; };
+		B2F1D6C9158FEF7700EE06B9 /* SingleObjectShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2F1D6C7158FEF7700EE06B9 /* SingleObjectShader.vsh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -294,6 +296,9 @@
 		B20430F71549DEE9006CAED1 /* libChipmunk-iPhone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libChipmunk-iPhone.a"; sourceTree = "<group>"; };
 		B20430F81549DEE9006CAED1 /* libChipmunk-iPhoneSimulator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libChipmunk-iPhoneSimulator.a"; sourceTree = "<group>"; };
 		B20430FB1549DEE9006CAED1 /* Noise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Noise.cpp; sourceTree = "<group>"; };
+		B21A12FB15965E46005DFBA0 /* BounceGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceGesture.h; sourceTree = "<group>"; };
+		B21A12FC15965E46005DFBA0 /* BounceGesture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceGesture.mm; sourceTree = "<group>"; };
+		B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = music_texture_sheet.jpg; sourceTree = "<group>"; };
 		B21A93BC1559954A002D2BEE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		B21A93CE15599CCE002D2BEE /* SoundManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoundManager.h; sourceTree = "<group>"; };
 		B21A93CF15599CCE002D2BEE /* SoundManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoundManager.m; sourceTree = "<group>"; };
@@ -313,8 +318,8 @@
 		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
 		B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAMultiGestureRecognizer.m; sourceTree = "<group>"; };
 		B276E499153DADC70078737B /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
-		B276E49E1540F1430078737B /* Shader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shader.m; sourceTree = "<group>"; };
-		B276E4A21540F14F0078737B /* Shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
+		B276E49E1540F1430078737B /* FSAShader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAShader.m; sourceTree = "<group>"; };
+		B276E4A21540F14F0078737B /* FSAShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAShader.h; sourceTree = "<group>"; };
 		B280571A1563336200C2E7A2 /* marimba_a1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = marimba_a1.caf; sourceTree = "<group>"; };
 		B280571B1563336200C2E7A2 /* marimba_c1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = marimba_c1.caf; sourceTree = "<group>"; };
 		B280571C1563336200C2E7A2 /* marimba_c2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = marimba_c2.caf; sourceTree = "<group>"; };
@@ -351,10 +356,8 @@
 		B280575D156749BD00C2E7A2 /* g_3.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = g_3.caf; sourceTree = "<group>"; };
 		B2805784156C171000C2E7A2 /* ChipmunkSimulationStationaryShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChipmunkSimulationStationaryShader.mm; sourceTree = "<group>"; };
 		B2805786156C173200C2E7A2 /* ChipmunkSimulationStationaryShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChipmunkSimulationStationaryShader.h; sourceTree = "<group>"; };
-		B2805788156C181100C2E7A2 /* StationaryShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = StationaryShader.fsh; sourceTree = "<group>"; };
-		B280578A156C181B00C2E7A2 /* StationaryShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = StationaryShader.vsh; sourceTree = "<group>"; };
-		B2805797156C427F00C2E7A2 /* stationary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary.png; sourceTree = "<group>"; };
-		B280579F1570033800C2E7A2 /* ball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball.jpg; sourceTree = "<group>"; };
+		B2805788156C181100C2E7A2 /* SingleObjectStationaryShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectStationaryShader.fsh; sourceTree = "<group>"; };
+		B280578A156C181B00C2E7A2 /* SingleObjectStationaryShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectStationaryShader.vsh; sourceTree = "<group>"; };
 		B28AE1E11583B0FB00C6487A /* BounceKillBoxShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceKillBoxShader.h; sourceTree = "<group>"; };
 		B28AE1E21583B0FB00C6487A /* BounceKillBoxShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceKillBoxShader.mm; sourceTree = "<group>"; };
 		B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BounceKillBoxShader.fsh; path = Shaders/BounceKillBoxShader.fsh; sourceTree = "<group>"; };
@@ -365,13 +368,20 @@
 		B29630C31547199C009B483D /* BallShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = BallShader.vsh; sourceTree = "<group>"; };
 		B29630CB15473B80009B483D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		B29630CD1547572C009B483D /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		B2BB88BF1574557900689E05 /* spiral.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spiral.jpg; sourceTree = "<group>"; };
-		B2BB88C3157460E600689E05 /* ball_nocenterglow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball_nocenterglow.jpg; sourceTree = "<group>"; };
 		B2D0734D155D6A6F0001DF70 /* FSAAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAAudioPlayer.h; sourceTree = "<group>"; };
 		B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAAudioPlayer.m; sourceTree = "<group>"; };
 		B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B2D073AA1560C1870001DF70 /* BounceSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSimulation.h; sourceTree = "<group>"; };
 		B2D073AB1560C1870001DF70 /* BounceSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSimulation.mm; sourceTree = "<group>"; };
+		B2DE9DAC15902B4600D23FAA /* spiral.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spiral.jpg; sourceTree = "<group>"; };
+		B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectGlowShader.fsh; sourceTree = "<group>"; };
+		B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectGlowShader.vsh; sourceTree = "<group>"; };
+		B2DE9DE01592789200D23FAA /* stationary_ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary_ball.png; sourceTree = "<group>"; };
+		B2DE9DE11592789200D23FAA /* stationary_square.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary_square.png; sourceTree = "<group>"; };
+		B2DE9DE21592789200D23FAA /* stationary_triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary_triangle.png; sourceTree = "<group>"; };
+		B2DE9DE9159278BB00D23FAA /* ball.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ball.jpg; sourceTree = "<group>"; };
+		B2DE9DEA159278BB00D23FAA /* square.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = square.jpg; sourceTree = "<group>"; };
+		B2E3CA741595488800805308 /* triangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = triangle.jpg; sourceTree = "<group>"; };
 		B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BasicParticleShader.mm; sourceTree = "<group>"; };
 		B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BasicParticleShader.h; sourceTree = "<group>"; };
 		B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicParticleSystem.cpp; sourceTree = "<group>"; };
@@ -379,9 +389,7 @@
 		B2E54A10158CC462009880FE /* FSATextureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSATextureManager.h; sourceTree = "<group>"; };
 		B2E54A11158CC462009880FE /* FSATextureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSATextureManager.m; sourceTree = "<group>"; };
 		B2E54A14158CED0A009880FE /* FSAUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSAUtil.h; sourceTree = "<group>"; };
-		B2E54A15158CED76009880FE /* FSAUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAUtil.m; sourceTree = "<group>"; };
-		B2E54A18158D45CC009880FE /* square.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = square.jpg; sourceTree = "<group>"; };
-		B2E54A1E158D4665009880FE /* triangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = triangle.jpg; sourceTree = "<group>"; };
+		B2E54A15158CED76009880FE /* FSAUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSAUtil.mm; sourceTree = "<group>"; };
 		B2E8B53C157047DD00318FFC /* bounce_icon57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon57.png; sourceTree = "<group>"; };
 		B2E8B53D157047DD00318FFC /* bounce_icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon72.png; sourceTree = "<group>"; };
 		B2E8B53E157047DD00318FFC /* bounce_icon114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon114.png; sourceTree = "<group>"; };
@@ -406,6 +414,10 @@
 		B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceKillArena.mm; sourceTree = "<group>"; };
 		B2F1D6C0158FE5E100EE06B9 /* BounceConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceConstants.h; sourceTree = "<group>"; };
 		B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BounceConstants.m; sourceTree = "<group>"; };
+		B2F1D6C4158FEF6400EE06B9 /* SingleObjectShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectShader.fsh; sourceTree = "<group>"; };
+		B2F1D6C7158FEF7700EE06B9 /* SingleObjectShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectShader.vsh; sourceTree = "<group>"; };
+		B2F1D6CA159003D800EE06B9 /* BounceObjectShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceObjectShader.h; sourceTree = "<group>"; };
+		B2F1D6CB159003D800EE06B9 /* BounceObjectShader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceObjectShader.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -452,8 +464,10 @@
 			isa = PBXGroup;
 			children = (
 				B20430B71549DEE9006CAED1 /* fsa */,
-				B276E4A21540F14F0078737B /* Shader.h */,
-				B276E49E1540F1430078737B /* Shader.m */,
+				B276E4A21540F14F0078737B /* FSAShader.h */,
+				B276E49E1540F1430078737B /* FSAShader.m */,
+				B2F1D6CA159003D800EE06B9 /* BounceObjectShader.h */,
+				B2F1D6CB159003D800EE06B9 /* BounceObjectShader.mm */,
 				B2E4648C1545CDF7000F2F48 /* BasicParticleShader.h */,
 				B2E464881545CDD3000F2F48 /* BasicParticleShader.mm */,
 				B28AE1E11583B0FB00C6487A /* BounceKillBoxShader.h */,
@@ -467,7 +481,7 @@
 				B2E54A10158CC462009880FE /* FSATextureManager.h */,
 				B2E54A11158CC462009880FE /* FSATextureManager.m */,
 				B2E54A14158CED0A009880FE /* FSAUtil.h */,
-				B2E54A15158CED76009880FE /* FSAUtil.m */,
+				B2E54A15158CED76009880FE /* FSAUtil.mm */,
 				B2F1D6B0158FE3EA00EE06B9 /* ChipmunkObject.h */,
 				B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */,
 				B2F1D6B4158FE49C00EE06B9 /* BounceObject.h */,
@@ -478,6 +492,8 @@
 				B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */,
 				B2F1D6C0158FE5E100EE06B9 /* BounceConstants.h */,
 				B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */,
+				B21A12FB15965E46005DFBA0 /* BounceGesture.h */,
+				B21A12FC15965E46005DFBA0 /* BounceGesture.mm */,
 				B2D073AA1560C1870001DF70 /* BounceSimulation.h */,
 				B2D073AB1560C1870001DF70 /* BounceSimulation.mm */,
 				B21A93CE15599CCE002D2BEE /* SoundManager.h */,
@@ -519,10 +535,14 @@
 				2514C27A10084DCA00A42282 /* Shader.vsh */,
 				B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */,
 				B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */,
+				B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */,
+				B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */,
+				B2F1D6C4158FEF6400EE06B9 /* SingleObjectShader.fsh */,
+				B2F1D6C7158FEF7700EE06B9 /* SingleObjectShader.vsh */,
 				B29630C115471978009B483D /* BallShader.fsh */,
 				B29630C31547199C009B483D /* BallShader.vsh */,
-				B2805788156C181100C2E7A2 /* StationaryShader.fsh */,
-				B280578A156C181B00C2E7A2 /* StationaryShader.vsh */,
+				B2805788156C181100C2E7A2 /* SingleObjectStationaryShader.fsh */,
+				B280578A156C181B00C2E7A2 /* SingleObjectStationaryShader.vsh */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";
@@ -560,10 +580,14 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B2E54A1E158D4665009880FE /* triangle.jpg */,
-				B2E54A18158D45CC009880FE /* square.jpg */,
-				B2BB88C3157460E600689E05 /* ball_nocenterglow.jpg */,
-				B2BB88BF1574557900689E05 /* spiral.jpg */,
+				B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */,
+				B2E3CA741595488800805308 /* triangle.jpg */,
+				B2DE9DE9159278BB00D23FAA /* ball.jpg */,
+				B2DE9DEA159278BB00D23FAA /* square.jpg */,
+				B2DE9DE01592789200D23FAA /* stationary_ball.png */,
+				B2DE9DE11592789200D23FAA /* stationary_square.png */,
+				B2DE9DE21592789200D23FAA /* stationary_triangle.png */,
+				B2DE9DAC15902B4600D23FAA /* spiral.jpg */,
 				B2E8B5441570496A00318FFC /* bounce_lite_icon57.png */,
 				B2E8B5451570496A00318FFC /* bounce_lite_icon72.png */,
 				B2E8B5461570496A00318FFC /* bounce_lite_icon114.png */,
@@ -572,8 +596,6 @@
 				B2E8B53D157047DD00318FFC /* bounce_icon72.png */,
 				B2E8B53E157047DD00318FFC /* bounce_icon114.png */,
 				B2E8B53F157047DD00318FFC /* bounce_icon144.png */,
-				B280579F1570033800C2E7A2 /* ball.jpg */,
-				B2805797156C427F00C2E7A2 /* stationary.png */,
 				B2805748156749BC00C2E7A2 /* a_1.caf */,
 				B2805749156749BC00C2E7A2 /* a_2.caf */,
 				B280574A156749BC00C2E7A2 /* a_3.caf */,
@@ -885,16 +907,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2DE9DD515926A8E00D23FAA /* SingleObjectGlowShader.fsh in Resources */,
+				B2DE9DD615926A8E00D23FAA /* SingleObjectGlowShader.vsh in Resources */,
 				B28AE1EB1583B78200C6487A /* BounceKillBoxShader.vsh in Resources */,
-				B280578C156C1AC400C2E7A2 /* StationaryShader.fsh in Resources */,
-				B280578D156C1AC400C2E7A2 /* StationaryShader.vsh in Resources */,
+				B280578C156C1AC400C2E7A2 /* SingleObjectStationaryShader.fsh in Resources */,
+				B280578D156C1AC400C2E7A2 /* SingleObjectStationaryShader.vsh in Resources */,
 				B29630C915472C46009B483D /* BallShader.fsh in Resources */,
 				B29630CA15472C46009B483D /* BallShader.vsh in Resources */,
 				2514C27B10084DCA00A42282 /* Shader.fsh in Resources */,
 				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				28EC4C5A11D54ECE0027AA9F /* ParticleSystemViewController.xib in Resources */,
-				B2343BC21547C9B100AFF2A9 /* ChipmunkSimulationShader.mm in Resources */,
 				B294478F1551E7B8003D1431 /* icon2_72.png in Resources */,
 				B29447911551E7BE003D1431 /* icon2_144.png in Resources */,
 				B21A93F6155C2152002D2BEE /* icon2_57.png in Resources */,
@@ -933,8 +956,6 @@
 				B2805771156749BD00C2E7A2 /* g_1.caf in Resources */,
 				B2805772156749BD00C2E7A2 /* g_2.caf in Resources */,
 				B2805773156749BD00C2E7A2 /* g_3.caf in Resources */,
-				B2805798156C427F00C2E7A2 /* stationary.png in Resources */,
-				B28057A01570033800C2E7A2 /* ball.jpg in Resources */,
 				B2E8B540157047DD00318FFC /* bounce_icon57.png in Resources */,
 				B2E8B541157047DD00318FFC /* bounce_icon72.png in Resources */,
 				B2E8B542157047DD00318FFC /* bounce_icon114.png in Resources */,
@@ -949,11 +970,17 @@
 				B2E8B577157060D300318FFC /* Default@2x.png in Resources */,
 				B2E8B5791570866C00318FFC /* Default-Landscape~ipad.png in Resources */,
 				B2E8B57B1570866F00318FFC /* Default-Landscape@2x~ipad.png in Resources */,
-				B2BB88C01574557900689E05 /* spiral.jpg in Resources */,
-				B2BB88C4157460E600689E05 /* ball_nocenterglow.jpg in Resources */,
 				B28AE1E61583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
-				B2E54A19158D45CC009880FE /* square.jpg in Resources */,
-				B2E54A1F158D4665009880FE /* triangle.jpg in Resources */,
+				B2F1D6C5158FEF6400EE06B9 /* SingleObjectShader.fsh in Resources */,
+				B2F1D6C8158FEF7700EE06B9 /* SingleObjectShader.vsh in Resources */,
+				B2DE9DAD15902B4600D23FAA /* spiral.jpg in Resources */,
+				B2DE9DE31592789200D23FAA /* stationary_ball.png in Resources */,
+				B2DE9DE51592789200D23FAA /* stationary_square.png in Resources */,
+				B2DE9DE71592789200D23FAA /* stationary_triangle.png in Resources */,
+				B2DE9DEC159278BB00D23FAA /* ball.jpg in Resources */,
+				B2DE9DEE159278BB00D23FAA /* square.jpg in Resources */,
+				B2E3CA751595488800805308 /* triangle.jpg in Resources */,
+				B21A13061596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -961,16 +988,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2DE9DD315926A8500D23FAA /* SingleObjectGlowShader.fsh in Resources */,
+				B2DE9DD415926A8500D23FAA /* SingleObjectGlowShader.vsh in Resources */,
 				B28AE1EC1583B78E00C6487A /* BounceKillBoxShader.vsh in Resources */,
-				B23F12EA15703AEF00FE4D09 /* StationaryShader.fsh in Resources */,
-				B23F12EB15703AEF00FE4D09 /* StationaryShader.vsh in Resources */,
+				B23F12EA15703AEF00FE4D09 /* SingleObjectStationaryShader.fsh in Resources */,
+				B23F12EB15703AEF00FE4D09 /* SingleObjectStationaryShader.vsh in Resources */,
 				B23F12EC15703AEF00FE4D09 /* BallShader.fsh in Resources */,
 				B23F12ED15703AEF00FE4D09 /* BallShader.vsh in Resources */,
 				B23F12EE15703AEF00FE4D09 /* Shader.fsh in Resources */,
 				B23F12EF15703AEF00FE4D09 /* Shader.vsh in Resources */,
 				B23F12F015703AEF00FE4D09 /* MainWindow.xib in Resources */,
 				B23F12F115703AEF00FE4D09 /* ParticleSystemViewController.xib in Resources */,
-				B23F12F215703AEF00FE4D09 /* ChipmunkSimulationShader.mm in Resources */,
 				B23F12F315703AEF00FE4D09 /* icon2_72.png in Resources */,
 				B23F12F415703AEF00FE4D09 /* icon2_144.png in Resources */,
 				B23F12F515703AEF00FE4D09 /* icon2_57.png in Resources */,
@@ -1009,8 +1037,6 @@
 				B23F131815703AEF00FE4D09 /* g_1.caf in Resources */,
 				B23F131915703AEF00FE4D09 /* g_2.caf in Resources */,
 				B23F131A15703AEF00FE4D09 /* g_3.caf in Resources */,
-				B23F131B15703AEF00FE4D09 /* stationary.png in Resources */,
-				B23F131C15703AEF00FE4D09 /* ball.jpg in Resources */,
 				B2E8B54C1570497C00318FFC /* bounce_icon57.png in Resources */,
 				B2E8B54D1570498100318FFC /* bounce_lite_icon57.png in Resources */,
 				B2E8B54E1570498900318FFC /* bounce_lite_icon114.png in Resources */,
@@ -1023,8 +1049,16 @@
 				B2E8B57C1570988800318FFC /* Default-Landscape@2x~ipad.png in Resources */,
 				B2E8B57D1570989300318FFC /* Default-Landscape~ipad.png in Resources */,
 				B28AE1E71583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
-				B2E54A1A158D45CC009880FE /* square.jpg in Resources */,
-				B2E54A20158D4665009880FE /* triangle.jpg in Resources */,
+				B2F1D6C6158FEF6400EE06B9 /* SingleObjectShader.fsh in Resources */,
+				B2F1D6C9158FEF7700EE06B9 /* SingleObjectShader.vsh in Resources */,
+				B2DE9DAE15902B4600D23FAA /* spiral.jpg in Resources */,
+				B2DE9DE41592789200D23FAA /* stationary_ball.png in Resources */,
+				B2DE9DE61592789200D23FAA /* stationary_square.png in Resources */,
+				B2DE9DE81592789200D23FAA /* stationary_triangle.png in Resources */,
+				B2DE9DED159278BB00D23FAA /* ball.jpg in Resources */,
+				B2DE9DEF159278BB00D23FAA /* square.jpg in Resources */,
+				B2E3CA761595488800805308 /* triangle.jpg in Resources */,
+				B21A13071596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1035,17 +1069,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B280578E156C1ACE00C2E7A2 /* ChipmunkSimulationStationaryShader.mm in Sources */,
-				B2343CEA1547D9C200AFF2A9 /* ChipmunkSimulationShader.mm in Sources */,
+				B2DE9DAB1590174000D23FAA /* FSAUtil.mm in Sources */,
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				1D3623260D0F684500981E51 /* ParticleSystemAppDelegate.mm in Sources */,
 				28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */,
 				28EC4C5911D54ECE0027AA9F /* ParticleSystemViewController.mm in Sources */,
-				B276E49F1540F1430078737B /* Shader.m in Sources */,
-				B2E464891545CDD3000F2F48 /* BasicParticleShader.mm in Sources */,
+				B276E49F1540F1430078737B /* FSAShader.m in Sources */,
 				B2E464901545DC03000F2F48 /* BasicParticleSystem.cpp in Sources */,
 				B2343BBD15478C4C00AFF2A9 /* SimulationTimer.m in Sources */,
-				B2343BBF1547BCEF00AFF2A9 /* ChipmunkSimulation.mm in Sources */,
 				B20430FC1549DEE9006CAED1 /* Matrix.cpp in Sources */,
 				B20430FE1549DEE9006CAED1 /* Transform.cpp in Sources */,
 				B20430FF1549DEE9006CAED1 /* Vector.cpp in Sources */,
@@ -1055,15 +1086,13 @@
 				B21A93F3155B34E2002D2BEE /* FSAMultiTapAndDragRecognizer.m in Sources */,
 				B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */,
 				B2D073AC1560C1880001DF70 /* BounceSimulation.mm in Sources */,
-				B28AE1E31583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */,
-				B28AE1E91583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
 				B2E54A12158CC463009880FE /* FSATextureManager.m in Sources */,
-				B2E54A16158CED77009880FE /* FSAUtil.m in Sources */,
 				B2F1D6B2158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */,
 				B2F1D6B6158FE49C00EE06B9 /* BounceObject.mm in Sources */,
 				B2F1D6BA158FE51200EE06B9 /* BounceArena.mm in Sources */,
 				B2F1D6BE158FE57C00EE06B9 /* BounceKillArena.mm in Sources */,
 				B2F1D6C2158FE5E100EE06B9 /* BounceConstants.m in Sources */,
+				B21A12FD15965E46005DFBA0 /* BounceGesture.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1071,17 +1100,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B23F131F15703AEF00FE4D09 /* ChipmunkSimulationStationaryShader.mm in Sources */,
-				B23F132015703AEF00FE4D09 /* ChipmunkSimulationShader.mm in Sources */,
 				B23F132115703AEF00FE4D09 /* main.m in Sources */,
 				B23F132215703AEF00FE4D09 /* ParticleSystemAppDelegate.mm in Sources */,
 				B23F132315703AEF00FE4D09 /* EAGLView.mm in Sources */,
 				B23F132415703AEF00FE4D09 /* ParticleSystemViewController.mm in Sources */,
-				B23F132515703AEF00FE4D09 /* Shader.m in Sources */,
-				B23F132615703AEF00FE4D09 /* BasicParticleShader.mm in Sources */,
+				B23F132515703AEF00FE4D09 /* FSAShader.m in Sources */,
 				B23F132715703AEF00FE4D09 /* BasicParticleSystem.cpp in Sources */,
 				B23F132815703AEF00FE4D09 /* SimulationTimer.m in Sources */,
-				B23F132915703AEF00FE4D09 /* ChipmunkSimulation.mm in Sources */,
 				B23F132A15703AEF00FE4D09 /* Matrix.cpp in Sources */,
 				B23F132B15703AEF00FE4D09 /* Transform.cpp in Sources */,
 				B23F132C15703AEF00FE4D09 /* Vector.cpp in Sources */,
@@ -1091,15 +1116,14 @@
 				B23F133015703AEF00FE4D09 /* FSAMultiTapAndDragRecognizer.m in Sources */,
 				B23F133115703AEF00FE4D09 /* FSAAudioPlayer.m in Sources */,
 				B23F133215703AEF00FE4D09 /* BounceSimulation.mm in Sources */,
-				B28AE1E41583B0FB00C6487A /* BounceKillBoxShader.mm in Sources */,
-				B28AE1EA1583B20400C6487A /* BounceKillBoxShader.vsh in Sources */,
 				B2E54A13158CC463009880FE /* FSATextureManager.m in Sources */,
-				B2E54A17158CED77009880FE /* FSAUtil.m in Sources */,
+				B2E54A17158CED77009880FE /* FSAUtil.mm in Sources */,
 				B2F1D6B3158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */,
 				B2F1D6B7158FE49C00EE06B9 /* BounceObject.mm in Sources */,
 				B2F1D6BB158FE51200EE06B9 /* BounceArena.mm in Sources */,
 				B2F1D6BF158FE57C00EE06B9 /* BounceKillArena.mm in Sources */,
 				B2F1D6C3158FE5E100EE06B9 /* BounceConstants.m in Sources */,
+				B21A12FE15965E46005DFBA0 /* BounceGesture.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

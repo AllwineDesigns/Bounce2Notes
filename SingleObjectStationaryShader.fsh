@@ -6,14 +6,14 @@
 //  Copyright 2012 John Allwine. All rights reserved.
 //
 
-varying lowp vec4 colorVarying;
 varying lowp vec2 uvVarying;
 
 uniform lowp sampler2D texture;
+uniform lowp vec4 color;
 
 void main()
 {
     lowp vec4 texColor = texture2D(texture, uvVarying);
 
-    gl_FragColor = colorVarying*texColor;
+    gl_FragColor = color*texColor;
 }

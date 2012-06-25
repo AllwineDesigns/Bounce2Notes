@@ -1,5 +1,5 @@
 //
-//  BallShader.vsh
+//  SingleBallShader.vsh
 //  ParticleSystem
 //
 //  Created by John Allwine on 4/24/12.
@@ -7,17 +7,17 @@
 //
 
 attribute vec2 position;
-attribute vec4 color;
-attribute vec2 uv;
+attribute vec2 shapeUV;
+attribute vec2 patternUV;
 
-varying vec4 colorVarying;
-varying vec2 uvVarying;
+varying vec2 shapeUVVarying;
+varying vec2 patternUVVarying;
 
 uniform float aspect;
 
 void main()
 {
     gl_Position = vec4(position.x, position.y*aspect, 0, 1);
-    colorVarying = color;
-    uvVarying = uv;
+    shapeUVVarying = shapeUV;
+    patternUVVarying = patternUV;
 }

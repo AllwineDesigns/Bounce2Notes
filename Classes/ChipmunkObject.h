@@ -19,7 +19,7 @@ using namespace fsa;
     int _numShapes;
     int _allocatedShapes;
     
-    bool _isInitializedRogue;
+    bool _isRogue;
     
     float _mass;
     float _moment;
@@ -35,8 +35,13 @@ using namespace fsa;
 
 -(void)addToSpace:(cpSpace*)space;
 -(void)removeFromSpace;
+-(BOOL)hasBeenAddedToSpace;
 
+-(void)addCircleShapeWithRadius: (float)radius withOffset: (const vec2&)offset;
+-(void)addSegmentShapeWithRadius: (float)radius fromA:(const vec2&)a toB:(const vec2&)b;
+-(void)addPolyShapeWithNumVerts: (int)numVerts withVerts:(vec2*)verts withOffset:(const vec2&)offset;
 -(void)addShape:(cpShape*)shape;
+-(void)removeAllShapes;
 
 -(const vec2)velocity;
 -(void)setVelocity:(const vec2&)vel;
