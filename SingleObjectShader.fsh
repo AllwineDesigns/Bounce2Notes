@@ -31,4 +31,5 @@ void main()
     col.a = r;
 
     gl_FragColor = col;
+//    gl_FragColor = vec4(.3,.3,.3, .3);
 }

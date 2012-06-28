@@ -35,12 +35,12 @@ static OSStatus inputRenderCallback (void *inRefCon,
         [callbackData->pending_lock unlock];
     }
     
-    FSASound* prev = soundList->playing;
-    FSASound* sound = prev->next;
+    FSASoundStruct* prev = soundList->playing;
+    FSASoundStruct* sound = prev->next;
     
-    FSASound finished_head;
+    FSASoundStruct finished_head;
     finished_head.next = NULL;
-    FSASound* finished_tail = NULL;
+    FSASoundStruct* finished_tail = NULL;
     
     if(sound == NULL) {
         *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
@@ -159,7 +159,6 @@ void audioRouteChangeListenerCallback (
 
 #pragma mark -
 @implementation FSAAudioPlayer
-@synthesize numSounds;
 @synthesize stereoStreamFormat;
 @synthesize graphSampleRate;
 @synthesize ioBufferDuration;
@@ -170,33 +169,27 @@ void audioRouteChangeListenerCallback (
 #pragma mark -
 #pragma mark Initialize
 
-- (id) initWithSounds: (NSArray*)files {
-    return [self initWithSounds:files volume:1];
-}
-
 // Get the app ready for playback.
-- (id) initWithSounds: (NSArray*)files volume: (float)v {
+- (id) init {
     
     self = [super init];
     
     if (!self) return nil;
     
     self.interruptedDuringPlayback = NO;
-    numSounds = [files count];
-    
-    volumeMultiply = v;
-    
-    myIndex = 0;
-    
+            
     [self setupAudioSession];
     [self setupStereoStreamFormat];
-    [self readAudioFilesIntoMemory:files];
     [self setupSoundList];
+    
+    _numSounds = 0;
+    _allocatedSounds = 10;
+    soundData = (FSASoundData**)malloc(_allocatedSounds*sizeof(FSASoundData*));
     
     callbackData.soundList = &soundList;
     callbackData.pending_lock = [[NSLock alloc] init];
     callbackData.finished_lock = [[NSLock alloc] init];
-    callbackData.player = self;
+//    callbackData.player = self;
     
     [self configureAndInitializeAudioProcessingGraph];
     
@@ -287,7 +280,6 @@ void audioRouteChangeListenerCallback (
 
 - (void) setupSoundList {
     NSString *device = machineName();
-    NSLog(@"%@\n", device);
     int max_sounds = 20;
     if([device isEqualToString:@"iPhone2,1"]) {
         max_sounds = 20;
@@ -295,7 +287,7 @@ void audioRouteChangeListenerCallback (
         max_sounds = 100;
     }
     
-    FSASound *heads = (FSASound*)calloc(4+max_sounds,sizeof(FSASound));
+    FSASoundStruct *heads = (FSASoundStruct*)calloc(4+max_sounds,sizeof(FSASoundStruct));
     
     soundList.playing = &heads[0];
     soundList.pending_head = &heads[1];
@@ -303,169 +295,170 @@ void audioRouteChangeListenerCallback (
     soundList.pool = &heads[3];
     
     for(int i = 0; i < max_sounds; ++i) {
-        FSASound *sound = &heads[4+i];
+        FSASoundStruct *sound = &heads[4+i];
         sound->next = soundList.pool->next;
         soundList.pool->next = sound;
     }
 }
 
-#pragma mark -
-#pragma mark Read audio files into memory
+- (FSASoundData*) readAudioFileIntoMemory: (NSString*)file {
+    if(_numSounds == _allocatedSounds) {
+        _allocatedSounds *= 2;
+        soundData = (FSASoundData**)realloc(soundData, _allocatedSounds*sizeof(FSASoundData*));
+    }    
+    soundData[_numSounds] = (FSASoundData*)malloc(sizeof(FSASoundData));
+    FSASoundData *data = soundData[_numSounds];
+    ++_numSounds;
 
-- (void) readAudioFilesIntoMemory: (NSArray*)files {
-    soundData = (FSASoundData*)calloc([files count],sizeof(FSASoundData));
+    CFURLRef audioFile = (CFURLRef)[[NSBundle mainBundle] URLForResource:file withExtension:@"caf"];
+
+    // Instantiate an extended audio file object.
+    ExtAudioFileRef audioFileObject = 0;
     
-    int i = 0;
-    for (NSString *file in files)  {
-        CFURLRef audioFile = (CFURLRef)[[NSBundle mainBundle] URLForResource:file withExtension:@"caf"];
+    // Open an audio file and associate it with the extended audio file object.
+    OSStatus result = ExtAudioFileOpenURL (audioFile, &audioFileObject);
+    
+    if (noErr != result || NULL == audioFileObject) {[self printErrorMessage: @"ExtAudioFileOpenURL" withStatus: result]; return NULL;}
+    
+    // Get the audio file's length in frames.
+    UInt64 totalFramesInFile = 0;
+    UInt32 frameLengthPropertySize = sizeof (totalFramesInFile);
+    
+    result =    ExtAudioFileGetProperty (
+                                         audioFileObject,
+                                         kExtAudioFileProperty_FileLengthFrames,
+                                         &frameLengthPropertySize,
+                                         &totalFramesInFile
+                                         );
+    
+    if (noErr != result) {[self printErrorMessage: @"ExtAudioFileGetProperty (audio file length in frames)" withStatus: result]; return NULL;}
+    
+    data->frameCount = totalFramesInFile;
+    
+    // Get the audio file's number of channels.
+    AudioStreamBasicDescription fileAudioFormat = {0};
+    UInt32 formatPropertySize = sizeof (fileAudioFormat);
+    
+    result =    ExtAudioFileGetProperty (
+                                         audioFileObject,
+                                         kExtAudioFileProperty_FileDataFormat,
+                                         &formatPropertySize,
+                                         &fileAudioFormat
+                                         );
+    [self printASBD:fileAudioFormat];
+    
+    if (noErr != result) {[self printErrorMessage: @"ExtAudioFileGetProperty (file audio format)" withStatus: result]; return NULL;}
+    
+    UInt32 channelCount = fileAudioFormat.mChannelsPerFrame;
 
-        // Instantiate an extended audio file object.
-        ExtAudioFileRef audioFileObject = 0;
+    
+    AudioStreamBasicDescription importFormat = {0};
+    if (2 == channelCount) {
+        // Sound is stereo, so allocate memory in the soundStructArray instance variable to  
+        //    hold the right channel audio data
+        data->left = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
+        data->right = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
         
-        // Open an audio file and associate it with the extended audio file object.
-        OSStatus result = ExtAudioFileOpenURL (audioFile, &audioFileObject);
-        
-        if (noErr != result || NULL == audioFileObject) {[self printErrorMessage: @"ExtAudioFileOpenURL" withStatus: result]; return;}
-        
-        // Get the audio file's length in frames.
-        UInt64 totalFramesInFile = 0;
-        UInt32 frameLengthPropertySize = sizeof (totalFramesInFile);
-        
-        result =    ExtAudioFileGetProperty (
-                                             audioFileObject,
-                                             kExtAudioFileProperty_FileLengthFrames,
-                                             &frameLengthPropertySize,
-                                             &totalFramesInFile
-                                             );
-        
-        if (noErr != result) {[self printErrorMessage: @"ExtAudioFileGetProperty (audio file length in frames)" withStatus: result]; return;}
-        
-        soundData[i].frameCount = totalFramesInFile;
-        
-        // Get the audio file's number of channels.
-        AudioStreamBasicDescription fileAudioFormat = {0};
-        UInt32 formatPropertySize = sizeof (fileAudioFormat);
-        
-        result =    ExtAudioFileGetProperty (
-                                             audioFileObject,
-                                             kExtAudioFileProperty_FileDataFormat,
-                                             &formatPropertySize,
-                                             &fileAudioFormat
-                                             );
-        [self printASBD:fileAudioFormat];
-        
-        if (noErr != result) {[self printErrorMessage: @"ExtAudioFileGetProperty (file audio format)" withStatus: result]; return;}
-        
-        UInt32 channelCount = fileAudioFormat.mChannelsPerFrame;
-
-        
-        AudioStreamBasicDescription importFormat = {0};
-        if (2 == channelCount) {
-            // Sound is stereo, so allocate memory in the soundStructArray instance variable to  
-            //    hold the right channel audio data
-            soundData[i].left = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
-            soundData[i].right = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
-            
-            if(soundData[i].left == NULL) {
-                NSLog(@"error allocating memory for left channel data for sound %@", audioFile);
-            }
-            if(soundData[i].right == NULL) {
-                NSLog(@"error allocating memory for right channel data for sound %@", audioFile);
-            }
-            importFormat = stereoStreamFormat;
-        } else {
-            
-            NSLog (@"*** WARNING: File format not supported - wrong number of channels");
-            ExtAudioFileDispose (audioFileObject);
-            return;
+        if(data->left == NULL) {
+            NSLog(@"error allocating memory for left channel data for sound %@", audioFile);
         }
-        
-        // Assign the appropriate mixer input bus stream data format to the extended audio 
-        //        file object. This is the format used for the audio data placed into the audio 
-        //        buffer in the SoundStruct data structure, which is in turn used in the 
-        //        inputRenderCallback callback function.
-        
-        result =    ExtAudioFileSetProperty (
-                                             audioFileObject,
-                                             kExtAudioFileProperty_ClientDataFormat,
-                                             sizeof (importFormat),
-                                             &importFormat
-                                             );
-        
-        if (noErr != result) {[self printErrorMessage: @"ExtAudioFileSetProperty (client data format)" withStatus: result]; return;}
-        
-        // Set up an AudioBufferList struct, which has two roles:
-        //
-        //        1. It gives the ExtAudioFileRead function the configuration it 
-        //            needs to correctly provide the data to the buffer.
-        //
-        //        2. It points to the soundStructArray[audioFile].audioDataLeft buffer, so 
-        //            that audio data obtained from disk using the ExtAudioFileRead function
-        //            goes to that buffer
-        
-        // Allocate memory for the buffer list struct according to the number of 
-        //    channels it represents.
-        AudioBufferList *bufferList;
-        
-        bufferList = (AudioBufferList *) malloc (
-                                                 sizeof (AudioBufferList) + sizeof (AudioBuffer) * (channelCount - 1)
-                                                 );
-        
-        if (NULL == bufferList) {NSLog (@"*** malloc failure for allocating bufferList memory"); return;}
-        
-        // initialize the mNumberBuffers member
-        bufferList->mNumberBuffers = channelCount;
-        
-        // initialize the mBuffers member to 0
-        AudioBuffer emptyBuffer = {0};
-        size_t arrayIndex;
-        for (arrayIndex = 0; arrayIndex < channelCount; arrayIndex++) {
-            bufferList->mBuffers[arrayIndex] = emptyBuffer;
+        if(data->right == NULL) {
+            NSLog(@"error allocating memory for right channel data for sound %@", audioFile);
         }
+        importFormat = stereoStreamFormat;
+    } else {
         
-        // set up the AudioBuffer structs in the buffer list
-        bufferList->mBuffers[0].mNumberChannels  = 1;
-        bufferList->mBuffers[0].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
-        bufferList->mBuffers[0].mData            = soundData[i].left;
-
-        bufferList->mBuffers[1].mNumberChannels  = 1;
-        bufferList->mBuffers[1].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
-        bufferList->mBuffers[1].mData            = soundData[i].right;
-        
-        // Perform a synchronous, sequential read of the audio data out of the file and
-        //    into the soundStructArray[audioFile].audioDataLeft and (if stereo) .audioDataRight members.
-        UInt32 numberOfPacketsToRead = (UInt32) totalFramesInFile;
-        
-        result = ExtAudioFileRead (
-                                   audioFileObject,
-                                   &numberOfPacketsToRead,
-                                   bufferList
-                                   );
-        
-        free (bufferList);
-        
-        if (noErr != result) {
-            
-            [self printErrorMessage: @"ExtAudioFileRead failure - " withStatus: result];
-            
-            // If reading from the file failed, then free the memory for the sound buffer.
-            free (soundData[i].left);
-            soundData[i].left = 0;
-            
-            free (soundData[i].right);
-            soundData[i].right = 0;
-            
-            ExtAudioFileDispose (audioFileObject);            
-            return;
-        }
-        
-        NSLog (@"Finished reading file %@ into memory", audioFile);
-        
-        // Dispose of the extended audio file object, which also
-        //    closes the associated file.
+        NSLog (@"*** WARNING: File format not supported - wrong number of channels");
         ExtAudioFileDispose (audioFileObject);
-        ++i;
+        return NULL;
     }
+    
+    // Assign the appropriate mixer input bus stream data format to the extended audio 
+    //        file object. This is the format used for the audio data placed into the audio 
+    //        buffer in the SoundStruct data structure, which is in turn used in the 
+    //        inputRenderCallback callback function.
+    
+    result =    ExtAudioFileSetProperty (
+                                         audioFileObject,
+                                         kExtAudioFileProperty_ClientDataFormat,
+                                         sizeof (importFormat),
+                                         &importFormat
+                                         );
+    
+    if (noErr != result) {[self printErrorMessage: @"ExtAudioFileSetProperty (client data format)" withStatus: result]; return NULL;}
+    
+    // Set up an AudioBufferList struct, which has two roles:
+    //
+    //        1. It gives the ExtAudioFileRead function the configuration it 
+    //            needs to correctly provide the data to the buffer.
+    //
+    //        2. It points to the soundStructArray[audioFile].audioDataLeft buffer, so 
+    //            that audio data obtained from disk using the ExtAudioFileRead function
+    //            goes to that buffer
+    
+    // Allocate memory for the buffer list struct according to the number of 
+    //    channels it represents.
+    AudioBufferList *bufferList;
+    
+    bufferList = (AudioBufferList *) malloc (
+                                             sizeof (AudioBufferList) + sizeof (AudioBuffer) * (channelCount - 1)
+                                             );
+    
+    if (NULL == bufferList) {NSLog (@"*** malloc failure for allocating bufferList memory"); return NULL;}
+    
+    // initialize the mNumberBuffers member
+    bufferList->mNumberBuffers = channelCount;
+    
+    // initialize the mBuffers member to 0
+    AudioBuffer emptyBuffer = {0};
+    size_t arrayIndex;
+    for (arrayIndex = 0; arrayIndex < channelCount; arrayIndex++) {
+        bufferList->mBuffers[arrayIndex] = emptyBuffer;
+    }
+    
+    // set up the AudioBuffer structs in the buffer list
+    bufferList->mBuffers[0].mNumberChannels  = 1;
+    bufferList->mBuffers[0].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
+    bufferList->mBuffers[0].mData            = data->left;
+
+    bufferList->mBuffers[1].mNumberChannels  = 1;
+    bufferList->mBuffers[1].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
+    bufferList->mBuffers[1].mData            = data->right;
+    
+    // Perform a synchronous, sequential read of the audio data out of the file and
+    //    into the soundStructArray[audioFile].audioDataLeft and (if stereo) .audioDataRight members.
+    UInt32 numberOfPacketsToRead = (UInt32) totalFramesInFile;
+    
+    result = ExtAudioFileRead (
+                               audioFileObject,
+                               &numberOfPacketsToRead,
+                               bufferList
+                               );
+    
+    free (bufferList);
+    
+    if (noErr != result) {
+        
+        [self printErrorMessage: @"ExtAudioFileRead failure - " withStatus: result];
+        
+        // If reading from the file failed, then free the memory for the sound buffer.
+        free (data->left);
+        data->left = 0;
+        
+        free (data->right);
+        data->right = 0;
+        
+        ExtAudioFileDispose (audioFileObject);            
+        return NULL;
+    }
+    
+    NSLog (@"Finished reading file %@ into memory", audioFile);
+    
+    // Dispose of the extended audio file object, which also
+    //    closes the associated file.
+    ExtAudioFileDispose (audioFileObject);
+
+    return data;
 }
 
 
@@ -605,17 +598,7 @@ void audioRouteChangeListenerCallback (
 
 }
 
-#define NOTES 81
-int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11, 
-    11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
-    11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
-    11,6,8,11,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11};
-
-- (void) playSound:(UInt32)index volume:(Float32)volume {
-    index = notes[myIndex];
-    myIndex = (myIndex+1)%NOTES;
-    assert(index >= 0 && index < self.numSounds);
-    volume *= volumeMultiply;
+- (void) playSound:(FSASoundData*)data volume:(Float32)volume {
     [callbackData.finished_lock lock];
     if(soundList.finished_tail != NULL) {
         soundList.finished_tail->next = soundList.pool->next;
@@ -627,18 +610,11 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
     
     [callbackData.pending_lock lock];
     
-    for(int i = 0; i < self.numSounds; i++) {
-        if(soundData[i].left == NULL || soundData[i].right == NULL) {
-            NSLog(@"%d\n", i);
-            NSLog(@"sound data is corrupted prior to adding pending sound\n");
-        }
-    }
-    
     // see if this sound already exists and hasn't started playing yet
-    FSASound* pl = soundList.pending_head->next;
-    FSASound *same_sound = NULL;
+    FSASoundStruct* pl = soundList.pending_head->next;
+    FSASoundStruct *same_sound = NULL;
     while(pl != NULL) {
-        if(pl->data == &soundData[index] && pl->sampleNumber == 0) {
+        if(pl->data == data && pl->sampleNumber == 0) {
             same_sound = pl;
             break;
         }
@@ -661,8 +637,8 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
         }
     } else if(soundList.pool->next == NULL) { 
         // if pool is empty, and volume is higher than the lowest volume sound that just started playing, than replace that sound with this one
-        FSASound* sound = soundList.pending_head->next;
-        FSASound* min_sound = NULL;
+        FSASoundStruct* sound = soundList.pending_head->next;
+        FSASoundStruct* min_sound = NULL;
         float min_vol = 999999;
         
         while(sound != NULL) {
@@ -677,30 +653,24 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
             if(min_sound->volume < volume) {
                 min_sound->numSounds = 1;
                 min_sound->volume = volume;
-                min_sound->data = &soundData[index];
+                min_sound->data = data;
             }
         }
         
     } else {
-        FSASound* sound = soundList.pool->next;
+        FSASoundStruct* sound = soundList.pool->next;
         soundList.pool->next = sound->next;
     
         sound->next = soundList.pending_head->next;
         soundList.pending_head->next = sound;
     
         sound->volume = volume;
-        sound->data = &soundData[index];
+        sound->data = data;
         sound->sampleNumber = 0;
         sound->numSounds = 1;
         
         if(soundList.pending_tail == NULL) {
             soundList.pending_tail = sound;
-        }
-    }
-    
-    for(int i = 0; i < self.numSounds; i++) {
-        if(soundData[i].left == NULL || soundData[i].right == NULL) {
-            NSLog(@"sound data is corrupted after adding pending sound\n");
         }
     }
     
@@ -842,9 +812,9 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
     callbackData.finished_lock = nil;
     callbackData.pending_lock = nil;
 
-    FSASound *node = soundList.playing;
+    FSASoundStruct *node = soundList.playing;
     while(node != NULL) {
-        FSASound *next = node->next;
+        FSASoundStruct *next = node->next;
         
         free(node);
         node = next;
@@ -852,7 +822,7 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
     
     node = soundList.pool;
     while(node != NULL) {
-        FSASound *next = node->next;
+        FSASoundStruct *next = node->next;
         
         free(node);
         node = next;
@@ -860,7 +830,7 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
     
     node = soundList.pending_head;
     while(node != NULL) {
-        FSASound *next = node->next;
+        FSASoundStruct *next = node->next;
         
         free(node);
         node = next;
@@ -868,14 +838,19 @@ int notes[NOTES] = {11,6,8,11,8,6,6,8,13,11,11,13,14,13,11,11,13,12,12,11,
     
     node = soundList.finished_head;
     while(node != NULL) {
-        FSASound *next = node->next;
+        FSASoundStruct *next = node->next;
         
         free(node);
         node = next;
     }
     
+    for(int i = 0; i < _numSounds; i++) {
+        free(soundData[i]->left);
+        free(soundData[i]->right);
+        free(soundData[i]);
+    }
     free(soundData);
-    
+        
     [super dealloc];
 }
 

@@ -8,15 +8,21 @@
 
 #import "ChipmunkObject.h"
 #import "FSAShader.h"
+#import "BounceSound.h"
+
+#define OBJECT_TYPE 1111
 
 typedef enum {
     BOUNCE_BALL,
     BOUNCE_SQUARE,
     BOUNCE_TRIANGLE,
+    BOUNCE_PENTAGON,
     NUM_BOUNCE_SHAPES
 } BounceShape;
 
-@interface BounceObject : ChipmunkObject {  
+@interface BounceObject : ChipmunkObject { 
+    id<BounceSound> _sound;
+    
     BOOL _isStationary;
     
     vec4 _color;
@@ -33,12 +39,15 @@ typedef enum {
     float _age;
     vec2 _lastVelocity;
     
-    vec2 _verts[4];
-    vec2 _vertOffsets[4]; // 0: tr, 1: tl, 2: bl, 3: br
-    vec2 _vertVels[4];
-    vec2 _vertShapeUVs[4];
-    vec2 _vertPatternUVs[4];
-    unsigned int _indices[6];
+    vec2 *_verts;
+    vec2 *_vertsUntransformed;
+    vec2 *_vertOffsets;
+    vec2 *_vertVels;
+    vec2 *_vertShapeUVs;
+    vec2 *_vertPatternUVs;
+    unsigned int *_indices;
+    unsigned int _numVerts;
+    unsigned int _numIndices;
 }
 
 @property (nonatomic) BOOL isStationary;
@@ -49,6 +58,7 @@ typedef enum {
 @property (nonatomic) float intensity;
 @property (nonatomic) float age;
 @property (nonatomic) const vec2& lastVelocity;
+@property (nonatomic, retain) id<FSASoundDelegate> sound;
 
 +(id)randomObjectAt: (const vec2&)loc;
 +(id)randomObjectAt:(const vec2 &)loc withVelocity:(const vec2&)vel;
@@ -64,20 +74,26 @@ typedef enum {
 -(BounceShape)bounceShape;
 -(void)setBounceShape: (BounceShape)bounceShape;
 
+-(void)separate: (cpContactPointSet*)contactPoints;
+
 -(float)size;
 -(void)setSize:(float)s;
+
+-(void)setupSquareVerts;
+-(void)setupPentagonVerts;
+-(void)setupTriangleVerts;
 
 -(void)setupBall;
 -(void)setupSquare;
 -(void)setupTriangle;
+-(void)setupPentagon;
 
--(void)resizeBall:(float)s;
--(void)resizeSquare:(float)s;
--(void)resizeTriangle:(float)s;
-
--(void)addVelocity: (const vec2&)vel toVert: (unsigned int)i;
+-(void)resizeBall;
+-(void)resizeSquare;
+-(void)resizeTriangle;
+-(void)resizePentagon;
 
 -(void)step: (float)dt;
--(void)drawWithObjectShader: (FSAShader*)objectShader andStationaryShader: (FSAShader*)stationaryShader;
+-(void)draw;
 
 @end

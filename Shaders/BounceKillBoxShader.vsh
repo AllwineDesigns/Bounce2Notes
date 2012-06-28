@@ -6,7 +6,7 @@
 //  Copyright 2012 John Allwine. All rights reserved.
 //
 
-attribute vec4 position;
+attribute vec2 position;
 
 uniform float aspect;
 

@@ -8,9 +8,13 @@
 
 #import "ChipmunkObject.h"
 
+#define WALL_TYPE 222
+
 @interface BounceArena : ChipmunkObject {
     CGRect _rect;
 }
 
 -initWithRect: (CGRect)rect;
+-(CGRect)rect;
+
 @end

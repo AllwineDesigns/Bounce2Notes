@@ -71,6 +71,10 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
     
     obj1.intensity = intensity1;
     
+    float size = obj1.size;
+    float volume = .1*(size*ke > 1 ? 1 : size*ke);
+    [obj1.sound play:volume];
+    
     if(obj2) {
         float intensity2 = obj2.intensity;
         
@@ -80,6 +84,9 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
         }
         
         obj2.intensity = intensity2;
+        size = obj2.size;
+        volume = .1*(size*ke > 1 ? 1 : size*ke);
+        [obj2.sound play:volume];
     }
 }
 
@@ -97,82 +104,15 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     
     cpContactPointSet set = cpArbiterGetContactPointSet(arb);
     
-    float size1 = obj1.size;
-    float angle1 = obj1.angle;  
-    vec2 pos1(obj1.position);
-    vec2 vel1(obj1.velocity);
-    float cos1 = cos(angle1);
-    float sin1 = sin(angle1);
-        
-    vec2 tr1(size1, size1);
-    vec2 tl1(-size1, size1);
-    vec2 bl1(-size1, -size1);
-    vec2 br1(size1, -size1);
-            
-    for(int i=0; i<set.count; i++){
-        vec2 p1(set.points[i].point);
-        p1 -= pos1;
-            
-        p1.rotate(cos1,sin1);
-        vel1.rotate(cos1,sin1); 
-        
-        float trd1 = (p1-tr1).length();
-        float tld1 = (p1-tl1).length();
-        float bld1 = (p1-bl1).length();
-        float brd1 = (p1-br1).length();
-            
-        if(trd1 <= tld1 && trd1 <= bld1 && trd1 <= brd1) {
-            [obj1 addVelocity: vel1 toVert:0];
-        } else if(tld1 <= bld1 && trd1 <= brd1) {
-            [obj1 addVelocity: vel1 toVert:1];
-        } else if(bld1 <= brd1) {
-            [obj1 addVelocity: vel1 toVert:2];
-        } else {
-            [obj1 addVelocity: vel1 toVert:3];
-        }
-    }
-    
+    [obj1 separate:&set];
     
     if(obj2) {
-        float size2 = obj2.size;
-        float angle2 = obj2.angle;  
-        vec2 pos2(obj2.position);
-        vec2 vel2(obj2.velocity);
-        float cos2 = cos(angle2);
-        float sin2 = sin(angle2);
-        
-        vec2 tr2(size2, size2);
-        vec2 tl2(-size2, size2);
-        vec2 bl2(-size2, -size2);
-        vec2 br2(size2, -size2);
-                
-        for(int i=0; i<set.count; i++){
-            vec2 p2(set.points[i].point);
-            p2 -= pos2;
-            
-            p2.rotate(cos2,sin2);
-            vel2.rotate(cos2,sin2); 
-            
-            float trd2 = (p2-tr2).length();
-            float tld2 = (p2-tl2).length();
-            float bld2 = (p2-bl2).length();
-            float brd2 = (p2-br2).length();
-            
-            if(trd2 <= tld2 && trd2 <= bld2 && trd2 <= brd2) {
-                [obj2 addVelocity: vel2 toVert:0];
-            } else if(tld2 <= bld2 && trd2 <= brd2) {
-                [obj2 addVelocity: vel2 toVert:1];
-            } else if(bld2 <= brd2) {
-                [obj2 addVelocity: vel2 toVert:2];
-            } else {
-                [obj2 addVelocity: vel2 toVert:3];
-            }
-        }
+        [obj2 separate:&set];
     }
 }
 
 @implementation BounceSimulation
--(id)initWithRect: (CGRect)rect audioDelegate:(id<FSAAudioDelegate>)delegate objectShader:(FSAShader*)objectShader stationaryShader:(FSAShader*)stationaryShader {
+-(id)initWithRect: (CGRect)rect {
     _gestures = [[NSMutableDictionary alloc] initWithCapacity:10];
     _objects = [[NSMutableSet alloc] initWithCapacity:10];
     _delayedRemoveObjects = [[NSMutableSet alloc] initWithCapacity:10];
@@ -183,29 +123,25 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
         
     cpSpaceAddCollisionHandler(_space, OBJECT_TYPE, OBJECT_TYPE, collisionBegin, preSolve, postSolve, separate, self);
     cpSpaceAddCollisionHandler(_space, OBJECT_TYPE, WALL_TYPE, collisionBegin, preSolve, postSolve, separate, self);
-    
-    _audioDelegate = delegate;
-    _objectShader = objectShader;
-    _stationaryShader = stationaryShader;
-    
+        
     _arena = [[BounceArena alloc] initWithRect:rect];
     [_arena addToSpace:_space];
     
-    _killArena = [[BounceKillArena alloc] initWithRect:rect];
-    [_killArena addToSpace:_space];
-    
-    [self addObject:[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()]];
     
     return self;
 }
 -(void)addObject: (BounceObject*)object {
     [object addToSpace:_space];
+    [object.sound play:.2];
     
     [_objects addObject:object];
 }
 -(void)removeObject: (BounceObject*)object {
-    [object removeFromSpace];
-    [_objects removeObject:object];
+    if(![self isObjectParticipatingInGesture:object]) {
+        [object.sound play:.2];
+        [object removeFromSpace];
+        [_objects removeObject:object];
+    }
 }
 -(void)postSolveRemoveObject: (BounceObject*)object {
     [_delayedRemoveObjects addObject:object];
@@ -304,9 +240,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     _timeRemainder = t;
     
     for(BounceObject *obj in _delayedRemoveObjects) {
-        if(![self isObjectParticipatingInGesture:obj]) {
-            [self removeObject:obj];
-        }
+        [self removeObject:obj];
     }
     
     [_delayedRemoveObjects removeAllObjects];
@@ -321,7 +255,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 
 -(void)addToVelocity:(const vec2&)v {
     for(BounceObject *obj in _objects) {
-        if(![obj isStationary]) {
+        if(![obj isStationary] && ![self isObjectParticipatingInGesture:obj]) {
             [obj setVelocity:[obj velocity]+v];
         }
     }
@@ -331,14 +265,17 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     NSSet *objects = [self objectsAt:loc withinRadius:radius];
     
     for(BounceObject *obj in objects) {
-        [obj setVelocity:[obj velocity]+vel];
+        if(!obj.isStationary && ![self isObjectParticipatingInGesture:obj]) {
+            [obj setVelocity:[obj velocity]+vel];
+        }
     }
     
 }
 -(void)addVelocity: (const vec2&)vel toObjectAt:(const vec2&)loc {
     BounceObject *obj = [self objectAt:loc];
-    
-    [obj setVelocity:[obj velocity]+vel];
+    if(!obj.isStationary && ![self isObjectParticipatingInGesture:obj]) {
+        [obj setVelocity:[obj velocity]+vel];
+    }
 }
 
 -(void)removeObjectAt:(const vec2&)loc {
@@ -414,32 +351,45 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     [_gestures removeObjectForKey:key];
 }
 
+-(void)tapObject:(BounceObject*)obj {
+    if(obj.age > 1) {
+        [self removeObject:obj];
+    }
+}
+-(void)tapSpaceAt:(const vec2&)loc {
+    [self addObjectAt:loc];
+}
+
+-(void)flickStationaryObject:(BounceObject*)obj withVelocity:(const vec2&)vel {
+    obj.isStationary = NO;
+    [obj setVelocity:[obj velocity]+vel];
+    [obj makeSimulated];
+}
+-(void)flickObjectsAt:(const vec2&)loc withVelocity:(const vec2&)vel {
+    [self addVelocity:vel toObjectsAt:loc withinRadius:.3];
+
+}
+-(void)flickSpaceAt:(const vec2&)loc withVelocity:(const vec2&)vel {
+    [self addObjectAt:loc withVelocity:vel];
+}
+
 -(void)singleTapAt:(const vec2&)loc {
     BounceObject *obj = [self objectAt:loc];
     if(obj == nil) {
-        [self addObjectAt:loc];
+        [self tapSpaceAt:loc];
     } else {
-        if(obj.age > 1 && ![self isObjectParticipatingInGesture:obj]) {
-            [self removeObject:obj];
-        }
+        [self tapObject:obj];
     }
 }
 -(void)flickAt:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
     BounceObject *obj = [self objectAt:loc];
-    NSSet *objects = [self objectsAt:loc withinRadius:.3];
     vec2 vel = dir*(1./time);
-    if(obj != nil && obj.isStationary) {
-        obj.isStationary = NO;
-        [obj setVelocity:[obj velocity]+vel];
-        [obj makeSimulated];
-    } else if([objects count] > 0) {
-        for(BounceObject *obj in objects) {
-            if(!obj.isStationary) {
-                [obj setVelocity:[obj velocity]+vel];
-            }
-        }
+    if(obj != nil && obj.isStationary && ![self isObjectParticipatingInGesture:obj]) {
+        [self flickStationaryObject:obj withVelocity:vel];
+    } else if([self anyObjectsAt:loc withinRadius:.1]) {
+        [self flickObjectsAt:loc withVelocity:vel];
     } else {
-        [self addObjectAt:loc withVelocity:vel];
+        [self flickSpaceAt:loc withVelocity:vel];
     }
 }
 
@@ -455,21 +405,46 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         [gesture object].isStationary = YES;
     }
 }
+-(void)beginCreate:(void*)uniqueId at:(const vec2&)loc {
+    BounceObject *obj = [BounceObject randomObjectAt:loc];        
+    [self addGesture:[BounceGesture createGestureForObject:obj] forKey:uniqueId];
+}
+-(void)beginDrag:(void*)uniqueId object:(BounceObject*)obj at:(const vec2&)loc {
+    [self addGesture:[BounceGesture grabGestureForObject:obj at:loc] forKey:uniqueId];
+}
+-(void)beginTransform:(void*)uniqueId object:(BounceObject*)obj at:(const vec2&)loc {
+    BounceGesture *gesture2 = [self gestureWithParticipatingObject:obj];
+    
+    [self addGesture:[BounceGesture transformGestureForObject:obj at:loc withOtherGesture:gesture2]forKey:uniqueId];
+}
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
     BounceObject *obj = [self objectAt:loc];
     if(obj == nil) {
-        obj = [BounceObject randomObjectAt:loc];
-        [obj makeRogue];
-        
-        [self addGesture:[BounceGesture createGestureForObject:obj] forKey:uniqueId];
+        [self beginCreate:uniqueId at:loc];
     } else {
+        NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+        BounceObject *objectBeingCreatedOrGrabbed = nil;
+        for(BounceObject *object in objects) {
+            if([self isObjectBeingCreatedOrGrabbed:object]) {
+                objectBeingCreatedOrGrabbed = object;
+                break;
+            }
+        }
+        
         if([self isObjectBeingCreatedOrGrabbed:obj]) {
-            BounceGesture *gesture2 = [self gestureWithParticipatingObject:obj];
+            // if the closest object to the touch is being created or dragged
+            // then begin transforming it
+            [self beginTransform:uniqueId object:obj at:loc];
+        } else if(objectBeingCreatedOrGrabbed) {
+            // if the closest object to the touch isn't being created or dragged
+            // but there is one close to the touch that is being created or dragged then
+            // begin transforming that one
             
-            [self addGesture:[BounceGesture transformGestureForObject:obj at:loc withOtherGesture:gesture2]forKey:uniqueId];
-        } else {
-            [obj makeRogue];
-            [self addGesture:[BounceGesture grabGestureForObject:obj at:loc] forKey:uniqueId];
+            // this makes it much easier to resize tiny balls, or to get a better
+            // hold on large balls that have smalls ones near it
+            [self beginTransform:uniqueId object:objectBeingCreatedOrGrabbed at:loc];
+        } else if(![self isObjectParticipatingInGesture:obj]) {
+            [self beginDrag:uniqueId object:obj at:loc];
         }
     }
 }
@@ -484,14 +459,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 }
 -(void)endDrag:(void*)uniqueId at:(const vec2&)loc {
     BounceGesture *gesture = [self gestureForKey:uniqueId];
-    
-    BounceObject *obj = [gesture object];
-    if(obj.isStationary) {
-        [obj makeStatic];
-    } else {
-        [obj makeSimulated];
-    }
-    
+        
     [gesture endGesture];
     
     [self removeGestureForKey:uniqueId];
@@ -500,137 +468,32 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 -(void)cancelDrag:(void*)uniqueId at:(const vec2&)loc {
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     
-    BounceObject *obj = [gesture object];
-    if(obj.isStationary) {
-        [obj makeStatic];
-    } else {
-        [obj makeSimulated];
-    }
-    
     [gesture endGesture];
 
     
     [self removeGestureForKey:uniqueId];
 }
 
--(void)beginTopSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)topSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)endTopSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
-
--(void)beginBottomSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)bottomSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)endBottomSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
-
--(void)beginLeftSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)leftSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)endLeftSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
-
--(void)beginRightSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)rightSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
--(void)endRightSwipe:(void*)uniqueId at:(const vec2&)loc {
-    
-}
-
--(void)beginRemovingBallsTop:(float)y {
-    
-}
--(void)updateRemovingBallsTop:(float)y {
-    
-}
--(void)endRemovingBallsTop {
-    
-}
-
--(void)beginRemovingBallsBottom:(float)y {
-    
-}
--(void)updateRemovingBallsBottom:(float)y {
-    
-}
--(void)endRemovingBallsBottom {
-    
-}
-
--(void)beginRemovingBallsLeft:(float)x {
-    
-}
--(void)updateRemovingBallsLeft:(float)x {
-    
-}
--(void)endRemovingBallsLeft {
-    
-}
-
--(void)beginRemovingBallsRight:(float)x {
-    
-}
--(void)updateRemovingBallsRight:(float)x {
-    
-}
--(void)endRemovingBallsRight {
-    
-}
-
--(BOOL)isRemovingBalls {
-    return NO;
-}
--(BOOL)isRemovingBallsTop {
-    return NO;
-}
--(BOOL)isRemovingBallsBottom {
-    return NO;
-}
--(BOOL)isRemovingBallsLeft {
-    return NO;
-}
--(BOOL)isRemovingBallsRight {
-    return NO;
-}
-
--(float)removingBallsTopY {
-    return 0;
-}
--(float)removingBallsBottomY {
-    return 0;
-}
--(float)removingBallsLeftX {
-    return 0;
-}
--(float)removingBallsRightX {
-    return 0;
-}
-
 -(void)dealloc {
-    // TODO
+    for(BounceObject *obj in _objects) {
+        [obj removeFromSpace];
+    }
+    [_objects release]; _objects = nil;
+    [_delayedRemoveObjects release]; _delayedRemoveObjects = nil;
+    [_arena removeFromSpace];
+    [_arena release]; _arena = nil;
+
+    
+    [_gestures release]; _gestures = nil;
+    
+    cpSpaceFree(_space);
 
     [super dealloc];
 }
 
 -(void)draw {
     for(BounceObject *obj in _objects) {
-        [obj drawWithObjectShader:_objectShader andStationaryShader:_stationaryShader];
+        [obj draw];
     }
 }
 

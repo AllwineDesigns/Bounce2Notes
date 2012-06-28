@@ -15,6 +15,9 @@ extern "C" {
 
 void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 NSString* machineName();
+natural_t getFreeMemory();
+CGSize screenSize();
+    
     
 #ifdef __cplusplus
 }

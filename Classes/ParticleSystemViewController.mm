@@ -10,8 +10,10 @@
 
 #import "ParticleSystemViewController.h"
 #import "EAGLView.h"
-//#import "BounceObjectShader.h"
 #import "FSATextureManager.h"
+#import "FSAShaderManager.h"
+#import "FSAUtil.h"
+#import "MainBounceSimulation.h"
 
 #define BOUNCE_LITE_MAX_BALLS 15
 
@@ -29,24 +31,18 @@
     EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     if (!aContext)
-    {
-        aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-    }
-    
-    if (!aContext)
         NSLog(@"Failed to create ES context");
     else if (![EAGLContext setCurrentContext:aContext])
         NSLog(@"Failed to set ES context current");
     
 	self.context = aContext;
+    sharegroup = aContext.sharegroup;
 	[aContext release];
     NSLog(@"%@", [[UIDevice currentDevice] model]);
 	
     [(EAGLView *)self.view setContext:context];
     [(EAGLView *)self.view setFramebuffer];
-    
-    lastUpdate = [[NSDate alloc] init];
-    
+        
     alertView = [[UIAlertView alloc] initWithTitle:@"Upgrade to full version" message:@"You must have the full version to create more balls." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Buy!", @"Dismiss All",  nil];
     dismissAllUpgradeAlerts = NO;
     
@@ -55,61 +51,76 @@
     
     CGRect frame = [self.view frame];
     aspect = frame.size.width/frame.size.height;
-        
-//    psystem = new BasicParticleSystem();
-//    shader = [[BasicParticleShader alloc] initWithParticleSystem:psystem];
-//    simulation = new ChipmunkSimulation(aspect);
-    float invaspect = 1./aspect;
     
-    CGRect simulationRect = CGRectMake(-1,-invaspect, 2, 2*invaspect);
-//    BounceObjectShader *objectShader = [[BounceObjectShader alloc] initWithAspect:aspect];
+    FSAShaderManager *shaderManager = [FSAShaderManager instance];
     
-    _objectShader = [[FSAShader alloc] initWithShaderPaths:@"SingleObjectShader" fragShader:@"SingleObjectShader"];
-    [_objectShader setPtr:&aspect forUniform:@"aspect"];
-    
-    _stationaryShader = [[FSAShader alloc] initWithShaderPaths:@"SingleObjectStationaryShader" fragShader:@"SingleObjectStationaryShader"];
-    [_stationaryShader setPtr:&aspect forUniform:@"aspect"];
-    
-    simulation = [[BounceSimulation alloc] initWithRect:simulationRect audioDelegate:self objectShader:_objectShader stationaryShader:_stationaryShader];
-    
-//    [objectShader release];
-    
-//    shader = [[ChipmunkSimulationShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
-//    stationaryShader = [[ChipmunkSimulationStationaryShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
-    
-//    killBoxShader = [[BounceKillBoxShader alloc] initWithChipmunkSimulation:simulation aspect:aspect];
+    FSAShader *objectShader = [shaderManager getShader:@"SingleObjectShader"];
+    FSAShader *stationaryShader = [shaderManager getShader:@"SingleObjectStationaryShader"];
+    FSAShader *killBoxShader = [shaderManager getShader:@"BounceKillBoxShader"];
 
-//    multiGestureRecognizer = [[FSAMultiGestureRecognizer alloc] initWithTarget:self];
-//    [self.view addGestureRecognizer:multiGestureRecognizer];
+    [objectShader setPtr:&aspect forUniform:@"aspect"];
+    [stationaryShader setPtr:&aspect forUniform:@"aspect"];
+    [killBoxShader setPtr:&aspect forUniform:@"aspect"];    
+   
+    cacheQueue = [[NSOperationQueue alloc] init];
     
-//    [multiGestureRecognizer release];
+    NSInvocationOperation *invocation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadTextures) object:nil];
+    [cacheQueue addOperation:invocation];
+    [invocation release];
     
-    FSATextureManager *texture_manager = [FSATextureManager instance];
-    [texture_manager getTexture:@"ball.jpg"];
-    [texture_manager getTexture:@"square.jpg"];
-    [texture_manager getTexture:@"triangle.jpg"];
-    [texture_manager getTexture:@"spiral.jpg"];
-    [texture_manager getTexture:@"stationary_ball.png"];
-    [texture_manager getTexture:@"stationary_square.png"];
-    [texture_manager getTexture:@"stationary_triangle.png"];
     
-    FSAAudioPlayer *player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
+    
+//    FSAAudioPlayer *player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
 
-    
     multiTapAndDragRecognizer = [[FSAMultiTapAndDragRecognizer alloc] initWithTarget:self];
     multiTapAndDragRecognizer.view = self.view;
-  //  [self.view addGestureRecognizer:multiTapAndDragRecognizer];
-  //  [multiTapAndDragRecognizer release];
     
     animating = FALSE;
     animationFrameInterval = 2;
     self.displayLink = nil;
 }
 
--(void)playSound: (int)note volume: (float)vol {
-    NSLog(@"play sound %d at volume %f\n", note, vol);
-}
+-(void)loadTextures {
+    EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
+    
+    if (!aContext)
+        NSLog(@"Failed to create ES context");
+    else if (![EAGLContext setCurrentContext:aContext])
+        NSLog(@"Failed to set ES context current");
+    
+    NSLog(@"free memory: %d\n", getFreeMemory());
+    
+    FSATextureManager *texture_manager = [FSATextureManager instance];
+    
+    NSArray *texturesToCache = [NSArray arrayWithObjects:@"spiral.jpg", 
+     @"plasma.jpg",
+     @"stripes.jpg", 
+     @"checkered.jpg", 
+     @"sections.jpg", 
+     @"squares.jpg", 
+     @"weave.jpg", 
+     @"ball.jpg",
+     @"square.jpg",
+     @"triangle.jpg",
+     @"pentagon.jpg",
+     @"stationary_ball.png",
+     @"stationary_square.png",
+     @"stationary_triangle.png",
+     @"stationary_pentagon.png",
+     nil];
+    for(NSString* texName in texturesToCache) {
+        [texture_manager addLargeTexture:texName];
+    }
+     
 
+    simulation = [[MainBounceSimulation alloc] initWithAspect:aspect];
+    lastUpdate = [[NSDate alloc] init];
+
+    NSLog(@"loaded textures and created simulation\n");
+ //   while(1) {}
+    
+    [aContext release];
+}
 
 - (void)dealloc
 {
@@ -122,12 +133,6 @@
     [lastUpdate release];
     [context release];
     [simulation release];
-    
-//    [shader release];
-//    [stationaryShader release];
-//    [killBoxShader release];
-//    delete psystem;
-//    delete simulation;
     
     [super dealloc];
 }
@@ -146,30 +151,10 @@
 }
 
 -(void)singleTap:(FSAMultiGesture*)gesture {
-//    NSLog(@"single tap\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
     [simulation singleTapAt:loc];
-
-    /*
-    if(!simulation->isBallParticipatingInGestureAt(loc)) {
-        if(simulation->isBallAt(loc)) {
-            simulation->removeBallAt(loc);
-        } else {
-            
-#ifdef BOUNCE_LITE
-            if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS) {
-                simulation->addBallAt(loc);
-            } else {
-                [self displayUpgradeAlert];
-            }
-#else
-            simulation->addBallAt(loc);
-#endif
-        }
-    }
-     */
 }
 
 -(void)displayUpgradeAlert {
@@ -192,96 +177,66 @@
 }
 
 -(void)beginThreeFingerDrag: (FSAMultiGesture*)gesture {
-    //NSLog(@"begin three finger drag\n");
-    vec2 loc(gesture.location);
-    vec2 loc2(gesture.beginLocation);
+    vec2 loc(gesture.beginLocation);
+    vec2 loc2(gesture.location);
     [self pixels2sim:loc];
     [self pixels2sim:loc2];
-/*
-    if(!simulation->isRemovingBalls()) {
-        switch(gesture.side) {
-            case FSA_TOP:
-                simulation->beginRemovingBallsTop(loc.y);
-                break;
-            case FSA_BOTTOM:
-                simulation->beginRemovingBallsBottom(loc2.y);
-                break;
-            case FSA_LEFT:
-                simulation->beginRemovingBallsLeft(loc.x);
-                break;
-            case FSA_RIGHT:
-                simulation->beginRemovingBallsRight(loc2.x);
-                break;
-                
-        }
+    
+    switch(gesture.side) {
+        case FSA_TOP:
+            [simulation beginTopSwipe:gesture at:loc2.y];
+            break;
+        case FSA_BOTTOM:
+            [simulation beginBottomSwipe:gesture at:loc.y];
+            break;
+        case FSA_LEFT:
+            [simulation beginLeftSwipe:gesture at:loc2.x];
+            break;
+        case FSA_RIGHT:
+            [simulation beginRightSwipe:gesture at:loc.x];
+            break;
     }
- */
+
 }
 
 -(void)threeFingerDrag: (FSAMultiGesture*)gesture {
-  //  NSLog(@"three finger drag\n");
-    vec2 loc(gesture.location);
-    vec2 loc2(gesture.beginLocation);
+    vec2 loc(gesture.beginLocation);
+    vec2 loc2(gesture.location);
     [self pixels2sim:loc];
     [self pixels2sim:loc2];
-
-    /*
+    
     switch(gesture.side) {
         case FSA_TOP:
-            if(simulation->isRemovingBallsTop()) {
-                simulation->updateRemovingBallsTop(loc.y);
-            }
+            [simulation topSwipe:gesture at:loc2.y];
             break;
         case FSA_BOTTOM:
-            if(simulation->isRemovingBallsBottom()) {
-                simulation->updateRemovingBallsBottom(loc2.y);
-            }
+            [simulation bottomSwipe:gesture at:loc.y];
             break;
         case FSA_LEFT:
-            if(simulation->isRemovingBallsLeft()) {
-                simulation->updateRemovingBallsLeft(loc.x);
-            }
+            [simulation leftSwipe:gesture at:loc2.x];
             break;
         case FSA_RIGHT:
-            if(simulation->isRemovingBallsRight()) {
-                simulation->updateRemovingBallsRight(loc2.x);
-            }
+            [simulation rightSwipe:gesture at:loc.x];
             break;
-            
     }
-     */
-
 }
 
 -(void)endThreeFingerDrag: (FSAMultiGesture*)gesture {
-  //  NSLog(@"end three finger drag\n");
-    vec2 loc(gesture.location);
-    [self pixels2sim:loc];
-    /*
+
     switch(gesture.side) {
         case FSA_TOP:
-            if(simulation->isRemovingBallsTop()) {
-                simulation->endRemovingBallsTop();
-            }
+            [simulation endTopSwipe:gesture];
             break;
         case FSA_BOTTOM:
-            if(simulation->isRemovingBallsBottom()) {
-                simulation->endRemovingBallsBottom();
-            }
+            [simulation endBottomSwipe:gesture];
             break;
         case FSA_LEFT:
-            if(simulation->isRemovingBallsLeft()) {
-                simulation->endRemovingBallsLeft();
-            }
+            [simulation endLeftSwipe:gesture];
             break;
         case FSA_RIGHT:
-            if(simulation->isRemovingBallsRight()) {
-                simulation->endRemovingBallsRight();
-            }
+            [simulation endRightSwipe:gesture];
             break;
-            
     }
-     */
 
 }
 
@@ -319,53 +274,20 @@
 
 
 -(void)beginDrag: (FSAMultiGesture*)gesture {
-//    NSLog(@"begin drag\n");
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
     [simulation beginDrag:gesture at:loc];
-    /*
-    if(simulation->isBallBeingCreatedOrGrabbedAt(loc)) {
-        simulation->beginTransformingBallAt(loc, gesture);
-    } else if(simulation->isBallAt(loc) && !simulation->isBallBeingTransformedAt(loc)) {
-        simulation->beginGrabbingBallAt(loc, gesture);
-    }
-     */
+
 }
 
 -(void)longTouch:(FSAMultiGesture*)gesture {
-//    NSLog(@"long hold\n");
-
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
     [simulation longTouch:gesture at:loc];
-    
-    /*
-    if(simulation->isTransformingBall(gesture)) {
-        simulation->makeTransformingBallStationary(loc, gesture);
-    } else if(simulation->isGrabbingBall(gesture)) {
-        simulation->grabbingBallAt(loc, vec2(0,0), gesture);
-        simulation->makeStationary(loc, gesture);
-    } else if(simulation->isCreatingBall(gesture)) {
-        simulation->beginGrabbing(loc, gesture);
-    } else {
-        
-#ifdef BOUNCE_LITE
-        if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS) {
-            simulation->createStationaryBallAt(loc, gesture);
-        } else {
-            [self displayUpgradeAlert];
-        }
-#else
-        simulation->createStationaryBallAt(loc, gesture);
-        
-#endif
-    }
-     */
 }
 
 -(void)flick: (FSAMultiGesture*)gesture {
-//    NSLog(@"flick\n");
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
@@ -376,110 +298,27 @@
     NSTimeInterval time = gesture.timestamp-gesture.beginTimestamp;
     
     [simulation flickAt:loc2 inDirection:dir time:time];
-
-    /*
-     vec2 vel = (loc-loc2);
-
-    vel *= 100*(gesture.timestamp-gesture.beginTimestamp);
-    if(simulation->isStationaryBallAt(loc2)) {
-        simulation->addVelocityToBallAt(loc2, vel);
-    } else if(simulation->anyBallsAt(loc2, .1)) {
-        simulation->addVelocityToBallsAt(loc2, vel, .3);
-    } else {
-#ifdef BOUNCE_LITE
-        if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS) {
-            simulation->addBallWithVelocity(loc2, vel);
-        } else {
-            [self displayUpgradeAlert];
-        }
-#else
-        simulation->addBallWithVelocity(loc2, vel);
-
-#endif
-    }
-     */
 }
 
 -(void)drag: (FSAMultiGesture*)gesture {
-//    NSLog(@"drag\n");
-    vec2 loc(gesture.beginLocation);
+    vec2 loc(gesture.location);
     [self pixels2sim:loc];
-    vec2 loc2(gesture.location);
-    [self pixels2sim:loc2];
-    vec2 endLoc(loc2);
-    loc2 -= loc;
     
-    [simulation drag:gesture at:endLoc];
-    /*
-    float radius = loc2.length() > 1 ? 1 : loc2.length();
-    radius = radius <= .01 ? .01 : radius;
-    
-    vec2 vel(gesture.velocity);
-    [self vectorPixels2sim:vel];
-    
-    vel *= 50;
-    
-    if(simulation->isTransformingBall(gesture)) {
-        simulation->transformBallAt(endLoc, gesture);
-    } else if(simulation->isGrabbingBall(gesture)) {
-        simulation->grabbingBallAt(endLoc, vel, gesture);
-    } else  {
-#ifdef BOUNCE_LITE
-        if(simulation->numBalls() < BOUNCE_LITE_MAX_BALLS || simulation->isCreatingBall(gesture)) {
-            simulation->creatingBallAt(loc, endLoc, gesture);
-
-        } else {
-            [self displayUpgradeAlert];
-        }
-#else
-        simulation->creatingBallAt(loc, endLoc, gesture);        
-#endif
-    }
-     */
-
+    [simulation drag:gesture at:loc];
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
-//    NSLog(@"end drag\n");
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
     
-    vec2 vel(gesture.velocity);
-    [self vectorPixels2sim:vel];
     [simulation endDrag:gesture at:loc];
-    /*
-    vel *= 50;
-
-    if(simulation->isTransformingBall(gesture)) {
-        simulation->beginGrabbingTransformingBall(gesture);
-    } else if(simulation->isCreatingBall(gesture)) {
-        simulation->createBall(gesture);
-    } else if(simulation->isGrabbingBall(gesture)) {
-        simulation->releaseBall(vel, gesture);
-
-    }
-     */
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
- //   NSLog(@"cancel drag\n");
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
-    
-    vec2 vel(gesture.velocity);
-    [self vectorPixels2sim:vel];
+
     [simulation cancelDrag:gesture at:loc];
-    /*
-    vel *= 50;
-    
-    if(simulation->isTransformingBall(gesture)) {
-        simulation->beginGrabbingTransformingBall(gesture);
-    } else if(simulation->isCreatingBall(gesture)) {
-        simulation->cancelBall(gesture);
-    } else if(simulation->isGrabbingBall(gesture)) {
-        simulation->releaseBall(vel, gesture);
-    }
-     */
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -565,61 +404,55 @@
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    
-    NSTimeInterval timeSinceLastDraw = -[lastUpdate timeIntervalSinceNow];
+    if([cacheQueue operationCount] == 0) {
+        NSTimeInterval timeSinceLastDraw = -[lastUpdate timeIntervalSinceNow];
 
-    [lastUpdate release];
-    lastUpdate = [[NSDate alloc] init];
-    
-    CMAccelerometerData *accelData = [motionManager accelerometerData];
-    CMAcceleration acceleration = [accelData acceleration];
-    
-    vec2 accel(8*acceleration.x, 8*acceleration.y);
-    
-#if TARGET_IPHONE_SIMULATOR
-    accel = vec2(0,-8);
-#endif
-    
-    if(accel.length() > 8) {
-        vec2 unit_accel = accel.unit();
-        vec2 add_to_vel(accel);
-        add_to_vel -= unit_accel*8;
-        add_to_vel *= -.2;
-        [simulation addToVelocity:add_to_vel];
-//        simulation->addToVelocity(add_to_vel);
+        [lastUpdate release];
+        lastUpdate = [[NSDate alloc] init];
+        
+        CMAccelerometerData *accelData = [motionManager accelerometerData];
+        CMAcceleration acceleration = [accelData acceleration];
+        
+        vec2 accel(8*acceleration.x, 8*acceleration.y);
+        
+    #if TARGET_IPHONE_SIMULATOR
+        accel = vec2(0,-8);
+    #endif
+        
+        if(accel.length() > 8) {
+            vec2 unit_accel = accel.unit();
+            vec2 add_to_vel(accel);
+            add_to_vel -= unit_accel*8;
+            add_to_vel *= -.2;
+            [simulation addToVelocity:add_to_vel];
+        }
+        [simulation setGravity:accel];
+        [simulation step:timeSinceLastDraw];
+        [simulation draw];
     }
-    
-//    psystem->setAcceleration(accel);
-//    psystem->step(timeSinceLastDraw);
-//    simulation->setGravity(accel);
-//    simulation->step(timeSinceLastDraw);
-    [simulation setGravity:accel];
-    [simulation step:timeSinceLastDraw];
-    [simulation draw];
-    
-//    [shader updateAndDraw];
-//    [stationaryShader updateAndDraw];
-//    [killBoxShader updateAndDraw];
-    
-    
 
     [(EAGLView *)self.view presentFramebuffer];
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [multiTapAndDragRecognizer touchesBegan:touches withEvent:event];
+    if([cacheQueue operationCount] == 0) {
+        [multiTapAndDragRecognizer touchesBegan:touches withEvent:event];
+    }
 }
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    [multiTapAndDragRecognizer touchesMoved:touches withEvent:event];
-
+    if([cacheQueue operationCount] == 0) {
+        [multiTapAndDragRecognizer touchesMoved:touches withEvent:event];
+    }
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [multiTapAndDragRecognizer touchesEnded:touches withEvent:event];
-
+    if([cacheQueue operationCount] == 0) {
+        [multiTapAndDragRecognizer touchesEnded:touches withEvent:event];
+    }
 }
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    [multiTapAndDragRecognizer touchesCancelled:touches withEvent:event];
-
+    if([cacheQueue operationCount] == 0) {
+        [multiTapAndDragRecognizer touchesCancelled:touches withEvent:event];
+    }
 }
 
 

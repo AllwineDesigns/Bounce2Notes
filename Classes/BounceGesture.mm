@@ -32,6 +32,8 @@
     if(self) {
         _obj = obj;
         [_obj retain];
+        [_obj makeHeavyRogue];
+        
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
         _state = BOUNCE_GESTURE_CREATE;
     }
@@ -44,6 +46,7 @@
     if(self) {
         _obj = obj;
         [_obj retain];
+        [_obj makeHeavyRogue];
         
         _offset = at-obj.position;
         _offsetAngle = atan2f(_offset.y, _offset.x);
@@ -61,6 +64,7 @@
     if(self) {
         _obj = obj;
         [_obj retain];
+        [_obj makeHeavyRogue];
         
         _P = at;
         _Pp = at;
@@ -184,8 +188,12 @@
 -(void)endGesture {
     switch(_state) {
         case BOUNCE_GESTURE_CREATE:
-            break;
         case BOUNCE_GESTURE_GRAB:
+            if(_obj.isStationary) {
+                [_obj makeStatic];
+            } else {
+                [_obj makeSimulated];
+            }
             break;
         case BOUNCE_GESTURE_TRANSFORM:
             BounceGesture *g;
@@ -199,7 +207,7 @@
         default:
             NSAssert(NO, @"unknown bounce gesture state\n");
     }
-    [_obj release];
+    [_obj release]; _obj = nil;
 }
 
 -(void)beginGrabAt:(const vec2&)loc {
@@ -224,6 +232,13 @@
 }
 -(const vec2)transformEndPosition {
     return _Pp;
+}
+
+-(void)dealloc {
+    if(_obj) {
+        [_obj release]; _obj = nil;
+    }
+    [super dealloc];
 }
 
 @end

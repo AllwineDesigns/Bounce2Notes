@@ -12,41 +12,24 @@
 #import <fsa/Vector.hpp>
 #import "BounceObject.h"
 #import "BounceArena.h"
-#import "BounceKillArena.h"
-#import "FSAShader.h"
 #import "BounceGesture.h"
 
 using namespace fsa;
 
-typedef enum {
-    WALL_TYPE,
-    OBJECT_TYPE,
-    KILL_TOP_TYPE,
-    KILL_BOTTOM_TYPE,
-    KILL_LEFT_TYPE,
-    KILL_RIGHT_TYPE
-} BounceObjectType;
-
-@interface BounceSimulation : NSObject {
-    id<FSAAudioDelegate> _audioDelegate;
-    
+@interface BounceSimulation : NSObject {    
     cpSpace* _space;
-    
-    FSAShader *_objectShader;
-    FSAShader *_stationaryShader;
         
     NSMutableSet *_objects;
     NSMutableSet *_delayedRemoveObjects;
     NSMutableDictionary *_gestures;
         
     BounceArena *_arena;
-    BounceKillArena *_killArena;
     
     float _dt;
     float _timeRemainder;
 }
 
--(id)initWithRect: (CGRect)rect audioDelegate:(id<FSAAudioDelegate>)delegate objectShader:(FSAShader*)objectShader stationaryShader:(FSAShader*)stationaryShader;
+-(id)initWithRect: (CGRect)rect;
 -(void)addObject: (BounceObject*)object;
 -(void)removeObject: (BounceObject*)object;
 -(void)postSolveRemoveObject: (BounceObject*)object;
@@ -81,6 +64,17 @@ typedef enum {
 -(BOOL)isObjectBeingTransformedAt:(const vec2&)loc;
 -(BOOL)isStationaryObjectAt:(const vec2&)loc;
 
+-(void)tapObject:(BounceObject*)obj;
+-(void)tapSpaceAt:(const vec2&)loc;
+
+-(void)flickStationaryObject:(BounceObject*)obj withVelocity:(const vec2&)vel;
+-(void)flickObjectsAt:(const vec2&)loc withVelocity:(const vec2&)vel;
+-(void)flickSpaceAt:(const vec2&)loc withVelocity:(const vec2&)vel;
+
+-(void)beginCreate:(void*)uniqueId at:(const vec2&)loc;
+-(void)beginDrag:(void*)uniqueId object:(BounceObject*)obj at:(const vec2&)loc;
+-(void)beginTransform:(void*)uniqueId object:(BounceObject*)obj at:(const vec2&)loc;
+
 -(void)singleTapAt:(const vec2&)loc;
 -(void)flickAt:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time;
 
@@ -89,49 +83,6 @@ typedef enum {
 -(void)drag:(void*)uniqueId at:(const vec2&)loc;
 -(void)endDrag:(void*)uniqueId at:(const vec2&)loc;
 -(void)cancelDrag:(void*)uniqueId at:(const vec2&)loc;
-
--(void)beginTopSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)topSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)endTopSwipe:(void*)uniqueId at:(const vec2&)loc;
-
--(void)beginBottomSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)bottomSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)endBottomSwipe:(void*)uniqueId at:(const vec2&)loc;
-
--(void)beginLeftSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)leftSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)endLeftSwipe:(void*)uniqueId at:(const vec2&)loc;
-
--(void)beginRightSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)rightSwipe:(void*)uniqueId at:(const vec2&)loc;
--(void)endRightSwipe:(void*)uniqueId at:(const vec2&)loc;
-
--(void)beginRemovingBallsTop:(float)y;
--(void)updateRemovingBallsTop:(float)y;
--(void)endRemovingBallsTop;
-
--(void)beginRemovingBallsBottom:(float)y;
--(void)updateRemovingBallsBottom:(float)y;
--(void)endRemovingBallsBottom;
-
--(void)beginRemovingBallsLeft:(float)x;
--(void)updateRemovingBallsLeft:(float)x;
--(void)endRemovingBallsLeft;
-
--(void)beginRemovingBallsRight:(float)x;
--(void)updateRemovingBallsRight:(float)x;
--(void)endRemovingBallsRight;
-
--(BOOL)isRemovingBalls;
--(BOOL)isRemovingBallsTop;
--(BOOL)isRemovingBallsBottom;
--(BOOL)isRemovingBallsLeft;
--(BOOL)isRemovingBallsRight;
-
--(float)removingBallsTopY;
--(float)removingBallsBottomY;
--(float)removingBallsLeftX;
--(float)removingBallsRightX;
 
 -(void)draw;
 

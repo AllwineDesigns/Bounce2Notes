@@ -12,14 +12,20 @@
 
 using namespace fsa;
 
+typedef enum {
+    CHIPMUNK_OBJECT_SIMULATED,
+    CHIPMUNK_OBJECT_ROGUE,
+    CHIPMUNK_OBJECT_STATIC,
+    CHIPMUNK_OBJECT_HEAVY_ROGUE
+} ChipmunkObjectState;
+
 @interface ChipmunkObject : NSObject {
+    ChipmunkObjectState _state;
     cpSpace *_space;
     cpBody *_body;
     cpShape **_shapes;
     int _numShapes;
     int _allocatedShapes;
-    
-    bool _isRogue;
     
     float _mass;
     float _moment;
@@ -30,6 +36,7 @@ using namespace fsa;
 @property (nonatomic, readonly) int numShapes;
 
 -(id)init;
+-(id)initHeavyRogue;
 -(id)initRogue;
 -(id)initStatic;
 
@@ -60,6 +67,9 @@ using namespace fsa;
 
 -(float)moment;
 -(void)setMoment:(float)m;
+
+-(BOOL)isHeavyRogue;
+-(void)makeHeavyRogue;
 
 -(BOOL)isRogue;
 -(void)makeRogue;

@@ -9,36 +9,32 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
 
-@protocol FSAAudioDelegate
--(void)playSound: (int)note volume: (float)vol;
-@end
-
 typedef struct {
     AudioUnitSampleType *left;
     AudioUnitSampleType *right;
     UInt32 frameCount;
 } FSASoundData;
 
-typedef struct FSASound {
+typedef struct FSASoundStruct {
     UInt32 sampleNumber;
     UInt32 numSounds;
     Float32 volume;
     FSASoundData* data;
-    struct FSASound* next;
-} FSASound;
+    struct FSASoundStruct* next;
+} FSASoundStruct;
 
 typedef struct FSASoundList {
-    FSASound* playing;  // sounds that the audio callback has started playing. The render callback function has
+    FSASoundStruct* playing;  // sounds that the audio callback has started playing. The render callback function has
                         // full access to this list (no synchronization necessary)
-    FSASound* pool;     // uninitialized sounds that are available for playing. Only the playSound method has
+    FSASoundStruct* pool;     // uninitialized sounds that are available for playing. Only the playSound method has
                         // access to the pool (no synchronization necessary).
     
-    FSASound* pending_head;  // sounds that we've indicated that we want to play, but haven't started playing
-    FSASound* pending_tail;  // tail of the pending sounds, so its fast to put them all on the playing list
+    FSASoundStruct* pending_head;  // sounds that we've indicated that we want to play, but haven't started playing
+    FSASoundStruct* pending_tail;  // tail of the pending sounds, so its fast to put them all on the playing list
                              // A lock is necessary to access these.
     
-    FSASound* finished_head; // sounds that have finished playing and need to be put back into the pool
-    FSASound* finished_tail; // tail of finished sounds, so its fast to put them back into the pool
+    FSASoundStruct* finished_head; // sounds that have finished playing and need to be put back into the pool
+    FSASoundStruct* finished_tail; // tail of finished sounds, so its fast to put them back into the pool
                              // A lock is necessary to access these.
 } FSASoundList;
 
@@ -49,22 +45,20 @@ typedef struct FSAAudioCallbackData {
     NSLock *pending_lock;
     NSLock *finished_lock;
     
-    FSAAudioPlayer *player;
+  //  FSAAudioPlayer *player;
 } FSAAudioCallbackData;
 
 @interface FSAAudioPlayer : NSObject <AVAudioSessionDelegate> {
     Float64 graphSampleRate;
     Float64 ioBufferDuration;
-    FSASoundData* soundData;
     FSASoundList soundList;
-    float volumeMultiply;
+    
+    FSASoundData **soundData;
+    unsigned int _numSounds;
+    unsigned int _allocatedSounds;
     
     FSAAudioCallbackData callbackData;
-    
-    int numSounds;
-    
-    int myIndex;
-    
+            
     AudioStreamBasicDescription     stereoStreamFormat;
     AUGraph                         processingGraph;
     BOOL                            playing;
@@ -72,7 +66,6 @@ typedef struct FSAAudioCallbackData {
     AudioUnit                       ioUnit;
 }
 
-@property (readonly) int numSounds;
 @property (readwrite)           AudioStreamBasicDescription stereoStreamFormat;
 @property (readwrite)           Float64                     graphSampleRate;
 @property (readwrite)           Float64                     ioBufferDuration;
@@ -81,19 +74,18 @@ typedef struct FSAAudioCallbackData {
 @property                       BOOL                        interruptedDuringPlayback;
 @property                       AudioUnit                   ioUnit;
 
--(id)initWithSounds:(NSArray*)files;
--(id)initWithSounds:(NSArray*)files volume: (float)v;
-
 - (void) setupAudioSession;
 - (void) setupStereoStreamFormat;
 - (void) setupSoundList;
-- (void) readAudioFilesIntoMemory: (NSArray*)files;
+
+// caller is responsible for freeing FSASoundData pointer
+- (FSASoundData*) readAudioFileIntoMemory: (NSString*)file; 
 
 - (void) configureAndInitializeAudioProcessingGraph;
 - (void) startAUGraph;
 - (void) stopAUGraph;
 
-- (void) playSound: (UInt32)index volume: (Float32)volume;
+- (void) playSound: (FSASoundData*)data volume:(float)vol;
 
 - (void) printASBD: (AudioStreamBasicDescription) asbd;
 - (void) printErrorMessage: (NSString *) errorString withStatus: (OSStatus) result;

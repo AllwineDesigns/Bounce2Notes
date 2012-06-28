@@ -14,10 +14,13 @@
 
 @interface FSATextureManager : NSObject {
     NSMutableDictionary *textures;
+    NSMutableDictionary *largeTextures;
+    NSString* largeTexturePrefix;
 }
 
 -(id)init;
 -(GLuint)getTexture: (NSString*)name;
+-(void)addLargeTexture: (NSString*)name;
 +(FSATextureManager*)instance;
 
 @end

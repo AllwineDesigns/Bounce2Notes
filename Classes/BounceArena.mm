@@ -36,10 +36,14 @@
         
         for(int i = 0; i < _numShapes; i++) {
             cpShapeSetCollisionType(_shapes[i], WALL_TYPE);
-            cpShapeSetFriction(_shapes[i],.1);
-            cpShapeSetElasticity(_shapes[i],1.);
+            cpShapeSetFriction(_shapes[i],.5);
+            cpShapeSetElasticity(_shapes[i],.95);
         }
     }
     return self;
+}
+
+-(CGRect)rect {
+    return _rect;
 }
 @end
