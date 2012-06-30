@@ -9,6 +9,8 @@
 #import "BounceKillArena.h"
 #import "BounceSimulation.h"
 #import "FSAShaderManager.h"
+#import "fsa/Noise.hpp"
+#import "FSAUtil.h"
 #import <chipmunk/chipmunk_unsafe.h>
 
 int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
@@ -59,6 +61,8 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
         vec2 pad_bl(bl.x-pad, bl.y-pad);
         vec2 pad_br(br.x+pad, br.y-pad);
         
+        _color = vec4(1,1,1,1);
+        
         [self addSegmentShapeWithRadius:pad fromA:pad_tr toB:pad_tl];
         [self addSegmentShapeWithRadius:pad fromA:pad_tl toB:pad_bl];
         [self addSegmentShapeWithRadius:pad fromA:pad_bl toB:pad_br];
@@ -101,8 +105,16 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
     return _killRight;
 }
 
+-(void)randomizeColor {
+    NSTimeInterval time = [[NSProcessInfo processInfo] systemUptime];
+    HSVtoRGB(&(_color.x), &(_color.y), &(_color.z), 
+             360.*random(64.28327*time), .4, .05*random(736.2827*time)+.75   );
+}
+
 -(void)enableTop {
     _killTop = YES;
+    
+    [self randomizeColor];
     
     if(_space != NULL) {
         cpSpaceAddCollisionHandler(_space, OBJECT_TYPE, KILL_TOP_TYPE, NULL, presolve_kill, NULL, NULL, self);
@@ -119,6 +131,8 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
 
 -(void)enableBottom {
     _killBottom = YES;
+    [self randomizeColor];
+
     if(_space != NULL) {
         cpSpaceAddCollisionHandler(_space, OBJECT_TYPE, KILL_BOTTOM_TYPE, NULL, presolve_kill, NULL, NULL, self);
     }
@@ -134,6 +148,9 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
 
 -(void)enableLeft {
     _killLeft = YES;
+    
+    [self randomizeColor];
+
     if(_space != NULL) {
         cpSpaceAddCollisionHandler(_space, OBJECT_TYPE, KILL_LEFT_TYPE, NULL, presolve_kill, NULL, NULL, self);
     }
@@ -148,6 +165,9 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
 
 -(void)enableRight {
     _killRight = YES;
+    
+    [self randomizeColor];
+
     if(_space != NULL) {
         cpSpaceAddCollisionHandler(_space, OBJECT_TYPE, KILL_RIGHT_TYPE, NULL, presolve_kill, NULL, NULL, self);
     }
@@ -231,8 +251,9 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
     indices[3] = 3;
     indices[4] = 0;
     
-    FSAShader *shader = [[FSAShaderManager instance] getShader:@"BounceKillBoxShader"];
+    FSAShader *shader = [[FSAShaderManager instance] getShader:@"ColorShader"];
     [shader setPtr:verts forAttribute:@"position"];
+    [shader setPtr:&_color forUniform:@"color"];
     
     [shader enable];
     glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_INT, indices);

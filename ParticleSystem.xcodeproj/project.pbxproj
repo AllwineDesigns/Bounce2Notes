@@ -29,8 +29,6 @@
 		B21A12FE15965E46005DFBA0 /* BounceGesture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21A12FC15965E46005DFBA0 /* BounceGesture.mm */; };
 		B21A13061596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */; };
 		B21A13071596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */; };
-		B21A131215983549005DFBA0 /* plasma.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A131115983549005DFBA0 /* plasma.jpg */; };
-		B21A131315983549005DFBA0 /* plasma.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A131115983549005DFBA0 /* plasma.jpg */; };
 		B21A13161598C1E8005DFBA0 /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13141598C1E8005DFBA0 /* square.jpg */; };
 		B21A13171598C1E8005DFBA0 /* square.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13141598C1E8005DFBA0 /* square.jpg */; };
 		B21A13181598C1E8005DFBA0 /* stationary_square.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A13151598C1E8005DFBA0 /* stationary_square.png */; };
@@ -39,12 +37,6 @@
 		B21A131D1598CB39005DFBA0 /* stationary_triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A131A1598CB39005DFBA0 /* stationary_triangle.png */; };
 		B21A131E1598CB39005DFBA0 /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A131B1598CB39005DFBA0 /* triangle.jpg */; };
 		B21A131F1598CB39005DFBA0 /* triangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A131B1598CB39005DFBA0 /* triangle.jpg */; };
-		B21A1322159904A7005DFBA0 /* pentagon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A1320159904A7005DFBA0 /* pentagon.jpg */; };
-		B21A1323159904A7005DFBA0 /* pentagon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A1320159904A7005DFBA0 /* pentagon.jpg */; };
-		B21A1324159904A7005DFBA0 /* stationary_pentagon.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A1321159904A7005DFBA0 /* stationary_pentagon.png */; };
-		B21A1325159904A7005DFBA0 /* stationary_pentagon.png in Resources */ = {isa = PBXBuildFile; fileRef = B21A1321159904A7005DFBA0 /* stationary_pentagon.png */; };
-		B21A132715991965005DFBA0 /* FSAShaderManager.h in Resources */ = {isa = PBXBuildFile; fileRef = B21A132615991965005DFBA0 /* FSAShaderManager.h */; };
-		B21A132815991965005DFBA0 /* FSAShaderManager.h in Resources */ = {isa = PBXBuildFile; fileRef = B21A132615991965005DFBA0 /* FSAShaderManager.h */; };
 		B21A132A15991987005DFBA0 /* FSAShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A132915991987005DFBA0 /* FSAShaderManager.m */; };
 		B21A132B15991987005DFBA0 /* FSAShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A132915991987005DFBA0 /* FSAShaderManager.m */; };
 		B21A93BD1559954A002D2BEE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B21A93BC1559954A002D2BEE /* AVFoundation.framework */; };
@@ -156,6 +148,10 @@
 		B23E3C92159BC24300E42730 /* FSASound.m in Sources */ = {isa = PBXBuildFile; fileRef = B23E3C90159BC24300E42730 /* FSASound.m */; };
 		B23E3C95159BE30900E42730 /* BounceSound.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23E3C94159BE30800E42730 /* BounceSound.mm */; };
 		B23E3C96159BE30900E42730 /* BounceSound.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23E3C94159BE30800E42730 /* BounceSound.mm */; };
+		B23E3C9D159C18C200E42730 /* ColorShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B23E3C97159C15F700E42730 /* ColorShader.fsh */; };
+		B23E3C9E159C18C200E42730 /* ColorShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B23E3C9A159C160600E42730 /* ColorShader.vsh */; };
+		B23E3C9F159C191600E42730 /* ColorShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B23E3C97159C15F700E42730 /* ColorShader.fsh */; };
+		B23E3CA0159C191600E42730 /* ColorShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B23E3C9A159C160600E42730 /* ColorShader.vsh */; };
 		B23F12EA15703AEF00FE4D09 /* SingleObjectStationaryShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2805788156C181100C2E7A2 /* SingleObjectStationaryShader.fsh */; };
 		B23F12EB15703AEF00FE4D09 /* SingleObjectStationaryShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B280578A156C181B00C2E7A2 /* SingleObjectStationaryShader.vsh */; };
 		B23F12EC15703AEF00FE4D09 /* BallShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C115471978009B483D /* BallShader.fsh */; };
@@ -278,6 +274,16 @@
 		B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */; };
 		B2D07351155DAA4F0001DF70 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */; };
 		B2D073AC1560C1880001DF70 /* BounceSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.mm */; };
+		B2DCECC5159DE44700303CF8 /* 512rectangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECC2159DE44700303CF8 /* 512rectangle.jpg */; };
+		B2DCECC6159DE44700303CF8 /* 512rectangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECC2159DE44700303CF8 /* 512rectangle.jpg */; };
+		B2DCECC7159DE44700303CF8 /* 1024rectangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECC3159DE44700303CF8 /* 1024rectangle.jpg */; };
+		B2DCECC8159DE44700303CF8 /* 1024rectangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECC3159DE44700303CF8 /* 1024rectangle.jpg */; };
+		B2DCECC9159DE44700303CF8 /* 2048rectangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECC4159DE44700303CF8 /* 2048rectangle.jpg */; };
+		B2DCECCA159DE44700303CF8 /* 2048rectangle.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECC4159DE44700303CF8 /* 2048rectangle.jpg */; };
+		B2DCECD2159DED0600303CF8 /* arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECD1159DED0600303CF8 /* arrow.jpg */; };
+		B2DCECD3159DED0600303CF8 /* arrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECD1159DED0600303CF8 /* arrow.jpg */; };
+		B2DCECD5159DEE6200303CF8 /* downarrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECD4159DEE6200303CF8 /* downarrow.jpg */; };
+		B2DCECD6159DEE6200303CF8 /* downarrow.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DCECD4159DEE6200303CF8 /* downarrow.jpg */; };
 		B2DE9DAB1590174000D23FAA /* FSAUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.mm */; };
 		B2DE9DAD15902B4600D23FAA /* spiral.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DAC15902B4600D23FAA /* spiral.jpg */; };
 		B2DE9DAE15902B4600D23FAA /* spiral.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DAC15902B4600D23FAA /* spiral.jpg */; };
@@ -409,13 +415,10 @@
 		B21A12FB15965E46005DFBA0 /* BounceGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceGesture.h; sourceTree = "<group>"; };
 		B21A12FC15965E46005DFBA0 /* BounceGesture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceGesture.mm; sourceTree = "<group>"; };
 		B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = music_texture_sheet.jpg; sourceTree = "<group>"; };
-		B21A131115983549005DFBA0 /* plasma.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = plasma.jpg; sourceTree = "<group>"; };
 		B21A13141598C1E8005DFBA0 /* square.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = square.jpg; sourceTree = "<group>"; };
 		B21A13151598C1E8005DFBA0 /* stationary_square.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary_square.png; sourceTree = "<group>"; };
 		B21A131A1598CB39005DFBA0 /* stationary_triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary_triangle.png; sourceTree = "<group>"; };
 		B21A131B1598CB39005DFBA0 /* triangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = triangle.jpg; sourceTree = "<group>"; };
-		B21A1320159904A7005DFBA0 /* pentagon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pentagon.jpg; sourceTree = "<group>"; };
-		B21A1321159904A7005DFBA0 /* stationary_pentagon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stationary_pentagon.png; sourceTree = "<group>"; };
 		B21A132615991965005DFBA0 /* FSAShaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAShaderManager.h; sourceTree = "<group>"; };
 		B21A132915991987005DFBA0 /* FSAShaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAShaderManager.m; sourceTree = "<group>"; };
 		B21A93BC1559954A002D2BEE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -483,6 +486,8 @@
 		B23E3C90159BC24300E42730 /* FSASound.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSASound.m; sourceTree = "<group>"; };
 		B23E3C93159BE30800E42730 /* BounceSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSound.h; sourceTree = "<group>"; };
 		B23E3C94159BE30800E42730 /* BounceSound.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSound.mm; sourceTree = "<group>"; };
+		B23E3C97159C15F700E42730 /* ColorShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = ColorShader.fsh; path = Shaders/ColorShader.fsh; sourceTree = "<group>"; };
+		B23E3C9A159C160600E42730 /* ColorShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = ColorShader.vsh; path = Shaders/ColorShader.vsh; sourceTree = "<group>"; };
 		B23F134215703AEF00FE4D09 /* Bounce Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B23F134415703AEF00FE4D09 /* Bounce Lite-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bounce Lite-Info.plist"; path = "/Users/jallwine/Documents/iPhoneApps/ParticleSystem/Bounce Lite-Info.plist"; sourceTree = "<absolute>"; };
 		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
@@ -539,6 +544,11 @@
 		B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B2D073AA1560C1870001DF70 /* BounceSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSimulation.h; sourceTree = "<group>"; };
 		B2D073AB1560C1870001DF70 /* BounceSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSimulation.mm; sourceTree = "<group>"; };
+		B2DCECC2159DE44700303CF8 /* 512rectangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 512rectangle.jpg; sourceTree = "<group>"; };
+		B2DCECC3159DE44700303CF8 /* 1024rectangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1024rectangle.jpg; sourceTree = "<group>"; };
+		B2DCECC4159DE44700303CF8 /* 2048rectangle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2048rectangle.jpg; sourceTree = "<group>"; };
+		B2DCECD1159DED0600303CF8 /* arrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = arrow.jpg; sourceTree = "<group>"; };
+		B2DCECD4159DEE6200303CF8 /* downarrow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = downarrow.jpg; sourceTree = "<group>"; };
 		B2DE9DAC15902B4600D23FAA /* spiral.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = spiral.jpg; sourceTree = "<group>"; };
 		B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectGlowShader.fsh; sourceTree = "<group>"; };
 		B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectGlowShader.vsh; sourceTree = "<group>"; };
@@ -691,6 +701,8 @@
 			children = (
 				2514C27910084DCA00A42282 /* Shader.fsh */,
 				2514C27A10084DCA00A42282 /* Shader.vsh */,
+				B23E3C97159C15F700E42730 /* ColorShader.fsh */,
+				B23E3C9A159C160600E42730 /* ColorShader.vsh */,
 				B28AE1E51583B1E300C6487A /* BounceKillBoxShader.fsh */,
 				B28AE1E81583B20400C6487A /* BounceKillBoxShader.vsh */,
 				B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */,
@@ -738,6 +750,11 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B2DCECD4159DEE6200303CF8 /* downarrow.jpg */,
+				B2DCECD1159DED0600303CF8 /* arrow.jpg */,
+				B2DCECC2159DE44700303CF8 /* 512rectangle.jpg */,
+				B2DCECC3159DE44700303CF8 /* 1024rectangle.jpg */,
+				B2DCECC4159DE44700303CF8 /* 2048rectangle.jpg */,
 				B23E3BF4159ACCAA00E42730 /* 512ball.jpg */,
 				B23E3BF5159ACCAA00E42730 /* 512checkered.jpg */,
 				B23E3BF6159ACCAA00E42730 /* 512pentagon.jpg */,
@@ -783,13 +800,10 @@
 				B23E3C1E159ACCAA00E42730 /* 2048stripes.jpg */,
 				B23E3C1F159ACCAA00E42730 /* 2048triangle.jpg */,
 				B23E3C20159ACCAA00E42730 /* 2048weave.jpg */,
-				B21A1320159904A7005DFBA0 /* pentagon.jpg */,
-				B21A1321159904A7005DFBA0 /* stationary_pentagon.png */,
 				B21A131A1598CB39005DFBA0 /* stationary_triangle.png */,
 				B21A131B1598CB39005DFBA0 /* triangle.jpg */,
 				B21A13141598C1E8005DFBA0 /* square.jpg */,
 				B21A13151598C1E8005DFBA0 /* stationary_square.png */,
-				B21A131115983549005DFBA0 /* plasma.jpg */,
 				B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */,
 				B2DE9DE9159278BB00D23FAA /* ball.jpg */,
 				B2DE9DE01592789200D23FAA /* stationary_ball.png */,
@@ -1113,6 +1127,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B23E3C9F159C191600E42730 /* ColorShader.fsh in Resources */,
+				B23E3CA0159C191600E42730 /* ColorShader.vsh in Resources */,
 				B2DE9DD515926A8E00D23FAA /* SingleObjectGlowShader.fsh in Resources */,
 				B2DE9DD615926A8E00D23FAA /* SingleObjectGlowShader.vsh in Resources */,
 				B28AE1EB1583B78200C6487A /* BounceKillBoxShader.vsh in Resources */,
@@ -1183,14 +1199,10 @@
 				B2DE9DE31592789200D23FAA /* stationary_ball.png in Resources */,
 				B2DE9DEC159278BB00D23FAA /* ball.jpg in Resources */,
 				B21A13061596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */,
-				B21A131215983549005DFBA0 /* plasma.jpg in Resources */,
 				B21A13161598C1E8005DFBA0 /* square.jpg in Resources */,
 				B21A13181598C1E8005DFBA0 /* stationary_square.png in Resources */,
 				B21A131C1598CB39005DFBA0 /* stationary_triangle.png in Resources */,
 				B21A131E1598CB39005DFBA0 /* triangle.jpg in Resources */,
-				B21A1322159904A7005DFBA0 /* pentagon.jpg in Resources */,
-				B21A1324159904A7005DFBA0 /* stationary_pentagon.png in Resources */,
-				B21A132715991965005DFBA0 /* FSAShaderManager.h in Resources */,
 				B23E3C21159ACCAA00E42730 /* 512ball.jpg in Resources */,
 				B23E3C23159ACCAA00E42730 /* 512checkered.jpg in Resources */,
 				B23E3C25159ACCAA00E42730 /* 512pentagon.jpg in Resources */,
@@ -1236,6 +1248,11 @@
 				B23E3C75159ACCAA00E42730 /* 2048stripes.jpg in Resources */,
 				B23E3C77159ACCAA00E42730 /* 2048triangle.jpg in Resources */,
 				B23E3C79159ACCAA00E42730 /* 2048weave.jpg in Resources */,
+				B2DCECC5159DE44700303CF8 /* 512rectangle.jpg in Resources */,
+				B2DCECC7159DE44700303CF8 /* 1024rectangle.jpg in Resources */,
+				B2DCECC9159DE44700303CF8 /* 2048rectangle.jpg in Resources */,
+				B2DCECD2159DED0600303CF8 /* arrow.jpg in Resources */,
+				B2DCECD5159DEE6200303CF8 /* downarrow.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1243,6 +1260,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B23E3C9D159C18C200E42730 /* ColorShader.fsh in Resources */,
+				B23E3C9E159C18C200E42730 /* ColorShader.vsh in Resources */,
 				B2DE9DD315926A8500D23FAA /* SingleObjectGlowShader.fsh in Resources */,
 				B2DE9DD415926A8500D23FAA /* SingleObjectGlowShader.vsh in Resources */,
 				B28AE1EC1583B78E00C6487A /* BounceKillBoxShader.vsh in Resources */,
@@ -1310,14 +1329,10 @@
 				B2DE9DE41592789200D23FAA /* stationary_ball.png in Resources */,
 				B2DE9DED159278BB00D23FAA /* ball.jpg in Resources */,
 				B21A13071596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */,
-				B21A131315983549005DFBA0 /* plasma.jpg in Resources */,
 				B21A13171598C1E8005DFBA0 /* square.jpg in Resources */,
 				B21A13191598C1E8005DFBA0 /* stationary_square.png in Resources */,
 				B21A131D1598CB39005DFBA0 /* stationary_triangle.png in Resources */,
 				B21A131F1598CB39005DFBA0 /* triangle.jpg in Resources */,
-				B21A1323159904A7005DFBA0 /* pentagon.jpg in Resources */,
-				B21A1325159904A7005DFBA0 /* stationary_pentagon.png in Resources */,
-				B21A132815991965005DFBA0 /* FSAShaderManager.h in Resources */,
 				B23E3C22159ACCAA00E42730 /* 512ball.jpg in Resources */,
 				B23E3C24159ACCAA00E42730 /* 512checkered.jpg in Resources */,
 				B23E3C26159ACCAA00E42730 /* 512pentagon.jpg in Resources */,
@@ -1363,6 +1378,11 @@
 				B23E3C76159ACCAA00E42730 /* 2048stripes.jpg in Resources */,
 				B23E3C78159ACCAA00E42730 /* 2048triangle.jpg in Resources */,
 				B23E3C7A159ACCAA00E42730 /* 2048weave.jpg in Resources */,
+				B2DCECC6159DE44700303CF8 /* 512rectangle.jpg in Resources */,
+				B2DCECC8159DE44700303CF8 /* 1024rectangle.jpg in Resources */,
+				B2DCECCA159DE44700303CF8 /* 2048rectangle.jpg in Resources */,
+				B2DCECD3159DED0600303CF8 /* arrow.jpg in Resources */,
+				B2DCECD6159DEE6200303CF8 /* downarrow.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -57,11 +57,13 @@
     FSAShader *objectShader = [shaderManager getShader:@"SingleObjectShader"];
     FSAShader *stationaryShader = [shaderManager getShader:@"SingleObjectStationaryShader"];
     FSAShader *killBoxShader = [shaderManager getShader:@"BounceKillBoxShader"];
+    FSAShader *colorShader = [shaderManager getShader:@"ColorShader"];
 
     [objectShader setPtr:&aspect forUniform:@"aspect"];
     [stationaryShader setPtr:&aspect forUniform:@"aspect"];
-    [killBoxShader setPtr:&aspect forUniform:@"aspect"];    
-   
+    [killBoxShader setPtr:&aspect forUniform:@"aspect"];  
+    [colorShader setPtr:&aspect forUniform:@"aspect"];    
+
     cacheQueue = [[NSOperationQueue alloc] init];
     
     NSInvocationOperation *invocation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadTextures) object:nil];
@@ -103,6 +105,7 @@
      @"square.jpg",
      @"triangle.jpg",
      @"pentagon.jpg",
+     @"rectangle.jpg",
      @"stationary_ball.png",
      @"stationary_square.png",
      @"stationary_triangle.png",
@@ -111,6 +114,9 @@
     for(NSString* texName in texturesToCache) {
         [texture_manager addLargeTexture:texName];
     }
+    
+    [texture_manager getTexture:@"arrow.jpg"];
+    [texture_manager getTexture:@"downarrow.jpg"];
      
 
     simulation = [[MainBounceSimulation alloc] initWithAspect:aspect];

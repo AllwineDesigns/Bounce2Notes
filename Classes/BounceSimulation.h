@@ -29,6 +29,8 @@ using namespace fsa;
     float _timeRemainder;
 }
 
+@property (nonatomic, readonly) BounceArena* arena;
+
 -(id)initWithRect: (CGRect)rect;
 -(void)addObject: (BounceObject*)object;
 -(void)removeObject: (BounceObject*)object;
@@ -39,6 +41,8 @@ using namespace fsa;
 -(NSSet*)objectsAt: (const vec2&)loc withinRadius:(float)radius;
 -(BounceObject*)objectAt:(const vec2&)loc;
 
+-(void)addToSpace:(ChipmunkObject*)obj;
+
 -(void)step: (float)t;
 -(void)next;
 
@@ -46,9 +50,9 @@ using namespace fsa;
 -(void)addVelocity: (const vec2&)vel toObjectsAt:(const vec2&)loc  withinRadius:(float) radius;
 -(void)addVelocity: (const vec2&)vel toObjectAt:(const vec2&)loc;
 
--(void)addGesture:(BounceGesture*)gesture forKey:(void*)key;
--(BounceGesture*)gestureForKey:(void*)key;
--(void)removeGestureForKey:(void*)key;
+-(void)addGesture:(BounceGesture*)gesture forKey:(void*)uniqueId;
+-(BounceGesture*)gestureForKey:(void*)uniqueId;
+-(void)removeGestureForKey:(void*)uniqueId;
 
 -(void)removeObjectAt:(const vec2&)loc;
 -(void)addObjectAt:(const vec2&)loc;

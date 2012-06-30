@@ -17,6 +17,8 @@
 @interface BounceKillArena : ChipmunkObject {
     BounceSimulation *_simulation;
     
+    vec4 _color;
+    
     CGRect _rect;
     float _pad;
     BOOL _killTop;

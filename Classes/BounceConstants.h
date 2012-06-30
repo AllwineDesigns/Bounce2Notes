@@ -10,8 +10,11 @@
 
 @interface BounceConstants : NSObject {
     float _unitsPerInch;
+    float _aspect;
 }
 @property (nonatomic, readonly) float unitsPerInch;
+@property (nonatomic, readonly) float aspect;
+
 -(id)init;
 +(BounceConstants*)instance;
 

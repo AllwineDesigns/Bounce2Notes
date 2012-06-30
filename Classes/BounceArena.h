@@ -15,6 +15,5 @@
 }
 
 -initWithRect: (CGRect)rect;
--(CGRect)rect;
 
 @end

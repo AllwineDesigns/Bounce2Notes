@@ -14,6 +14,7 @@ static BounceConstants *bounceConstants;
 @implementation BounceConstants
 
 @synthesize unitsPerInch = _unitsPerInch;
+@synthesize aspect = _aspect;
 
 -(id)init {
     self = [super init];
@@ -25,6 +26,9 @@ static BounceConstants *bounceConstants;
         } else {
             _unitsPerInch = 1.01875;
         }
+        
+        CGSize size = screenSize();
+        _aspect = size.width/size.height;
     }
     
     return self;

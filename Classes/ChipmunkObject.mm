@@ -58,8 +58,8 @@
         _allocatedShapes = 1;
         
         _body = cpBodyNew(1, 1);
-        _mass = 1;
-        _moment = 1;
+        _mass = 999999;
+        _moment = 999999;
     }
     return self;
 }

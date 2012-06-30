@@ -14,9 +14,7 @@
 -(id)initWithRect:(CGRect)rect {
     self = [super initStatic];
     
-    if(self) {
-        _rect = rect;
-        
+    if(self) {        
         vec2 tr(rect.origin.x+rect.size.width, rect.origin.y+rect.size.height);
         vec2 tl(rect.origin.x, tr.y);
         vec2 bl(tl.x,rect.origin.y);
@@ -41,9 +39,5 @@
         }
     }
     return self;
-}
-
--(CGRect)rect {
-    return _rect;
 }
 @end

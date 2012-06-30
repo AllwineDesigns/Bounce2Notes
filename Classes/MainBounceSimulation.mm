@@ -8,6 +8,7 @@
 
 #import "MainBounceSimulation.h"
 #import "BounceConstants.h"
+#import "FSAShaderManager.h"
 
 @implementation MainBounceSimulation
 
@@ -23,25 +24,69 @@
         _killArena = [[BounceKillArena alloc] initWithRect:rect simulation:self];
         [_killArena addToSpace:_space];
         
+        _configPane = [[BounceConfigurationPane alloc] initWithBounceSimulation:self];
+        
         [self addObject:[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()]];
     }
     
     return self;
 }
 
--(void)singleTapAt:(const vec2 &)loc {
-    float upi = [[BounceConstants instance] unitsPerInch];
-    
-    if(loc.y < _arena.rect.origin.y+upi*.5) {
-        NSLog(@"tapped bottom\n");
-        
-        if([_configPane isActive]) {
-            [_configPane deactivate];
-        } else {
-            [_configPane activate];
-        }
-    } else {
+//-(void)step:(float)t {
+//    [super step:t];
+//    [_configPane step:t];
+//}
+
+-(void)next {
+    [super next];
+    [_configPane step:_dt];
+}
+
+-(void)setGravity:(const vec2 &)g {
+    [_configPane setGravity:g];
+    [super setGravity:g];
+}
+
+-(void)addToVelocity:(const vec2 &)v {
+    [_configPane addToVelocity:v];
+    [super addToVelocity:v];
+}
+
+-(void)singleTapAt:(const vec2 &)loc {    
+    if(![_configPane singleTapAt:loc]) {
         [super singleTapAt:loc];
+    }
+}
+
+-(void)flickAt:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
+    if(![_configPane flickAt:loc inDirection:dir time:time]) {
+        [super flickAt:loc inDirection:dir time:time];
+    }
+}
+
+-(void)longTouch:(void*)uniqueId at:(const vec2&)loc {
+    if(![_configPane longTouch:uniqueId at:loc]) {
+        [super longTouch:uniqueId at:loc];
+    }
+}
+-(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
+    if(![_configPane beginDrag:uniqueId at:loc]) {
+        [super beginDrag:uniqueId at:loc];
+    }
+}
+-(void)drag:(void*)uniqueId at:(const vec2&)loc {
+    if(![_configPane drag:uniqueId at:loc]) {
+        [super drag:uniqueId at:loc];
+    }
+}
+-(void)endDrag:(void*)uniqueId at:(const vec2&)loc {
+    if(![_configPane endDrag:uniqueId at:loc]) {
+        [super endDrag:uniqueId at:loc];
+    }
+}
+-(void)cancelDrag:(void*)uniqueId at:(const vec2&)loc {
+    if(![_configPane cancelDrag:uniqueId at:loc]) {
+        [super cancelDrag:uniqueId at:loc];
     }
 }
 
@@ -117,11 +162,14 @@
 -(void)draw {
     [super draw];
     [_killArena draw];
+    [_configPane draw];
+                        
 }
 
 -(void)dealloc {
     [_killArena removeFromSpace];
     [_killArena release]; _killArena = nil;
+    [_configPane release]; _configPane = nil;
     
     [super dealloc];
 }

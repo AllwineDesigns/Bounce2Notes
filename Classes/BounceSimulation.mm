@@ -112,6 +112,9 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 @implementation BounceSimulation
+
+@synthesize arena = _arena;
+
 -(id)initWithRect: (CGRect)rect {
     _gestures = [[NSMutableDictionary alloc] initWithCapacity:10];
     _objects = [[NSMutableSet alloc] initWithCapacity:10];
@@ -145,6 +148,10 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 -(void)postSolveRemoveObject: (BounceObject*)object {
     [_delayedRemoveObjects addObject:object];
+}
+
+-(void)addToSpace:(ChipmunkObject*)obj {
+    [obj addToSpace:_space];
 }
 
 -(BounceGesture*)gestureWithParticipatingObject:(BounceObject*)object {
@@ -235,6 +242,12 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     while(t > _dt) {
         [self next];
         t -= _dt;
+    }
+    
+    vec2 vel = _arena.velocity;
+    
+    if(vel.length() > 0) {
+    NSLog(@"arena vel: %f, %f\n", vel.x, vel.y);
     }
     
     _timeRemainder = t;

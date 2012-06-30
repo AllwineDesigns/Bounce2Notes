@@ -616,6 +616,8 @@
         [stationaryShader disable];
     }
     
+    glDisable(GL_BLEND);
+    
 }
 
 -(void)separate: (cpContactPointSet*)contactPoints {
