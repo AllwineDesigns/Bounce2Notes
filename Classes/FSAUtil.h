@@ -13,6 +13,18 @@
 extern "C" {
 #endif
 
+//from bit twiddling hacks
+inline uint32_t nextPowerOfTwo(uint32_t v)
+{
+    v--;
+    v |= v >> 1;
+    v |= v >> 2;
+    v |= v >> 4;
+    v |= v >> 8;
+    v |= v >> 16;
+    v++;
+    return v;
+}
 void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 NSString* machineName();
 natural_t getFreeMemory();

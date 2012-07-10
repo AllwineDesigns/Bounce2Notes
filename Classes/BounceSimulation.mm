@@ -133,6 +133,12 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     
     return self;
 }
+
+-(void)setColor:(const vec4 &)color {
+    for(BounceObject *obj in _objects) {
+        [obj setColor:color];
+    }
+}
 -(void)addObject: (BounceObject*)object {
     [object addToSpace:_space];
     [object.sound play:.2];
@@ -244,12 +250,6 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         t -= _dt;
     }
     
-    vec2 vel = _arena.velocity;
-    
-    if(vel.length() > 0) {
-    NSLog(@"arena vel: %f, %f\n", vel.x, vel.y);
-    }
-    
     _timeRemainder = t;
     
     for(BounceObject *obj in _delayedRemoveObjects) {
@@ -298,11 +298,17 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         [self removeObject:obj];
     }
 }
--(void)addObjectAt:(const vec2&)loc {
-    [self addObject:[BounceObject randomObjectAt:loc]];
+-(BounceObject*)addObjectAt:(const vec2&)loc {
+    BounceObject *obj = [BounceObject randomObjectAt:loc];
+    [self addObject:obj];
+    
+    return obj;
 }
--(void)addObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel {
-    [self addObject:[BounceObject randomObjectAt:loc withVelocity:vel]];
+-(BounceObject*)addObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel {
+    BounceObject *obj = [BounceObject randomObjectAt:loc withVelocity:vel];
+    [self addObject:obj];
+    
+    return obj;
 }
 -(BOOL)isObjectAt:(const vec2&)loc {
     BounceObject *obj = [self objectAt:loc];
@@ -341,6 +347,10 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     return [self isObjectBeingTransformed:obj];
     
 }
+-(BOOL)isInBoundsAt:(const vec2 &)loc {
+    return [_arena isInBoundsAt:loc];
+}
+
 -(BOOL)isStationaryObjectAt:(const vec2&)loc {
     BounceObject *obj = [self objectAt:loc];
     
@@ -464,27 +474,32 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 -(void)drag:(void*)uniqueId at:(const vec2&)loc {
     BounceGesture *gesture = [self gestureForKey:uniqueId];
 
-    [gesture updateGestureLocation:loc];
-    
-    if(![[gesture object] hasBeenAddedToSpace]) {
-        [self addObject:[gesture object]];
+    if(gesture) {
+        [gesture updateGestureLocation:loc];
+        
+        if(![[gesture object] hasBeenAddedToSpace]) {
+            [self addObject:[gesture object]];
+        }
     }
 }
 -(void)endDrag:(void*)uniqueId at:(const vec2&)loc {
     BounceGesture *gesture = [self gestureForKey:uniqueId];
-        
-    [gesture endGesture];
     
-    [self removeGestureForKey:uniqueId];
+    if(gesture) {
+        [gesture endGesture];
+    
+        [self removeGestureForKey:uniqueId];
+    }
     
 }
 -(void)cancelDrag:(void*)uniqueId at:(const vec2&)loc {
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     
-    [gesture endGesture];
-
+    if(gesture) {
+        [gesture endGesture];
     
-    [self removeGestureForKey:uniqueId];
+        [self removeGestureForKey:uniqueId];
+    }
 }
 
 -(void)dealloc {

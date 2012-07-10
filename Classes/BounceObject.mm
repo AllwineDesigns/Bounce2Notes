@@ -16,10 +16,9 @@
 
 @implementation BounceObject
 
+@synthesize hasSecondarySize = _hasSecondarySize;
 @synthesize isStationary = _isStationary;
 @synthesize color = _color;
-@synthesize shapeTexture = _shapeTexture;
-@synthesize stationaryTexture = _stationaryTexture;
 @synthesize patternTexture = _patternTexture;
 @synthesize intensity = _intensity;
 @synthesize age = _age;
@@ -74,86 +73,55 @@
     
     if(self) {
         _size = size;
-        //_size = .1;
-        _color = color;
-        
-        _isStationary = NO;
-//        NSArray *textures = [NSArray arrayWithObjects:@"black.jpg", @"white.jpg", @"spiral.jpg", @"stripes.jpg", @"checkered.jpg", @"sections.jpg", @"squares.jpg", @"weave.jpg", @"plasma.jpg", nil];
+        _size2 = _size/1.61803399;
 
-//       NSString* texName = [textures objectAtIndex:(int)([textures count]*random(loc*.24952))];
-        NSString* texName = @"spiral.jpg";
-        _patternTexture = [[FSATextureManager instance] getTexture:texName];
-        
-        _verts = (vec2*)malloc(4*sizeof(vec2));
-        _vertsUntransformed = (vec2*)malloc(4*sizeof(vec2));
-        _vertOffsets = (vec2*)malloc(4*sizeof(vec2));
-        _vertShapeUVs = (vec2*)malloc(4*sizeof(vec2));
-        _vertPatternUVs = (vec2*)malloc(4*sizeof(vec2));
-        _vertVels = (vec2*)malloc(4*sizeof(vec2));
-        _indices = (unsigned int*)malloc(6*sizeof(unsigned int));
-        _numVerts = 0;
-        _numIndices = 0;
+        _color = color;
+        _intensity = 2.2;
+        _isStationary = NO;
+        _patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"].name;
         
         _sound = [[BounceSound alloc] initWithBounceObject:self];
+        
+        _inputs.intensity = &_intensity;
+        _inputs.isStationary = &_isStationary;
+        _inputs.color = &_color;
+        _inputs.size = &_size;
+
+        _inputs.angle = &_body->a;
+        _inputs.position = (vec2*)&_body->p;
+
+        _inputs.patternTexture = &_patternTexture; 
                 
         [self setBounceShape:bounceShape];
         
         cpBodySetPos(_body, (const cpVect&)loc);
         cpBodySetVel(_body, (const cpVect&)vel);
         cpBodySetAngle(_body, angle);
-        cpBodySetVelLimit(_body, 5);
+        cpBodySetVelLimit(_body, 10);
         cpBodySetAngVelLimit(_body, 50);
-        cpBodySetUserData(_body, self);
-        
-        for(int i = 0; i < _numShapes; i++) {
-            cpShapeSetFriction(_shapes[i], .5);
-            cpShapeSetElasticity(_shapes[i], .95);
-            cpShapeSetCollisionType(_shapes[i], OBJECT_TYPE);
-        }
-
-
-  /*      
-        _vertUVs[0] = vec2(1,1);
-        _vertUVs[1] = vec2(0,1);
-        _vertUVs[2] = vec2(0,0);
-        _vertUVs[3] = vec2(1,0);
-   */
-        
-        /*
-        _vertShapeUVs[0] = vec2(1,0);
-        _vertShapeUVs[1] = vec2(0,0);
-        _vertShapeUVs[2] = vec2(0,1);
-        _vertShapeUVs[3] = vec2(1,1);
-        
-        _vertPatternUVs[0] = vec2(1,0);
-        _vertPatternUVs[1] = vec2(0,0);
-        _vertPatternUVs[2] = vec2(0,1);
-        _vertPatternUVs[3] = vec2(1,1);
-         */
-         
-        
-        /*
-        int x = 5*random(loc*76.345);
-        int y = 5*random(loc*23.29003);
-        
-        _vertPatternUVs[0] = vec2(.2*(x+1),.2*y);
-        _vertPatternUVs[1] = vec2(.2*x,.2*y);
-        _vertPatternUVs[2] = vec2(.2*x,.2*(y+1));
-        _vertPatternUVs[3] = vec2(.2*(x+1),.2*(y+1));
-         */
-
-        /*
-        _indices[0] = 0;
-        _indices[1] = 1;
-        _indices[2] = 3;
-        
-        _indices[3] = 1;
-        _indices[4] = 2;
-        _indices[5] = 3;
-         */
     }
     
     return self;
+}
+
+/*
+-(void)createNewBody {
+    [super createNewBody];
+    
+    _inputs.position = (vec2*)&_body->p;
+    _inputs.angle = &_body->a;
+}
+ */
+
+
+-(void)setVelocity:(const vec2 &)vel {
+    vec2 new_vel(vel);
+    
+    float len = new_vel.length();
+    if(len > 10) {
+        new_vel *= 10./len;
+    }
+    [super setVelocity:new_vel];
 }
 
 -(void)clearShapes {
@@ -168,6 +136,8 @@
 
 -(void)setBounceShape:(BounceShape)bounceShape {
     _bounceShape = bounceShape;
+    _hasSecondarySize = NO;
+    
     [self removeAllShapes];
     switch(bounceShape) {
         case BOUNCE_BALL:
@@ -182,9 +152,51 @@
         case BOUNCE_PENTAGON:
             [self setupPentagon];
             break;
+        case BOUNCE_RECTANGLE:
+            [self setupRectangle];
+            break;
+        case BOUNCE_CAPSULE:
+            [self setupCapsule];
+            break;
         default:
             NSAssert(NO, @"attempting to set unknown shape\n");
             break;
+    }
+    
+    [_renderable burst:5];
+    
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetFriction(_shapes[i], .5);
+        cpShapeSetElasticity(_shapes[i], .95);
+        cpShapeSetCollisionType(_shapes[i], OBJECT_TYPE);
+    }
+}
+
+-(float)secondarySize {
+    return _size2;
+}
+
+-(void)setSecondarySize:(float)s {
+    _size2 = s;
+    if(_size/_size2 < 1.61803399) {
+        _size2 = _size/1.61803399;
+    } else if(_size2 < .01) {
+        _size2 = .01;
+    }
+    
+    switch(_bounceShape) {
+        case BOUNCE_RECTANGLE:
+            [self resizeRectangle];
+            break;
+        case BOUNCE_CAPSULE:
+            [self resizeCapsule];
+            break;
+        default:
+            NSAssert(NO, @"secondary size changing for shape without secondary size\n");
+            break;
+    }
+    if(_space != NULL) {
+        cpSpaceReindexShapesForBody(_space, _body);
     }
 }
 
@@ -200,6 +212,9 @@
         _size = 1;
     } else if(_size < .01) {
         _size = .01;
+    }
+    if(_size/_size2 < 1.61803399) {
+        _size2 = _size/1.61803399;
     }
     
     [_sound resized:old_size];
@@ -217,6 +232,12 @@
         case BOUNCE_PENTAGON:
             [self resizePentagon];
             break;
+        case BOUNCE_RECTANGLE:
+            [self resizeRectangle];
+            break;
+        case BOUNCE_CAPSULE:
+            [self resizeCapsule];
+            break;
         default:
             NSAssert(NO, @"resizing unknown shape\n");
             break;
@@ -226,152 +247,13 @@
     }
 }
 
--(void)setupSquareVerts {
-    _numVerts = 4;
-    _numIndices = 6;
-    _verts = (vec2*)realloc(_verts,_numVerts*sizeof(vec2));
-    _vertsUntransformed = (vec2*)realloc(_vertsUntransformed, _numVerts*sizeof(vec2));
-    _vertOffsets = (vec2*)realloc(_vertOffsets,_numVerts*sizeof(vec2));
-    _vertVels = (vec2*)realloc(_vertVels,_numVerts*sizeof(vec2));
-
-    _vertShapeUVs = (vec2*)realloc(_vertShapeUVs,_numVerts*sizeof(vec2));
-    _vertPatternUVs = (vec2*)realloc(_vertPatternUVs,_numVerts*sizeof(vec2));
-    _indices = (unsigned int*)realloc(_indices,_numIndices*sizeof(unsigned int));
-    
-    memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
-    memset(_vertVels, 0, _numVerts*sizeof(vec2));
-    
-    _vertsUntransformed[0] = vec2(1,1);
-    _vertsUntransformed[1] = vec2(-1,1);
-    _vertsUntransformed[2] = vec2(-1,-1);
-    _vertsUntransformed[3] = vec2(1,-1);
-    
-    _vertShapeUVs[0] = vec2(1,0);
-    _vertShapeUVs[1] = vec2(0,0);
-    _vertShapeUVs[2] = vec2(0,1);
-    _vertShapeUVs[3] = vec2(1,1);
-    
-    _vertPatternUVs[0] = vec2(1,0);
-    _vertPatternUVs[1] = vec2(0,0);
-    _vertPatternUVs[2] = vec2(0,1);
-    _vertPatternUVs[3] = vec2(1,1);
-    
-    _indices[0] = 0;
-    _indices[1] = 1;
-    _indices[2] = 3;
-    
-    _indices[3] = 1;
-    _indices[4] = 2;
-    _indices[5] = 3;
-}
-
--(void)setupTriangleVerts {
-    _numVerts = 3;
-    _numIndices = 3;
-    _verts = (vec2*)realloc(_verts,_numVerts*sizeof(vec2));
-    _vertsUntransformed = (vec2*)realloc(_vertsUntransformed, _numVerts*sizeof(vec2));
-    _vertOffsets = (vec2*)realloc(_vertOffsets,_numVerts*sizeof(vec2));
-    _vertVels = (vec2*)realloc(_vertVels,_numVerts*sizeof(vec2));
-    
-    _vertShapeUVs = (vec2*)realloc(_vertShapeUVs,_numVerts*sizeof(vec2));
-    _vertPatternUVs = (vec2*)realloc(_vertPatternUVs,_numVerts*sizeof(vec2));
-    _indices = (unsigned int*)realloc(_indices,_numIndices*sizeof(unsigned int));
-    
-    memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
-    memset(_vertVels, 0, _numVerts*sizeof(vec2));
-    
-    _vertsUntransformed[0] = vec2(0,1.3333333333);
-    _vertsUntransformed[1] = vec2(-1.15470053838,-.66666666667);
-    _vertsUntransformed[2] = vec2(1.1547005383,-.66666666667);
-    
-    _vertShapeUVs[0] = vec2(.5,-.166666666667);
-    _vertShapeUVs[1] = vec2(-.07735026919,.83333333333);
-    _vertShapeUVs[2] = vec2(1.07735026919,.83333333333);
-    
-    _vertPatternUVs[0] = vec2(.5,-.166666666667);
-    _vertPatternUVs[1] = vec2(-.07735026919,.83333333333);
-    _vertPatternUVs[2] = vec2(1.07735026919,.83333333333);
-    
-    _indices[0] = 0;
-    _indices[1] = 1;
-    _indices[2] = 2;
-}
-
--(void)setupPentagonVerts {
-    _numVerts = 6;
-    _numIndices = 15;
-    _verts = (vec2*)realloc(_verts,_numVerts*sizeof(vec2));
-    _vertsUntransformed = (vec2*)realloc(_vertsUntransformed, _numVerts*sizeof(vec2));
-    _vertOffsets = (vec2*)realloc(_vertOffsets,_numVerts*sizeof(vec2));
-    _vertVels = (vec2*)realloc(_vertVels,_numVerts*sizeof(vec2));
-    
-    _vertShapeUVs = (vec2*)realloc(_vertShapeUVs,_numVerts*sizeof(vec2));
-    _vertPatternUVs = (vec2*)realloc(_vertPatternUVs,_numVerts*sizeof(vec2));
-    _indices = (unsigned int*)realloc(_indices,_numIndices*sizeof(unsigned int));
-    
-    memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
-    memset(_vertVels, 0, _numVerts*sizeof(vec2));
-    
-    float cos72 = .309016994375;
-    float sin72 = .951056516295;
-    vec2 vert = vec2(0,1.105572809);
-    
-    _vertsUntransformed[0] = vert;
-    
-    vert.rotate(cos72,sin72);
-    _vertsUntransformed[1] = vert;
-    
-    vert.rotate(cos72,sin72);
-    _vertsUntransformed[2] = vert;
-    
-    vert.rotate(cos72,sin72);
-    _vertsUntransformed[3] = vert;
-    
-    vert.rotate(cos72,sin72);
-    _vertsUntransformed[4] = vert;
-    
-    _vertsUntransformed[5] = vec2(0,0);
-    
-    for(int i = 0; i < _numVerts; i++) {
-        vec2 uv = _vertsUntransformed[i];
-        uv.x *= .5;
-        uv.y *= -.5;
-        uv += vec2(.5,.5);
-        _vertShapeUVs[i] = uv;
-        _vertPatternUVs[i] = uv;
-    }
-    
-    _indices[0] = 0;
-    _indices[1] = 1;
-    _indices[2] = 5;
-    
-    _indices[3] = 1;
-    _indices[4] = 2;
-    _indices[5] = 5;
-    
-    _indices[6] = 2;
-    _indices[7] = 3;
-    _indices[8] = 5;
-    
-    _indices[9] = 3;
-    _indices[10] = 4;
-    _indices[11] = 5;
-    
-    _indices[12] = 4;
-    _indices[13] = 0;
-    _indices[14] = 5;
-    
-}
-
 -(void)setupBall {
     [self setMass:100*_size*_size];
     [self setMoment:.02*cpMomentForCircle(_mass, 0, _size, cpvzero)];
     [self addCircleShapeWithRadius:_size withOffset:cpvzero];
     
-    [self setupSquareVerts];
-    
-    _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"];
-    _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"];
+    [_renderable release];
+    _renderable = [[BounceBallRenderable alloc] initWithInputs:_inputs];
 }
 
 -(void)setupSquare {
@@ -393,12 +275,72 @@
     
     [self addPolyShapeWithNumVerts:4 withVerts:square_verts withOffset:cpvzero];
     
-    [self setupSquareVerts];
-    
-    _shapeTexture = [[FSATextureManager instance] getTexture:@"square.jpg"];
-    _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_square.png"];
+    [_renderable release];
+    _renderable = [[BounceSquareRenderable alloc] initWithInputs:_inputs];
+
 
 }
+
+-(void)setupRectangle {   
+    _hasSecondarySize = YES;
+    
+    float aspect = _size/_size2;
+    float invaspect = 1./aspect;
+        
+    vec2 verts[4];
+    verts[0].x = _size;
+    verts[0].y = invaspect*_size;
+    
+    verts[1].x = _size;
+    verts[1].y = -invaspect*_size;
+    
+    verts[2].x = -_size;
+    verts[2].y = -invaspect*_size;
+    
+    verts[3].x = -_size;
+    verts[3].y = invaspect*_size;
+    
+    [self setMass:(4/PI)*invaspect*100*_size*_size];
+    [self setMoment:5*cpMomentForBox(_mass, _size*2, _size*2*invaspect)];
+    
+    [self addPolyShapeWithNumVerts:4 withVerts:verts withOffset:cpvzero];
+    
+    [_renderable release];
+    _renderable = [[BounceRectangleRenderable alloc] initWithInputs:_inputs aspect:aspect];
+}
+
+-(void)setupCapsule {
+    float aspect = _size/_size2;
+    float invaspect = 1./aspect;
+
+    _hasSecondarySize = YES;
+    
+    vec2 verts[4];
+    verts[0].x = _size*(1-invaspect);
+    verts[0].y = invaspect*_size;
+    
+    verts[1].x = _size*(1-invaspect);
+    verts[1].y = -invaspect*_size;
+    
+    verts[2].x = -_size*(1-invaspect);
+    verts[2].y = -invaspect*_size;
+    
+    verts[3].x = -_size*(1-invaspect);
+    verts[3].y = invaspect*_size;
+    
+    [self setMass:(4/PI)*invaspect*100*_size*_size];
+    [self setMoment:5*cpMomentForBox(_mass, _size*2, _size*2*invaspect)];
+    
+    [self addPolyShapeWithNumVerts:4 withVerts:verts withOffset:cpvzero];
+    [self addCircleShapeWithRadius:invaspect*_size withOffset:vec2(_size*(1-invaspect), 0)];
+    [self addCircleShapeWithRadius:invaspect*_size withOffset:vec2(-_size*(1-invaspect), 0)];
+
+    [_renderable release];
+    _renderable = [[BounceCapsuleRenderable alloc] initWithInputs:_inputs aspect:aspect];
+    
+    
+}
+
 
 -(void)setupTriangle {
     float cos30 = .866025403784; // sqrt(3)/2
@@ -418,18 +360,15 @@
     
     [self addPolyShapeWithNumVerts:3 withVerts:verts withOffset:cpvzero];
     
-    [self setupTriangleVerts];
-    
-    _shapeTexture = [[FSATextureManager instance] getTexture:@"triangle.jpg"];
-    _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_triangle.png"];
-
+    [_renderable release];
+    _renderable = [[BounceTriangleRenderable alloc] initWithInputs:_inputs];
 }
 
 -(void)setupPentagon {
     float cos72 = .309016994375;
     float sin72 = .951056516295;
     
-    vec2 vert(0, _size*1.05572809);
+    vec2 vert(0, _size*1.1056);
     
     vec2 verts[5];
     verts[0] = vert;
@@ -451,11 +390,8 @@
     
     [self addPolyShapeWithNumVerts:5 withVerts:verts withOffset:cpvzero];
     
-    [self setupPentagonVerts];
-    
-    _shapeTexture = [[FSATextureManager instance] getTexture:@"pentagon.jpg"];
-    _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_pentagon.png"];
-    
+    [_renderable release];
+    _renderable = [[BouncePentagonRenderable alloc] initWithInputs:_inputs];    
 }
 
 -(void)resizeBall {
@@ -484,6 +420,65 @@
     cpPolyShapeSetVerts(_shapes[0], 4, square_verts, cpvzero);
 }
 
+-(void)resizeRectangle {
+    float aspect = _size/_size2;
+    float invaspect = 1./aspect;
+
+    cpVect verts[4];
+    verts[0].x = _size;
+    verts[0].y = invaspect*_size;
+    
+    verts[1].x = _size;
+    verts[1].y = -invaspect*_size;
+    
+    verts[2].x = -_size;
+    verts[2].y = -invaspect*_size;
+    
+    verts[3].x = -_size;
+    verts[3].y = invaspect*_size;
+    
+    [self setMass:(4/PI)*invaspect*100*_size*_size];
+    [self setMoment:5*cpMomentForBox(_mass, _size*2, _size*2*invaspect)];
+    
+    cpPolyShapeSetVerts(_shapes[0], 4, verts, cpvzero);
+    [_renderable setAspect:aspect];
+
+}
+
+-(void)resizeCapsule {
+    float aspect = _size/_size2;
+    float invaspect = 1./aspect;
+
+    cpVect verts[4];
+    verts[0].x = _size*(1-invaspect);
+    verts[0].y = invaspect*_size;
+    
+    verts[1].x = _size*(1-invaspect);
+    verts[1].y = -invaspect*_size;
+    
+    verts[2].x = -_size*(1-invaspect);
+    verts[2].y = -invaspect*_size;
+    
+    verts[3].x = -_size*(1-invaspect);
+    verts[3].y = invaspect*_size;
+    
+    [self setMass:(4/PI)*invaspect*100*_size*_size];
+    [self setMoment:5*cpMomentForBox(_mass, _size*2, _size*2*invaspect)];
+    
+    cpPolyShapeSetVerts(_shapes[0], 4, verts, cpvzero);
+    
+    vec2 offset1(_size*(1-invaspect), 0);
+    vec2 offset2(-_size*(1-invaspect), 0);
+
+    cpCircleShapeSetOffset(_shapes[1], (const cpVect&)offset1);
+    cpCircleShapeSetRadius(_shapes[1], invaspect*_size);
+    
+    cpCircleShapeSetOffset(_shapes[2], (const cpVect&)offset2);
+    cpCircleShapeSetRadius(_shapes[2], invaspect*_size);
+    [_renderable setAspect:aspect];
+}
+
+
 -(void)resizeTriangle {
     float cos30 = .866025403784; // sqrt(3)/2
     float sin30 = .5;
@@ -507,7 +502,7 @@
     float cos72 = .309016994375;
     float sin72 = .951056516295;
     
-    vec2 vert(0, _size*1.05572809);
+    vec2 vert(0, _size*1.1056);
     
     vec2 verts[5];
     verts[0] = vert;
@@ -534,94 +529,19 @@
     _intensity *= .9;
     _age += dt;
     
-    float spring_k = 200;
-    float drag = .2;
-    float c = _size*.75;
-
-    for(int i = 0; i < _numVerts; i++) {
-        _vertOffsets[i] += _vertVels[i]*dt;
-        vec2 a = -spring_k*_vertOffsets[i];
-
-        _vertVels[i] +=  a*dt-drag*_vertVels[i];
-        
-        _vertOffsets[i].clamp(-c, c);
-    }
+    [_renderable step:dt];
 }
 
 -(void)draw {
-    FSAShaderManager *shaderManager = [FSAShaderManager instance];
-    FSAShader *objectShader = [shaderManager getShader:@"SingleObjectShader"];
-    FSAShader *stationaryShader = [shaderManager getShader:@"SingleObjectStationaryShader"];
-    
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-
-    float size = 2*_size;
-    vec2 position(self.position);
-    
-    float angle = self.angle;
-    
-    float cosangle = cos(-angle);
-    float sinangle = sin(-angle);
-    
-    for(int i = 0; i < _numVerts; i++) {
-        _verts[i] = _vertsUntransformed[i]*size+_vertOffsets[i];
-        _verts[i].rotate(cosangle,sinangle);
-        _verts[i] += position;
-    }
-    
-   // float intensity = 2.2;
-            
-    [objectShader setPtr:&_intensity forUniform:@"intensity"];
-    [objectShader setPtr:&_color forUniform:@"color"];
-    
-    GLuint shapeTex = 0;
-    GLuint patternTex = 1;
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _shapeTexture);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _patternTexture);
-
-    [objectShader setPtr:&shapeTex forUniform:@"shapeTexture"];
-    [objectShader setPtr:&patternTex forUniform:@"patternTexture"];
-    
-    [objectShader setPtr:_verts forAttribute:@"position"];
-    [objectShader setPtr:_vertShapeUVs forAttribute:@"shapeUV"];
-    [objectShader setPtr:_vertPatternUVs forAttribute:@"patternUV"];
-    
-    [objectShader enable];
-    glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, _indices);
-    [objectShader disable];
-    
-    if(_isStationary) {
-        [stationaryShader setPtr:&_color forUniform:@"color"];
-        
-        GLuint stationaryTex = 0;
-        GLuint patternTex = 1;
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _stationaryTexture);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, _patternTexture);
-        [stationaryShader setPtr:&stationaryTex forUniform:@"texture"];
-        [stationaryShader setPtr:&patternTex forUniform:@"pattern"];
-        
-        [stationaryShader setPtr:_verts forAttribute:@"position"];
-        [stationaryShader setPtr:_vertShapeUVs forAttribute:@"uv"];
-        [stationaryShader setPtr:_vertPatternUVs forAttribute:@"patternUV"];
-
-        [stationaryShader enable];
-        glDrawElements(GL_TRIANGLES, _numIndices, GL_UNSIGNED_INT, _indices);
-        [stationaryShader disable];
-    }
-    
-    glDisable(GL_BLEND);
-    
+    [_renderable draw];
 }
 
+-(void)drawSelected {
+    [_renderable drawSelected];
+}
+
+
 -(void)separate: (cpContactPointSet*)contactPoints {
-    float size = _size;
     float angle = self.angle;  
     vec2 pos(self.position);
     vec2 vel(self.velocity);
@@ -631,41 +551,28 @@
     
     vel.rotate(cosangle,sinangle); 
     
-    for(int i=0; i<contactPoints->count; i++){
+    for(int i=0; i < contactPoints->count; i++){
         vec2 p(contactPoints->points[i].point);
         p -= pos;
         p.rotate(cosangle,sinangle);
         
-        int closest_j = -1;
-        int closest_j2 = -1;
-        float min_dist = 9999;
-        float min_dist2 = 9999;
-        
-        for(int j = 0; j < _numVerts; j++) {
-            vec2 vert = _vertsUntransformed[j]*size;
-            float dist = (p-vert).length();
-            if(dist < min_dist) {
-                closest_j = j;
-                min_dist = dist;
-                
-                closest_j2 = closest_j;
-                min_dist2 = min_dist;
-            } else if(dist < min_dist2) {
-                closest_j2 = j;
-                min_dist2 = dist;
-            }
-        }
-        
-        _vertVels[closest_j] += vel;
-        _vertVels[closest_j2] += vel;
-
+        [_renderable collideAt:p withVelocity:vel];
     }
     
+}
+
+-(void)setPatternForTextureSheet: (NSString*)name row:(unsigned int)row col:(unsigned int)col numRows:(unsigned int)rows numCols:(unsigned int)cols {
+    _patternTexture = [[FSATextureManager instance] getTexture:name].name;
+
+    [_renderable setPatternUVsForTextureSheetAtRow:row col:col numRows:rows numCols:cols];
 }
 
 -(void)dealloc {
     [_sound release];
     _sound = nil;
+    [_renderable release];
+    _renderable = nil;
+
     [super dealloc];
 }
 

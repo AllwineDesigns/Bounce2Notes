@@ -12,6 +12,11 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
+#import "FSATexture.h"
+#import <fsa/Vector.hpp>
+
+using namespace fsa;
+
 @interface FSATextureManager : NSObject {
     NSMutableDictionary *textures;
     NSMutableDictionary *largeTextures;
@@ -19,7 +24,8 @@
 }
 
 -(id)init;
--(GLuint)getTexture: (NSString*)name;
+-(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key;
+-(FSATexture*)getTexture: (NSString*)name;
 -(void)addLargeTexture: (NSString*)name;
 +(FSATextureManager*)instance;
 

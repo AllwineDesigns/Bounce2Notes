@@ -25,14 +25,18 @@ typedef enum {
     float _offsetAngle;
     float _offsetR;
 
+    BOOL _doSecondarySize;
     vec2 _P;
     vec2 _Pp;
     vec2 _C;  
     float _size;
+    float _size2;
     float _rotation;
     BounceGesture *_gesture1;
     BounceGesture *_gesture2;
 }
+
+@property (nonatomic) BOOL doSecondarySize;
 
 +(id)createGestureForObject: (BounceObject*)obj;
 +(id)grabGestureForObject: (BounceObject*)obj at:(const vec2&)at;

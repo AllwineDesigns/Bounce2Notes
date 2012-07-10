@@ -28,8 +28,10 @@ void main()
     lowp vec4 col;
     col = t*color+r*color*patColor;
 
-    col.a = r;
+    col.a = r*patColor.a;
 
     gl_FragColor = col;
+//    gl_FragColor = patColor;
+//    gl_FragColor = texColor;
 //    gl_FragColor = vec4(.3,.3,.3, .3);
 }

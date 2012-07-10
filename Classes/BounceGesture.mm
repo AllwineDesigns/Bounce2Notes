@@ -10,6 +10,8 @@
 
 @implementation BounceGesture
 
+@synthesize doSecondarySize = _doSecondarySize;
+
 +(id)createGestureForObject: (BounceObject*)obj {
     BounceGesture *gesture = [[BounceGesture alloc] initCreateGestureForObject:obj];
     [gesture autorelease];
@@ -71,9 +73,11 @@
         _C = _obj.position;
         _rotation = _obj.angle;
         _size = _obj.size;
+        _size2 = _obj.secondarySize;
         _gesture1 = self;
         _gesture2 = gesture;
         _state = BOUNCE_GESTURE_TRANSFORM;
+        
         [gesture beginTransformWithGesture:self];
     }
     
@@ -130,9 +134,11 @@
             
             _obj.angVel = (newAngle-ballAngle)*invtime;
             vec2 vel = (newPos-pos)*invtime;
-            if(vel.length() > 3) {
+            float length = vel.length();
+            if(length > 5) {
                 _obj.isStationary = NO;
             }
+            
             [_obj setVelocity:vel];
             _obj.angle = newAngle;
             [_obj setPosition:newPos];
@@ -163,6 +169,7 @@
             float yp = scale*(o.x*sin(rotation)+o.y*cos(rotation))+translate.y+M.y;
             
             float size = _size*scale;
+            float size2 = _size2*scale;
             
             vec2 pos(xp,yp);
             vec2 old_pos = _obj.position;
@@ -174,7 +181,12 @@
             
             [_obj setPosition:pos];
             [_obj setVelocity:vel];
-            _obj.size = size;
+            
+            if(_doSecondarySize) {
+                _obj.secondarySize = size2;
+            } else {
+                _obj.size = size;
+            }
             _obj.angle = angle;
             _obj.angVel = angVel;
             
@@ -226,6 +238,25 @@
     _C = _obj.position;
     _rotation = _obj.angle;
     _size = _obj.size;
+    _size2 = _obj.secondarySize;
+    
+    vec2 x(1,0);
+    vec2 y(0,1);
+    
+    vec2 d = [_gesture2 transformBeginPosition]-[_gesture1 transformBeginPosition];
+    
+    if(_obj.hasSecondarySize) {
+        x.rotate(-_rotation);
+        y.rotate(-_rotation);
+        
+        float xdot = fabs(x.dot(d));
+        float ydot = fabs(y.dot(d));
+
+        _doSecondarySize = (ydot > xdot);
+        _gesture1.doSecondarySize = _doSecondarySize;
+    } else {
+        _doSecondarySize = NO;
+    }
 }
 -(const vec2)transformBeginPosition {
     return _P;

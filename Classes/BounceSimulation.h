@@ -55,11 +55,15 @@ using namespace fsa;
 -(void)removeGestureForKey:(void*)uniqueId;
 
 -(void)removeObjectAt:(const vec2&)loc;
--(void)addObjectAt:(const vec2&)loc;
--(void)addObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel;
+-(BounceObject*)addObjectAt:(const vec2&)loc;
+-(BounceObject*)addObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel;
 -(BOOL)isObjectAt:(const vec2&)loc;
 -(BOOL)anyObjectsAt:(const vec2&)loc withinRadius:(float)radius;
 -(void)setGravity:(const vec2&)g;
+
+-(void)setColor:(const vec4&)color;
+
+-(BOOL)isInBoundsAt:(const vec2&)loc;
 
 -(BounceGesture*)gestureWithParticipatingObject:(BounceObject*)object;
 

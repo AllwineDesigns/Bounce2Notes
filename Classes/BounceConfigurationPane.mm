@@ -12,9 +12,12 @@
 #import "FSATextureManager.h"
 #import "fsa/Noise.hpp"
 #import "FSAUtil.h"
+#import "BounceConfigurationSimulation.h"
+#import "BounceConfigurationObject.h"
 
 @implementation BounceConfigurationPaneObject 
 
+@synthesize color = _color;
 @synthesize paneSize = _paneSize;
 @synthesize handleSize = _handleSize;
 
@@ -53,15 +56,15 @@
         
         FSATextureManager *texManager = [FSATextureManager instance];
         
-        _handleShapeTexture = [texManager getTexture:@"rectangle.jpg"];
-        _handlePatternTexture = [texManager getTexture:@"arrow.jpg"];
+        _handleShapeTexture = [texManager getTexture:@"rectangle.jpg"].name;
+        _handlePatternTexture = [texManager getTexture:@"arrow.jpg"].name;
         
-        _paneShapeTexture = [texManager getTexture:@"square.jpg"];
-        _panePatternTexture = [texManager getTexture:@"black.jpg"];
+        _paneShapeTexture = [texManager getTexture:@"square.jpg"].name;
+        _panePatternTexture = [texManager getTexture:@"black.jpg"].name;
         
         _tappedSpringLoc = vec2(0, -_invaspect-_paneSize.height*.5);
         _activeSpringLoc = vec2(0, -_invaspect+_paneSize.height*.5);
-        _inactiveSpringLoc = vec2(0, -_invaspect-_paneSize.height*.6-_handleSize.height);
+        _inactiveSpringLoc = vec2(0, -_invaspect-_paneSize.height*.8-_handleSize.height);
         
         _springLoc = _inactiveSpringLoc;
         
@@ -141,19 +144,19 @@
 
 -(void)activate {
     _springLoc = _activeSpringLoc;
-    _handlePatternTexture = [[FSATextureManager instance] getTexture:@"downarrow.jpg"];
+    _handlePatternTexture = [[FSATextureManager instance] getTexture:@"downarrow.jpg"].name;
 
 }
 
 -(void)deactivate {
     _springLoc = _inactiveSpringLoc;
-    _handlePatternTexture = [[FSATextureManager instance] getTexture:@"arrow.jpg"];
+    _handlePatternTexture = [[FSATextureManager instance] getTexture:@"arrow.jpg"].name;
 
 }
 
 -(void)step:(float)dt {    
-    float spring_k = 200;
-    float drag = .2;
+    float spring_k = 150;
+    float drag = .15;
     
     vec2 pos = [self position];
     
@@ -295,7 +298,86 @@
         
         CGSize size = _object.paneSize;
         CGRect rect = CGRectMake(-size.width*.5, -size.height*.5, size.width, size.height);
-        BounceSimulation *sim = [[BounceSimulation alloc] initWithRect:rect];
+        BounceSimulation *sim = [[BounceConfigurationSimulation alloc] initWithRect:rect bounceSimulation:simulation];
+        
+        vec2 shapePos(0, -_invaspect-.5);
+        float shapeSize = .15;
+        float shapeSize2 = .09270476;
+        NSString *shapeTextureSheet = @"shapes_texture_sheet.jpg";
+        
+        BounceConfigurationObject *shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_BALL at:shapePos withVelocity:vec2() ];
+        shapeConfigObject.size = shapeSize;
+        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:3 numRows:4 numCols:4];
+        [sim addObject:shapeConfigObject];
+        [shapeConfigObject release];
+        
+        shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_SQUARE at:shapePos withVelocity:vec2() ];
+        shapeConfigObject.size = shapeSize;
+        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:1 numRows:4 numCols:4];
+
+        [sim addObject:shapeConfigObject];
+        [shapeConfigObject release];
+        
+        shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_TRIANGLE at:shapePos withVelocity:vec2() ];
+        shapeConfigObject.size = shapeSize;
+        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:0 numRows:4 numCols:4];
+
+        [sim addObject:shapeConfigObject];
+        [shapeConfigObject release];
+        
+        shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_PENTAGON at:shapePos withVelocity:vec2() ];
+        shapeConfigObject.size = shapeSize;
+        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:2 numRows:4 numCols:4];
+
+        [sim addObject:shapeConfigObject];
+        [shapeConfigObject release];
+        
+        shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_RECTANGLE at:shapePos withVelocity:vec2() ];
+        shapeConfigObject.size = shapeSize;
+        shapeConfigObject.secondarySize = shapeSize2;
+        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:1 col:0 numRows:4 numCols:4];
+        [sim addObject:shapeConfigObject];
+        [shapeConfigObject release];
+        
+        shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_CAPSULE at:shapePos withVelocity:vec2() ];
+        shapeConfigObject.size = shapeSize;
+        shapeConfigObject.secondarySize = shapeSize2;
+        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:1 col:1 numRows:4 numCols:4];
+        [sim addObject:shapeConfigObject];
+        [shapeConfigObject release];
+        
+        BouncePatternConfigurationObject * patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.2, -_invaspect-.5) withVelocity:vec2() ];
+        patternConfigObject.size = shapeSize;
+        patternConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"black.jpg"].name;
+        [sim addObject:patternConfigObject];
+        [patternConfigObject release];
+        
+        patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(.2, -_invaspect-.5) withVelocity:vec2() ];
+        patternConfigObject.size = shapeSize;
+        patternConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"].name;
+        [sim addObject:patternConfigObject];
+        [patternConfigObject release];
+        
+        patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(.5, -_invaspect-.5) withVelocity:vec2() ];
+        patternConfigObject.size = shapeSize;
+        patternConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"stripes.jpg"].name;
+        [sim addObject:patternConfigObject];
+        [patternConfigObject release];
+        
+        patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.4, -_invaspect-.5) withVelocity:vec2() ];
+        patternConfigObject.size = shapeSize;
+        patternConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"].name;
+        [sim addObject:patternConfigObject];
+        [patternConfigObject release];
+        
+        patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
+        patternConfigObject.size = shapeSize;
+        patternConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"checkered.jpg"].name;
+        
+      //  patternConfigObject.patternTexture = [[FSATextureManager instance] getTextureForText:@"hello" withColor:vec4(.5, .5, .5, 1) withFontSize:16];
+
+        [sim addObject:patternConfigObject];
+        [patternConfigObject release];
         
         [simulations addObject:sim];
         
@@ -330,6 +412,9 @@
         _state = BOUNCE_CONFIGURATION_PANE_TAPPPED;
         _time = 0;
         [_object tap];
+        BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
+        [sim setColor:_object.color];
+        
         return YES;
     } else if([_object isHandleAt:loc]) {
         if(_state == BOUNCE_CONFIGURATION_PANE_TAPPPED) {
@@ -420,21 +505,107 @@
     vec2 pos = _object.position;
     vec2 vel = _object.velocity;
     
-    if(_state != BOUNCE_CONFIGURATION_PANE_TAPPPED && pos.y > -_invaspect-.5*_object.paneSize.height) {
-        BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
-        [sim.arena setPosition:pos];
-        [sim.arena setVelocity:vel];
-        [sim step:dt];
-    }
+    BounceConfigurationSimulation *curSim = [_simulations objectAtIndex:_curSimulation];
     
+    for(BounceConfigurationSimulation *sim in _simulations) {
+        if([sim isAnyObjectInBounds] || (curSim == sim
+                                         && _state == BOUNCE_CONFIGURATION_PANE_ACTIVATED)) {
+            [sim.arena setPosition:pos];
+            [sim.arena setVelocity:vel];
+            [sim step:dt];
+        }
+    }
 }
 
 -(void)draw {
     [_object draw];
     vec2 pos = _object.position;
-
-    if(_state != BOUNCE_CONFIGURATION_PANE_TAPPPED && pos.y > -_invaspect-.5*_object.paneSize.height) {
-        [[_simulations objectAtIndex:_curSimulation] draw];
+    
+    for(BounceSimulation *sim in _simulations) {
+        [sim draw];
     }
+    /*
+    FSATexture *tex = [[FSATextureManager instance] getTexture:@"Paint Mode"];
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex.name);
+    GLuint texture = 0;
+    
+    vec2 verts[4];
+    vec2 uvs[4];
+    unsigned int indices[6];
+    
+    indices[0] = 0;
+    indices[1] = 1;
+    indices[2] = 2;
+    
+    indices[3] = 2;
+    indices[4] = 3;
+    indices[5] = 0;
+    
+    verts[0] = vec2(0,0);
+    verts[1] = vec2(tex.aspect,0);
+    verts[2] = vec2(tex.aspect,1);
+    verts[3] = vec2(0,1);
+    
+    for(int i = 0; i < 4; i++) {
+        verts[i] *= .2;
+    }
+    
+    uvs[0] = vec2(0,0);
+    uvs[1] = vec2(1,0);
+    uvs[2] = vec2(1,1);
+    uvs[3] = vec2(0,1);
+    
+    FSAShader *shader = [[FSAShaderManager instance] getShader:@"BillboardShader"];
+    [shader setPtr:verts forAttribute:@"position"];
+    [shader setPtr:uvs forAttribute:@"uv"];
+    [shader setPtr:&texture forUniform:@"texture"];
+    
+    [shader enable];
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
+    [shader disable];
+    
+    
+    BounceRenderableData data;
+    BounceRenderableInputs inputs;
+    
+    inputs.intensity = &data.intensity;
+    inputs.isStationary = &data.isStationary;
+    inputs.color = &data.color;
+    inputs.position = &data.position;
+    inputs.size = &data.size;
+    inputs.angle = &data.angle;
+    inputs.patternTexture = &data.patternTexture;
+    
+    data.intensity = 2;
+    data.isStationary = YES;
+    data.color = vec4(.2, .6, .2, 1);
+    data.position = vec2(0,0);
+    data.size = .5;
+    data.angle = 0;
+    data.patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"].name;
+    
+    
+    BounceRenderable *renderable = [[BounceRectangleRenderable alloc] initWithInputs:inputs aspect:1];
+    
+    [renderable draw];
+    
+    [renderable release];
+    
+    renderable = [[BounceRectangleRenderable alloc] initWithInputs:inputs aspect:1.61803399];
+
+    [renderable draw];
+    
+    [renderable release];
+    
+    renderable = [[BounceRectangleRenderable alloc] initWithInputs:inputs aspect:2];
+    
+    [renderable draw];
+    
+    [renderable release];
+    */
+    
+     
+     
 }
 @end

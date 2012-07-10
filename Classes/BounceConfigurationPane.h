@@ -41,6 +41,7 @@ typedef enum {
     vec4 _color;
 }
 
+@property (nonatomic) vec4 color;
 @property (nonatomic) CGSize handleSize;
 @property (nonatomic) CGSize paneSize;
 

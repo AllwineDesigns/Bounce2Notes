@@ -9,6 +9,7 @@
 #import "ChipmunkObject.h"
 #import "FSAShader.h"
 #import "BounceSound.h"
+#import "BounceRenderable.h"
 
 #define OBJECT_TYPE 1111
 
@@ -17,44 +18,35 @@ typedef enum {
     BOUNCE_SQUARE,
     BOUNCE_TRIANGLE,
     BOUNCE_PENTAGON,
+    BOUNCE_RECTANGLE,
+    BOUNCE_CAPSULE,
     NUM_BOUNCE_SHAPES
 } BounceShape;
 
 @interface BounceObject : ChipmunkObject { 
     id<BounceSound> _sound;
-    
-    BOOL _isStationary;
-    
-    vec4 _color;
-    
-    GLuint _shapeTexture;
-    GLuint _patternTexture;
-    GLuint _stationaryTexture;
-    
     BounceShape _bounceShape;
+        
+    float _intensity;
+    BOOL _isStationary;
+    vec4 _color;
+    GLuint _patternTexture;
     
     float _size;
+    float _size2;
+    BOOL _hasSecondarySize;
     
-    float _intensity;
     float _age;
     vec2 _lastVelocity;
     
-    vec2 *_verts;
-    vec2 *_vertsUntransformed;
-    vec2 *_vertOffsets;
-    vec2 *_vertVels;
-    vec2 *_vertShapeUVs;
-    vec2 *_vertPatternUVs;
-    unsigned int *_indices;
-    unsigned int _numVerts;
-    unsigned int _numIndices;
+    BounceRenderable *_renderable;
+    BounceRenderableInputs _inputs;
 }
 
+@property (nonatomic, readonly) BOOL hasSecondarySize;
 @property (nonatomic) BOOL isStationary;
 @property (nonatomic) const vec4& color;
-@property (nonatomic, readonly) GLuint shapeTexture;
 @property (nonatomic) GLuint patternTexture;
-@property (nonatomic, readonly) GLuint stationaryTexture;
 @property (nonatomic) float intensity;
 @property (nonatomic) float age;
 @property (nonatomic) const vec2& lastVelocity;
@@ -79,21 +71,28 @@ typedef enum {
 -(float)size;
 -(void)setSize:(float)s;
 
--(void)setupSquareVerts;
--(void)setupPentagonVerts;
--(void)setupTriangleVerts;
+-(float)secondarySize;
+-(void)setSecondarySize:(float)s;
 
 -(void)setupBall;
 -(void)setupSquare;
 -(void)setupTriangle;
 -(void)setupPentagon;
+-(void)setupRectangle;
+-(void)setupCapsule;
 
 -(void)resizeBall;
 -(void)resizeSquare;
 -(void)resizeTriangle;
 -(void)resizePentagon;
+-(void)resizeRectangle;
+-(void)resizeCapsule;
+
 
 -(void)step: (float)dt;
 -(void)draw;
+-(void)drawSelected;
+
+-(void)setPatternForTextureSheet: (NSString*)name row:(unsigned int)row col:(unsigned int)col numRows:(unsigned int)rows numCols:(unsigned int)cols;
 
 @end

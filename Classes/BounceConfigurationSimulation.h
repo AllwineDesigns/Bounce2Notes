@@ -8,6 +8,15 @@
 
 #import "BounceSimulation.h"
 
-@interface BounceConfigurationSimulation : BounceSimulation
+@interface BounceConfigurationSimulation : BounceSimulation {
+    BounceSimulation *_simulation;
+}
+
+-(id)initWithRect:(CGRect)rect bounceSimulation: (BounceSimulation*)sim;
+
+-(BOOL)isObjectBeingPreviewed:(BounceObject*)obj;
+-(BOOL)isAnyObjectBeingPreviewed;
+-(BOOL)isAnyObjectInBounds;
+
 
 @end

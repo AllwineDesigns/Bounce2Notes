@@ -11,9 +11,10 @@
 #define WALL_TYPE 222
 
 @interface BounceArena : ChipmunkObject {
-    CGRect _rect;
+    CGSize _dimensions;
 }
 
 -initWithRect: (CGRect)rect;
+-(BOOL)isInBoundsAt:(const vec2&)loc;
 
 @end

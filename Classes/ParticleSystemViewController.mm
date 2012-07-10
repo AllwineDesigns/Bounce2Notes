@@ -12,6 +12,7 @@
 #import "EAGLView.h"
 #import "FSATextureManager.h"
 #import "FSAShaderManager.h"
+#import "FSASoundManager.h"
 #import "FSAUtil.h"
 #import "MainBounceSimulation.h"
 
@@ -58,11 +59,14 @@
     FSAShader *stationaryShader = [shaderManager getShader:@"SingleObjectStationaryShader"];
     FSAShader *killBoxShader = [shaderManager getShader:@"BounceKillBoxShader"];
     FSAShader *colorShader = [shaderManager getShader:@"ColorShader"];
+    FSAShader *billboardShader = [shaderManager getShader:@"BillboardShader"];
+
 
     [objectShader setPtr:&aspect forUniform:@"aspect"];
     [stationaryShader setPtr:&aspect forUniform:@"aspect"];
     [killBoxShader setPtr:&aspect forUniform:@"aspect"];  
     [colorShader setPtr:&aspect forUniform:@"aspect"];    
+    [billboardShader setPtr:&aspect forUniform:@"aspect"];    
 
     cacheQueue = [[NSOperationQueue alloc] init];
     
@@ -70,6 +74,13 @@
     [cacheQueue addOperation:invocation];
     [invocation release];
     
+    FSASoundManager *soundManager = [FSASoundManager instance];
+    [soundManager getSound:@"c_1"];
+    [soundManager getSound:@"e_1"];
+    [soundManager getSound:@"g_1"];
+    [soundManager getSound:@"a_1"];
+    [soundManager getSound:@"b_1"];
+    [soundManager getSound:@"c_2"];    
     
     
 //    FSAAudioPlayer *player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
@@ -110,10 +121,17 @@
      @"stationary_square.png",
      @"stationary_triangle.png",
      @"stationary_pentagon.png",
+     @"shapes_texture_sheet.jpg",
      nil];
     for(NSString* texName in texturesToCache) {
         [texture_manager addLargeTexture:texName];
     }
+    
+    [texture_manager generateTextureForText:@"Rectangle" forKey:@"Rectangle"];
+
+    [texture_manager generateTextureForText:@"Shapes" forKey:@"Shapes"];
+    [texture_manager generateTextureForText:@"Patterns" forKey:@"Patterns"];
+    [texture_manager generateTextureForText:@"Paint Mode blah blah" forKey:@"Paint Mode"];
     
     [texture_manager getTexture:@"arrow.jpg"];
     [texture_manager getTexture:@"downarrow.jpg"];
@@ -124,6 +142,8 @@
 
     NSLog(@"loaded textures and created simulation\n");
  //   while(1) {}
+    
+    glFlush();
     
     [aContext release];
 }
@@ -314,7 +334,7 @@
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
-    vec2 loc(gesture.beginLocation);
+    vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
     [simulation endDrag:gesture at:loc];
