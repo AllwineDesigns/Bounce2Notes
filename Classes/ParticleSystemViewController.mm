@@ -15,6 +15,7 @@
 #import "FSASoundManager.h"
 #import "FSAUtil.h"
 #import "MainBounceSimulation.h"
+#import "fsa/Noise.hpp"
 
 #define BOUNCE_LITE_MAX_BALLS 15
 
@@ -76,7 +77,9 @@
     
     FSASoundManager *soundManager = [FSASoundManager instance];
     [soundManager getSound:@"c_1"];
+    [soundManager getSound:@"d_1"];
     [soundManager getSound:@"e_1"];
+    [soundManager getSound:@"f_1"];
     [soundManager getSound:@"g_1"];
     [soundManager getSound:@"a_1"];
     [soundManager getSound:@"b_1"];
@@ -121,24 +124,40 @@
      @"stationary_square.png",
      @"stationary_triangle.png",
      @"stationary_pentagon.png",
-     @"shapes_texture_sheet.jpg",
+     @"music_texture_sheet.jpg",
      nil];
     for(NSString* texName in texturesToCache) {
         [texture_manager addLargeTexture:texName];
     }
     
-    [texture_manager generateTextureForText:@"Rectangle" forKey:@"Rectangle"];
-
-    [texture_manager generateTextureForText:@"Shapes" forKey:@"Shapes"];
-    [texture_manager generateTextureForText:@"Patterns" forKey:@"Patterns"];
-    [texture_manager generateTextureForText:@"Paint Mode blah blah" forKey:@"Paint Mode"];
+    [texture_manager generateTextureForText:@"Shapes"];
+    [texture_manager generateTextureForText:@"Patterns"];
+    [texture_manager generateTextureForText:@"Sizes"];
+    [texture_manager generateTextureForText:@"Music"];
+    [texture_manager generateTextureForText:@"Colors"];
+    [texture_manager generateTextureForText:@"Settings"];
     
+    [texture_manager generateTextureForText:@"Red"];
+    [texture_manager generateTextureForText:@"Green"];
+    [texture_manager generateTextureForText:@"Yellow"];
+    [texture_manager generateTextureForText:@"Blue"];
+    [texture_manager generateTextureForText:@"Orange"];
+    [texture_manager generateTextureForText:@"Purple"];
+    [texture_manager generateTextureForText:@"Pastel"];
+    [texture_manager generateTextureForText:@"Gray"];
+
+    [texture_manager generateTextureForText:@"Rectangle"];
+    [texture_manager generateTextureForText:@"Capsule"];
+    [texture_manager generateTextureForText:@"Circle"];
+    [texture_manager generateTextureForText:@"Square"];
+    [texture_manager generateTextureForText:@"Pentagon"];
+    [texture_manager generateTextureForText:@"Triangle" forKey:@"Triangle" withFontSize:40 withOffset:vec2() ];
+
     [texture_manager getTexture:@"arrow.jpg"];
     [texture_manager getTexture:@"downarrow.jpg"];
-     
 
     simulation = [[MainBounceSimulation alloc] initWithAspect:aspect];
-    lastUpdate = [[NSDate alloc] init];
+    lastUpdate = [[NSProcessInfo processInfo] systemUptime];
 
     NSLog(@"loaded textures and created simulation\n");
  //   while(1) {}
@@ -156,7 +175,6 @@
         [EAGLContext setCurrentContext:nil];
 
     [alertView release];
-    [lastUpdate release];
     [context release];
     [simulation release];
     
@@ -180,7 +198,7 @@
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    [simulation singleTapAt:loc];
+    [simulation singleTap:gesture at:loc];
 }
 
 -(void)displayUpgradeAlert {
@@ -323,7 +341,7 @@
     vec2 dir = loc-loc2;
     NSTimeInterval time = gesture.timestamp-gesture.beginTimestamp;
     
-    [simulation flickAt:loc2 inDirection:dir time:time];
+    [simulation flick:gesture at:loc2 inDirection:dir time:time];
 }
 
 -(void)drag: (FSAMultiGesture*)gesture {
@@ -403,8 +421,7 @@
         [aDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         self.displayLink = aDisplayLink;
 
-        [lastUpdate release];
-        lastUpdate = [[NSDate alloc] init];
+        lastUpdate = [[NSProcessInfo processInfo] systemUptime];
         
         
         animating = TRUE;
@@ -431,10 +448,10 @@
     glClear(GL_COLOR_BUFFER_BIT);
 
     if([cacheQueue operationCount] == 0) {
-        NSTimeInterval timeSinceLastDraw = -[lastUpdate timeIntervalSinceNow];
+        NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
+        NSTimeInterval timeSinceLastDraw = now-lastUpdate;
 
-        [lastUpdate release];
-        lastUpdate = [[NSDate alloc] init];
+        lastUpdate = now;
         
         CMAccelerometerData *accelData = [motionManager accelerometerData];
         CMAcceleration acceleration = [accelData acceleration];

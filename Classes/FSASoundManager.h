@@ -18,6 +18,8 @@
 
 -(id)init;
 -(FSASound*)getSound: (NSString*)file;
+-(FSASound*)getSound: (NSString*)file volume:(float)vol;
+
 +(FSASoundManager*)instance;
 
 @end

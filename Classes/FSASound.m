@@ -10,6 +10,8 @@
 
 @implementation FSASound
 
+@synthesize volume = _volume;
+
 -(id)initWithAudioPlayer:(FSAAudioPlayer*)player soundData:(FSASoundData*)data volume:(float)vol {
     self = [super init];
     if(self) {
@@ -31,4 +33,12 @@
     [super dealloc];
 }
 
+@end
+
+@implementation FSARest
+-(void)play:(float)volume {
+}
+-(void)setVolume:(float)f {
+    
+}
 @end

@@ -29,6 +29,8 @@
 		<string>Default@2x.png</string>
 		<string>Default-Landscape@2x~ipad.png</string>
 		<string>Default-Portrait@2x~ipad.png</string>
+		<string>Default-Portrait~ipad.png</string>
+		<string>Default-Portrait@2x~ipad.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -55,6 +57,8 @@
 				<string>Default@2x.png</string>
 				<string>Default-Landscape@2x~ipad.png</string>
 				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default-Portrait~ipad.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
 			</array>
 		</dict>
 	</dict>
@@ -78,5 +82,12 @@
 	<string>MainWindow</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 </dict>
 </plist>

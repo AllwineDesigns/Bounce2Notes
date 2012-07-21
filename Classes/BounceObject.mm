@@ -13,9 +13,13 @@
 #import "FSAUtil.h"
 #import "BounceSimulation.h"
 #import <chipmunk/chipmunk_unsafe.h>
+#import "FSASoundManager.h"
 
 @implementation BounceObject
 
+@synthesize simulationWillDraw = _simulationWillDraw;
+@synthesize isManipulatable = _isManipulatable;
+@synthesize simulation = _simulation;
 @synthesize hasSecondarySize = _hasSecondarySize;
 @synthesize isStationary = _isStationary;
 @synthesize color = _color;
@@ -52,7 +56,7 @@
     return [self initRandomObjectAt:loc withVelocity:vel];
 }
 -(id)initRandomObjectAt: (const vec2&)loc withVelocity:(const vec2&)vel {
-    BounceShape bounceShape = BounceShape(random(loc*23.9273)*NUM_BOUNCE_SHAPES);
+    BounceShape bounceShape = BOUNCE_BALL; //BounceShape(random(loc*23.9273)*NUM_BOUNCE_SHAPES);
     return [self initRandomObjectWithShape:bounceShape at:loc withVelocity:vel];
 }
 
@@ -74,13 +78,19 @@
     if(self) {
         _size = size;
         _size2 = _size/1.61803399;
+        
+        _isManipulatable = YES;
+        _simulationWillDraw = YES;
 
         _color = color;
         _intensity = 2.2;
         _isStationary = NO;
         _patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"].name;
         
-        _sound = [[BounceSound alloc] initWithBounceObject:self];
+        NSArray *sounds = [NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"b_1", @"c_2", nil];
+        NSString *note = [sounds objectAtIndex:random(loc*8.291)*[sounds count] ];
+        _sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:note]];
+//        _sound = [[BouncePentatonicSizeSound alloc] initWithBounceObject:self];
         
         _inputs.intensity = &_intensity;
         _inputs.isStationary = &_isStationary;
@@ -168,6 +178,8 @@
     for(int i = 0; i < _numShapes; i++) {
         cpShapeSetFriction(_shapes[i], .5);
         cpShapeSetElasticity(_shapes[i], .95);
+      //  cpShapeSetElasticity(_shapes[i], .3);
+
         cpShapeSetCollisionType(_shapes[i], OBJECT_TYPE);
     }
 }
@@ -179,7 +191,7 @@
 -(void)setSecondarySize:(float)s {
     _size2 = s;
     if(_size/_size2 < 1.61803399) {
-        _size2 = _size/1.61803399;
+        _size = _size2*1.61803399;
     } else if(_size2 < .01) {
         _size2 = .01;
     }
@@ -192,12 +204,37 @@
             [self resizeCapsule];
             break;
         default:
-            NSAssert(NO, @"secondary size changing for shape without secondary size\n");
+       //     NSAssert(NO, @"secondary size changing for shape without secondary size\n");
             break;
     }
     if(_space != NULL) {
         cpSpaceReindexShapesForBody(_space, _body);
     }
+}
+
+-(void)randomizeSize {
+    vec2 loc = self.position;
+    float size = random(loc*1.234)*.2+.05;
+    _size2 = size/1.61803399;
+    self.size = size;
+}
+
+-(void)randomizeColor {
+    vec2 loc = self.position;
+
+    vec4 color;
+    HSVtoRGB(&(color.x), &(color.y), &(color.z), 
+             360.*random(64.28327*loc), .4, .05*random(736.2827*loc)+.75   );
+    color.w = 1;
+    _color = color;
+    
+}
+-(void)randomizeShape {
+    vec2 loc = self.position;
+
+    BounceShape bounceShape = BounceShape(random(loc*23.9273)*NUM_BOUNCE_SHAPES);
+    self.bounceShape = bounceShape;
+    
 }
 
 -(float)size {
@@ -217,7 +254,7 @@
         _size2 = _size/1.61803399;
     }
     
-    [_sound resized:old_size];
+    //[_sound resized:old_size];
     
     switch(_bounceShape) {
         case BOUNCE_BALL:
@@ -441,7 +478,7 @@
     [self setMoment:5*cpMomentForBox(_mass, _size*2, _size*2*invaspect)];
     
     cpPolyShapeSetVerts(_shapes[0], 4, verts, cpvzero);
-    [_renderable setAspect:aspect];
+    [(BounceRectangleRenderable*)_renderable setAspect:aspect];
 
 }
 
@@ -475,7 +512,7 @@
     
     cpCircleShapeSetOffset(_shapes[2], (const cpVect&)offset2);
     cpCircleShapeSetRadius(_shapes[2], invaspect*_size);
-    [_renderable setAspect:aspect];
+    [(BounceCapsuleRenderable*)_renderable setAspect:aspect];
 }
 
 
@@ -561,10 +598,40 @@
     
 }
 
+-(void)playSound:(float)volume {
+    [_sound play:volume];
+}
+
+-(void)addToSimulation:(BounceSimulation*)sim {
+    self.simulation = sim;
+    [self addToSpace:sim.space];
+    [sim addObject:self];
+}
+-(void)removeFromSimulation {
+    [_simulation removeObject:self];
+    [self removeFromSpace];
+    self.simulation = nil;
+}
+-(void)postSolveRemoveFromSimulation {
+    [_simulation postSolveRemoveObject:self];
+}
+-(BOOL)hasBeenAddedToSimulation {
+    return _simulation != nil;
+}
+
 -(void)setPatternForTextureSheet: (NSString*)name row:(unsigned int)row col:(unsigned int)col numRows:(unsigned int)rows numCols:(unsigned int)cols {
     _patternTexture = [[FSATextureManager instance] getTexture:name].name;
 
     [_renderable setPatternUVsForTextureSheetAtRow:row col:col numRows:rows numCols:cols];
+}
+
+-(void)singleTap {
+    if(_isStationary) {
+        _isStationary = NO;
+    } else if(_age > 1 && _simulation != nil) {
+        [self playSound:.2];
+        [self removeFromSimulation];
+    }
 }
 
 -(void)dealloc {
@@ -572,6 +639,10 @@
     _sound = nil;
     [_renderable release];
     _renderable = nil;
+    
+    if(_simulation) {
+        [_simulation release];
+    }
 
     [super dealloc];
 }

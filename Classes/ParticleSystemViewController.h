@@ -31,7 +31,7 @@
     
     MainBounceSimulation *simulation;
 
-    NSDate *lastUpdate;
+    NSTimeInterval lastUpdate;
     CMMotionManager *motionManager;
     
     FSAMultiTapAndDragRecognizer *multiTapAndDragRecognizer;

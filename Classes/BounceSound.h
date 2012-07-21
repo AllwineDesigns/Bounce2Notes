@@ -12,15 +12,17 @@
 @class BounceObject;
 
 @protocol BounceSound <FSASoundDelegate>
-
 -(void)resized:(float)old_size;
-
 @end
 
-@interface BounceSound : NSObject <BounceSound> {
+@interface BounceNote : NSObject <BounceSound> {
+    id<FSASoundDelegate> _sound;
+}
+-(id)initWithSound:(id<FSASoundDelegate>)sound;
+@end
+
+@interface BouncePentatonicSizeSound : NSObject <BounceSound> {
     BounceObject *_obj;
 }
-
 -(id)initWithBounceObject:(BounceObject*)obj;
-
 @end

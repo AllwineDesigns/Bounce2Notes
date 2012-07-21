@@ -23,16 +23,14 @@ static FSATextureManager* fsaTextureManager;
         largeTextures = [[NSMutableDictionary alloc] initWithCapacity:5];
 
         CGSize size = screenSize();
-        int prefix = nextPowerOfTwo(size.width);
-        largeTexturePrefix = [NSString stringWithFormat:@"%d", prefix];
-        [largeTexturePrefix retain];
-
+        largeTexturePrefix = nextPowerOfTwo(size.width);
+        startTextTextureSize = nextPowerOfTwo(size.width*.25);
     }
     
     return self;
 }
 -(void)addLargeTexture:(NSString *)name {
-    NSString *largeName = [NSString stringWithFormat:@"%@%@", largeTexturePrefix, name];
+    NSString *largeName = [NSString stringWithFormat:@"%d%@", largeTexturePrefix, name];
     [largeTextures setObject:largeName forKey:name];
     [self getTexture:largeName];
 }
@@ -66,6 +64,9 @@ static FSATextureManager* fsaTextureManager;
             
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
             
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size.width, image.size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
             free(imageData);
@@ -82,15 +83,25 @@ static FSATextureManager* fsaTextureManager;
     return tex;
 }
 
--(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key {
+-(void)generateTextureForText:(NSString *)txt {
+    return [self generateTextureForText:txt forKey:txt withFontSize:50 withOffset:vec2()];
+}
+
+-(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontSize: (float)size withOffset: (const vec2&)offset {
     NSAssert(([textures objectForKey:key] == nil), ([NSString stringWithFormat:@"texture exists for key: %@\n", key]));
     
-    UIFont *font = [UIFont fontWithName:@"Arial" size:25];
+    UIFont *font = [UIFont fontWithName:@"Arial" size:startTextTextureSize/512.*size];
     
     CGSize renderedSize = [txt sizeWithFont:font];
 
-    const uint32_t height = 256;
-    const uint32_t width = nextPowerOfTwo(renderedSize.width);
+    uint32_t height = startTextTextureSize;
+    uint32_t width = nextPowerOfTwo(renderedSize.width);
+    
+    if(width > height) {
+        height = width;
+    } else {
+        width = height;
+    }
     
     const int bitsPerElement = 8;
     int sizeInBytes = height*width*4;
@@ -105,7 +116,7 @@ static FSATextureManager* fsaTextureManager;
     CGContextSetTextDrawingMode(context, kCGTextFillStroke);
     
     float components[4] = { 1, 1, 1, 1 };
-    float components2[4] = { .4, .4, .4, 1 };
+    float components2[4] = { .26666667, .26666667, .26666667, 1 };
     CGColorRef color = CGColorCreate(colorSpace, components);
     CGColorRef color2 = CGColorCreate(colorSpace, components2);
     
@@ -117,6 +128,8 @@ static FSATextureManager* fsaTextureManager;
 
     CGContextTranslateCTM(context, 0.0f, height);
     CGContextScaleCTM(context, 1.0f, -1.0f);
+    CGContextTranslateCTM(context, offset.x, offset.y);
+
     
     UIGraphicsPushContext(context);
     
@@ -125,6 +138,8 @@ static FSATextureManager* fsaTextureManager;
     UIGraphicsPopContext();
     
     CGContextRelease(context);
+    CGColorRelease(color);
+    CGColorRelease(color2);
     CGColorSpaceRelease(colorSpace);    
     
     GLuint textureID;
@@ -143,6 +158,8 @@ static FSATextureManager* fsaTextureManager;
 
     FSATexture *tex = [[FSATexture alloc] initWithName:textureID width:width height:height textWidth:renderedSize.width textHeight:renderedSize.height];
     [textures setObject:tex forKey:key];
+    
+    NSLog(@"loaded text \"%@\" into textureId %d as %@\n", txt, tex.name, key);
 }
 
 -(void)dealloc {

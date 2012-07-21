@@ -61,7 +61,7 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
-        _body = cpBodyNew(1, 1);
+        _body = cpBodyNew(999999, 999999);
         cpBodySetUserData(_body, self);
 
         _mass = 999999;
@@ -143,11 +143,10 @@
 -(void)setPosition:(const vec2&)loc {
     cpBodySetPos(_body, (const cpVect&)loc);
     if(_space != NULL) {
-        cpSpaceReindexShapesForBody(_space, _body);
-        
-        if(_state == CHIPMUNK_OBJECT_STATIC) {
-            cpSpaceReindexStatic(_space);
+        for(int i = 0; i < _numShapes; i++) {
+            cpSpaceReindexShape(_space, _shapes[i]);
         }
+        //cpSpaceReindexShapesForBody(_space, _body);
     }
 
 }
@@ -158,10 +157,10 @@
 -(void)setAngle:(float)a {    
     cpBodySetAngle(_body, a);
     if(_space != NULL) {
-        cpSpaceReindexShapesForBody(_space, _body);
-        if(_state == CHIPMUNK_OBJECT_STATIC) {
-            cpSpaceReindexStatic(_space);
+        for(int i = 0; i < _numShapes; i++) {
+            cpSpaceReindexShape(_space, _shapes[i]);
         }
+        //cpSpaceReindexShapesForBody(_space, _body);
     }
 }
 
@@ -328,7 +327,33 @@
     
     cpBodySetMass(_body, 999999);
     cpBodySetMoment(_body, 999999);
+    //cpBodySetMass(_body, INFINITY);
+    //cpBodySetMoment(_body, INFINITY);
 }
+
+/*
+-(void)makeStatic {
+    
+    // [self createNewBody];
+    
+    if(cpBodyIsStatic(_body)) {
+        [self makeSimulated];
+    }
+    
+    _state = CHIPMUNK_OBJECT_HEAVY_ROGUE;
+    
+    if(_space != NULL) {
+        if(!cpBodyIsRogue(_body)) {
+            cpSpaceRemoveBody(_space, _body);
+        }
+    }
+    
+   // cpBodySetMass(_body, 999999);
+   // cpBodySetMoment(_body, 999999);
+    cpBodySetMass(_body, INFINITY);
+    cpBodySetMoment(_body, INFINITY);
+}
+*/
 
 -(void)makeStatic {
     
@@ -353,14 +378,19 @@
         }
         
         CP_PRIVATE(_body->node).idleTime = (cpFloat)INFINITY;
+        CP_PRIVATE(_body->w_bias) = 0;
+        CP_PRIVATE(_body->v_bias) = cpvzero;
+        
         cpBodySetMass(_body, (cpFloat)INFINITY);
         cpBodySetMoment(_body, (cpFloat)INFINITY);
+        
         
         if(_space != NULL) {
             for(int i = 0; i < _numShapes; i++) {
                 cpSpaceAddShape(_space, _shapes[i]);
+                cpSpaceReindexShape(_space, _shapes[i]);
             }
-            cpSpaceReindexStatic(_space);
+         //   cpSpaceReindexShapesForBody(_space, _body);
         }
         
         cpBodySetVel(_body, cpvzero);
@@ -370,10 +400,6 @@
 
 -(void)makeSimulated {
     _state = CHIPMUNK_OBJECT_SIMULATED;
-
-   // [self createNewBody];
-    
-    bool wasStatic = cpBodyIsStatic(_body);
     
     if(cpBodyIsRogue(_body)) {
         
@@ -390,14 +416,12 @@
         if(_space != NULL) {
             for(int i = 0; i < _numShapes; i++) {
                 cpSpaceAddShape(_space, _shapes[i]);
+                cpSpaceReindexShape(_space, _shapes[i]);
             }
             
             
             cpSpaceAddBody(_space, _body);
-            
-            if(wasStatic) {
-                cpSpaceReindexStatic(_space);
-            }
+           // cpSpaceReindexShapesForBody(_space, _body);
         }
 
     }

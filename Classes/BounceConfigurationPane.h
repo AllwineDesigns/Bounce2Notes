@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ChipmunkObject.h"
 #import "BounceSimulation.h"
+#import "BounceConfigurationTab.h"
 
 typedef enum {
     BOUNCE_CONFIGURATION_PANE_DEACTIVATED,
@@ -48,6 +49,8 @@ typedef enum {
 -(BOOL)isHandleAt:(const vec2&)loc;
 -(BOOL)isPaneAt:(const vec2&)loc;
 
+-(void)randomizeColor;
+
 -(void)tap;
 -(void)activate;
 -(void)deactivate;
@@ -62,21 +65,31 @@ typedef enum {
     float _invaspect;
     
     float _time;
+    CGRect _rect;
+    
+    BounceSimulation *_simulation;
     
     BounceConfigurationPaneObject *_object;
         
-    NSArray *_simulations;
+    NSMutableArray *_simulations;
+    NSMutableArray *_simulationTabs;
+       
     unsigned int _curSimulation;
+    unsigned int _switchToSimulation;
     
     BounceConfigurationPaneState _state;
 }
 -(id)initWithBounceSimulation:(BounceSimulation*)simulation;
 
+-(void)setCurrentSimulation:(unsigned int)index;
+
 -(void)setGravity:(vec2)gravity;
 -(void)addToVelocity:(const vec2&)v;
 
--(BOOL)singleTapAt:(const vec2&)loc;
--(BOOL)flickAt:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time;
+-(void)setCurrentSimulation:(unsigned int)index;
+
+-(BOOL)singleTap: (void*)uniqueId at:(const vec2&)loc;
+-(BOOL)flick:(void*)uniqueId at:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time;
 
 -(BOOL)longTouch:(void*)uniqueId at:(const vec2&)loc;
 -(BOOL)beginDrag:(void*)uniqueId at:(const vec2&)loc;

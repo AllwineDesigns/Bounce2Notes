@@ -7,9 +7,11 @@
 //
 
 #import "BounceGesture.h"
+#import "BounceSound.h"
 
 @implementation BounceGesture
 
+@synthesize creationTimestamp = _creationTimestamp;
 @synthesize doSecondarySize = _doSecondarySize;
 
 +(id)createGestureForObject: (BounceObject*)obj {
@@ -35,8 +37,9 @@
         _obj = obj;
         [_obj retain];
         [_obj makeHeavyRogue];
-        
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
+        _creationTimestamp = _timestamp;
+
         _state = BOUNCE_GESTURE_CREATE;
     }
     
@@ -54,6 +57,8 @@
         _offsetAngle = atan2f(_offset.y, _offset.x);
         _offsetR = _offset.length();
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
+        _creationTimestamp = _timestamp;
+
 
         _state = BOUNCE_GESTURE_GRAB;
     }
@@ -78,6 +83,10 @@
         _gesture2 = gesture;
         _state = BOUNCE_GESTURE_TRANSFORM;
         
+        _timestamp = [[NSProcessInfo processInfo] systemUptime];
+        _creationTimestamp = _timestamp;
+
+        
         [gesture beginTransformWithGesture:self];
     }
     
@@ -101,7 +110,13 @@
 
 -(void)updateGestureLocation:(const vec2&)to {
     NSTimeInterval timestamp = [[NSProcessInfo processInfo] systemUptime];
+
     NSTimeInterval time = timestamp-_timestamp;
+    
+    if(time < .01) {
+        time = .01;
+    }
+    
     NSTimeInterval invtime = 1./time;
     _timestamp = timestamp;
     
@@ -115,7 +130,14 @@
             float newAngle = angle-_offsetAngle;
             _obj.angle = newAngle;
             _obj.angVel = (newAngle-oldAngle)*invtime;
-            _obj.size = _offset.length();
+            float old_size = _obj.size;
+            float size = _offset.length();
+
+            _obj.secondarySize = size/1.61803399;
+            _obj.size = size;
+
+            id<BounceSound> sound = _obj.sound;
+            [sound resized:old_size];
 
             break;
         }
@@ -165,30 +187,48 @@
             
             vec2 o = _C-M;
             
-            float xp = scale*(o.x*cos(rotation)-o.y*sin(rotation))+translate.x+M.x;
-            float yp = scale*(o.x*sin(rotation)+o.y*cos(rotation))+translate.y+M.y;
-            
-            float size = _size*scale;
-            float size2 = _size2*scale;
-            
-            vec2 pos(xp,yp);
-            vec2 old_pos = _obj.position;
-            vec2 vel = (pos-old_pos)*invtime;
-            
             float old_angle = _obj.angle;
             float angle = rotation+_rotation;
             float angVel = (angle-old_angle)*invtime;
             
-            [_obj setPosition:pos];
-            [_obj setVelocity:vel];
+            _obj.angle = angle;
+            _obj.angVel = angVel;
+            
+            float size = _size*scale;
+            float size2 = _size2*scale;
+            
+            float old_size = _obj.size;
             
             if(_doSecondarySize) {
                 _obj.secondarySize = size2;
             } else {
                 _obj.size = size;
             }
-            _obj.angle = angle;
-            _obj.angVel = angVel;
+            
+            [_obj.sound resized:old_size];
+
+            
+            float actualSize = _obj.size;
+            float actualSize2 = _obj.secondarySize;
+            
+            float scalex = size/actualSize;
+            float scaley;
+            if(_doSecondarySize) {
+                scaley = size2/actualSize2;
+            } else {
+                scaley = scalex;
+            }
+            
+            float xp = scalex*(o.x*cos(rotation)-o.y*sin(rotation))+translate.x+M.x;
+            float yp = scaley*(o.x*sin(rotation)+o.y*cos(rotation))+translate.y+M.y;
+            
+            vec2 pos(xp,yp);
+            vec2 old_pos = _obj.position;
+            vec2 vel = (pos-old_pos)*invtime;
+            
+            
+            [_obj setPosition:pos];
+            [_obj setVelocity:vel];
             
             break;
         }

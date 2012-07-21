@@ -19,6 +19,7 @@ typedef enum {
     BounceObject *_obj;
     BounceGestureState _state;
     
+    NSTimeInterval _creationTimestamp;
     NSTimeInterval _timestamp;
     
     vec2 _offset;
@@ -36,6 +37,7 @@ typedef enum {
     BounceGesture *_gesture2;
 }
 
+@property (nonatomic, readonly) NSTimeInterval creationTimestamp;
 @property (nonatomic) BOOL doSecondarySize;
 
 +(id)createGestureForObject: (BounceObject*)obj;

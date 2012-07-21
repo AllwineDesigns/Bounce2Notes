@@ -13,6 +13,8 @@
 
 #define OBJECT_TYPE 1111
 
+@class BounceSimulation;
+
 typedef enum {
     BOUNCE_BALL,
     BOUNCE_SQUARE,
@@ -26,6 +28,11 @@ typedef enum {
 @interface BounceObject : ChipmunkObject { 
     id<BounceSound> _sound;
     BounceShape _bounceShape;
+    
+    BOOL _isManipulatable;
+    BOOL _simulationWillDraw;
+    
+    BounceSimulation *_simulation;
         
     float _intensity;
     BOOL _isStationary;
@@ -43,6 +50,9 @@ typedef enum {
     BounceRenderableInputs _inputs;
 }
 
+@property (nonatomic) BOOL simulationWillDraw;
+@property (nonatomic) BOOL isManipulatable;
+@property (nonatomic, retain) BounceSimulation* simulation;
 @property (nonatomic, readonly) BOOL hasSecondarySize;
 @property (nonatomic) BOOL isStationary;
 @property (nonatomic) const vec4& color;
@@ -50,7 +60,7 @@ typedef enum {
 @property (nonatomic) float intensity;
 @property (nonatomic) float age;
 @property (nonatomic) const vec2& lastVelocity;
-@property (nonatomic, retain) id<FSASoundDelegate> sound;
+@property (nonatomic, retain) id<BounceSound> sound;
 
 +(id)randomObjectAt: (const vec2&)loc;
 +(id)randomObjectAt:(const vec2 &)loc withVelocity:(const vec2&)vel;
@@ -66,10 +76,17 @@ typedef enum {
 -(BounceShape)bounceShape;
 -(void)setBounceShape: (BounceShape)bounceShape;
 
+-(void)playSound: (float)volume;
+
 -(void)separate: (cpContactPointSet*)contactPoints;
 
+-(void)randomizeSize;
+-(void)randomizeColor;
+-(void)randomizeShape;
 -(float)size;
 -(void)setSize:(float)s;
+
+-(void)singleTap;
 
 -(float)secondarySize;
 -(void)setSecondarySize:(float)s;
@@ -88,10 +105,15 @@ typedef enum {
 -(void)resizeRectangle;
 -(void)resizeCapsule;
 
-
 -(void)step: (float)dt;
 -(void)draw;
 -(void)drawSelected;
+
+-(void)addToSimulation:(BounceSimulation*)sim;
+-(void)removeFromSimulation;
+-(void)postSolveRemoveFromSimulation;
+
+-(BOOL)hasBeenAddedToSimulation;
 
 -(void)setPatternForTextureSheet: (NSString*)name row:(unsigned int)row col:(unsigned int)col numRows:(unsigned int)rows numCols:(unsigned int)cols;
 

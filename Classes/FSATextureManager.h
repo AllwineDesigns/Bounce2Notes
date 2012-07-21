@@ -20,11 +20,15 @@ using namespace fsa;
 @interface FSATextureManager : NSObject {
     NSMutableDictionary *textures;
     NSMutableDictionary *largeTextures;
-    NSString* largeTexturePrefix;
+    int largeTexturePrefix;
+    
+    int startTextTextureSize;
 }
 
 -(id)init;
--(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key;
+-(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontSize: (float)size withOffset: (const vec2&)offset;
+-(void)generateTextureForText: (NSString*)txt;
+
 -(FSATexture*)getTexture: (NSString*)name;
 -(void)addLargeTexture: (NSString*)name;
 +(FSATextureManager*)instance;

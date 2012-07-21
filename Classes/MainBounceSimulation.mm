@@ -26,7 +26,7 @@
         
         _configPane = [[BounceConfigurationPane alloc] initWithBounceSimulation:self];
         
-        [self addObject:[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()]];
+        [[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()] addToSimulation:self];
     }
     
     return self;
@@ -52,15 +52,15 @@
     [super addToVelocity:v];
 }
 
--(void)singleTapAt:(const vec2 &)loc {    
-    if(![_configPane singleTapAt:loc]) {
-        [super singleTapAt:loc];
+-(void)singleTap: (void*)uniqueId at:(const vec2 &)loc {   
+    if(![_configPane singleTap:uniqueId at:loc]) {
+        [super singleTap:uniqueId at:loc];
     }
 }
 
--(void)flickAt:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
-    if(![_configPane flickAt:loc inDirection:dir time:time]) {
-        [super flickAt:loc inDirection:dir time:time];
+-(void)flick: (void*)uniqueId at:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
+    if(![_configPane flick:uniqueId at:loc inDirection:dir time:time]) {
+        [super flick:uniqueId at:loc inDirection:dir time:time];
     }
 }
 

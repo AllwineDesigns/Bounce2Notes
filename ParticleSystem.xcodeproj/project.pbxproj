@@ -233,12 +233,20 @@
 		B24159FD15A391A300E8AB74 /* BillboardShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F915A38D1100E8AB74 /* BillboardShader.vsh */; };
 		B24159FE15A391AE00E8AB74 /* BillboardShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F615A38CFC00E8AB74 /* BillboardShader.fsh */; };
 		B24159FF15A391AE00E8AB74 /* BillboardShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F915A38D1100E8AB74 /* BillboardShader.vsh */; };
+		B2415A0A15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */; };
+		B2415A0B15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */; };
+		B2415A0E15AF851700E8AB74 /* BouncePreviewAllObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A0D15AF851600E8AB74 /* BouncePreviewAllObject.mm */; };
+		B2415A0F15AF851700E8AB74 /* BouncePreviewAllObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A0D15AF851600E8AB74 /* BouncePreviewAllObject.mm */; };
+		B2415A1315AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */; };
+		B2415A1415AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */; };
+		B2415A1515AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */; };
+		B2415A1615AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */; };
+		B2415A1715AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */; };
+		B2415A1815AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */; };
 		B2454B4B154CDF5600FB5576 /* FSAMultiGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */; };
 		B276E49F1540F1430078737B /* FSAShader.m in Sources */ = {isa = PBXBuildFile; fileRef = B276E49E1540F1430078737B /* FSAShader.m */; };
 		B27E3F64159F766C001B86E3 /* BounceConfigurationObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B27E3F63159F766C001B86E3 /* BounceConfigurationObject.mm */; };
 		B27E3F65159F766C001B86E3 /* BounceConfigurationObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B27E3F63159F766C001B86E3 /* BounceConfigurationObject.mm */; };
-		B27E3F6715A024A8001B86E3 /* transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = B27E3F6615A024A8001B86E3 /* transparent.png */; };
-		B27E3F6815A024A8001B86E3 /* transparent.png in Resources */ = {isa = PBXBuildFile; fileRef = B27E3F6615A024A8001B86E3 /* transparent.png */; };
 		B280571F1563336200C2E7A2 /* marimba_a1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571A1563336200C2E7A2 /* marimba_a1.caf */; };
 		B28057201563336200C2E7A2 /* marimba_c1.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571B1563336200C2E7A2 /* marimba_c1.caf */; };
 		B28057211563336200C2E7A2 /* marimba_c2.caf in Resources */ = {isa = PBXBuildFile; fileRef = B280571C1563336200C2E7A2 /* marimba_c2.caf */; };
@@ -315,12 +323,6 @@
 		B2E54A12158CC463009880FE /* FSATextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.mm */; };
 		B2E54A13158CC463009880FE /* FSATextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.mm */; };
 		B2E54A17158CED77009880FE /* FSAUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.mm */; };
-		B2E7D8B115A0DDE0004BA437 /* 512shapes_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E7D8AE15A0DDE0004BA437 /* 512shapes_texture_sheet.jpg */; };
-		B2E7D8B215A0DDE0004BA437 /* 512shapes_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E7D8AE15A0DDE0004BA437 /* 512shapes_texture_sheet.jpg */; };
-		B2E7D8B315A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E7D8AF15A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg */; };
-		B2E7D8B415A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E7D8AF15A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg */; };
-		B2E7D8B515A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E7D8B015A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg */; };
-		B2E7D8B615A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2E7D8B015A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg */; };
 		B2E8B540157047DD00318FFC /* bounce_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53C157047DD00318FFC /* bounce_icon57.png */; };
 		B2E8B541157047DD00318FFC /* bounce_icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53D157047DD00318FFC /* bounce_icon72.png */; };
 		B2E8B542157047DD00318FFC /* bounce_icon114.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53E157047DD00318FFC /* bounce_icon114.png */; };
@@ -516,6 +518,13 @@
 		B24159F315A3879F00E8AB74 /* FSATexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSATexture.m; sourceTree = "<group>"; };
 		B24159F615A38CFC00E8AB74 /* BillboardShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BillboardShader.fsh; path = Shaders/BillboardShader.fsh; sourceTree = "<group>"; };
 		B24159F915A38D1100E8AB74 /* BillboardShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BillboardShader.vsh; path = Shaders/BillboardShader.vsh; sourceTree = "<group>"; };
+		B2415A0815AE0AEF00E8AB74 /* BounceConfigurationTab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceConfigurationTab.h; sourceTree = "<group>"; };
+		B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceConfigurationTab.mm; sourceTree = "<group>"; };
+		B2415A0C15AF851500E8AB74 /* BouncePreviewAllObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BouncePreviewAllObject.h; sourceTree = "<group>"; };
+		B2415A0D15AF851600E8AB74 /* BouncePreviewAllObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BouncePreviewAllObject.mm; sourceTree = "<group>"; };
+		B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 512music_texture_sheet.jpg; sourceTree = "<group>"; };
+		B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1024music_texture_sheet.jpg; sourceTree = "<group>"; };
+		B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2048music_texture_sheet.jpg; sourceTree = "<group>"; };
 		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
 		B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAMultiGestureRecognizer.m; sourceTree = "<group>"; };
 		B276E499153DADC70078737B /* ParticleSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
@@ -523,7 +532,6 @@
 		B276E4A21540F14F0078737B /* FSAShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAShader.h; sourceTree = "<group>"; };
 		B27E3F62159F766C001B86E3 /* BounceConfigurationObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceConfigurationObject.h; sourceTree = "<group>"; };
 		B27E3F63159F766C001B86E3 /* BounceConfigurationObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceConfigurationObject.mm; sourceTree = "<group>"; };
-		B27E3F6615A024A8001B86E3 /* transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = transparent.png; sourceTree = "<group>"; };
 		B280571A1563336200C2E7A2 /* marimba_a1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = marimba_a1.caf; sourceTree = "<group>"; };
 		B280571B1563336200C2E7A2 /* marimba_c1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = marimba_c1.caf; sourceTree = "<group>"; };
 		B280571C1563336200C2E7A2 /* marimba_c2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = marimba_c2.caf; sourceTree = "<group>"; };
@@ -591,9 +599,6 @@
 		B2E54A11158CC462009880FE /* FSATextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSATextureManager.mm; sourceTree = "<group>"; };
 		B2E54A14158CED0A009880FE /* FSAUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSAUtil.h; sourceTree = "<group>"; };
 		B2E54A15158CED76009880FE /* FSAUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSAUtil.mm; sourceTree = "<group>"; };
-		B2E7D8AE15A0DDE0004BA437 /* 512shapes_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 512shapes_texture_sheet.jpg; sourceTree = "<group>"; };
-		B2E7D8AF15A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1024shapes_texture_sheet.jpg; sourceTree = "<group>"; };
-		B2E7D8B015A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2048shapes_texture_sheet.jpg; sourceTree = "<group>"; };
 		B2E8B53C157047DD00318FFC /* bounce_icon57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon57.png; sourceTree = "<group>"; };
 		B2E8B53D157047DD00318FFC /* bounce_icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon72.png; sourceTree = "<group>"; };
 		B2E8B53E157047DD00318FFC /* bounce_icon114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon114.png; sourceTree = "<group>"; };
@@ -704,6 +709,10 @@
 				B23E3C7C159B530D00E42730 /* MainBounceSimulation.mm */,
 				B27E3F62159F766C001B86E3 /* BounceConfigurationObject.h */,
 				B27E3F63159F766C001B86E3 /* BounceConfigurationObject.mm */,
+				B2415A0C15AF851500E8AB74 /* BouncePreviewAllObject.h */,
+				B2415A0D15AF851600E8AB74 /* BouncePreviewAllObject.mm */,
+				B2415A0815AE0AEF00E8AB74 /* BounceConfigurationTab.h */,
+				B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */,
 				B23E3C87159B8B8C00E42730 /* BounceConfigurationPane.h */,
 				B23E3C88159B8B8D00E42730 /* BounceConfigurationPane.mm */,
 				B23E3C7F159B543500E42730 /* BounceConfigurationSimulation.h */,
@@ -768,8 +777,6 @@
 				B2E8B570157060AD00318FFC /* Default-Portrait~ipad.png */,
 				B2E8B56E157060A600318FFC /* Default@2x.png */,
 				B2E8B56C157060A000318FFC /* Default.png */,
-				B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */,
-				B21A93FB155C6A1D002D2BEE /* libChipmunk-iPhone_armv6.a */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -792,10 +799,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B2E7D8AE15A0DDE0004BA437 /* 512shapes_texture_sheet.jpg */,
-				B2E7D8AF15A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg */,
-				B2E7D8B015A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg */,
-				B27E3F6615A024A8001B86E3 /* transparent.png */,
+				B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */,
+				B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */,
+				B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */,
 				B2DCECD4159DEE6200303CF8 /* downarrow.jpg */,
 				B2DCECD1159DED0600303CF8 /* arrow.jpg */,
 				B2DCECC2159DE44700303CF8 /* 512rectangle.jpg */,
@@ -911,6 +917,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */,
+				B21A93FB155C6A1D002D2BEE /* libChipmunk-iPhone_armv6.a */,
 				B21A93BC1559954A002D2BEE /* AVFoundation.framework */,
 				B29630CD1547572C009B483D /* CoreMotion.framework */,
 				B29630CB15473B80009B483D /* CoreGraphics.framework */,
@@ -1301,10 +1309,9 @@
 				B2DCECC9159DE44700303CF8 /* 2048rectangle.jpg in Resources */,
 				B2DCECD2159DED0600303CF8 /* arrow.jpg in Resources */,
 				B2DCECD5159DEE6200303CF8 /* downarrow.jpg in Resources */,
-				B27E3F6715A024A8001B86E3 /* transparent.png in Resources */,
-				B2E7D8B115A0DDE0004BA437 /* 512shapes_texture_sheet.jpg in Resources */,
-				B2E7D8B315A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg in Resources */,
-				B2E7D8B515A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg in Resources */,
+				B2415A1315AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */,
+				B2415A1515AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */,
+				B2415A1715AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1437,10 +1444,9 @@
 				B2DCECCA159DE44700303CF8 /* 2048rectangle.jpg in Resources */,
 				B2DCECD3159DED0600303CF8 /* arrow.jpg in Resources */,
 				B2DCECD6159DEE6200303CF8 /* downarrow.jpg in Resources */,
-				B27E3F6815A024A8001B86E3 /* transparent.png in Resources */,
-				B2E7D8B215A0DDE0004BA437 /* 512shapes_texture_sheet.jpg in Resources */,
-				B2E7D8B415A0DDE0004BA437 /* 1024shapes_texture_sheet.jpg in Resources */,
-				B2E7D8B615A0DDE0004BA437 /* 2048shapes_texture_sheet.jpg in Resources */,
+				B2415A1415AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */,
+				B2415A1615AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */,
+				B2415A1815AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1486,6 +1492,8 @@
 				B24159F415A3879F00E8AB74 /* FSATexture.m in Sources */,
 				B24159F715A38CFC00E8AB74 /* BillboardShader.fsh in Sources */,
 				B24159FA15A38D1100E8AB74 /* BillboardShader.vsh in Sources */,
+				B2415A0A15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */,
+				B2415A0E15AF851700E8AB74 /* BouncePreviewAllObject.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1528,6 +1536,8 @@
 				B24159F515A3879F00E8AB74 /* FSATexture.m in Sources */,
 				B24159F815A38CFC00E8AB74 /* BillboardShader.fsh in Sources */,
 				B24159FB15A38D1100E8AB74 /* BillboardShader.vsh in Sources */,
+				B2415A0B15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */,
+				B2415A0F15AF851700E8AB74 /* BouncePreviewAllObject.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

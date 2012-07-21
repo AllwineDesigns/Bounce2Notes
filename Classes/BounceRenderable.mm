@@ -217,6 +217,7 @@
     free(_vertVels);
     free(_vertShapeUVs);
     free(_vertPatternUVs);
+    free(_indices);
     
     [super dealloc];
 }
@@ -271,6 +272,57 @@
 }
 
 @end
+
+/*
+@implementation BounceBallRenderable
+
+-(id)initWithInputs:(BounceRenderableInputs)inputs {
+    self = [super initWithInputs:inputs];
+    
+    if(self) {
+        _numVerts = 3;
+        _numIndices = 3;
+        _verts = (vec2*)realloc(_verts,_numVerts*sizeof(vec2));
+        _vertsUntransformed = (vec2*)realloc(_vertsUntransformed, _numVerts*sizeof(vec2));
+        _vertOffsets = (vec2*)realloc(_vertOffsets,_numVerts*sizeof(vec2));
+        _vertVels = (vec2*)realloc(_vertVels,_numVerts*sizeof(vec2));
+        
+        _vertShapeUVs = (vec2*)realloc(_vertShapeUVs,_numVerts*sizeof(vec2));
+        _vertPatternUVs = (vec2*)realloc(_vertPatternUVs,_numVerts*sizeof(vec2));
+        _indices = (unsigned int*)realloc(_indices,_numIndices*sizeof(unsigned int));
+        
+        memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
+        memset(_vertVels, 0, _numVerts*sizeof(vec2));
+        
+        float h = 1./sin(PI/6);
+        float x = 1./tan(PI/6);
+        
+        _vertsUntransformed[0] = vec2(0,h);
+        _vertsUntransformed[1] = vec2(-x,-1);
+        _vertsUntransformed[2] = vec2(x,-1);
+        
+        for(int i = 0; i < _numVerts; i++) {
+            vec2 uv = _vertsUntransformed[i];
+            uv.x *= .5;
+            uv.y *= -.5;
+            uv += vec2(.5,.5);
+            _vertShapeUVs[i] = uv;
+            _vertPatternUVs[i] = uv;
+        }
+        
+        _indices[0] = 0;
+        _indices[1] = 1;
+        _indices[2] = 2;
+        
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"].name;
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"].name;
+    }
+    return self;
+}
+
+@end
+*/
+
 
 @implementation BounceTriangleRenderable
 

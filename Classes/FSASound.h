@@ -19,6 +19,12 @@
     float _volume;
     
 }
+@property (nonatomic) float volume;
 
 -(id)initWithAudioPlayer:(FSAAudioPlayer*)player soundData:(FSASoundData*)data volume:(float)vol;
+@end
+
+@interface FSARest : NSObject <FSASoundDelegate> {
+}
+-(void)setVolume:(float)f;
 @end
