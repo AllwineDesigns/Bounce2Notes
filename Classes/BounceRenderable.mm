@@ -12,13 +12,17 @@
 
 @implementation BounceRenderable
 
+@synthesize blendMode = _blendMode;
 @synthesize inputs = _inputs;
+@synthesize bounciness = _bounciness;
 
 -(id)initWithInputs:(BounceRenderableInputs)inputs {
     self = [super init];
     if(self) {
         _inputs = inputs;
         _mode = GL_TRIANGLE_STRIP;
+        _blendMode = GL_ONE_MINUS_SRC_ALPHA;
+        _bounciness = .9;
     }
     return self;
 }
@@ -29,7 +33,7 @@
     FSAShader *stationaryShader = [shaderManager getShader:@"SingleObjectStationaryShader"];
     
     glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_ONE, _blendMode);
     
     float size = *_inputs.size;
     float angle = *_inputs.angle;
@@ -98,7 +102,7 @@
 -(void)burst:(float)scale {
     for(int i = 0; i < _numVerts; i++) {
         vec2 vert = _vertsUntransformed[i];
-        _vertVels[i] += scale*vert;
+        _vertVels[i] += _bounciness*scale*vert;
     }
 }
 
@@ -125,8 +129,8 @@
         }
     }
     
-    _vertVels[closest_j] += vel;
-    _vertVels[closest_j2] += vel;
+    _vertVels[closest_j] += (2*_bounciness)*vel;
+    _vertVels[closest_j2] += (2*_bounciness)*vel;
 }
 
 -(void)drawSelected {
@@ -644,7 +648,7 @@
 -(void)burst: (float)scale {
     for(int i = 0; i < 4; i++) {
         vec2 vert = _vertsUntransformedRectangle[i];
-        _vertVels[i] += scale*vert;
+        _vertVels[i] += _bounciness*scale*vert;
     }
 }
 
@@ -701,8 +705,8 @@
         }
     }
     
-    _vertVels[closest_j] += vel;
-    _vertVels[closest_j2] += vel;
+    _vertVels[closest_j] += 2*_bounciness*vel;
+    _vertVels[closest_j2] += 2*_bounciness*vel;
     
 }
 

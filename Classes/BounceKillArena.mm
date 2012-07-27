@@ -86,7 +86,7 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 -(void)kill: (BounceObject*)obj {
-    if(obj.isManipulatable) {
+    if(obj.isRemovable) {
         [_simulation postSolveRemoveObject:obj];
     }
 }

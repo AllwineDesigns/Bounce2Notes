@@ -39,6 +39,8 @@
         [_obj makeHeavyRogue];
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
         _creationTimestamp = _timestamp;
+        
+        [_obj beginCreateCallback];
 
         _state = BOUNCE_GESTURE_CREATE;
     }
@@ -58,7 +60,7 @@
         _offsetR = _offset.length();
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
         _creationTimestamp = _timestamp;
-
+        [_obj beginGrabCallback:at];
 
         _state = BOUNCE_GESTURE_GRAB;
     }
@@ -85,7 +87,8 @@
         
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
         _creationTimestamp = _timestamp;
-
+        
+        [_obj beginTransformCallback];
         
         [gesture beginTransformWithGesture:self];
     }
@@ -132,9 +135,8 @@
             _obj.angVel = (newAngle-oldAngle)*invtime;
             float old_size = _obj.size;
             float size = _offset.length();
-
-            _obj.secondarySize = size/1.61803399;
-            _obj.size = size;
+            
+            [_obj createCallbackWithSize: size secondarySize:size/1.61803399];
 
             id<BounceSound> sound = _obj.sound;
             [sound resized:old_size];
@@ -154,16 +156,15 @@
             
             _offsetAngle = curAngle;
             
-            _obj.angVel = (newAngle-ballAngle)*invtime;
             vec2 vel = (newPos-pos)*invtime;
             float length = vel.length();
+            BOOL stationary = _obj.isStationary;
             if(length > 5) {
-                _obj.isStationary = NO;
+                stationary = NO;
             }
             
-            [_obj setVelocity:vel];
-            _obj.angle = newAngle;
-            [_obj setPosition:newPos];
+            [_obj grabCallbackWithPosition:newPos velocity:vel angle:newAngle angVel:(newAngle-ballAngle)*invtime stationary:stationary];
+            [_obj grabCallback:to];
             break;
         }
         case BOUNCE_GESTURE_TRANSFORM: {
@@ -191,44 +192,17 @@
             float angle = rotation+_rotation;
             float angVel = (angle-old_angle)*invtime;
             
-            _obj.angle = angle;
-            _obj.angVel = angVel;
-            
             float size = _size*scale;
             float size2 = _size2*scale;
-            
-            float old_size = _obj.size;
-            
-            if(_doSecondarySize) {
-                _obj.secondarySize = size2;
-            } else {
-                _obj.size = size;
-            }
-            
-            [_obj.sound resized:old_size];
-
-            
-            float actualSize = _obj.size;
-            float actualSize2 = _obj.secondarySize;
-            
-            float scalex = size/actualSize;
-            float scaley;
-            if(_doSecondarySize) {
-                scaley = size2/actualSize2;
-            } else {
-                scaley = scalex;
-            }
-            
-            float xp = scalex*(o.x*cos(rotation)-o.y*sin(rotation))+translate.x+M.x;
-            float yp = scaley*(o.x*sin(rotation)+o.y*cos(rotation))+translate.y+M.y;
+                        
+            float xp = scale*(o.x*cos(rotation)-o.y*sin(rotation))+translate.x+M.x;
+            float yp = scale*(o.x*sin(rotation)+o.y*cos(rotation))+translate.y+M.y;
             
             vec2 pos(xp,yp);
             vec2 old_pos = _obj.position;
             vec2 vel = (pos-old_pos)*invtime;
             
-            
-            [_obj setPosition:pos];
-            [_obj setVelocity:vel];
+            [_obj transformCallbackWithPosition:pos velocity:vel angle:angle angVel:angVel size:size secondarySize:size2 doSecondarySize:_doSecondarySize];
             
             break;
         }
@@ -240,12 +214,19 @@
 -(void)endGesture {
     switch(_state) {
         case BOUNCE_GESTURE_CREATE:
+            if(_obj.isStationary) {
+                [_obj makeStatic];
+            } else {
+                [_obj makeSimulated];
+            }
+            [_obj endCreateCallback];
         case BOUNCE_GESTURE_GRAB:
             if(_obj.isStationary) {
                 [_obj makeStatic];
             } else {
                 [_obj makeSimulated];
             }
+            [_obj endGrabCallback];
             break;
         case BOUNCE_GESTURE_TRANSFORM:
             BounceGesture *g;
@@ -254,6 +235,40 @@
             } else {
                 g = _gesture1;
             }
+            [_obj endTransformCallback];
+            [g beginGrabAt:[g transformEndPosition]];
+            break;
+        default:
+            NSAssert(NO, @"unknown bounce gesture state\n");
+    }
+    [_obj release]; _obj = nil;
+}
+
+-(void)cancelGesture {
+    switch(_state) {
+        case BOUNCE_GESTURE_CREATE:
+            if(_obj.isStationary) {
+                [_obj makeStatic];
+            } else {
+                [_obj makeSimulated];
+            }
+            [_obj cancelCreateCallback];
+        case BOUNCE_GESTURE_GRAB:
+            if(_obj.isStationary) {
+                [_obj makeStatic];
+            } else {
+                [_obj makeSimulated];
+            }
+            [_obj cancelGrabCallback];
+            break;
+        case BOUNCE_GESTURE_TRANSFORM:
+            BounceGesture *g;
+            if(_gesture1 == self) {
+                g = _gesture2;
+            } else {
+                g = _gesture1;
+            }
+            [_obj cancelTransformCallback];
             [g beginGrabAt:[g transformEndPosition]];
             break;
         default:
@@ -268,6 +283,7 @@
     _offsetR = _offset.length();
     _timestamp = [[NSProcessInfo processInfo] systemUptime];
     _state = BOUNCE_GESTURE_GRAB;
+    [_obj beginGrabCallback:loc];
 }
 -(void)beginTransformWithGesture:(BounceGesture*)gesture {
     _state = BOUNCE_GESTURE_TRANSFORM;

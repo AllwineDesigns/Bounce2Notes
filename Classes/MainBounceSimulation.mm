@@ -42,6 +42,16 @@
     [_configPane step:_dt];
 }
 
+-(void)setBounciness:(float)b {
+    [_configPane setBounciness:b];
+    [super setBounciness:b];
+}
+
+-(void)setGravityScale:(float)s {
+    [_configPane setGravityScale:s];
+    [super setGravityScale:s];
+}
+
 -(void)setGravity:(const vec2 &)g {
     [_configPane setGravity:g];
     [super setGravity:g];

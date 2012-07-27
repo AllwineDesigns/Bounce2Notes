@@ -13,7 +13,7 @@
 
 typedef enum {
     BOUNCE_CONFIGURATION_PANE_DEACTIVATED,
-    BOUNCE_CONFIGURATION_PANE_TAPPPED,
+    BOUNCE_CONFIGURATION_PANE_TAPPED,
     BOUNCE_CONFIGURATION_PANE_ACTIVATED
 } BounceConfigurationPaneState;
 
@@ -22,31 +22,24 @@ typedef enum {
     float _aspect;
     float _invaspect;
     
-    CGSize _handleSize;
     CGSize _paneSize;
     
     vec2 _tappedSpringLoc;
     vec2 _activeSpringLoc;
     vec2 _inactiveSpringLoc;
     
-    GLuint _handleShapeTexture;
-    GLuint _handlePatternTexture;
-    
-    GLuint _paneShapeTexture;
-    GLuint _panePatternTexture;
-    
-    float _intensity;
-    
     vec2 _springLoc;
     vec2 _vel;
     vec4 _color;
 }
 
+@property (nonatomic) const vec2& springLoc;
+@property (nonatomic) const vec2& tappedSpringLoc;
+@property (nonatomic) const vec2& inactiveSpringLoc;
+@property (nonatomic) const vec2& activeSpringLoc;
 @property (nonatomic) vec4 color;
-@property (nonatomic) CGSize handleSize;
 @property (nonatomic) CGSize paneSize;
 
--(BOOL)isHandleAt:(const vec2&)loc;
 -(BOOL)isPaneAt:(const vec2&)loc;
 
 -(void)randomizeColor;
@@ -79,12 +72,17 @@ typedef enum {
     
     BounceConfigurationPaneState _state;
 }
+@property (nonatomic,readonly) BounceConfigurationPaneObject* object;
+
 -(id)initWithBounceSimulation:(BounceSimulation*)simulation;
 
 -(void)setCurrentSimulation:(unsigned int)index;
 
+-(void)setGravityScale:(float)s;
 -(void)setGravity:(vec2)gravity;
 -(void)addToVelocity:(const vec2&)v;
+
+-(void)setBounciness:(float)b;
 
 -(void)setCurrentSimulation:(unsigned int)index;
 
@@ -96,6 +94,10 @@ typedef enum {
 -(BOOL)drag:(void*)uniqueId at:(const vec2&)loc;
 -(BOOL)endDrag:(void*)uniqueId at:(const vec2&)loc;
 -(BOOL)cancelDrag:(void*)uniqueId at:(const vec2&)loc;
+
+-(void)reset;
+-(void)activate;
+-(void)deactivate;
 
 -(void)step:(float)dt;
 -(void)draw;

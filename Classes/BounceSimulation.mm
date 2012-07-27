@@ -123,6 +123,9 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     _objects = [[NSMutableSet alloc] initWithCapacity:10];
     _delayedRemoveObjects = [[NSMutableSet alloc] initWithCapacity:10];
     _dt = .02;
+    
+    _bounciness = .9;
+    _gravityScale = 9.789;
         
     _space = cpSpaceNew();
     cpSpaceSetCollisionSlop(_space, .02);
@@ -138,29 +141,32 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 
+-(void)setPosition:(const vec2&)pos {
+    self.arena.position = pos;
+}
+-(void)setVelocity:(const vec2&)vel {
+    self.arena.velocity = vel;
+}
+
+
 
 -(void)setColor:(const vec4 &)color {
     for(BounceObject *obj in _objects) {
-        if([obj isManipulatable]) {
-            [obj setColor:color];
-        }
+        [obj setColor:color];
     }
 }
 -(void)randomizeColor {
     for(BounceObject *obj in _objects) {
-        if([obj isManipulatable]) {
-            [obj randomizeColor];
-        }
+        [obj randomizeColor];
     }
 }
 -(void)randomizeShape {
     for(BounceObject *obj in _objects) {
-        if([obj isManipulatable]) {
-            [obj randomizeShape];
-        }
+        [obj randomizeShape];
     }
 }
 -(void)addObject: (BounceObject*)object {
+    [object setBounciness:_bounciness];
     [_objects addObject:object];
 }
 -(void)removeObject: (BounceObject*)object {
@@ -226,38 +232,6 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     }
 }
 
-static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *points, void* data) {
-    BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;
-        
-    cpBody *body = cpShapeGetBody(shape);
-    ChipmunkObject *obj = (ChipmunkObject*)cpBodyGetUserData(body);
-    
-    if([obj isKindOfClass:[BounceObject class]] && [(BounceObject*)obj isManipulatable]) {
-        [queryStruct->set addObject:obj];
-    }
-}
-
--(NSSet*)manipulatableObjectsAt:(const vec2 &)loc withinRadius:(float)radius {
-    BounceQueryStruct queryStruct;
-    
-    NSMutableSet *objects = [NSMutableSet setWithCapacity:10];
-    
-    queryStruct.set = objects;
-    queryStruct.simulation = self;
-    
-    cpBody *body = cpBodyNew(1, 1);
-    cpBodySetPos(body, (const cpVect&)loc);
-    cpShape *shape = cpCircleShapeNew(body, radius, cpvzero);
-    
-    cpSpaceShapeQuery(_space, shape, getManipulatableBounceObjectsQueryFunc, (void*)&queryStruct);
-    
-    cpShapeFree(shape);
-    cpBodyFree(body);
-    
-    return objects;
-}
-
-
 -(NSSet*)objectsAt:(const vec2 &)loc withinRadius:(float)radius {
     BounceQueryStruct queryStruct;
     
@@ -280,22 +254,6 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
 
 -(BounceObject*)objectAt:(const vec2 &)loc {
     NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
-    float minDist = 9999;
-    BounceObject *obj = nil;
-    
-    for(BounceObject *o in objects) {
-        float dist = ([o position]-loc).length();
-        if(dist < minDist) {
-            minDist = dist;
-            obj = o;
-        }
-    }
-    
-    return obj;
-}
-
--(BounceObject*)manipulatableObjectAt:(const vec2 &)loc {
-    NSSet *objects = [self manipulatableObjectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
     float minDist = 9999;
     BounceObject *obj = nil;
     
@@ -347,17 +305,11 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
 }
 
 -(void)addVelocity: (const vec2&)vel toObjectsAt:(const vec2&)loc  withinRadius:(float)radius {
-    NSSet *objects = [self objectsAt:loc withinRadius:radius];
-    
-    for(BounceObject *obj in objects) {
-        if(!obj.isStationary && ![self isObjectParticipatingInGesture:obj]) {
-            [obj setVelocity:[obj velocity]+vel];
-        }
-    }
+
     
 }
 -(void)addVelocity: (const vec2&)vel toObjectAt:(const vec2&)loc {
-    BounceObject *obj = [self manipulatableObjectAt:loc];
+    BounceObject *obj = [self objectAt:loc];
     if(!obj.isStationary && ![self isObjectParticipatingInGesture:obj]) {
         [obj setVelocity:[obj velocity]+vel];
     }
@@ -383,21 +335,23 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     NSSet *objects = [self objectsAt:loc withinRadius:radius]; 
     return objects.count > 0;
 }
--(BOOL)isManipulatableObjectAt:(const vec2&)loc {
-    BounceObject *obj = [self manipulatableObjectAt:loc];
-    return obj != nil;
-}
--(BOOL)anyManipulatableObjectsAt:(const vec2&)loc withinRadius:(float)radius {
-    NSSet *objects = [self manipulatableObjectsAt:loc withinRadius:radius]; 
-    return objects.count > 0;
+
+-(void)setGravityScale:(float)s {
+    _gravityScale = s;
+
+    vec2 gravity = _gravityScale*_gravity;
+
+    cpSpaceSetGravity(_space, (cpVect&)gravity);
 }
 -(void)setGravity:(const vec2&)g {
    // cpSpaceSetGravity(_space, cpvzero);
-    cpSpaceSetGravity(_space, (cpVect&)g);
+    _gravity = g;
+    vec2 gravity = _gravityScale*_gravity;
+    cpSpaceSetGravity(_space, (cpVect&)gravity);
 }
 
 -(BOOL)isObjectParticipatingInGestureAt: (const vec2&)loc {
-    BounceObject *obj = [self manipulatableObjectAt:loc];
+    BounceObject *obj = [self objectAt:loc];
     
     if(obj == nil) {
         return NO;
@@ -405,7 +359,7 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     return [self isObjectParticipatingInGesture:obj];
 }
 -(BOOL)isObjectBeingCreatedOrGrabbedAt:(const vec2&)loc {
-    BounceObject *obj = [self manipulatableObjectAt:loc];
+    BounceObject *obj = [self objectAt:loc];
     
     if(obj == nil) {
         return NO;
@@ -413,7 +367,7 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     return [self isObjectBeingCreatedOrGrabbed:obj];
 }
 -(BOOL)isObjectBeingTransformedAt:(const vec2&)loc {
-    BounceObject *obj = [self manipulatableObjectAt:loc];
+    BounceObject *obj = [self objectAt:loc];
     
     if(obj == nil) {
         return NO;
@@ -425,8 +379,12 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     return [_arena isInBoundsAt:loc];
 }
 
+-(BOOL)isInBoundsAt:(const vec2 &)loc withPadding:(float)pad {
+    return [_arena isInBoundsAt:loc withPadding:pad];
+}
+
 -(BOOL)isStationaryObjectAt:(const vec2&)loc {
-    BounceObject *obj = [self manipulatableObjectAt:loc];
+    BounceObject *obj = [self objectAt:loc];
     
     if(obj == nil) {
         return NO;
@@ -448,8 +406,8 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     [_gestures removeObjectForKey:key];
 }
 
--(void)tapObject:(BounceObject*)obj {
-    [obj singleTap];
+-(void)tapObject:(BounceObject*)obj at:(const vec2&)loc {
+    [obj singleTapAt:loc];
 }
 -(void)tapSpaceAt:(const vec2&)loc {
 }
@@ -460,9 +418,7 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     [obj makeSimulated];
     NSLog(@"flicked stationary object\n");
 }
--(void)flickObjectsAt:(const vec2&)loc withVelocity:(const vec2&)vel {
-    [self addVelocity:vel toObjectsAt:loc withinRadius:.3];
-}
+
 -(void)flickSpaceAt:(const vec2&)loc withVelocity:(const vec2&)vel {
 }
 
@@ -482,12 +438,13 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
         if(obj == nil) {
             [self tapSpaceAt:loc];
         } else {
-            [self tapObject:obj];
+            [self tapObject:obj at:loc];
         }
     }
 }
 
--(void)flickObject:(BounceObject*)obj withVelocity:(const vec2&)vel {
+-(void)flickObject:(BounceObject*)obj at:(const vec2&)loc withVelocity:(const vec2&)vel {
+    [obj flickAt:loc withVelocity:vel];
 }
 
 -(void)flick: (void*)uniqueId at:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
@@ -505,16 +462,13 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
             [obj randomizeSize];
             [obj setVelocity:vel];
         } else if([gesture isGrabGesture]) {
-            [self flickObject:obj withVelocity:vel];
-            [self flickObjectsAt:loc withVelocity:vel];
+            [self flickObject:obj at:loc withVelocity:vel];
         }
     } else {
-        BounceObject *obj = [self manipulatableObjectAt:loc];
+        BounceObject *obj = [self objectAt:loc];
 
-        if(obj != nil && obj.isStationary && ![self isObjectParticipatingInGesture:obj]) {
-            [self flickStationaryObject:obj withVelocity:vel];
-        } else if([self anyManipulatableObjectsAt:loc withinRadius:.1]) {
-            [self flickObjectsAt:loc withVelocity:vel];
+        if(obj) {
+            [self flickObject:obj at:loc withVelocity:vel];
         } else {
             [self flickSpaceAt:loc withVelocity:vel];
         }
@@ -558,8 +512,8 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
     BounceObject *anyObject = [self objectAt:loc];
     
-    BounceObject *obj = [self manipulatableObjectAt:loc];
-    NSSet *objects = [self manipulatableObjectsAt:loc withinRadius:.4*[BounceConstants instance].unitsPerInch];
+    BounceObject *obj = [self objectAt:loc];
+    NSSet *objects = [self objectsAt:loc withinRadius:.4*[BounceConstants instance].unitsPerInch];
     BounceObject *objectBeingCreatedOrGrabbed = nil;
     for(BounceObject *object in objects) {
         if([self isObjectBeingCreatedOrGrabbed:object]) {
@@ -616,9 +570,16 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     
     if(gesture) {
-        [gesture endGesture];
+        [gesture cancelGesture];
     
         [self removeGestureForKey:uniqueId];
+    }
+}
+
+-(void)setBounciness:(float)b {
+    _bounciness = b;
+    for(BounceObject *obj in _objects) {
+        [obj setBounciness:b];
     }
 }
 
@@ -637,6 +598,8 @@ static void getManipulatableBounceObjectsQueryFunc(cpShape *shape, cpContactPoin
 
     [super dealloc];
 }
+
+
 
 -(void)draw {
     for(BounceObject *obj in _objects) {

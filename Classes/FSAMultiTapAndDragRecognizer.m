@@ -458,20 +458,20 @@
                 }
             }
         } else {
-            if(oft.touch.tapCount > 0 && !oft.hasDragged && !oft.hasLongTouched) {
+            CGPoint begin = oft.beginLocation;
+            CGPoint end = [oft.touch locationInView:self.view];
+            end.x -= begin.x;
+            end.y -= begin.y;
+            
+            float dist = sqrt(end.x*end.x+end.y*end.y);
+            if(oft.touch.tapCount > 0 && oft.touch.timestamp-oft.beginTimestamp < .3 
+               && dist < 20) {
                 [self doSingleTap:oft];
                 [self doCancelDrag:oft];
                 CFDictionaryRemoveValue(oneFingerTouches, oft.touch);
             } else {
                 
                 if(oft.touch.timestamp-oft.beginTimestamp > FSA_FLICK_THRESHOLD) {
-                    CGPoint begin = oft.beginLocation;
-                    CGPoint end = [oft.touch locationInView:self.view];
-                    end.x -= begin.x;
-                    end.y -= begin.y;
-                    
-                    float dist = sqrt(end.x*end.x+end.y*end.y);
-
                     if(dist >= 1) {
                         [self doEndDrag:oft];
                     } else {

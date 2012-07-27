@@ -14,7 +14,11 @@
     CGSize _dimensions;
 }
 
+@property (nonatomic, readonly) CGSize dimensions;
+
 -initWithRect: (CGRect)rect;
 -(BOOL)isInBoundsAt:(const vec2&)loc;
+-(BOOL)isInBoundsAt:(const vec2&)loc withPadding:(float)pad;
+
 
 @end

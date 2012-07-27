@@ -80,5 +80,7 @@ typedef enum {
 -(BOOL)isSimulated;
 -(void)makeSimulated;
 
+-(void)setGroup:(cpGroup)g;
+
 @end
 

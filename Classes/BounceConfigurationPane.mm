@@ -15,12 +15,16 @@
 #import "BounceConfigurationSimulation.h"
 #import "BounceConfigurationObject.h"
 #import "FSASoundManager.h"
+#import "BounceSettingsSimulation.h"
 
 @implementation BounceConfigurationPaneObject 
 
 @synthesize color = _color;
 @synthesize paneSize = _paneSize;
-@synthesize handleSize = _handleSize;
+@synthesize springLoc = _springLoc;
+@synthesize tappedSpringLoc = _tappedSpringLoc;
+@synthesize inactiveSpringLoc = _inactiveSpringLoc;
+@synthesize activeSpringLoc = _activeSpringLoc;
 
 -(id)init {
     self = [super initStatic];
@@ -33,11 +37,6 @@
         _aspect = constants.aspect;
         _invaspect = 1./_aspect;
         
-        _handleSize.width = .3*_upi;
-        _handleSize.height = .15*_upi;
-        
-        NSLog(@"handle size: %f, %f\n", _handleSize.width, _handleSize.height);
-        
         _paneSize.width = 1.8;
         _paneSize.height = _upi;
         
@@ -45,8 +44,6 @@
         if([device hasPrefix:@"iPad"]) {
             _paneSize.width = _upi*4;
             _paneSize.height = _upi*2.25;
-            _handleSize.width = .4*_upi;
-            _handleSize.height = .2*_upi;
         }
         
         vec4 color;
@@ -55,17 +52,9 @@
         color.w = 1;
         _color = color;
         
-        FSATextureManager *texManager = [FSATextureManager instance];
-        
-        _handleShapeTexture = [texManager getTexture:@"rectangle.jpg"].name;
-        _handlePatternTexture = [texManager getTexture:@"arrow.jpg"].name;
-        
-        _paneShapeTexture = [texManager getTexture:@"square.jpg"].name;
-        _panePatternTexture = [texManager getTexture:@"black.jpg"].name;
-        
         _tappedSpringLoc = vec2(0, -_invaspect-_paneSize.height*.5);
         _activeSpringLoc = vec2(0, -_invaspect+_paneSize.height*.5);
-        _inactiveSpringLoc = vec2(0, -_invaspect-_paneSize.height*.8-_handleSize.height);
+        _inactiveSpringLoc = vec2(0, -_invaspect-_paneSize.height);
         
         _springLoc = _inactiveSpringLoc;
         
@@ -76,11 +65,6 @@
         float left = -_paneSize.width*.5;
         float right = _paneSize.width*.5;
         
-        float handleTop = top+_handleSize.height;
-        float handleBottom = top;
-        float handleLeft = -_handleSize.width*.5;
-        float handleRight = _handleSize.width*.5;
-        
         vec2 verts[4];
         verts[0] = vec2(right, top);
         verts[1] = vec2(right, bottom);
@@ -89,36 +73,14 @@
         
         [self addPolyShapeWithNumVerts:4 withVerts:verts withOffset:cpvzero];  
         
-        verts[0] = vec2(handleRight, handleTop);
-        verts[1] = vec2(handleRight, handleBottom);
-        verts[2] = vec2(handleLeft, handleBottom);
-        verts[3] = vec2(handleLeft, handleTop);
-        [self addPolyShapeWithNumVerts:4 withVerts:verts withOffset:cpvzero];  
-        
         cpShapeSetFriction(_shapes[0], .5);
         cpShapeSetElasticity(_shapes[0], .95);
         cpShapeSetCollisionType(_shapes[0], WALL_TYPE);
-        
-        cpShapeSetFriction(_shapes[1], .5);
-        cpShapeSetElasticity(_shapes[1], .95);
-        cpShapeSetCollisionType(_shapes[1], WALL_TYPE);
     }
     
     return self;
 }
 
--(BOOL)isHandleAt:(const vec2&)loc {
-    vec2 pos = self.position;
-    
-    float top = (pos.y+_paneSize.height*.5+_handleSize.height);
-    float bottom = pos.y+_paneSize.height*.5;
-    float left = pos.x-_handleSize.width*.5;
-    float right = pos.x+_handleSize.width*.5;
-    
-    return loc.x >= left && loc.x <= right &&
-           loc.y >= bottom && loc.y <= top;
-    
-}
 -(BOOL)isPaneAt:(const vec2&)loc {
     vec2 pos = self.position;
     
@@ -148,14 +110,10 @@
 
 -(void)activate {
     _springLoc = _activeSpringLoc;
-    _handlePatternTexture = [[FSATextureManager instance] getTexture:@"downarrow.jpg"].name;
-
 }
 
 -(void)deactivate {
     _springLoc = _inactiveSpringLoc;
-    _handlePatternTexture = [[FSATextureManager instance] getTexture:@"arrow.jpg"].name;
-
 }
 
 -(void)step:(float)dt {    
@@ -216,72 +174,12 @@
     [shader enable];
     glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_INT, indices);
     [shader disable];
-    
-    // draw handle
-    shader = [[FSAShaderManager instance] getShader:@"SingleObjectShader"];
-
-    float size = _handleSize.width;
-        
-    top = pos.y+_paneSize.height*.5+_handleSize.height*.5+size;
-    bottom = pos.y+_paneSize.height*.5+_handleSize.height*.5-size;
-    left = pos.x-size;
-    right = pos.x+size;
-        
-    verts[0] = vec2(right, top);
-    verts[1] = vec2(left, top);
-    verts[2] = vec2(left, bottom);
-    verts[3] = vec2(right, bottom);
-    
-    indices[0] = 0;
-    indices[1] = 1;
-    indices[2] = 2;
-    indices[3] = 0;
-    indices[4] = 2;
-    indices[5] = 3;
-    
-    [shader setPtr:verts forAttribute:@"position"];
-    [shader setPtr:&_color forUniform:@"color"];
-    
-    _intensity = .5*_vel.length()*.4+.6*_intensity;
-    
-    [shader setPtr:&_intensity forUniform:@"intensity"];
-    
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _handleShapeTexture);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, _handlePatternTexture);
-    
-    GLuint shape = 0;
-    GLuint pattern = 1;
-    
-    [shader setPtr:&shape forUniform:@"shapeTexture"];
-    [shader setPtr:&pattern forUniform:@"patternTexture"];
-    
-    vec2 shapeUV[4];
-    vec2 patternUV[4];
-    
-    shapeUV[0] = vec2(1,0);
-    shapeUV[1] = vec2(0,0);
-    shapeUV[2] = vec2(0,1);
-    shapeUV[3] = vec2(1,1);
-    
-    patternUV[0] = vec2(1,0);
-    patternUV[1] = vec2(0,0);
-    patternUV[2] = vec2(0,1);
-    patternUV[3] = vec2(1,1);
-    [shader setPtr:shapeUV forAttribute:@"shapeUV"];
-    [shader setPtr:patternUV forAttribute:@"patternUV"];
-    
-    glEnable(GL_BLEND);
-    [shader enable];
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
-    [shader disable];
-    glDisable(GL_BLEND);
 }
 @end
 
 @implementation BounceConfigurationPane
+
+@synthesize object = _object;
 
 -(void)addShapesSimulation {
     FSATextureManager *texManager = [FSATextureManager instance];
@@ -337,16 +235,16 @@
     
     [_simulations addObject:sim];
     
-    CGSize handleSize = [_object handleSize];
+    float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
+    CGSize tabSize = CGSizeMake(paneSize.width/6, .2*upi);
     
-    float size = .1;
-    vec2 offset(-paneSize.width*.5+size, paneSize.height*.5+handleSize.height*.5);
+    vec2 offset(-paneSize.width*.5+tabSize.width*.5, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
-    tab.size = size;
-    tab.secondarySize = handleSize.height*.5;
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
     
     tab.patternTexture = [texManager getTexture:@"Shapes"].name;
     [tab addToSimulation:_simulation];
@@ -416,14 +314,15 @@
     
     [_simulations addObject:sim];
     
-    CGSize handleSize = [_object handleSize];
+    float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
-    float size = .1;
-    vec2 offset(-paneSize.width*.5+3*size, paneSize.height*.5+handleSize.height*.5);
+    CGSize tabSize = CGSizeMake(paneSize.width/6, .2*upi);
+    
+    vec2 offset(-paneSize.width*.5+1.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
 
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
-    tab.size = size;
-    tab.secondarySize = handleSize.height*.5;
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
     tab.patternTexture = [texManager getTexture:@"Patterns"].name;
     [tab addToSimulation:_simulation];
     [_simulationTabs addObject:tab];
@@ -461,15 +360,16 @@
     
     [_simulations addObject:sim];
     
-    CGSize handleSize = [_object handleSize];
+    float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
-    float size = .1;
-    vec2 offset(-paneSize.width*.5+5*size, paneSize.height*.5+handleSize.height*.5);
+    CGSize tabSize = CGSizeMake(paneSize.width/6, .2*upi);
+
+    vec2 offset(-paneSize.width*.5+2.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
-    tab.size = size;
-    tab.secondarySize = handleSize.height*.5;
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
     
     tab.patternTexture = [texManager getTexture:@"Sizes"].name;
     [tab addToSimulation:_simulation];
@@ -532,15 +432,16 @@
     
     [_simulations addObject:sim];
     
-    CGSize handleSize = [_object handleSize];
+    float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
-    float tsize = .1;
-    vec2 offset(paneSize.width*.5-5*tsize, paneSize.height*.5+handleSize.height*.5);
+    CGSize tabSize = CGSizeMake(paneSize.width/6, .2*upi);
+
+    vec2 offset(paneSize.width*.5-2.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
-    tab.size = tsize;
-    tab.secondarySize = handleSize.height*.5;
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
     
     tab.patternTexture = [texManager getTexture:@"Colors"].name;
     [tab addToSimulation:_simulation];
@@ -639,15 +540,16 @@
     
     [_simulations addObject:sim];
     
-    CGSize handleSize = [_object handleSize];
+    float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
-    float tsize = .1;
-    vec2 offset(paneSize.width*.5-3*tsize, paneSize.height*.5+handleSize.height*.5);
+    CGSize tabSize = CGSizeMake(paneSize.width/6, .2*upi);
+
+    vec2 offset(paneSize.width*.5-1.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
-    tab.size = tsize;
-    tab.secondarySize = handleSize.height*.5;
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
     
     tab.patternTexture = [texManager getTexture:@"Music"].name;
     [tab addToSimulation:_simulation];
@@ -658,19 +560,20 @@
 -(void)addSettingsSimulation {
     FSATextureManager *texManager = [FSATextureManager instance];
 
-    BounceSimulation *sim = [[BounceConfigurationSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
+    BounceSimulation *sim = [[BounceSettingsSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
     
     [_simulations addObject:sim];
     
-    CGSize handleSize = [_object handleSize];
+    float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
-    float tsize = .1;
-    vec2 offset(paneSize.width*.5-tsize, paneSize.height*.5+handleSize.height*.5);
+    CGSize tabSize = CGSizeMake(paneSize.width/6, .2*upi);
+
+    vec2 offset(paneSize.width*.5-.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
-    tab.size = tsize;
-    tab.secondarySize = handleSize.height*.5;
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
     
     tab.patternTexture = [texManager getTexture:@"Settings"].name;
     [tab addToSimulation:_simulation];
@@ -728,6 +631,18 @@
     [sim addToVelocity:v];
 }
 
+-(void)setBounciness:(float)b {
+    for(BounceSimulation *sim in _simulations) {
+        [sim setBounciness:b];
+    }
+}
+
+-(void)setGravityScale:(float)s {
+    for(BounceSimulation *sim in _simulations) {
+        [sim setGravityScale:s];
+    }
+}
+
 -(void)setGravity:(vec2)gravity {
     BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
     
@@ -735,17 +650,13 @@
 }
 
 -(void)setCurrentSimulation:(unsigned int)index {
-    if(_state == BOUNCE_CONFIGURATION_PANE_TAPPPED) {
-        _state = BOUNCE_CONFIGURATION_PANE_ACTIVATED;
-        
+    if(_state == BOUNCE_CONFIGURATION_PANE_TAPPED) {        
         _switchToSimulation = index;
         _curSimulation = index;
         
         BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
         [sim setColor:_object.color];
-
-        
-        [_object activate];
+        [self activate];
     } else {
         if(index != _curSimulation) {
             _switchToSimulation = index;
@@ -753,6 +664,15 @@
             [_object deactivate];
         }
     }
+}
+
+-(void)activate {
+    _state = BOUNCE_CONFIGURATION_PANE_ACTIVATED;
+    [_object activate];
+}
+-(void)deactivate {
+    _state = BOUNCE_CONFIGURATION_PANE_DEACTIVATED;
+    [_object deactivate];
 }
 
 
@@ -765,28 +685,7 @@
         }
     }
     
-    if([self isHandleAreaAt:loc]) {
-        _state = BOUNCE_CONFIGURATION_PANE_TAPPPED;
-        _time = 0;
-        [_object tap];
-        BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
-        [sim setColor:_object.color];
-        for(BounceConfigurationTab *tab in _simulationTabs) {
-            [tab setColor:_object.color]; 
-        }
-        
-        return YES;
-    } else if([_object isHandleAt:loc]) {
-        if(_state == BOUNCE_CONFIGURATION_PANE_TAPPPED) {
-            _state = BOUNCE_CONFIGURATION_PANE_ACTIVATED;
-            [_object activate];
-        } else {
-            _state = BOUNCE_CONFIGURATION_PANE_DEACTIVATED;
-            [_object deactivate];
-        }
-        return YES;
-    } else if([_object isPaneAt:loc]) {       
-        // to single tap in current configuration bounce simulation
+    if([_object isPaneAt:loc]) {       
         BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
         [sim singleTap:uniqueId at:loc];
         return YES;
@@ -831,6 +730,19 @@
         return YES;
     }
     
+    if([self isHandleAreaAt:loc]) {
+        _state = BOUNCE_CONFIGURATION_PANE_TAPPED;
+        _time = 0;
+        [_object tap];
+        BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
+        [sim setColor:_object.color];
+        for(BounceConfigurationTab *tab in _simulationTabs) {
+            [tab setColor:_object.color]; 
+        }
+        
+        return YES;
+    }
+    
     return NO;
 }
 -(BOOL)drag:(void*)uniqueId at:(const vec2&)loc {
@@ -867,12 +779,32 @@
     return NO;
 }
 
+-(void)reset {
+    switch (_state) {
+        case BOUNCE_CONFIGURATION_PANE_TAPPED:
+            [_object tap];
+            break;
+        case BOUNCE_CONFIGURATION_PANE_ACTIVATED:
+            if(_curSimulation != _switchToSimulation) {
+                [_object deactivate];
+            } else {
+                [_object activate];
+            }
+            break;
+        case BOUNCE_CONFIGURATION_PANE_DEACTIVATED:
+            [_object deactivate];
+            break;
+        default:
+            NSAssert(NO, @"unknown bounce configuration state");
+            break;
+    }
+}
+
 -(void)step:(float)dt {
-    if(_state == BOUNCE_CONFIGURATION_PANE_TAPPPED) {
+    if(_state == BOUNCE_CONFIGURATION_PANE_TAPPED) {
         _time += dt;
         if(_time > 2) {
-            _state = BOUNCE_CONFIGURATION_PANE_DEACTIVATED;
-            [_object deactivate];
+            [self deactivate];
         }
     }
     
@@ -887,8 +819,8 @@
     }
     
     BounceConfigurationSimulation *curSim = [_simulations objectAtIndex:_curSimulation];
-    [curSim.arena setPosition:pos];
-    [curSim.arena setVelocity:vel];
+    [curSim setPosition:pos];
+    [curSim setVelocity:vel];
     
     for(BounceConfigurationSimulation *sim in _simulations) {
         if([sim isAnyObjectInBounds] || (curSim == sim
@@ -898,20 +830,21 @@
         }
     }
     
-    
-    
     CGSize paneSize = [_object paneSize];
     
     if(_switchToSimulation != _curSimulation && pos.y < -_invaspect-paneSize.height*.5) {
         _curSimulation = _switchToSimulation;
-        [_object activate];
-        [_object randomizeColor];
-        for(BounceConfigurationTab *tab in _simulationTabs) {
-            [tab setColor:_object.color];
+        if(_state == BOUNCE_CONFIGURATION_PANE_ACTIVATED) {
+            [_object activate];
+            [_object randomizeColor];
+            for(BounceConfigurationTab *tab in _simulationTabs) {
+                [tab setColor:_object.color];
+            }
+            for(BounceSimulation *sim in _simulations) {
+                [sim setColor:_object.color];
+            }
         }
-        for(BounceSimulation *sim in _simulations) {
-            [sim setColor:_object.color];
-        }
+
     }
     
     BounceConfigurationTab *curTab = [_simulationTabs objectAtIndex:_curSimulation];

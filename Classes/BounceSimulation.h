@@ -25,6 +25,10 @@ using namespace fsa;
             
     BounceArena *_arena;
     
+    float _bounciness;
+    float _gravityScale;
+    vec2 _gravity;
+    
     float _dt;
     float _timeRemainder;
 }
@@ -45,8 +49,6 @@ using namespace fsa;
 -(BOOL)isObjectBeingTransformed: (BounceObject*)obj;
 -(NSSet*)objectsAt: (const vec2&)loc withinRadius:(float)radius;
 -(BounceObject*)objectAt:(const vec2&)loc;
--(NSSet*)manipulatableObjectsAt: (const vec2&)loc withinRadius:(float)radius;
--(BounceObject*)manipulatableObjectAt:(const vec2&)loc;
 
 -(void)addToSpace:(ChipmunkObject*)obj;
 
@@ -65,15 +67,21 @@ using namespace fsa;
 -(BounceObject*)addObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel;
 -(BOOL)isObjectAt:(const vec2&)loc;
 -(BOOL)anyObjectsAt:(const vec2&)loc withinRadius:(float)radius;
--(BOOL)isManipulatableObjectAt:(const vec2&)loc;
--(BOOL)anyManipulatableObjectsAt:(const vec2&)loc withinRadius:(float)radius;
 -(void)setGravity:(const vec2&)g;
+-(void)setGravityScale:(float)s;
+
+-(void)setPosition:(const vec2&)pos;
+-(void)setVelocity:(const vec2&)vel;
+
+-(void)setBounciness:(float)b;
 
 -(void)setColor:(const vec4&)color;
 -(void)randomizeColor;
 -(void)randomizeShape;
 
 -(BOOL)isInBoundsAt:(const vec2&)loc;
+-(BOOL)isInBoundsAt:(const vec2&)loc withPadding:(float)pad;
+
 
 -(BounceGesture*)gestureWithParticipatingObject:(BounceObject*)object;
 
@@ -82,11 +90,9 @@ using namespace fsa;
 -(BOOL)isObjectBeingTransformedAt:(const vec2&)loc;
 -(BOOL)isStationaryObjectAt:(const vec2&)loc;
 
--(void)tapObject:(BounceObject*)obj;
+-(void)tapObject:(BounceObject*)obj at:(const vec2&)loc;
 -(void)tapSpaceAt:(const vec2&)loc;
 
--(void)flickStationaryObject:(BounceObject*)obj withVelocity:(const vec2&)vel;
--(void)flickObjectsAt:(const vec2&)loc withVelocity:(const vec2&)vel;
 -(void)flickSpaceAt:(const vec2&)loc withVelocity:(const vec2&)vel;
 -(void)flickObject:(BounceObject*)obj withVelocity:(const vec2&)vel;
 

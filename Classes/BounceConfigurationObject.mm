@@ -57,7 +57,7 @@
     }
 }
 
--(void)singleTap {
+-(void)singleTapAt:(const vec2 &)loc {
     _intensity = 2.2;
     [_renderable burst:5];
 }
@@ -126,13 +126,11 @@
     _originalSize = _previewObject.size;
     _originalSecondarySize = _previewObject.secondarySize;
     
-    _previewObject.size  = _size;
-    _previewObject.secondarySize = _size/1.61803399;
+    [_previewObject setSize:_size secondarySize:_size*GOLDEN_RATIO];
 }
 
 -(void)cancelChange {
-    _previewObject.size = _originalSize;
-    _previewObject.secondarySize = _originalSecondarySize;
+    [_previewObject setSize:_originalSize secondarySize:_originalSecondarySize];
 }
 
 @end

@@ -18,7 +18,8 @@
 @implementation BounceObject
 
 @synthesize simulationWillDraw = _simulationWillDraw;
-@synthesize isManipulatable = _isManipulatable;
+@synthesize isPreviewable = _isPreviewable;
+@synthesize isRemovable = _isRemovable;
 @synthesize simulation = _simulation;
 @synthesize hasSecondarySize = _hasSecondarySize;
 @synthesize isStationary = _isStationary;
@@ -77,9 +78,10 @@
     
     if(self) {
         _size = size;
-        _size2 = _size/1.61803399;
+        _size2 = _size*GOLDEN_RATIO;
         
-        _isManipulatable = YES;
+        _isPreviewable = YES;
+        _isRemovable = YES;
         _simulationWillDraw = YES;
 
         _color = color;
@@ -107,7 +109,7 @@
         cpBodySetPos(_body, (const cpVect&)loc);
         cpBodySetVel(_body, (const cpVect&)vel);
         cpBodySetAngle(_body, angle);
-        cpBodySetVelLimit(_body, 10);
+      //  cpBodySetVelLimit(_body, 10);
         cpBodySetAngVelLimit(_body, 50);
     }
     
@@ -182,6 +184,19 @@
 
         cpShapeSetCollisionType(_shapes[i], OBJECT_TYPE);
     }
+    [self setBounciness:_bounciness];     
+}
+
+-(float)bounciness {
+    return _bounciness;
+}
+
+-(void)setBounciness:(float)b {
+    _bounciness = b;
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetElasticity(_shapes[i], .5*(1-b)+1*b);
+    }
+    _renderable.bounciness = b;
 }
 
 -(float)secondarySize {
@@ -190,10 +205,14 @@
 
 -(void)setSecondarySize:(float)s {
     _size2 = s;
-    if(_size/_size2 < 1.61803399) {
-        _size = _size2*1.61803399;
+    if(_size2 > 1) {
+        _size2 = 1;
     } else if(_size2 < .01) {
         _size2 = .01;
+    }
+    
+    if(_size2 > _size) {
+        _size = _size2;
     }
     
     switch(_bounceShape) {
@@ -204,7 +223,6 @@
             [self resizeCapsule];
             break;
         default:
-       //     NSAssert(NO, @"secondary size changing for shape without secondary size\n");
             break;
     }
     if(_space != NULL) {
@@ -215,7 +233,7 @@
 -(void)randomizeSize {
     vec2 loc = self.position;
     float size = random(loc*1.234)*.2+.05;
-    _size2 = size/1.61803399;
+    _size2 = size*GOLDEN_RATIO;
     self.size = size;
 }
 
@@ -240,9 +258,147 @@
 -(float)size {
     return _size;
 }
+-(void)beginCreateCallback {
+    
+}
+-(void)createCallbackWithSize: (float)size secondarySize:(float)size2 {
+    if(size > 1) {
+        size = 1;
+        size2 = GOLDEN_RATIO;
+    }
+    self.secondarySize = size2;
+    self.size = size;
+}
+-(void)endCreateCallback {
+    
+}
+-(void)cancelCreateCallback {
+    
+}
+
+-(void)beginGrabCallback:(const vec2&)loc {
+    _beingGrabbed = YES;
+    _springLoc = [self position];
+    _vel = [self velocity];
+}
+-(void)grabCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
+    
+    self.angVel = angVel;
+    [self setVelocity:vel];
+     self.angle = angle;
+    _springLoc = pos;
+   // [self setPosition:pos];
+    self.isStationary = stationary;
+}
+-(void)grabCallback:(const vec2 &)loc {
+    
+}
+-(void)endGrabCallback {
+    _beingGrabbed = NO;
+    
+}
+-(void)cancelGrabCallback {
+    _beingGrabbed = NO;
+}
+
+-(void)beginTransformCallback {
+    _beingTransformed = YES;
+    _springLoc = [self position];
+    _vel = [self velocity];
+}
+-(void)transformCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel size:(float)size secondarySize:(float)size2 doSecondarySize:(BOOL)doSecondarySize {
+    float curSize = self.size;
+    float curSize2 = self.secondarySize;
+    
+    if(doSecondarySize) {
+        if(curSize/size2 < INVERSE_GOLDEN_RATIO) {
+            size = size2*INVERSE_GOLDEN_RATIO;
+            if(size > 1) {
+                size = 1;
+                size2 = GOLDEN_RATIO;
+            }
+            self.size = size;
+            self.secondarySize = size2;
+        } else {
+            self.secondarySize = size2;
+        }
+    } else {
+        if(size/curSize2 < INVERSE_GOLDEN_RATIO) {
+            size2 = size*GOLDEN_RATIO;
+            if(size > 1) {
+                size = 1;
+                size2 = GOLDEN_RATIO;
+            }
+            self.size = size;
+            self.secondarySize = size2;
+        } else {
+            self.size = size;
+        }
+    }
+    
+    [self.sound resized:curSize];
+    
+    self.angle = angle;
+    self.angVel = angVel;
+    
+   // [self setPosition:pos];
+    _springLoc = pos;
+   // [self setVelocity:vel];
+}
+-(void)endTransformCallback {
+    _beingTransformed = NO;
+}
+-(void)cancelTransformCallback {
+    _beingTransformed = NO;
+}
+
+-(void)setSize:(float)s secondarySize:(float)s2 {
+    _size = s;
+    _size2 = s2;
+    
+    if(_size > 1) {
+        _size = 1;
+    } else if(_size < .01) {
+        _size = .01;
+    }
+    
+    if(_size2 > _size) {
+        _size2 = _size;
+    } else if(_size2 < .01) {
+        _size2 = .01;
+    }
+    
+    switch(_bounceShape) {
+        case BOUNCE_BALL:
+            [self resizeBall];
+            break;
+        case BOUNCE_SQUARE:
+            [self resizeSquare];
+            break;
+        case BOUNCE_TRIANGLE:
+            [self resizeTriangle];
+            break;
+        case BOUNCE_PENTAGON:
+            [self resizePentagon];
+            break;
+        case BOUNCE_RECTANGLE:
+            [self resizeRectangle];
+            break;
+        case BOUNCE_CAPSULE:
+            [self resizeCapsule];
+            break;
+        default:
+            NSAssert(NO, @"resizing unknown shape\n");
+            break;
+    }
+    if(_space != NULL) {
+        cpSpaceReindexShapesForBody(_space, _body);
+    }
+
+}
+
 
 -(void)setSize:(float)s {
-    float old_size = _size;
     _size = s;
 
     if(_size > 1) {
@@ -250,10 +406,11 @@
     } else if(_size < .01) {
         _size = .01;
     }
-    if(_size/_size2 < 1.61803399) {
-        _size2 = _size/1.61803399;
-    }
     
+    if(_size2 > _size) {
+        _size2 = _size;
+    }
+
     //[_sound resized:old_size];
     
     switch(_bounceShape) {
@@ -566,6 +723,19 @@
     _intensity *= .9;
     _age += dt;
     
+    if(_beingGrabbed || _beingTransformed) {
+        float spring_k = 300;
+        float drag = .25;
+        
+        vec2 pos = [self position];
+        pos += _vel*dt;
+        vec2 a = -spring_k*(pos-_springLoc);
+        _vel +=  a*dt-drag*_vel;
+        
+        [self setPosition:pos];
+        [self setVelocity:_vel];
+    }
+    
     [_renderable step:dt];
 }
 
@@ -625,12 +795,33 @@
     [_renderable setPatternUVsForTextureSheetAtRow:row col:col numRows:rows numCols:cols];
 }
 
--(void)singleTap {
+-(void)singleTapAt:(const vec2 &)loc {
     if(_isStationary) {
         _isStationary = NO;
-    } else if(_age > 1 && _simulation != nil) {
+    } else if(_age > .5 && _simulation != nil) {
         [self playSound:.2];
         [self removeFromSimulation];
+    }
+}
+
+-(void)flickAt:(const vec2 &)loc withVelocity:(const vec2 &)vel {
+    vec2 curVel = self.velocity;
+    vec2 newVel = curVel+vel;
+    [self setVelocity:newVel];
+    
+    if(_isStationary) {
+        _isStationary = NO;
+    } else {
+        if(_simulation != nil) {
+            NSSet *objects = [_simulation objectsAt:loc withinRadius:.3];
+            for(BounceObject *obj in objects) {
+                if(!obj.isStationary) {
+                    curVel = obj.velocity;
+                    newVel = curVel+vel;
+                    obj.velocity = newVel;
+                }
+            }
+        }
     }
 }
 
@@ -641,6 +832,7 @@
     _renderable = nil;
     
     if(_simulation) {
+        [self removeFromSimulation];
         [_simulation release];
     }
 

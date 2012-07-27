@@ -11,6 +11,8 @@
 
 @implementation BounceArena
 
+@synthesize dimensions = _dimensions;
+
 -(id)initWithRect:(CGRect)rect {
     self = [super initStatic];
     
@@ -43,6 +45,18 @@
         }
     }
     return self;
+}
+
+-(BOOL)isInBoundsAt:(const vec2 &)loc withPadding:(float)pad {
+    vec2 pos = self.position;
+    
+    float left = pos.x-_dimensions.width*.5-pad;
+    float right = pos.x+_dimensions.width*.5+pad;
+    
+    float top = pos.y+_dimensions.height*.5+pad;
+    float bottom = pos.y-_dimensions.height*.5-pad;
+    
+    return loc.x >= left && loc.x <= right && loc.y >= bottom && loc.y <= top;
 }
 
 -(BOOL)isInBoundsAt:(const vec2 &)loc {

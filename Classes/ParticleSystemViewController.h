@@ -23,6 +23,7 @@
 //#import "BounceKillBoxShader.h"
 #import "MainBounceSimulation.h"
 #import "FSAAudioPlayer.h"
+#import "FSAGestureCurves.h"
 
 @interface ParticleSystemViewController : UIViewController
 {
@@ -30,14 +31,12 @@
     EAGLSharegroup *sharegroup;
     
     MainBounceSimulation *simulation;
-
+    FSAGestureCurves *gestureCurves;
+    
     NSTimeInterval lastUpdate;
     CMMotionManager *motionManager;
     
     FSAMultiTapAndDragRecognizer *multiTapAndDragRecognizer;
-    
-    FSAShader *_objectShader;
-    FSAShader *_stationaryShader;
     
     float aspect;
     BOOL animating;

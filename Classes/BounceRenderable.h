@@ -35,10 +35,13 @@ typedef struct {
     BounceRenderableInputs _inputs;
     
     GLenum _mode;
+    GLenum _blendMode;
     
     GLuint _shapeTexture;
     GLuint _stationaryTexture;
     
+    float _bounciness;
+
     vec2 *_verts;
     vec2 *_vertsUntransformed;
     vec2 *_vertOffsets;
@@ -50,8 +53,9 @@ typedef struct {
     unsigned int _numVerts;
     unsigned int _numIndices;
 }
-
+@property (nonatomic) GLenum blendMode;
 @property (nonatomic) BounceRenderableInputs inputs;
+@property (nonatomic) float bounciness;
 
 -(id)initWithInputs: (BounceRenderableInputs)inputs;
 -(void)step: (float)dt;

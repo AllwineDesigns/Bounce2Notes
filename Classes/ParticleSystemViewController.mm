@@ -48,6 +48,8 @@
     alertView = [[UIAlertView alloc] initWithTitle:@"Upgrade to full version" message:@"You must have the full version to create more balls." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Buy!", @"Dismiss All",  nil];
     dismissAllUpgradeAlerts = NO;
     
+    gestureCurves = [[FSAGestureCurves alloc] init];
+    
     motionManager = [[CMMotionManager alloc] init];
     [motionManager startAccelerometerUpdates];
     
@@ -61,13 +63,17 @@
     FSAShader *killBoxShader = [shaderManager getShader:@"BounceKillBoxShader"];
     FSAShader *colorShader = [shaderManager getShader:@"ColorShader"];
     FSAShader *billboardShader = [shaderManager getShader:@"BillboardShader"];
+    FSAShader *gestureGlowShader = [shaderManager getShader:@"GestureGlowShader"];
+    FSAShader *intensityShader = [shaderManager getShader:@"IntensityShader"];
 
 
     [objectShader setPtr:&aspect forUniform:@"aspect"];
     [stationaryShader setPtr:&aspect forUniform:@"aspect"];
     [killBoxShader setPtr:&aspect forUniform:@"aspect"];  
     [colorShader setPtr:&aspect forUniform:@"aspect"];    
-    [billboardShader setPtr:&aspect forUniform:@"aspect"];    
+    [billboardShader setPtr:&aspect forUniform:@"aspect"];  
+    [gestureGlowShader setPtr:&aspect forUniform:@"aspect"];  
+    [intensityShader setPtr:&aspect forUniform:@"aspect"];    
 
     cacheQueue = [[NSOperationQueue alloc] init];
     
@@ -125,6 +131,7 @@
      @"stationary_triangle.png",
      @"stationary_pentagon.png",
      @"music_texture_sheet.jpg",
+     @"glow.jpg",
      nil];
     for(NSString* texName in texturesToCache) {
         [texture_manager addLargeTexture:texName];
@@ -145,6 +152,17 @@
     [texture_manager generateTextureForText:@"Purple"];
     [texture_manager generateTextureForText:@"Pastel"];
     [texture_manager generateTextureForText:@"Gray"];
+    
+    NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Bouncy", @"Springy", @"Squishy", @"Rocklike", nil];
+    for(NSString* str in bouncinessLabels) {
+        [texture_manager generateTextureForText:str];
+    }
+    
+
+    NSArray *gravityLabels = [NSArray arrayWithObjects:@"Weightless", @"Airy", @"Floaty", @"Light", @"Normal", @"Heavy", nil];
+    for(NSString* str in gravityLabels) {
+        [texture_manager generateTextureForText:str];
+    }
 
     [texture_manager generateTextureForText:@"Rectangle"];
     [texture_manager generateTextureForText:@"Capsule"];
@@ -177,6 +195,7 @@
     [alertView release];
     [context release];
     [simulation release];
+    [gestureCurves release];
     
     [super dealloc];
 }
@@ -321,6 +340,7 @@
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
     [simulation beginDrag:gesture at:loc];
+    [gestureCurves beginDrag:gesture at:loc];
 
 }
 
@@ -349,6 +369,7 @@
     [self pixels2sim:loc];
     
     [simulation drag:gesture at:loc];
+    [gestureCurves drag:gesture at:loc];
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
@@ -356,13 +377,18 @@
     [self pixels2sim:loc];
     
     [simulation endDrag:gesture at:loc];
+    [gestureCurves endDrag:gesture at:loc];
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
     vec2 loc(gesture.beginLocation);
+    vec2 loc2(gesture.location);
     [self pixels2sim:loc];
+    [self pixels2sim:loc2];
 
-    [simulation cancelDrag:gesture at:loc];
+    [simulation cancelDrag:gesture at:loc2];
+    [gestureCurves cancelDrag:gesture at:loc];
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -445,7 +471,7 @@
     [(EAGLView *)self.view setFramebuffer];
     
     glClearColor(0.f, 0.f, 0.f, 0.f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     if([cacheQueue operationCount] == 0) {
         NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
@@ -469,9 +495,14 @@
             add_to_vel *= -.2;
             [simulation addToVelocity:add_to_vel];
         }
-        [simulation setGravity:accel];
+        
+        vec2 g(acceleration.x, acceleration.y);
+        [simulation setGravity:g];
         [simulation step:timeSinceLastDraw];
         [simulation draw];
+        
+        [gestureCurves step:timeSinceLastDraw];
+        [gestureCurves draw];
     }
 
     [(EAGLView *)self.view presentFramebuffer];

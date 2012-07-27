@@ -84,7 +84,7 @@ static FSATextureManager* fsaTextureManager;
 }
 
 -(void)generateTextureForText:(NSString *)txt {
-    return [self generateTextureForText:txt forKey:txt withFontSize:50 withOffset:vec2()];
+    [self generateTextureForText:txt forKey:txt withFontSize:50 withOffset:vec2()];
 }
 
 -(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontSize: (float)size withOffset: (const vec2&)offset {

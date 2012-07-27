@@ -15,6 +15,9 @@
 
 @class BounceSimulation;
 
+#define INVERSE_GOLDEN_RATIO 1.61803399
+#define GOLDEN_RATIO 1./1.61803399
+
 typedef enum {
     BOUNCE_BALL,
     BOUNCE_SQUARE,
@@ -29,7 +32,8 @@ typedef enum {
     id<BounceSound> _sound;
     BounceShape _bounceShape;
     
-    BOOL _isManipulatable;
+    BOOL _isPreviewable;
+    BOOL _isRemovable;
     BOOL _simulationWillDraw;
     
     BounceSimulation *_simulation;
@@ -38,6 +42,7 @@ typedef enum {
     BOOL _isStationary;
     vec4 _color;
     GLuint _patternTexture;
+    float _bounciness;
     
     float _size;
     float _size2;
@@ -46,12 +51,19 @@ typedef enum {
     float _age;
     vec2 _lastVelocity;
     
+    vec2 _springLoc;
+    vec2 _vel;
+    
+    BOOL _beingGrabbed;
+    BOOL _beingTransformed;
+    
     BounceRenderable *_renderable;
     BounceRenderableInputs _inputs;
 }
 
 @property (nonatomic) BOOL simulationWillDraw;
-@property (nonatomic) BOOL isManipulatable;
+@property (nonatomic) BOOL isPreviewable;
+@property (nonatomic) BOOL isRemovable;
 @property (nonatomic, retain) BounceSimulation* simulation;
 @property (nonatomic, readonly) BOOL hasSecondarySize;
 @property (nonatomic) BOOL isStationary;
@@ -78,15 +90,39 @@ typedef enum {
 
 -(void)playSound: (float)volume;
 
+-(float)bounciness;
+-(void)setBounciness:(float)b;
+
 -(void)separate: (cpContactPointSet*)contactPoints;
+
+-(void)beginCreateCallback;
+-(void)createCallbackWithSize: (float)size secondarySize:(float)size2;
+-(void)endCreateCallback;
+-(void)cancelCreateCallback;
+
+
+-(void)beginGrabCallback:(const vec2&)loc;
+-(void)grabCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary;
+-(void)grabCallback:(const vec2&)loc;
+-(void)endGrabCallback;
+-(void)cancelGrabCallback;
+
+
+-(void)beginTransformCallback;
+-(void)transformCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel size:(float)size secondarySize:(float)size2 doSecondarySize:(BOOL)_doSecondarySize;
+-(void)endTransformCallback;
+-(void)cancelTransformCallback;
+
 
 -(void)randomizeSize;
 -(void)randomizeColor;
 -(void)randomizeShape;
 -(float)size;
 -(void)setSize:(float)s;
+-(void)setSize:(float)s secondarySize:(float)s2;
 
--(void)singleTap;
+-(void)singleTapAt:(const vec2&)loc;
+-(void)flickAt:(const vec2&)loc withVelocity:(const vec2&)vel;
 
 -(float)secondarySize;
 -(void)setSecondarySize:(float)s;

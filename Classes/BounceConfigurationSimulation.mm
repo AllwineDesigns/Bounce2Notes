@@ -26,21 +26,23 @@
 -(void)beginTransform:(void *)uniqueId object:(BounceObject *)obj at:(const vec2 &)loc {
 }
 
--(void)tapObject:(BounceObject *)obj {
-    BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
-    vec2 pos = configObj.position;
-    BounceObject *newobj = [BounceObject randomObjectAt:pos];
-    
-    if([self isInBoundsAt:pos]) {
-        newobj.position = vec2();
+-(void)tapObject:(BounceObject *)obj at:(const vec2&)loc {
+    if([obj isKindOfClass:[BounceConfigurationObject class]]) {
+        BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
+        vec2 pos = configObj.position;
+        BounceObject *newobj = [BounceObject randomObjectAt:pos];
+        
+        if([self isInBoundsAt:pos]) {
+            newobj.position = vec2();
+        }
+        
+        [configObj setPreviewObject:newobj];
+        [configObj finalizeChange];
+        [newobj addToSimulation:_simulation];
+        [newobj playSound:.2];
     }
-    
-    [configObj setPreviewObject:newobj];
-    [configObj finalizeChange];
-    [newobj addToSimulation:_simulation];
-    [newobj playSound:.2];
 
-    [super tapObject:obj];
+    [super tapObject:obj at:loc];
 }
 
 -(void)tapSpaceAt:(const vec2 &)loc {
@@ -51,14 +53,16 @@
 }
 
 -(void)flickObject:(BounceObject *)obj withVelocity:(const vec2 &)vel {
-    BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
-    vec2 pos = configObj.position;
-    BounceObject *newobj = [_simulation addObjectAt:pos];
-        
-    newobj.velocity = vel;
-        
-    [configObj setPreviewObject:newobj];
-    [configObj finalizeChange];
+    if([obj isKindOfClass:[BounceConfigurationObject class]]) {
+        BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
+        vec2 pos = configObj.position;
+        BounceObject *newobj = [_simulation addObjectAt:pos];
+            
+        newobj.velocity = vel;
+            
+        [configObj setPreviewObject:newobj];
+        [configObj finalizeChange];
+    }
     
     [super flickObject:obj withVelocity:vel];
 }
@@ -70,11 +74,14 @@
 -(void)step:(float)t {
     [super step:t];
     
-    for(BounceConfigurationObject *obj in _objects) {
-        float timeSinceLastCreate = obj.timeSinceLastCreate;
-        if(obj.painting && timeSinceLastCreate > .1) {
-            [self tapObject:obj];
-            obj.timeSinceLastCreate = 0;
+    for(BounceObject *bobj in _objects) {
+        if([bobj isKindOfClass:[BounceConfigurationObject class]]) {
+            BounceConfigurationObject *obj = (BounceConfigurationObject*)bobj;
+            float timeSinceLastCreate = obj.timeSinceLastCreate;
+            if(obj.painting && timeSinceLastCreate > .1) {
+                [self tapObject:obj at:vec2()];
+                obj.timeSinceLastCreate = 0;
+            }
         }
     }
 }
@@ -83,27 +90,31 @@
     BounceGesture *gesture = [self gestureForKey:uniqueId];
 
     if(gesture) {
-        BounceConfigurationObject *configObj = (BounceConfigurationObject*)[gesture object];
-        configObj.painting = YES;
+        if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
+            BounceConfigurationObject *configObj = (BounceConfigurationObject*)[gesture object];
+            configObj.painting = YES;
+        }
     }
 }
 
 -(void)drag:(void *)uniqueId at:(const vec2 &)loc {
     [super drag:uniqueId at:loc];
     
-    BounceObject *obj = [_simulation manipulatableObjectAt:loc];
+    BounceObject *obj = [_simulation objectAt:loc];
     
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     if(gesture) {
-        BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
+        if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
+            BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
 
-        if([self isInBoundsAt:loc]) {
-            [configObj setPreviewObject:nil];
-        } else {
-            if(!obj || (![self isObjectBeingPreviewed:obj] && [obj isManipulatable])) {
-                [configObj setPreviewObject:obj];
-            } else if(configObj.painting) {
-                [self tapObject:configObj];
+            if([self isInBoundsAt:loc]) {
+                [configObj setPreviewObject:nil];
+            } else {
+                if(!obj || (![self isObjectBeingPreviewed:obj] && [obj isPreviewable])) {
+                    [configObj setPreviewObject:obj];
+                } else if(configObj.painting) {
+                    [self tapObject:configObj at:vec2()];
+                }
             }
         }
     }
@@ -113,27 +124,30 @@
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     
     if(gesture) {
-        BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
-        
-        BounceObject *obj = [configObj previewObject];
-        if(obj) {
-            if([self isInBoundsAt:loc]) {
-                [configObj cancelChange];
-            } else {
+        if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
+
+            BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
+            
+            BounceObject *obj = [configObj previewObject];
+            if(obj) {
+                if([self isInBoundsAt:loc]) {
+                    [configObj cancelChange];
+                } else {
+                    [configObj finalizeChange];
+                }
+            } else if(![self isInBoundsAt:loc]) {
+                vec2 pos = configObj.position;
+                BounceObject *obj = [_simulation addObjectAt:pos];
+                
+                obj.velocity = configObj.velocity;
+                obj.angle = configObj.angle;
+                obj.angVel = configObj.angVel;
+                
+                [configObj setPreviewObject:obj];
                 [configObj finalizeChange];
             }
-        } else if(![self isInBoundsAt:loc]) {
-            vec2 pos = configObj.position;
-            BounceObject *obj = [_simulation addObjectAt:pos];
-            
-            obj.velocity = configObj.velocity;
-            obj.angle = configObj.angle;
-            obj.angVel = configObj.angVel;
-            
-            [configObj setPreviewObject:obj];
-            [configObj finalizeChange];
+            configObj.painting = NO;
         }
-        configObj.painting = NO;
 
         [super endDrag:uniqueId at:loc];
     }
@@ -144,8 +158,10 @@
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     
     if(gesture) {
-        BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
-        [configObj cancelChange];
+        if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
+            BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
+            [configObj cancelChange];
+        }
     
         [super cancelDrag:uniqueId at:loc];
     }
@@ -164,7 +180,7 @@
 -(BOOL)isAnyObjectInBounds {
     for(BounceConfigurationObject *o in _objects) {
         vec2 pos = o.position;
-        if([_simulation isInBoundsAt:pos]) {
+        if([_simulation isInBoundsAt:pos withPadding:o.size]) {
             return YES;
         }
     }
@@ -186,7 +202,7 @@
     for(BounceObject *obj in _objects) {
         vec2 pos = obj.position;
         
-        if([_simulation isInBoundsAt:pos]) {
+        if([_simulation isInBoundsAt:pos withPadding:obj.size]) {
             [obj draw];
         }
     }
