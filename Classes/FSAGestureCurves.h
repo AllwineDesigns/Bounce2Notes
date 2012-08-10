@@ -10,7 +10,7 @@
 
 #import "FSAGestureCurve.h"
 
-@interface FSAGestureCurves : NSObject
+@interface FSAGestureCurves : NSObject 
 
 -(void)step:(float)dt;
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc;

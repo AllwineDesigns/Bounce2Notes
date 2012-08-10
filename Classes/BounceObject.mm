@@ -29,6 +29,8 @@
 @synthesize age = _age;
 @synthesize lastVelocity = _lastVelocity;
 @synthesize sound = _sound;
+@synthesize renderable = _renderable;
+@synthesize contactPoints = _contactPoints;
 
 +(id)randomObjectAt: (const vec2&)loc {
     BounceObject *obj = [[BounceObject alloc] initRandomObjectAt:loc];
@@ -87,11 +89,11 @@
         _color = color;
         _intensity = 2.2;
         _isStationary = NO;
-        _patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"].name;
+        self.patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"];
         
         NSArray *sounds = [NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"b_1", @"c_2", nil];
         NSString *note = [sounds objectAtIndex:random(loc*8.291)*[sounds count] ];
-        _sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:note]];
+        _sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:note volume:BOUNCE_SOUND_VOLUME]];
 //        _sound = [[BouncePentatonicSizeSound alloc] initWithBounceObject:self];
         
         _inputs.intensity = &_intensity;
@@ -170,6 +172,9 @@
         case BOUNCE_CAPSULE:
             [self setupCapsule];
             break;
+        case BOUNCE_STAR:
+            [self setupStar];
+            break;
         default:
             NSAssert(NO, @"attempting to set unknown shape\n");
             break;
@@ -184,11 +189,25 @@
 
         cpShapeSetCollisionType(_shapes[i], OBJECT_TYPE);
     }
-    [self setBounciness:_bounciness];     
+    [self setBounciness:_bounciness];  
+    [self needsSize];
 }
 
 -(float)bounciness {
     return _bounciness;
+}
+
+-(void)needsSize {
+    CGSize sSize = screenSize();
+    float size = sSize.width*_size;
+    float size2 = size;
+    if(_hasSecondarySize) {
+        size2 = sSize.width*_size2;
+    }
+    
+    [self.patternTexture needsSize:size];
+    [_renderable.shapeTexture needsSize:size2];
+    [_renderable.stationaryTexture needsSize:size2];
 }
 
 -(void)setBounciness:(float)b {
@@ -228,6 +247,7 @@
     if(_space != NULL) {
         cpSpaceReindexShapesForBody(_space, _body);
     }
+    [self needsSize];
 }
 
 -(void)randomizeSize {
@@ -387,6 +407,9 @@
         case BOUNCE_CAPSULE:
             [self resizeCapsule];
             break;
+        case BOUNCE_STAR:
+            [self resizeStar];
+            break;
         default:
             NSAssert(NO, @"resizing unknown shape\n");
             break;
@@ -394,6 +417,8 @@
     if(_space != NULL) {
         cpSpaceReindexShapesForBody(_space, _body);
     }
+    
+    [self needsSize];
 
 }
 
@@ -432,6 +457,9 @@
         case BOUNCE_CAPSULE:
             [self resizeCapsule];
             break;
+        case BOUNCE_STAR:
+            [self resizeStar];
+            break;
         default:
             NSAssert(NO, @"resizing unknown shape\n");
             break;
@@ -439,6 +467,7 @@
     if(_space != NULL) {
         cpSpaceReindexShapesForBody(_space, _body);
     }
+    [self needsSize];
 }
 
 -(void)setupBall {
@@ -588,6 +617,48 @@
     _renderable = [[BouncePentagonRenderable alloc] initWithInputs:_inputs];    
 }
 
+-(void)setupStar {
+    float cos72 = .309016994375;
+    float sin72 = .951056516295;
+    
+    float sin36 = .587785252292;
+    float cos36 = .809016994375;
+    
+    vec2 vert(0, _size*1.1056);
+    
+    vec2 verts[4];
+    verts[0] = vert;
+    
+    verts[1] = .5*vert;
+    verts[1].rotate(cos36,sin36);
+    
+    verts[2] = vec2();
+    
+    verts[3] = .5*vert;
+    verts[3].rotate(cos36,-sin36);
+    
+    verts[2] += .8*vec2(0,-1)*verts[1].length();
+    verts[1] += .5*(verts[3]-verts[1]).length()*(verts[1]-verts[0]).unit();
+    verts[3] += .5*(verts[3]-verts[1]).length()*(verts[3]-verts[0]).unit();
+    
+    [self setMass:.8*100*_size*_size];
+    float moment = 5*cpMomentForPoly(.2*_mass, 4, (cpVect*)verts, cpvzero);
+    [self addPolyShapeWithNumVerts:4 withVerts:verts withOffset:cpvzero];
+ 
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) {
+            verts[j].rotate(cos72,sin72);
+        }
+        [self addPolyShapeWithNumVerts:4 withVerts:verts withOffset:cpvzero];
+        moment += 5*cpMomentForPoly(.2*_mass, 4, (cpVect*)verts, cpvzero);
+    }
+    
+    [self setMoment:moment];
+    
+    [_renderable release];
+    _renderable = [[BounceStarRenderable alloc] initWithInputs:_inputs];    
+}
+
 -(void)resizeBall {
     [self setMass:100*_size*_size];
     [self setMoment:.02*cpMomentForCircle(_mass, 0, _size, cpvzero)];
@@ -718,6 +789,48 @@
     cpPolyShapeSetVerts(_shapes[0], 5, (cpVect*)verts, cpvzero);
 }
 
+-(void)resizeStar {
+    float cos72 = .309016994375;
+    float sin72 = .951056516295;
+    
+    float sin36 = .587785252292;
+    float cos36 = .809016994375;
+    
+    vec2 vert(0, _size*1.1056);
+    
+    vec2 verts[4];
+    verts[0] = vert;
+    
+    verts[1] = .5*vert;
+    verts[1].rotate(cos36,sin36);
+    
+    verts[2] = vec2();
+    
+    verts[3] = .5*vert;
+    verts[3].rotate(cos36,-sin36);
+    
+    verts[2] += .8*vec2(0,-1)*verts[1].length();
+    verts[1] += .5*(verts[3]-verts[1]).length()*(verts[1]-verts[0]).unit();
+    verts[3] += .5*(verts[3]-verts[1]).length()*(verts[3]-verts[0]).unit();
+
+    
+    [self setMass:.8*100*_size*_size];
+    float moment = 5*cpMomentForPoly(.2*_mass, 4, (cpVect*)verts, cpvzero);
+    cpPolyShapeSetVerts(_shapes[0], 4, (cpVect*)verts, cpvzero);
+
+    for(int i = 1; i < 5; i++) {
+        for(int j = 0; j < 4; j++) {
+            verts[j].rotate(cos72,sin72);
+        }
+        cpPolyShapeSetVerts(_shapes[i], 4, (cpVect*)verts, cpvzero);
+
+        moment += 5*cpMomentForPoly(_mass, 4, (cpVect*)verts, cpvzero);
+    }
+    
+    [self setMoment:moment];    
+}
+
+
 
 -(void)step:(float)dt {
     _intensity *= .9;
@@ -739,8 +852,54 @@
     [_renderable step:dt];
 }
 
+void ChipmunkDebugDrawPolygon(int count, cpVect *verts, const vec4& lineColor, const vec4& fillColor)
+{	
+
+    FSAShaderManager *shaderManager = [FSAShaderManager instance];
+    FSAShader *shader = [shaderManager getShader:@"ColorShader"];
+    
+    [shader setPtr:verts forAttribute:@"position"];
+    [shader setPtr:(vec4*)&fillColor forUniform:@"color"];
+    [shader enable];
+    glDrawArrays(GL_TRIANGLE_FAN, 0, count);
+    [shader disable];
+	
+    [shader setPtr:(vec4*)&lineColor forUniform:@"color"];
+    [shader enable];
+    glDrawArrays(GL_LINE_LOOP, 0, count);
+    [shader disable];
+}
+
+static void
+drawShape(cpShape *shape, const vec4& color)
+{	
+	switch(CP_PRIVATE(shape->klass)->type){
+		case CP_CIRCLE_SHAPE: {
+			//cpCircleShape *circle = (cpCircleShape *)shape;
+			//ChipmunkDebugDrawCircle(circle->tc, body->a, circle->r, vec4(1,1,1,1), color);
+			break;
+		}
+		case CP_SEGMENT_SHAPE: {
+			//cpSegmentShape *seg = (cpSegmentShape *)shape;
+			//ChipmunkDebugDrawFatSegment(seg->ta, seg->tb, seg->r, vec4(1,1,1,1), color);
+			break;
+		}
+		case CP_POLY_SHAPE: {
+			cpPolyShape *poly = (cpPolyShape *)shape;
+			ChipmunkDebugDrawPolygon(poly->numVerts, poly->tVerts, vec4(1,1,1,1), color);
+			break;
+		}
+		default: break;
+	}
+}
+
 -(void)draw {
     [_renderable draw];
+  /*  
+    for(int i = 0; i < _numShapes; i++) {
+        drawShape(_shapes[i], _color);
+    }*/
+     
 }
 
 -(void)drawSelected {
@@ -748,7 +907,7 @@
 }
 
 
--(void)separate: (cpContactPointSet*)contactPoints {
+-(void)separate {
     float angle = self.angle;  
     vec2 pos(self.position);
     vec2 vel(self.velocity);
@@ -758,14 +917,21 @@
     
     vel.rotate(cosangle,sinangle); 
     
-    for(int i=0; i < contactPoints->count; i++){
-        vec2 p(contactPoints->points[i].point);
+    for(int i=0; i < _contactPoints.count; i++){
+        vec2 p(_contactPoints.points[i].point);
         p -= pos;
         p.rotate(cosangle,sinangle);
         
         [_renderable collideAt:p withVelocity:vel];
     }
     
+}
+
+-(void)setPatternTexture:(FSATexture *)patternTexture {
+    [patternTexture retain];
+    [_patternTexture release];
+    _patternTexture = patternTexture;
+    [self needsSize];
 }
 
 -(void)playSound:(float)volume {
@@ -790,7 +956,7 @@
 }
 
 -(void)setPatternForTextureSheet: (NSString*)name row:(unsigned int)row col:(unsigned int)col numRows:(unsigned int)rows numCols:(unsigned int)cols {
-    _patternTexture = [[FSATextureManager instance] getTexture:name].name;
+    self.patternTexture = [[FSATextureManager instance] getTexture:name];
 
     [_renderable setPatternUVsForTextureSheetAtRow:row col:col numRows:rows numCols:cols];
 }

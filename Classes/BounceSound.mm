@@ -53,7 +53,7 @@
     float size = _obj.size;
     int note = (1-size)*(1-size)*[sounds count];
     
-    [[[FSASoundManager instance] getSound:[sounds objectAtIndex:note] volume:10] play:volume];
+    [[[FSASoundManager instance] getSound:[sounds objectAtIndex:note] volume:BOUNCE_SOUND_VOLUME] play:volume];
 }
 
 @end

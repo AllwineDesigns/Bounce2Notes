@@ -268,8 +268,13 @@
     [_handle setVelocity:vel];
 }
 -(void)setPosition:(const vec2 &)loc {
-    self.track.position = loc;
-    self.handle.position = [self posFromT:_curT];
+    [self.track setPosition:loc];
+    [self.handle setPosition:[self posFromT:_curT]];
+}
+
+-(void)setVelocity:(const vec2 &)vel {
+    [self.track setVelocity:vel];
+    //[self.handle setVelocity:vel];
 }
 
 -(void)draw {
@@ -302,7 +307,7 @@
         self.isPreviewable = NO;
         self.isRemovable = NO;
         self.simulationWillDraw = NO;
-        self.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"].name;
+        self.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
         [self makeStatic];
     }
     
@@ -375,6 +380,10 @@
 -(void)makeSimulated {
     [self makeRogue];
 }
+
+//-(void)makeStatic {
+//    [self makeHeavyRogue];
+//}
 
 -(void)singleTapAt:(const vec2 &)loc {
     [_slider slideTo:loc];

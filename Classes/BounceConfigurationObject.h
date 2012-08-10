@@ -34,8 +34,9 @@
 @end;
 
 @interface BouncePatternConfigurationObject : BounceConfigurationObject {
-    GLuint _originalPattern;
+    FSATexture* _originalPattern;
 }
+@property (nonatomic, retain) FSATexture* originalPattern;
 @end;
 
 @interface BounceSizeConfigurationObject : BounceConfigurationObject {

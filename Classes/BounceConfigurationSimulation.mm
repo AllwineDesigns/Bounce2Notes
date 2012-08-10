@@ -17,6 +17,8 @@
     if(self) {
         _simulation = sim;
         [_simulation retain];
+        
+       // [_arena makeHeavyRogue];
     }
     return self;
 }
@@ -33,13 +35,16 @@
         BounceObject *newobj = [BounceObject randomObjectAt:pos];
         
         if([self isInBoundsAt:pos]) {
-            newobj.position = vec2();
+            [newobj setPosition:vec2()];
         }
         
         [configObj setPreviewObject:newobj];
         [configObj finalizeChange];
         [newobj addToSimulation:_simulation];
-        [newobj playSound:.2];
+        
+        if(![configObj isKindOfClass:[BounceNoteConfigurationObject class]]) {
+            [newobj playSound:.2];
+        }
     }
 
     [super tapObject:obj at:loc];
@@ -52,7 +57,8 @@
 
 }
 
--(void)flickObject:(BounceObject *)obj withVelocity:(const vec2 &)vel {
+-(void)flickObject:(BounceObject *)obj at:(const vec2&)loc withVelocity:(const vec2 &)vel {
+    /*
     if([obj isKindOfClass:[BounceConfigurationObject class]]) {
         BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
         vec2 pos = configObj.position;
@@ -64,7 +70,8 @@
         [configObj finalizeChange];
     }
     
-    [super flickObject:obj withVelocity:vel];
+    [super flickObject:obj at:loc withVelocity:vel];
+    */
 }
 
 -(void)flickSpaceAt:(const vec2 &)loc withVelocity:(const vec2 &)vel {
@@ -139,7 +146,7 @@
                 vec2 pos = configObj.position;
                 BounceObject *obj = [_simulation addObjectAt:pos];
                 
-                obj.velocity = configObj.velocity;
+                [obj setVelocity:configObj.velocity];
                 obj.angle = configObj.angle;
                 obj.angVel = configObj.angVel;
                 
@@ -168,9 +175,12 @@
 }
 
 -(BOOL)isAnyObjectBeingPreviewed {
-    for(BounceConfigurationObject *o in _objects) {
-        if(o.previewObject) {
-            return YES;
+    for(BounceObject *o in _objects) {
+        if([o isKindOfClass:[BounceConfigurationObject class]]) {
+            BounceConfigurationObject *obj = (BounceConfigurationObject*)o;
+            if(obj.previewObject) {
+                return YES;
+            }
         }
     }
     
@@ -178,9 +188,9 @@
 }
 
 -(BOOL)isAnyObjectInBounds {
-    for(BounceConfigurationObject *o in _objects) {
+    for(BounceObject *o in _objects) {
         vec2 pos = o.position;
-        if([_simulation isInBoundsAt:pos withPadding:o.size]) {
+        if([_simulation isInBounds:o]) {
             return YES;
         }
     }
@@ -189,9 +199,12 @@
 }
 
 -(BOOL)isObjectBeingPreviewed:(BounceObject*)obj {
-    for(BounceConfigurationObject *o in _objects) {
-        if(o.previewObject == obj) {
-            return YES;
+    for(BounceObject *o in _objects) {
+        if([o isKindOfClass:[BounceConfigurationObject class]]) {
+            BounceConfigurationObject *ob = (BounceConfigurationObject*)o;
+            if(ob.previewObject == obj) {
+                return YES;
+            }
         }
     }
     
@@ -202,7 +215,7 @@
     for(BounceObject *obj in _objects) {
         vec2 pos = obj.position;
         
-        if([_simulation isInBoundsAt:pos withPadding:obj.size]) {
+        if([_simulation isInBounds:obj] && obj.simulationWillDraw) {
             [obj draw];
         }
     }

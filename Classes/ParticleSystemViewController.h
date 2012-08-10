@@ -28,7 +28,6 @@
 @interface ParticleSystemViewController : UIViewController
 {
     EAGLContext *context;
-    EAGLSharegroup *sharegroup;
     
     MainBounceSimulation *simulation;
     FSAGestureCurves *gestureCurves;
@@ -43,7 +42,7 @@
     NSInteger animationFrameInterval;
     CADisplayLink *displayLink;
     
-    NSOperationQueue *cacheQueue;
+    BOOL _ready;
     
     UIAlertView *alertView;
     BOOL dismissAllUpgradeAlerts;

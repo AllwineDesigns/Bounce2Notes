@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "FSASound.h"
 
+#define BOUNCE_SOUND_VOLUME 10
+
 @class BounceObject;
 
 @protocol BounceSound <FSASoundDelegate>

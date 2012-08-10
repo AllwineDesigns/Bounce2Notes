@@ -15,6 +15,8 @@
 @synthesize blendMode = _blendMode;
 @synthesize inputs = _inputs;
 @synthesize bounciness = _bounciness;
+@synthesize shapeTexture = _shapeTexture;
+@synthesize stationaryTexture = _stationaryTexture;
 
 -(id)initWithInputs:(BounceRenderableInputs)inputs {
     self = [super init];
@@ -39,7 +41,7 @@
     float angle = *_inputs.angle;
     vec2 pos = *_inputs.position;
     BOOL isStationary = *_inputs.isStationary;
-    GLuint patternTexture = *_inputs.patternTexture;
+    FSATexture* patternTexture = *_inputs.patternTexture;
     
     size *= 2;
     
@@ -58,10 +60,10 @@
     GLuint shapeTex = 0;
     GLuint patternTex = 1;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _shapeTexture);
+    glBindTexture(GL_TEXTURE_2D, _shapeTexture.name);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, patternTexture);
+    glBindTexture(GL_TEXTURE_2D, patternTexture.name);
     
     [objectShader setPtr:&shapeTex forUniform:@"shapeTexture"];
     [objectShader setPtr:&patternTex forUniform:@"patternTexture"];
@@ -81,9 +83,9 @@
         GLuint patternTex = 1;
         
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _stationaryTexture);
+        glBindTexture(GL_TEXTURE_2D, _stationaryTexture.name);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, patternTexture);
+        glBindTexture(GL_TEXTURE_2D, patternTexture.name);
         [stationaryShader setPtr:&stationaryTex forUniform:@"texture"];
         [stationaryShader setPtr:&patternTex forUniform:@"pattern"];
         
@@ -129,8 +131,8 @@
         }
     }
     
-    _vertVels[closest_j] += (2*_bounciness)*vel;
-    _vertVels[closest_j2] += (2*_bounciness)*vel;
+    _vertVels[closest_j] += (1.1111111111*_bounciness)*vel;
+    _vertVels[closest_j2] += (1.1111111111*_bounciness)*vel;
 }
 
 -(void)drawSelected {
@@ -163,7 +165,7 @@
     GLuint shapeTex = 0;
     GLuint patternTex = 1;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _shapeTexture);
+    glBindTexture(GL_TEXTURE_2D, _shapeTexture.name);
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"black.jpg"].name);
@@ -268,8 +270,8 @@
         _indices[2] = 3;
         _indices[3] = 2;
         
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"].name;
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"];
     }
     
     return self;
@@ -318,8 +320,8 @@
         _indices[1] = 1;
         _indices[2] = 2;
         
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"].name;
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"];
     }
     return self;
 }
@@ -364,8 +366,8 @@
         _indices[1] = 1;
         _indices[2] = 2;
         
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"triangle.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_triangle.png"].name;
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"triangle.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_triangle.png"];
     }
     return self;
 }
@@ -412,8 +414,8 @@
         _indices[2] = 3;
         _indices[3] = 2;
         
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"square.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_square.png"].name;
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"square.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_square.png"];
     }
     return self;
 }
@@ -491,8 +493,75 @@
         _indices[5] = 4;
         _indices[6] = 0;
         
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"pentagon.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_pentagon.png"].name;
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"pentagon.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_pentagon.png"];
+    }
+    return self;
+}
+
+@end
+
+@implementation BounceStarRenderable
+
+-(id)initWithInputs:(BounceRenderableInputs)inputs {
+    self = [super initWithInputs:inputs];
+    
+    if(self) {
+        _numVerts = 6;
+        _numIndices = 7;
+        _mode = GL_TRIANGLE_FAN;
+        
+        _verts = (vec2*)realloc(_verts,_numVerts*sizeof(vec2));
+        _vertsUntransformed = (vec2*)realloc(_vertsUntransformed, _numVerts*sizeof(vec2));
+        _vertOffsets = (vec2*)realloc(_vertOffsets,_numVerts*sizeof(vec2));
+        _vertVels = (vec2*)realloc(_vertVels,_numVerts*sizeof(vec2));
+        
+        _vertShapeUVs = (vec2*)realloc(_vertShapeUVs,_numVerts*sizeof(vec2));
+        _vertPatternUVs = (vec2*)realloc(_vertPatternUVs,_numVerts*sizeof(vec2));
+        _indices = (unsigned int*)realloc(_indices,_numIndices*sizeof(unsigned int));
+        
+        memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
+        memset(_vertVels, 0, _numVerts*sizeof(vec2));
+        
+        float cos72 = .309016994375;
+        float sin72 = .951056516295;
+        vec2 vert = vec2(0,1.105572809);
+        
+        _vertsUntransformed[0] = vert;
+        
+        vert.rotate(cos72,sin72);
+        _vertsUntransformed[1] = vert;
+        
+        vert.rotate(cos72,sin72);
+        _vertsUntransformed[2] = vert;
+        
+        vert.rotate(cos72,sin72);
+        _vertsUntransformed[3] = vert;
+        
+        vert.rotate(cos72,sin72);
+        _vertsUntransformed[4] = vert;
+        
+        _vertsUntransformed[5] = vec2(0,0);
+        
+        for(int i = 0; i < _numVerts; i++) {
+            vec2 uv = _vertsUntransformed[i];
+            uv.x *= .5;
+            uv.y *= -.5;
+            uv += vec2(.5,.5);
+            _vertShapeUVs[i] = uv;
+            _vertPatternUVs[i] = uv;
+        }
+        
+        _indices[0] = 5;
+        _indices[1] = 0;
+        _indices[2] = 1;
+        _indices[3] = 2;
+        _indices[4] = 3;
+        _indices[5] = 4;
+        _indices[6] = 0;
+        
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"star.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_star.png"];
     }
     return self;
 }
@@ -500,62 +569,8 @@
 @end
 
 
-@implementation BounceRectangleRenderable
 
--(id)initWithInputs:(BounceRenderableInputs)inputs aspect:(float)aspect {
-    self = [super initWithInputs:inputs];
-    
-    if(self) {
-        _numVerts = 13;
-        _numIndices = 24;
-        _verts = (vec2*)malloc(_numVerts*sizeof(vec2));
-        _vertsUntransformed = (vec2*)malloc(_numVerts*sizeof(vec2));
-        _vertOffsets = (vec2*)malloc(_numVerts*sizeof(vec2));
-        
-        _vertShapeUVs = (vec2*)malloc(_numVerts*sizeof(vec2));
-        _vertPatternUVs = (vec2*)malloc(_numVerts*sizeof(vec2));
-        _indices = (unsigned int*)malloc(_numIndices*sizeof(unsigned int));
-        
-        memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
-        
-        _vertVels = (vec2*)malloc(4*sizeof(vec2));
-        memset(_vertVels, 0, 4*sizeof(vec2));
-        
-        _aspect = aspect;
-        
-        [self setupVertData];
-        
-        _indices[0] = 2;
-        _indices[1] = 3;
-        _indices[2] = 9;
-        _indices[3] = 4;
-        _indices[4] = 10;
-        _indices[5] = 5;
-        _indices[6] = 12;
-        _indices[7] = 6;
-        _indices[8] = 11;
-        _indices[9] = 7;
-        _indices[10] = 8;
-        _indices[11] = 0;
-        _indices[12] = 1;
-        _indices[13] = 1;
-        _indices[14] = 8;
-        _indices[15] = 12;
-        _indices[16] = 11;
-        _indices[17] = 11;
-        _indices[18] = 1;
-        _indices[19] = 1;
-        _indices[20] = 2;
-        _indices[21] = 12;
-        _indices[22] = 9;
-        _indices[23] = 10;
-        
-        
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"square.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_square.png"].name;  
-    }
-    return self;
-}
+@implementation BounceRectangleRenderable
 
 -(void)setupVertData {
     NSAssert(_aspect >= 1, @"aspect ratio for rectangle bounce renderable must be >= 1");
@@ -564,7 +579,7 @@
     
     float scale = texAspect/_aspect;
     float invTexAspect = 1./texAspect;
-        
+    
     float aspect_1 = (texAspect-1)*invTexAspect;
     
     float y = (1-aspect_1)*invTexAspect;
@@ -636,6 +651,62 @@
     _vertPatternUVs[12] = vec2(.5, .5);
 }
 
+
+-(id)initWithInputs:(BounceRenderableInputs)inputs aspect:(float)aspect {
+    self = [super initWithInputs:inputs];
+    
+    if(self) {
+        _numVerts = 13;
+        _numIndices = 24;
+        _verts = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertsUntransformed = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertOffsets = (vec2*)malloc(_numVerts*sizeof(vec2));
+        
+        _vertShapeUVs = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertPatternUVs = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _indices = (unsigned int*)malloc(_numIndices*sizeof(unsigned int));
+        
+        memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
+        
+        _vertVels = (vec2*)malloc(4*sizeof(vec2));
+        memset(_vertVels, 0, 4*sizeof(vec2));
+        
+        _aspect = aspect;
+        
+        [self setupVertData];
+        
+        _indices[0] = 2;
+        _indices[1] = 3;
+        _indices[2] = 9;
+        _indices[3] = 4;
+        _indices[4] = 10;
+        _indices[5] = 5;
+        _indices[6] = 12;
+        _indices[7] = 6;
+        _indices[8] = 11;
+        _indices[9] = 7;
+        _indices[10] = 8;
+        _indices[11] = 0;
+        _indices[12] = 1;
+        _indices[13] = 1;
+        _indices[14] = 8;
+        _indices[15] = 12;
+        _indices[16] = 11;
+        _indices[17] = 11;
+        _indices[18] = 1;
+        _indices[19] = 1;
+        _indices[20] = 2;
+        _indices[21] = 12;
+        _indices[22] = 9;
+        _indices[23] = 10;
+        
+        
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"square.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_square.png"];  
+    }
+    return self;
+}
+
 -(void)setAspect:(float)aspect {
     _aspect = aspect;
     
@@ -682,7 +753,6 @@
 }
 
 -(void)collideAt:(const vec2 &)pos withVelocity:(const vec2 &)vel {
-    
     int closest_j = -1;
     int closest_j2 = -1;
     float min_dist = 9999;
@@ -705,8 +775,8 @@
         }
     }
     
-    _vertVels[closest_j] += 2*_bounciness*vel;
-    _vertVels[closest_j2] += 2*_bounciness*vel;
+    _vertVels[closest_j] += 1.1111111111*_bounciness*vel;
+    _vertVels[closest_j2] += 1.1111111111*_bounciness*vel;
     
 }
 
@@ -777,8 +847,8 @@
     self = [super initWithInputs:inputs aspect:aspect];
     
     if(self) {
-        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"].name;
-        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"].name;  
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"ball.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"stationary_ball.png"];  
     }
     return self;
 }

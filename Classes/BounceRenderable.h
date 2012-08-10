@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <fsa/Vector.hpp>
+#import "FSATexture.h"
 
 using namespace fsa;
 
@@ -18,7 +19,7 @@ typedef struct {
     vec2 position;
     float size;
     float angle;
-    GLuint patternTexture;
+    FSATexture* patternTexture;
 } BounceRenderableData;
 
 typedef struct {
@@ -28,7 +29,7 @@ typedef struct {
     vec2 *position;
     float *size;
     float *angle;
-    GLuint *patternTexture;
+    FSATexture **patternTexture;
 } BounceRenderableInputs;
 
 @interface BounceRenderable : NSObject {    
@@ -37,8 +38,8 @@ typedef struct {
     GLenum _mode;
     GLenum _blendMode;
     
-    GLuint _shapeTexture;
-    GLuint _stationaryTexture;
+    FSATexture* _shapeTexture;
+    FSATexture* _stationaryTexture;
     
     float _bounciness;
 
@@ -56,6 +57,8 @@ typedef struct {
 @property (nonatomic) GLenum blendMode;
 @property (nonatomic) BounceRenderableInputs inputs;
 @property (nonatomic) float bounciness;
+@property (nonatomic, readonly) FSATexture* shapeTexture;
+@property (nonatomic, readonly) FSATexture* stationaryTexture;
 
 -(id)initWithInputs: (BounceRenderableInputs)inputs;
 -(void)step: (float)dt;
@@ -77,6 +80,10 @@ typedef struct {
 @end
 
 @interface BouncePentagonRenderable : BounceRenderable {
+}
+@end
+
+@interface BounceStarRenderable : BounceRenderable {
 }
 @end
 

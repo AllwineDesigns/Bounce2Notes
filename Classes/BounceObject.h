@@ -25,6 +25,7 @@ typedef enum {
     BOUNCE_PENTAGON,
     BOUNCE_RECTANGLE,
     BOUNCE_CAPSULE,
+    BOUNCE_STAR,
     NUM_BOUNCE_SHAPES
 } BounceShape;
 
@@ -41,7 +42,7 @@ typedef enum {
     float _intensity;
     BOOL _isStationary;
     vec4 _color;
-    GLuint _patternTexture;
+    FSATexture* _patternTexture;
     float _bounciness;
     
     float _size;
@@ -50,6 +51,7 @@ typedef enum {
     
     float _age;
     vec2 _lastVelocity;
+    cpContactPointSet _contactPoints;
     
     vec2 _springLoc;
     vec2 _vel;
@@ -68,11 +70,13 @@ typedef enum {
 @property (nonatomic, readonly) BOOL hasSecondarySize;
 @property (nonatomic) BOOL isStationary;
 @property (nonatomic) const vec4& color;
-@property (nonatomic) GLuint patternTexture;
+@property (nonatomic, retain) FSATexture* patternTexture;
 @property (nonatomic) float intensity;
 @property (nonatomic) float age;
 @property (nonatomic) const vec2& lastVelocity;
 @property (nonatomic, retain) id<BounceSound> sound;
+@property (nonatomic, readonly) BounceRenderable* renderable;
+@property (nonatomic) cpContactPointSet contactPoints;
 
 +(id)randomObjectAt: (const vec2&)loc;
 +(id)randomObjectAt:(const vec2 &)loc withVelocity:(const vec2&)vel;
@@ -89,11 +93,12 @@ typedef enum {
 -(void)setBounceShape: (BounceShape)bounceShape;
 
 -(void)playSound: (float)volume;
+-(void)needsSize;
 
 -(float)bounciness;
 -(void)setBounciness:(float)b;
 
--(void)separate: (cpContactPointSet*)contactPoints;
+-(void)separate;
 
 -(void)beginCreateCallback;
 -(void)createCallbackWithSize: (float)size secondarySize:(float)size2;
@@ -133,6 +138,8 @@ typedef enum {
 -(void)setupPentagon;
 -(void)setupRectangle;
 -(void)setupCapsule;
+-(void)setupStar;
+
 
 -(void)resizeBall;
 -(void)resizeSquare;
@@ -140,6 +147,8 @@ typedef enum {
 -(void)resizePentagon;
 -(void)resizeRectangle;
 -(void)resizeCapsule;
+-(void)resizeStar;
+
 
 -(void)step: (float)dt;
 -(void)draw;

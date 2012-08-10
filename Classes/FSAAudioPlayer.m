@@ -599,6 +599,9 @@ void audioRouteChangeListenerCallback (
 }
 
 - (void) playSound:(FSASoundData*)data volume:(Float32)volume {
+    if(volume < .00000001) {
+        return;
+    }
     [callbackData.finished_lock lock];
     if(soundList.finished_tail != NULL) {
         soundList.finished_tail->next = soundList.pool->next;
@@ -776,12 +779,12 @@ void audioRouteChangeListenerCallback (
     
     NSLog (@"  Sample Rate:         %10.0f",  asbd.mSampleRate);
     NSLog (@"  Format ID:           %10s",    formatIDString);
-    NSLog (@"  Format Flags:        %10X",    asbd.mFormatFlags);
-    NSLog (@"  Bytes per Packet:    %10d",    asbd.mBytesPerPacket);
-    NSLog (@"  Frames per Packet:   %10d",    asbd.mFramesPerPacket);
-    NSLog (@"  Bytes per Frame:     %10d",    asbd.mBytesPerFrame);
-    NSLog (@"  Channels per Frame:  %10d",    asbd.mChannelsPerFrame);
-    NSLog (@"  Bits per Channel:    %10d",    asbd.mBitsPerChannel);
+    NSLog (@"  Format Flags:        %10lX",    asbd.mFormatFlags);
+    NSLog (@"  Bytes per Packet:    %10ld",    asbd.mBytesPerPacket);
+    NSLog (@"  Frames per Packet:   %10ld",    asbd.mFramesPerPacket);
+    NSLog (@"  Bytes per Frame:     %10ld",    asbd.mBytesPerFrame);
+    NSLog (@"  Channels per Frame:  %10ld",    asbd.mChannelsPerFrame);
+    NSLog (@"  Bits per Channel:    %10ld",    asbd.mBitsPerChannel);
 }
 
 
@@ -791,7 +794,7 @@ void audioRouteChangeListenerCallback (
     UInt32 swappedResult = CFSwapInt32HostToBig (result);
     bcopy (&swappedResult, resultString, 4);
     resultString[4] = '\0';
-    NSLog(@"**** ERROR **** %@: %d\n", errorString, result);
+    NSLog(@"**** ERROR **** %@: %ld\n", errorString, result);
     /*
     NSLog (
            @"*** %@ error: %d %08X %4.4s\n",

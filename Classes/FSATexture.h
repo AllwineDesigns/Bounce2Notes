@@ -8,28 +8,22 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FSATexture : NSObject {
-    GLuint _name;
-    unsigned int _width;
-    unsigned int _height;
-    
-    unsigned int _textWidth;
-    unsigned int _textHeight;
-    
-    float _aspect;
-    float _invaspect;
-}
-
+@interface FSATexture : NSObject  
 @property (nonatomic, readonly) GLuint name;
 @property (nonatomic, readonly) unsigned int width;
 @property (nonatomic, readonly) unsigned int height;
-@property (nonatomic, readonly) unsigned int textWidth;
-@property (nonatomic, readonly) unsigned int textHeight;
 @property (nonatomic, readonly) float aspect;
 @property (nonatomic, readonly) float inverseAspect;
 
 -(id)initWithName: (GLuint)name width:(unsigned int)width height:(unsigned int)height;
--(id)initWithName: (GLuint)name width:(unsigned int)width height:(unsigned int)height textWidth:(unsigned int)textWidth textHeight:(unsigned int)textHeight;
+-(void)memoryWarning;
+-(void)needsSize:(float)size;
+-(void)deleteTexture;
 
+@end
 
+@interface FSASmartTexture : FSATexture 
+-(id)initWithFile:(NSString*)file minPrefix:(unsigned int)minPrefix maxPrefix:(unsigned int)maxPrefix;
+-(void)needsSize:(float)size;
+-(void)finishedLoadingTexture:(NSNotification*)notification;
 @end

@@ -16,7 +16,8 @@ typedef enum {
     CHIPMUNK_OBJECT_SIMULATED,
     CHIPMUNK_OBJECT_ROGUE,
     CHIPMUNK_OBJECT_STATIC,
-    CHIPMUNK_OBJECT_HEAVY_ROGUE
+    CHIPMUNK_OBJECT_HEAVY_ROGUE,
+    CHIPMUNK_OBJECT_INFINITE_ROGUE
 } ChipmunkObjectState;
 
 @interface ChipmunkObject : NSObject {
@@ -36,6 +37,7 @@ typedef enum {
 @property (nonatomic, readonly) int numShapes;
 
 -(id)init;
+-(id)initInfiniteRogue;
 -(id)initHeavyRogue;
 -(id)initRogue;
 -(id)initStatic;
@@ -70,6 +72,9 @@ typedef enum {
 
 -(BOOL)isHeavyRogue;
 -(void)makeHeavyRogue;
+
+-(BOOL)isInfiniteRogue;
+-(void)makeInfiniteRogue;
 
 -(BOOL)isRogue;
 -(void)makeRogue;

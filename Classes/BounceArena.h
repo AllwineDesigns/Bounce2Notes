@@ -7,6 +7,7 @@
 //
 
 #import "ChipmunkObject.h"
+#import "BounceObject.h"
 
 #define WALL_TYPE 222
 
@@ -17,6 +18,7 @@
 @property (nonatomic, readonly) CGSize dimensions;
 
 -initWithRect: (CGRect)rect;
+-(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;
 -(BOOL)isInBoundsAt:(const vec2&)loc withPadding:(float)pad;
 

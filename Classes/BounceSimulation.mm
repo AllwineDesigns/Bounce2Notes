@@ -16,10 +16,30 @@
 int collisionBegin(cpArbiter *arb, cpSpace *space, void *data) {
     return 1;
 }
-int preSolve(cpArbiter *arb, cpSpace *space, void *data) {    
+int preSolve(cpArbiter *arb, cpSpace *space, void *data) {   
     cpBody *body1;
     cpBody *body2;
     cpArbiterGetBodies(arb, &body1, &body2);
+    
+    
+    /*
+    vec2 pos1(body1->p);
+    vec2 pos2(body2->p);
+    
+    vec2 colN(cpArbiterGetNormal(arb, 0));
+        
+    cpContactPointSet set = cpArbiterGetContactPointSet(arb);
+    for(int i=0; i < set.count; i++){
+        vec2 p(set.points[i].point);
+        vec2 n = p-pos2;
+
+        if(n1.dot(n2) > 0) {
+            cpArbiterIgnore(arb);
+            return 0;
+        }
+    }
+     */
+    
         
     BounceObject *obj1 = (BounceObject*)cpBodyGetUserData(body1);
     ChipmunkObject *cobj = (ChipmunkObject*)cpBodyGetUserData(body2);
@@ -75,6 +95,8 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
     float size = obj1.size;
     float volume = .1*(size*ke > 1 ? 1 : size*ke);
     [obj1 playSound:volume];
+
+    obj1.contactPoints = cpArbiterGetContactPointSet(arb);
     
     if(obj2) {
         float intensity2 = obj2.intensity;
@@ -88,6 +110,8 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
         float size = obj2.size;
         float volume = .1*(size*ke > 1 ? 1 : size*ke);
         [obj2 playSound:volume];
+        
+        obj2.contactPoints = obj1.contactPoints;
     }
 }
 
@@ -103,12 +127,11 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
         obj2 = (BounceObject*)cobj;
     }
     
-    cpContactPointSet set = cpArbiterGetContactPointSet(arb);
     
-    [obj1 separate:&set];
+    [obj1 separate];
     
     if(obj2) {
-        [obj2 separate:&set];
+        [obj2 separate];
     }
 }
 
@@ -374,6 +397,9 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     }
     return [self isObjectBeingTransformed:obj];
     
+}
+-(BOOL)isInBounds:(BounceObject *)obj {
+    return [_arena isInBounds:obj];
 }
 -(BOOL)isInBoundsAt:(const vec2 &)loc {
     return [_arena isInBoundsAt:loc];

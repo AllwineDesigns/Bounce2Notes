@@ -25,7 +25,7 @@
         _data.size = .05;
         _data.intensity = 1;
         _data.color = color;
-        _data.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"].name;
+        _data.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
         
         BounceRenderableInputs inputs;
         inputs.angle = &_data.angle;
@@ -184,6 +184,11 @@
     
     [_ballRenderable draw];
 
+}
+
+-(void)dealloc {
+    [_ballRenderable release];
+    [super dealloc];
 }
 
 @end

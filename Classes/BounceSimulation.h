@@ -79,6 +79,7 @@ using namespace fsa;
 -(void)randomizeColor;
 -(void)randomizeShape;
 
+-(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;
 -(BOOL)isInBoundsAt:(const vec2&)loc withPadding:(float)pad;
 
@@ -94,7 +95,7 @@ using namespace fsa;
 -(void)tapSpaceAt:(const vec2&)loc;
 
 -(void)flickSpaceAt:(const vec2&)loc withVelocity:(const vec2&)vel;
--(void)flickObject:(BounceObject*)obj withVelocity:(const vec2&)vel;
+-(void)flickObject:(BounceObject*)obj at:(const vec2&)loc withVelocity:(const vec2&)vel;
 
 -(void)beginCreate:(void*)uniqueId at:(const vec2&)loc;
 -(void)beginGrab:(void*)uniqueId object:(BounceObject*)obj at:(const vec2&)loc;

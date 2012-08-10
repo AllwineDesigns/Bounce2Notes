@@ -19,7 +19,7 @@
     
     if(self) {
         float upi = [[BounceConstants instance] unitsPerInch];
-        NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Bouncy", @"Springy", @"Squishy", @"Rocklike", nil];
+        NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Bouncy", @"Springy", @"Squishy", @"Rigid", nil];
         NSArray *bouncinessValues = [NSArray arrayWithObjects:[NSNumber numberWithFloat:1],[NSNumber numberWithFloat:.9], [NSNumber numberWithFloat:.5], [NSNumber numberWithFloat:0], nil];
         _bouncinessSlider = [[BounceSlider alloc] initContinuousWithLabels:bouncinessLabels values:bouncinessValues index:1];
         _bouncinessSlider.handle.bounceShape = BOUNCE_CAPSULE;
@@ -32,7 +32,7 @@
         _bouncinessSlider.track.size = .5*upi;
         _bouncinessSlider.track.sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:@"rest"]];
         
-        _bouncinessSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:_bouncinessSlider.label].name;
+        _bouncinessSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:_bouncinessSlider.label];
 
 
         _bouncinessSlider.delegate = self;
@@ -60,7 +60,7 @@
         _gravitySlider.track.size = .5*upi;
         _gravitySlider.track.sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:@"rest"]];
         
-        _gravitySlider.handle.patternTexture = [[FSATextureManager instance] getTexture:_gravitySlider.label].name;
+        _gravitySlider.handle.patternTexture = [[FSATextureManager instance] getTexture:_gravitySlider.label];
 
         
         _gravitySlider.delegate = self;
@@ -74,7 +74,7 @@
         _pageSlider.handle.size = .125*upi;
         _pageSlider.handle.secondarySize = .01;
         _pageSlider.handle.sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:@"rest"]];
-        _pageSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"].name;
+        _pageSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
 
         
         _pageSlider.track.position = vec2(-2,0);
@@ -82,7 +82,7 @@
         _pageSlider.track.secondarySize = .015;
 
         _pageSlider.track.sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:@"rest"]];
-        _pageSlider.track.patternTexture = [[FSATextureManager instance] getTexture:@"black.jpg"].name;
+        _pageSlider.track.patternTexture = [[FSATextureManager instance] getTexture:@"black.jpg"];
         
         _pageSlider.delegate = self;
         [_pageSlider addToSimulation:self];
@@ -94,11 +94,11 @@
 -(void)changed: (BounceSlider*)slider {
     if(slider == _bouncinessSlider) {
         [_simulation setBounciness:[slider.value floatValue]];
-        slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label].name;
+        slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
 
     } else if(slider == _gravitySlider) {
         [_simulation setGravityScale:[slider.value floatValue]];
-        slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label].name;
+        slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
 
     }
 }
@@ -183,6 +183,7 @@
 -(void)dealloc {
     [_bouncinessSlider release];
     [_gravitySlider release];
+    [_pageSlider release];
 
     [super dealloc];
 }

@@ -16,6 +16,14 @@
 
 @end
 
+@class BounceSlider;
+
+@protocol BounceSliderDelegate <NSObject>
+
+-(void)changed: (BounceSlider*)slider;
+
+@end
+
 @interface BounceSlider : NSObject {
     BounceObject *_track;
     BounceObject *_handle;
@@ -34,7 +42,7 @@
     
     float _padding;
     
-    id _delegate;
+    id<BounceSliderDelegate> _delegate;
     
     float _vel;
 }
@@ -45,7 +53,7 @@
 
 @property (nonatomic, readonly) BounceObject* track;
 @property (nonatomic, readonly) BounceObject* handle;
-@property (nonatomic, retain) id delegate;
+@property (nonatomic, retain) id<BounceSliderDelegate> delegate;
 
 @property (nonatomic) float padding;
 
@@ -57,6 +65,7 @@
 -(void)slideTo:(const vec2&)loc;
 -(void)step: (float)dt;
 -(void)setPosition:(const vec2&)loc;
+-(void)setVelocity:(const vec2&)vel;
 @end
 
 @interface BounceSliderTrack : BounceObject {

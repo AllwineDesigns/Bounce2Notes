@@ -107,15 +107,16 @@
 @end
 
 @implementation BouncePatternConfigurationObject
-
+@synthesize originalPattern = _originalPattern;
 -(void)previewChange {
-    _originalPattern = _previewObject.patternTexture;
+    self.originalPattern = _previewObject.patternTexture;
     
     _previewObject.patternTexture  = _patternTexture;
 }
 
 -(void)cancelChange {
     _previewObject.patternTexture = _originalPattern;
+    self.originalPattern = nil;
 }
 
 @end
@@ -143,11 +144,11 @@
 -(void)previewChange {
     _originalColor = _previewObject.color;
     
-    _previewObject.color = _color;
+    [_previewObject setColor:_color];
 }
 
 -(void)cancelChange {
-    _previewObject.color = _originalColor;
+    [_previewObject setColor:_originalColor];
 }
 
 @end

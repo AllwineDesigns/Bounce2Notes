@@ -56,6 +56,7 @@ typedef enum {
 
 -(void)updateGestureLocation:(const vec2&)to;
 -(void)endGesture;
+-(void)cancelGesture;
 
 -(void)beginGrabAt:(const vec2&)loc;
 -(void)beginTransformWithGesture:(BounceGesture*)gesture;

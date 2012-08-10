@@ -16,6 +16,7 @@
 #import "BounceConfigurationObject.h"
 #import "FSASoundManager.h"
 #import "BounceSettingsSimulation.h"
+#import "BounceMusicConfigurationSimulation.h"
 
 @implementation BounceConfigurationPaneObject 
 
@@ -191,7 +192,7 @@
     
     BounceConfigurationObject *shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_BALL at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
-    shapeConfigObject.patternTexture = [texManager getTexture:@"Circle"].name;
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Circle"];
     // [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:3 numRows:4 numCols:4];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
@@ -199,28 +200,35 @@
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_SQUARE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     // [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:1 numRows:4 numCols:4];
-    shapeConfigObject.patternTexture = [texManager getTexture:@"Square"].name;
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Square"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_TRIANGLE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     //[shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:0 numRows:4 numCols:4];
-    shapeConfigObject.patternTexture = [texManager getTexture:@"Triangle"].name;
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Triangle"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_PENTAGON at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     //        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:2 numRows:4 numCols:4];
-    shapeConfigObject.patternTexture = [texManager getTexture:@"Pentagon"].name;
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Pentagon"];
+    [shapeConfigObject addToSimulation:sim];
+    [shapeConfigObject release];
+    
+    shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_STAR at:shapePos withVelocity:vec2() ];
+    shapeConfigObject.size = shapeSize;
+    //        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:2 numRows:4 numCols:4];
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Star"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_RECTANGLE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     shapeConfigObject.secondarySize = shapeSize2;
-    shapeConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"Rectangle"].name;
+    shapeConfigObject.patternTexture = [[FSATextureManager instance] getTexture:@"Rectangle"];
     //   [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:1 col:0 numRows:4 numCols:4];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
@@ -229,7 +237,7 @@
     shapeConfigObject.size = shapeSize;
     shapeConfigObject.secondarySize = shapeSize2;
     //        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:1 col:1 numRows:4 numCols:4];
-    shapeConfigObject.patternTexture = [texManager getTexture:@"Capsule"].name;
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Capsule"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
@@ -246,7 +254,7 @@
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
     
-    tab.patternTexture = [texManager getTexture:@"Shapes"].name;
+    tab.patternTexture = [texManager getTexture:@"Shapes"];
     [tab addToSimulation:_simulation];
 
     [_simulationTabs addObject:tab];
@@ -260,55 +268,55 @@
     
     BouncePatternConfigurationObject * patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.2, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"black.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"black.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(.2, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"spiral.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"spiral.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(.5, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"stripes.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"stripes.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.4, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"white.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"white.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"checkered.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"checkered.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"plasma.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"plasma.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"sections.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"sections.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"weave.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"weave.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
-    patternConfigObject.patternTexture = [texManager getTexture:@"squares.jpg"].name;
+    patternConfigObject.patternTexture = [texManager getTexture:@"squares.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
@@ -323,7 +331,7 @@
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
-    tab.patternTexture = [texManager getTexture:@"Patterns"].name;
+    tab.patternTexture = [texManager getTexture:@"Patterns"];
     [tab addToSimulation:_simulation];
     [_simulationTabs addObject:tab];
 }
@@ -371,7 +379,7 @@
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
     
-    tab.patternTexture = [texManager getTexture:@"Sizes"].name;
+    tab.patternTexture = [texManager getTexture:@"Sizes"];
     [tab addToSimulation:_simulation];
     
     [_simulationTabs addObject:tab];
@@ -386,47 +394,47 @@
     vec4 color = vec4(.8,0,0,1);
     BounceColorConfigurationObject * configObject = [[BounceRedColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
     [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Red"].name;
+    configObject.patternTexture = [texManager getTexture:@"Red"];
     [configObject release];
     
     color = vec4(0,.5,0,1);
     configObject = [[BounceGreenColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Green"].name;
+    configObject.patternTexture = [texManager getTexture:@"Green"];
 
     [configObject addToSimulation:sim];
     [configObject release];
     
     color = vec4(0,0,.8,1);
     configObject = [[BounceBlueColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Blue"].name;
+    configObject.patternTexture = [texManager getTexture:@"Blue"];
     [configObject addToSimulation:sim];
     [configObject release];
     
     color = vec4(.8,.8,0,1);
     configObject = [[BounceYellowColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Yellow"].name;
+    configObject.patternTexture = [texManager getTexture:@"Yellow"];
     [configObject addToSimulation:sim];
     [configObject release];
     
     color = vec4(.8,.4,0,1);
     configObject = [[BounceOrangeColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Orange"].name;
+    configObject.patternTexture = [texManager getTexture:@"Orange"];
     [configObject addToSimulation:sim];
     [configObject release];
     
     color = vec4(.6,0,.8,1);
     configObject = [[BouncePurpleColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Purple"].name;
+    configObject.patternTexture = [texManager getTexture:@"Purple"];
     [configObject addToSimulation:sim];
     [configObject release];
     
     configObject = [[BouncePastelColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Pastel"].name;
+    configObject.patternTexture = [texManager getTexture:@"Pastel"];
     [configObject addToSimulation:sim];
     [configObject release];
     
     configObject = [[BounceGrayColorConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.patternTexture = [texManager getTexture:@"Gray"].name;
+    configObject.patternTexture = [texManager getTexture:@"Gray"];
     [configObject addToSimulation:sim];
     [configObject release];
     
@@ -443,7 +451,7 @@
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
     
-    tab.patternTexture = [texManager getTexture:@"Colors"].name;
+    tab.patternTexture = [texManager getTexture:@"Colors"];
     [tab addToSimulation:_simulation];
     
     [_simulationTabs addObject:tab];
@@ -451,92 +459,8 @@
 
 -(void)addMusicSimulation {
     FSATextureManager *texManager = [FSATextureManager instance];
-    FSASoundManager *soundManager = [FSASoundManager instance];
     
-    BounceSimulation *sim = [[BounceConfigurationSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
-    
-    float size = .15;
-    
-    vec4 color;
-    
-    NSString *textureSheet = @"music_texture_sheet.jpg";
-    
-    float small = .1;
-    float big = .2;
-    float t;
-    int notes = 8;
-    
-    
-    BounceNoteConfigurationObject * configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"c_1" volume:10]] autorelease];
-    t = 0./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:1 col:3 numRows:5 numCols:5];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"d_1" volume:10]] autorelease];
-    t = 1./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:2 col:1 numRows:5 numCols:5];    
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"e_1" volume:10]] autorelease];
-    t = 2./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:2 col:4 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"f_1" volume:10]] autorelease];
-    t = 3./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:3 col:2 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"g_1" volume:10]] autorelease];
-    t = 4./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:4 col:0 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"a_1" volume:10]] autorelease];
-    t = 5./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:0 col:2 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"b_1" volume:10]] autorelease];
-    t = 6./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:1 col:0 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"c_2" volume:10]] autorelease];
-    t = 7./(notes-1);
-    configObject.size = small*t+(1-t)*big;
-    [configObject setPatternForTextureSheet:textureSheet row:1 col:3 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
-    
-    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    configObject.sound = [[[BounceNote alloc] initWithSound:[soundManager getSound:@"rest" volume:10]] autorelease];
-    configObject.size = small;
-    [configObject setPatternForTextureSheet:textureSheet row:4 col:1 numRows:5 numCols:5];
-    [configObject addToSimulation:sim];
-    [configObject release];
+    BounceSimulation *sim = [[BounceMusicConfigurationSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
     
     [_simulations addObject:sim];
     
@@ -551,7 +475,7 @@
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
     
-    tab.patternTexture = [texManager getTexture:@"Music"].name;
+    tab.patternTexture = [texManager getTexture:@"Music"];
     [tab addToSimulation:_simulation];
     
     [_simulationTabs addObject:tab];
@@ -575,7 +499,7 @@
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
     
-    tab.patternTexture = [texManager getTexture:@"Settings"].name;
+    tab.patternTexture = [texManager getTexture:@"Settings"];
     [tab addToSimulation:_simulation];
     
     [_simulationTabs addObject:tab];
@@ -823,12 +747,12 @@
     [curSim setVelocity:vel];
     
     for(BounceConfigurationSimulation *sim in _simulations) {
-        if([sim isAnyObjectInBounds] || (curSim == sim
-                                         && _state == BOUNCE_CONFIGURATION_PANE_ACTIVATED)) {
+        if([sim isAnyObjectInBounds] || (curSim == sim && _state == BOUNCE_CONFIGURATION_PANE_ACTIVATED)) {
 
             [sim step:dt];
         }
     }
+     
     
     CGSize paneSize = [_object paneSize];
     

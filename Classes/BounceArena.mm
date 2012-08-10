@@ -47,6 +47,28 @@
     return self;
 }
 
+-(BOOL)isInBounds:(BounceObject*)obj  {
+    vec2 pos = self.position;
+    
+    float left = pos.x-_dimensions.width*.5;
+    float right = pos.x+_dimensions.width*.5;
+    
+    float top = pos.y+_dimensions.height*.5;
+    float bottom = pos.y-_dimensions.height*.5;
+    
+    cpBB bb = cpBBNew(left, bottom, right, top);
+    
+    cpShape **shapes = obj.shapes;
+    int numShapes = obj.numShapes;
+    for(int i = 0; i < numShapes; i++) {
+        if(cpBBIntersects(bb, shapes[i]->bb)) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
 -(BOOL)isInBoundsAt:(const vec2 &)loc withPadding:(float)pad {
     vec2 pos = self.position;
     

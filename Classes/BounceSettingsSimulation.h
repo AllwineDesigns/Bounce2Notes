@@ -10,7 +10,7 @@
 #import "BounceConfigurationSimulation.h"
 #import "BounceSlider.h"
 
-@interface BounceSettingsSimulation : BounceConfigurationSimulation {
+@interface BounceSettingsSimulation : BounceConfigurationSimulation <BounceSliderDelegate> {
     BounceSlider *_bouncinessSlider;
     BounceSlider *_gravitySlider;
     

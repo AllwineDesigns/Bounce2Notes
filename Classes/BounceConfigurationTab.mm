@@ -18,7 +18,7 @@ using namespace fsa;
 @synthesize offset = _offset;
 
 -(id)initWithPane:(BounceConfigurationPane *)pane index:(unsigned int)index offset:(const vec2 &)offset {
-    self = [super initObjectWithShape:BOUNCE_RECTANGLE at:vec2(0,-5) withVelocity:vec2() withColor:vec4() withSize:.15 withAngle:0];
+    self = [super initObjectWithShape:BOUNCE_CAPSULE at:vec2(0,-5) withVelocity:vec2() withColor:vec4() withSize:.15 withAngle:0];
     
     if(self) {
         _pane = pane;
@@ -29,7 +29,7 @@ using namespace fsa;
         vec2 panePos = _pane.object.position;
         vec2 pos = panePos+offset;
 
-        self.position = pos;
+        [self setPosition: pos];
         
         _offset = offset;
         _isStationary = YES;
@@ -39,6 +39,10 @@ using namespace fsa;
     
     return self;
 }
+
+//-(void)makeStatic {
+ //   [self makeHeavyRogue];
+//}
 
 -(void)playSound:(float)volume {
     
@@ -68,7 +72,7 @@ using namespace fsa;
 
     vec2 springLoc(_pane.object.springLoc);
     springLoc.y = pos.y-_offset.y;
-    _pane.object.springLoc = springLoc;
+    [_pane.object setSpringLoc:springLoc];
 }
 -(void)endGrabCallback {
     vec2 activeLoc = _pane.object.activeSpringLoc;

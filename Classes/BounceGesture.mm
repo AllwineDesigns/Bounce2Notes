@@ -159,9 +159,9 @@
             vec2 vel = (newPos-pos)*invtime;
             float length = vel.length();
             BOOL stationary = _obj.isStationary;
-            if(length > 5) {
-                stationary = NO;
-            }
+         //   if(length > 5) {
+         //       stationary = NO;
+         //   }
             
             [_obj grabCallbackWithPosition:newPos velocity:vel angle:newAngle angVel:(newAngle-ballAngle)*invtime stationary:stationary];
             [_obj grabCallback:to];

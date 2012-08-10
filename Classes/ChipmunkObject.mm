@@ -70,6 +70,24 @@
     return self;
 }
 
+-(id)initInfiniteRogue {
+    self = [super init];
+    
+    if(self) {
+        _state = CHIPMUNK_OBJECT_INFINITE_ROGUE;
+        _shapes = (cpShape**)malloc(sizeof(cpShape*));
+        _numShapes = 0;
+        _allocatedShapes = 1;
+        
+        _body = cpBodyNew(INFINITY, INFINITY);
+        cpBodySetUserData(_body, self);
+        
+        _mass = 1;
+        _moment = 1;
+    }
+    return self;
+}
+
 -(id)initStatic {
     self = [super init];
     
@@ -79,8 +97,11 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
-        _body = cpBodyNewStatic();
+        
+       // _body = cpBodyNewStatic();
+        _body = cpBodyNew(INFINITY, INFINITY); 
         cpBodySetUserData(_body, self);
+         
         _mass = 1;
         _moment = 1;
     }
@@ -141,12 +162,15 @@
     return pos;
 }
 -(void)setPosition:(const vec2&)loc {
+
     cpBodySetPos(_body, (const cpVect&)loc);
     if(_space != NULL) {
+        if(cpBodyIsStatic(_body)) {
+            NSLog(@"reindexing static body\n");
+        }
         for(int i = 0; i < _numShapes; i++) {
             cpSpaceReindexShape(_space, _shapes[i]);
         }
-        //cpSpaceReindexShapesForBody(_space, _body);
     }
 
 }
@@ -221,6 +245,10 @@
 
 -(BOOL)isHeavyRogue {
     return _state == CHIPMUNK_OBJECT_HEAVY_ROGUE;
+}
+
+-(BOOL)isInfiniteRogue {
+    return _state == CHIPMUNK_OBJECT_INFINITE_ROGUE;
 }
 
 -(BOOL)isStatic {
@@ -298,7 +326,49 @@
     //cpBodySetMoment(_body, INFINITY);
 }
 
+-(void)makeInfiniteRogue {
+    if(cpBodyIsStatic(_body)) {
+        if(_space != NULL) {
+            for(int i = 0; i < _numShapes; i++) {
+                cpSpaceRemoveShape(_space, _shapes[i]);
+            }
+        }
+        
+        CP_PRIVATE(_body->node).idleTime = (cpFloat)0;
+        cpBodySetMass(_body, _mass);
+        cpBodySetMoment(_body, _moment);
+        
+        if(_space != NULL) {
+            for(int i = 0; i < _numShapes; i++) {
+                cpSpaceAddShape(_space, _shapes[i]);
+                cpSpaceReindexShape(_space, _shapes[i]);
+            }
+        }
+    }
+    
+    _state = CHIPMUNK_OBJECT_INFINITE_ROGUE;
+    
+    if(_space != NULL) {
+        if(!cpBodyIsRogue(_body)) {
+            cpSpaceRemoveBody(_space, _body);
+        }
+    }
+    
+    cpBodySetMass(_body, INFINITY);
+    cpBodySetMoment(_body, INFINITY);
+}
+
+
 -(void)makeStatic {
+    [self makeInfiniteRogue];
+    cpBodySetVel(_body, cpvzero);
+    cpBodySetAngVel(_body, 0);
+    _state = CHIPMUNK_OBJECT_STATIC;
+    CP_PRIVATE(_body->w_bias) = 0;
+    CP_PRIVATE(_body->v_bias) = cpvzero;
+
+    
+    /*
     _state = CHIPMUNK_OBJECT_STATIC;
 
     
@@ -334,6 +404,7 @@
         cpBodySetVel(_body, cpvzero);
         cpBodySetAngVel(_body, 0);
     }
+     */
 }
 
 -(void)makeSimulated {

@@ -16,6 +16,7 @@
 #import "FSAUtil.h"
 #import "MainBounceSimulation.h"
 #import "fsa/Noise.hpp"
+#import "FSABackgroundQueue.h"
 
 #define BOUNCE_LITE_MAX_BALLS 15
 
@@ -38,7 +39,6 @@
         NSLog(@"Failed to set ES context current");
     
 	self.context = aContext;
-    sharegroup = aContext.sharegroup;
 	[aContext release];
     NSLog(@"%@", [[UIDevice currentDevice] model]);
 	
@@ -73,23 +73,26 @@
     [colorShader setPtr:&aspect forUniform:@"aspect"];    
     [billboardShader setPtr:&aspect forUniform:@"aspect"];  
     [gestureGlowShader setPtr:&aspect forUniform:@"aspect"];  
-    [intensityShader setPtr:&aspect forUniform:@"aspect"];    
-
-    cacheQueue = [[NSOperationQueue alloc] init];
+    [intensityShader setPtr:&aspect forUniform:@"aspect"];   
     
-    NSInvocationOperation *invocation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadTextures) object:nil];
-    [cacheQueue addOperation:invocation];
+    FSABackgroundQueue *queue = [FSABackgroundQueue instance];
+    queue.sharegroup = aContext.sharegroup;
+
+    NSInvocationOperation *invocation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadResources) object:nil];
+    [queue addOperation:invocation];
     [invocation release];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishedLoadingResources:) name:@"finishedLoadingResources" object:nil];
+    
     FSASoundManager *soundManager = [FSASoundManager instance];
-    [soundManager getSound:@"c_1"];
-    [soundManager getSound:@"d_1"];
-    [soundManager getSound:@"e_1"];
-    [soundManager getSound:@"f_1"];
-    [soundManager getSound:@"g_1"];
-    [soundManager getSound:@"a_1"];
-    [soundManager getSound:@"b_1"];
-    [soundManager getSound:@"c_2"];    
+    [soundManager getSound:@"c_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"d_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"e_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"f_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"g_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"a_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"b_1" volume:BOUNCE_SOUND_VOLUME];
+    [soundManager getSound:@"c_2" volume:BOUNCE_SOUND_VOLUME];    
     
     
 //    FSAAudioPlayer *player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
@@ -102,7 +105,12 @@
     self.displayLink = nil;
 }
 
--(void)loadTextures {
+-(void)finishedLoadingResources:(NSNotification*)notification {
+    _ready = YES;
+}
+
+-(void)loadResources {
+    EAGLSharegroup *sharegroup = [[FSABackgroundQueue instance] sharegroup];
     EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:sharegroup];
     
     if (!aContext)
@@ -125,16 +133,17 @@
      @"square.jpg",
      @"triangle.jpg",
      @"pentagon.jpg",
-     @"rectangle.jpg",
      @"stationary_ball.png",
      @"stationary_square.png",
      @"stationary_triangle.png",
      @"stationary_pentagon.png",
      @"music_texture_sheet.jpg",
      @"glow.jpg",
+     @"star.jpg",
+     @"stationary_star.png",
      nil];
     for(NSString* texName in texturesToCache) {
-        [texture_manager addLargeTexture:texName];
+        [texture_manager addSmartTexture:texName];
     }
     
     [texture_manager generateTextureForText:@"Shapes"];
@@ -153,7 +162,7 @@
     [texture_manager generateTextureForText:@"Pastel"];
     [texture_manager generateTextureForText:@"Gray"];
     
-    NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Bouncy", @"Springy", @"Squishy", @"Rocklike", nil];
+    NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Bouncy", @"Springy", @"Squishy", @"Rigid", nil];
     for(NSString* str in bouncinessLabels) {
         [texture_manager generateTextureForText:str];
     }
@@ -169,7 +178,26 @@
     [texture_manager generateTextureForText:@"Circle"];
     [texture_manager generateTextureForText:@"Square"];
     [texture_manager generateTextureForText:@"Pentagon"];
+    [texture_manager generateTextureForText:@"Star"];
     [texture_manager generateTextureForText:@"Triangle" forKey:@"Triangle" withFontSize:40 withOffset:vec2() ];
+
+    NSArray *notes = [NSArray arrayWithObjects:@"C", @"D", @"E", @"F", @"G", @"A", @"B", nil];
+    for(NSString* str in notes) {
+        [texture_manager generateTextureForText:[NSString stringWithFormat:@"%@%C", str, 0x266F] 
+                                         forKey:[NSString stringWithFormat:@"%@%@", str, @"sharp"] withFontSize:80 withOffset:vec2() ];
+        [texture_manager generateTextureForText:[NSString stringWithFormat:@"%@%C", str, 0x266D] 
+                                         forKey:[NSString stringWithFormat:@"%@%@", str, @"flat"] withFontSize:80 withOffset:vec2() ];
+        [texture_manager generateTextureForText:str forKey:str withFontSize:80 withOffset:vec2()];
+    }
+    
+    /*
+    //NSString *rest_str = [NSString stringWithFormat:@"%C%C", 0xD834, 0xDD3D];
+    NSString *rest_str = [NSString stringWithFormat:@"%C", 0x0001D13D];
+
+    [texture_manager generateTextureForText:rest_str forKey:@"rest" withFontName:@"Symbola" withFontSize:80 withOffset:vec2() ];
+    */
+    [texture_manager generateTextureForText:@"Major"];
+    [texture_manager generateTextureForText:@"Minor"];
 
     [texture_manager getTexture:@"arrow.jpg"];
     [texture_manager getTexture:@"downarrow.jpg"];
@@ -178,11 +206,12 @@
     lastUpdate = [[NSProcessInfo processInfo] systemUptime];
 
     NSLog(@"loaded textures and created simulation\n");
- //   while(1) {}
     
     glFlush();
     
     [aContext release];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingResources" object:nil];
 }
 
 - (void)dealloc
@@ -473,7 +502,7 @@
     glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    if([cacheQueue operationCount] == 0) {
+    if(_ready) {
         NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
         NSTimeInterval timeSinceLastDraw = now-lastUpdate;
 
@@ -509,22 +538,22 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    if([cacheQueue operationCount] == 0) {
+    if(_ready) {
         [multiTapAndDragRecognizer touchesBegan:touches withEvent:event];
     }
 }
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if([cacheQueue operationCount] == 0) {
+    if(_ready) {
         [multiTapAndDragRecognizer touchesMoved:touches withEvent:event];
     }
 }
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    if([cacheQueue operationCount] == 0) {
+    if(_ready) {
         [multiTapAndDragRecognizer touchesEnded:touches withEvent:event];
     }
 }
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    if([cacheQueue operationCount] == 0) {
+    if(_ready) {
         [multiTapAndDragRecognizer touchesCancelled:touches withEvent:event];
     }
 }
@@ -534,6 +563,8 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
+    
+    [[FSATextureManager instance] memoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
 }
