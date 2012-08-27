@@ -37,6 +37,10 @@
     id _value;
     NSString *_label;
     
+    unsigned int _lastIndex;
+    id _lastValue;
+    NSString *_lastLabel;
+    
     NSArray *_labels;
     NSArray *_values;
     
@@ -49,7 +53,11 @@
 
 @property (nonatomic, readonly) id value;
 @property (nonatomic, readonly) NSString* label;
-@property (nonatomic, readonly) unsigned int index;
+@property (nonatomic) unsigned int index;
+
+@property (nonatomic, readonly) id lastValue;
+@property (nonatomic, readonly) NSString* lastLabel;
+@property (nonatomic, readonly) unsigned int lastIndex;
 
 @property (nonatomic, readonly) BounceObject* track;
 @property (nonatomic, readonly) BounceObject* handle;
@@ -66,6 +74,8 @@
 -(void)step: (float)dt;
 -(void)setPosition:(const vec2&)loc;
 -(void)setVelocity:(const vec2&)vel;
+-(void)setLabels:(NSArray*)labels;
+
 @end
 
 @interface BounceSliderTrack : BounceObject {

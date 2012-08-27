@@ -78,11 +78,16 @@ typedef enum {
 
 -(void)setCurrentSimulation:(unsigned int)index;
 
+-(void)setFriction:(float)friction;
+-(void)setDamping:(float)damping;
 -(void)setGravityScale:(float)s;
 -(void)setGravity:(vec2)gravity;
 -(void)addToVelocity:(const vec2&)v;
 
+-(void)randomizeColor;
+
 -(void)setBounciness:(float)b;
+-(void)setVelocityLimit:(float)limit;
 
 -(void)setCurrentSimulation:(unsigned int)index;
 

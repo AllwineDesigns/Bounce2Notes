@@ -11,6 +11,7 @@
 #import "FSAShaderManager.h"
 #import "fsa/Noise.hpp"
 #import "FSAUtil.h"
+#import "BounceSettings.h"
 #import <chipmunk/chipmunk_unsafe.h>
 
 int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
@@ -109,8 +110,7 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
 
 -(void)randomizeColor {
     NSTimeInterval time = [[NSProcessInfo processInfo] systemUptime];
-    HSVtoRGB(&(_color.x), &(_color.y), &(_color.z), 
-             360.*random(64.28327*time), .4, .05*random(736.2827*time)+.75   );
+    _color = [[[BounceSettings instance] colorGenerator] randomColorFromTime:time];
 }
 
 -(void)enableTop {

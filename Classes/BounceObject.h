@@ -26,16 +26,19 @@ typedef enum {
     BOUNCE_RECTANGLE,
     BOUNCE_CAPSULE,
     BOUNCE_STAR,
+    BOUNCE_NOTE,
     NUM_BOUNCE_SHAPES
 } BounceShape;
 
 @interface BounceObject : ChipmunkObject { 
     id<BounceSound> _sound;
     BounceShape _bounceShape;
-    
+        
     BOOL _isPreviewable;
     BOOL _isRemovable;
     BOOL _simulationWillDraw;
+    
+    NSTimeInterval _lastPlayed;
     
     BounceSimulation *_simulation;
         
@@ -44,6 +47,8 @@ typedef enum {
     vec4 _color;
     FSATexture* _patternTexture;
     float _bounciness;
+    float _velLimit;
+    float _friction;
     
     float _size;
     float _size2;
@@ -63,6 +68,7 @@ typedef enum {
     BounceRenderableInputs _inputs;
 }
 
+@property (nonatomic) NSTimeInterval lastPlayed;
 @property (nonatomic) BOOL simulationWillDraw;
 @property (nonatomic) BOOL isPreviewable;
 @property (nonatomic) BOOL isRemovable;
@@ -98,6 +104,12 @@ typedef enum {
 -(float)bounciness;
 -(void)setBounciness:(float)b;
 
+-(float)friction;
+-(void)setFriction:(float)f;
+
+-(float)velocityLimit;
+-(void)setVelocityLimit:(float)limit;
+
 -(void)separate;
 
 -(void)beginCreateCallback;
@@ -118,7 +130,7 @@ typedef enum {
 -(void)endTransformCallback;
 -(void)cancelTransformCallback;
 
-
+-(void)randomizeNote;
 -(void)randomizeSize;
 -(void)randomizeColor;
 -(void)randomizeShape;
@@ -139,7 +151,7 @@ typedef enum {
 -(void)setupRectangle;
 -(void)setupCapsule;
 -(void)setupStar;
-
+-(void)setupNote;
 
 -(void)resizeBall;
 -(void)resizeSquare;
@@ -148,6 +160,7 @@ typedef enum {
 -(void)resizeRectangle;
 -(void)resizeCapsule;
 -(void)resizeStar;
+-(void)resizeNote;
 
 
 -(void)step: (float)dt;

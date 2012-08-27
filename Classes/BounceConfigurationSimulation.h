@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 John Allwine. All rights reserved.
 //
 
-#import "BounceSimulation.h"
+#import "MainBounceSimulation.h"
 
 @interface BounceConfigurationSimulation : BounceSimulation {
-    BounceSimulation *_simulation;
+    MainBounceSimulation *_simulation;
 }
 
 -(id)initWithRect:(CGRect)rect bounceSimulation: (BounceSimulation*)sim;

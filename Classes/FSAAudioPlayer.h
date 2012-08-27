@@ -13,6 +13,7 @@ typedef struct {
     AudioUnitSampleType *left;
     AudioUnitSampleType *right;
     UInt32 frameCount;
+    BOOL isStereo;
 } FSASoundData;
 
 typedef struct FSASoundStruct {
@@ -44,6 +45,7 @@ typedef struct FSAAudioCallbackData {
     FSASoundList *soundList;
     NSLock *pending_lock;
     NSLock *finished_lock;
+    float curVolume;
     
   //  FSAAudioPlayer *player;
 } FSAAudioCallbackData;
@@ -60,6 +62,8 @@ typedef struct FSAAudioCallbackData {
     FSAAudioCallbackData callbackData;
             
     AudioStreamBasicDescription     stereoStreamFormat;
+    AudioStreamBasicDescription     monoStreamFormat;
+
     AUGraph                         processingGraph;
     BOOL                            playing;
     BOOL                            interruptedDuringPlayback;
@@ -67,6 +71,8 @@ typedef struct FSAAudioCallbackData {
 }
 
 @property (readwrite)           AudioStreamBasicDescription stereoStreamFormat;
+@property (readwrite)           AudioStreamBasicDescription monoStreamFormat;
+
 @property (readwrite)           Float64                     graphSampleRate;
 @property (readwrite)           Float64                     ioBufferDuration;
 
@@ -76,6 +82,7 @@ typedef struct FSAAudioCallbackData {
 
 - (void) setupAudioSession;
 - (void) setupStereoStreamFormat;
+- (void) setupMonoStreamFormat;
 - (void) setupSoundList;
 
 // caller is responsible for freeing FSASoundData pointer

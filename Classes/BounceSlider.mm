@@ -29,6 +29,10 @@
 @synthesize label = _label;
 @synthesize index = _index;
 
+@synthesize lastValue = _lastValue;
+@synthesize lastLabel = _lastLabel;
+@synthesize lastIndex = _lastIndex;
+
 @synthesize padding = _padding;
 
 @synthesize delegate = _delegate;
@@ -37,8 +41,8 @@
     _track = [[BounceSliderTrack alloc] initWithSlider:self];
     _handle = [[BounceSliderHandle alloc] initWithSlider:self];
     
-    [_track setGroup:(cpGroup)self];
-    [_handle setGroup:(cpGroup)self];
+   // [_track setGroup:(cpGroup)self];
+   // [_handle setGroup:(cpGroup)self];
     
 }
 
@@ -102,6 +106,15 @@
         [self setupBounceObjects];
     }
     return self;
+}
+
+-(void)setLabels:(NSArray *)labels {
+    [_labels release];
+    _labels = [labels copy];
+
+    [_label release];
+    _label = [[_labels objectAtIndex:_index] retain];
+    [_delegate changed:self];
 }
 
 -(void)addToSimulation:(BounceSimulation *)simulation {
@@ -172,25 +185,36 @@
             changed = YES;
         }
         index = roundf(index);
+        [_lastValue release];
+        _lastValue = _value;
+        
         [newValue retain];
-        [_value release];
         _value = newValue;
     } else {
         index = roundf(index);
         if(index != _index) {
             changed = YES;
         }
-        [_value release];
+        
+        [_lastValue release];
+        _lastValue = _value;
+        
         _value = [_values objectAtIndex:(int)index];
         [_value retain];
     }
     
-    _index = (float)index;
-    [_label release];
-    _label = [_labels objectAtIndex:_index];
-    [_label retain];
-        
     if(changed) {
+        _lastIndex = _index;
+        
+        [_label retain];
+        [_lastLabel release];
+        _lastLabel = _label;
+        
+        _index = (float)index;
+        [_label release];
+        _label = [_labels objectAtIndex:_index];
+        [_label retain];
+        
         [_delegate changed:self];
     }
 }
@@ -232,6 +256,11 @@
     vec2 dir(1,0);
     dir.rotate(-trackAngle);
     return dir;
+}
+
+-(void)setIndex:(unsigned int)index {
+    _actualT = (float)index/([_values count]-1);
+    [self update];
 }
 
 -(void)slideTo:(const vec2 &)loc {
@@ -289,6 +318,8 @@
     [_labels release];
     [_value release];
     [_label release];
+    [_lastLabel release];
+    [_lastValue release];
     [super dealloc];
 }
 
@@ -376,9 +407,8 @@
     return self;
 }
 
-
 -(void)makeSimulated {
-    [self makeRogue];
+    [self makeStatic];
 }
 
 //-(void)makeStatic {

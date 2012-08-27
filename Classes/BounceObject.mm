@@ -14,9 +14,12 @@
 #import "BounceSimulation.h"
 #import <chipmunk/chipmunk_unsafe.h>
 #import "FSASoundManager.h"
+#import "BounceNoteManager.h"
+#import "BounceSettings.h"
 
 @implementation BounceObject
 
+@synthesize lastPlayed = _lastPlayed;
 @synthesize simulationWillDraw = _simulationWillDraw;
 @synthesize isPreviewable = _isPreviewable;
 @synthesize isRemovable = _isRemovable;
@@ -59,16 +62,14 @@
     return [self initRandomObjectAt:loc withVelocity:vel];
 }
 -(id)initRandomObjectAt: (const vec2&)loc withVelocity:(const vec2&)vel {
-    BounceShape bounceShape = BOUNCE_BALL; //BounceShape(random(loc*23.9273)*NUM_BOUNCE_SHAPES);
+    BounceShape bounceShape = [[BounceSettings instance].bounceShapeGenerator randomBounceShapeWithLocation:loc];
     return [self initRandomObjectWithShape:bounceShape at:loc withVelocity:vel];
 }
 
 -(id)initRandomObjectWithShape: (BounceShape)bounceShape at: (const vec2&)loc withVelocity:(const vec2&)vel {
     float size = random(loc*1.234)*.2+.05;
     vec4 color;
-    HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             360.*random(64.28327*loc), .4, .05*random(736.2827*loc)+.75   );
-    color.w = 1;
+    color = [[[BounceSettings instance] colorGenerator] randomColorFromLocation:loc];
     float angle = 2*PI*random(34.2938*loc);
     
     return [self initObjectWithShape:bounceShape at:loc withVelocity:vel withColor:color withSize:size withAngle:angle];
@@ -85,16 +86,18 @@
         _isPreviewable = YES;
         _isRemovable = YES;
         _simulationWillDraw = YES;
-
+        _velLimit = INFINITY;
         _color = color;
         _intensity = 2.2;
         _isStationary = NO;
-        self.patternTexture = [[FSATextureManager instance] getTexture:@"spiral.jpg"];
+        self.patternTexture = [[[BounceSettings instance] patternTextureGenerator] randomPatternTextureWithLocation:loc];
         
-        NSArray *sounds = [NSArray arrayWithObjects:@"c_1", @"e_1",@"g_1", @"a_1", @"b_1", @"c_2", nil];
-        NSString *note = [sounds objectAtIndex:random(loc*8.291)*[sounds count] ];
-        _sound = [[BounceNote alloc] initWithSound:[[FSASoundManager instance] getSound:note volume:BOUNCE_SOUND_VOLUME]];
-//        _sound = [[BouncePentatonicSizeSound alloc] initWithBounceObject:self];
+   //     unsigned int notes[] = { 0, 2,4,7};
+        unsigned int notes[] = { 0,1, 2,4,5,7};
+
+        unsigned int note = (unsigned int)6*random(loc*29.1863);
+        _sound = [[BounceNoteManager instance] getNote:notes[note]];
+        [_sound retain];
         
         _inputs.intensity = &_intensity;
         _inputs.isStationary = &_isStationary;
@@ -111,7 +114,8 @@
         cpBodySetPos(_body, (const cpVect&)loc);
         cpBodySetVel(_body, (const cpVect&)vel);
         cpBodySetAngle(_body, angle);
-      //  cpBodySetVelLimit(_body, 10);
+        
+        cpBodySetVelLimit(_body, _velLimit);
         cpBodySetAngVelLimit(_body, 50);
     }
     
@@ -175,6 +179,9 @@
         case BOUNCE_STAR:
             [self setupStar];
             break;
+        case BOUNCE_NOTE:
+            [self setupNote];
+            break;
         default:
             NSAssert(NO, @"attempting to set unknown shape\n");
             break;
@@ -193,21 +200,34 @@
     [self needsSize];
 }
 
+-(float)friction {
+    return _friction;
+}
+
 -(float)bounciness {
     return _bounciness;
 }
 
 -(void)needsSize {
     CGSize sSize = screenSize();
-    float size = sSize.width*_size;
+    float size = 2*sSize.width*_size;
     float size2 = size;
     if(_hasSecondarySize) {
-        size2 = sSize.width*_size2;
+        size2 = 2*sSize.width*_size2;
     }
     
     [self.patternTexture needsSize:size];
     [_renderable.shapeTexture needsSize:size2];
     [_renderable.stationaryTexture needsSize:size2];
+}
+
+-(float)velocityLimit {
+    return _velLimit;
+}
+
+-(void)setVelocityLimit:(float)limit {
+    _velLimit = limit;
+    cpBodySetVelLimit(_body, limit);
 }
 
 -(void)setBounciness:(float)b {
@@ -216,6 +236,13 @@
         cpShapeSetElasticity(_shapes[i], .5*(1-b)+1*b);
     }
     _renderable.bounciness = b;
+}
+
+-(void)setFriction:(float)f {
+    _friction = f;
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetFriction(_shapes[i], f);
+    }
 }
 
 -(float)secondarySize {
@@ -250,6 +277,15 @@
     [self needsSize];
 }
 
+-(void)randomizeNote {
+    vec2 loc = self.position;
+//    unsigned int notes[] = { 0, 2,4,7};
+    unsigned int notes[] = { 0, 1,2,4,5,7};
+
+    unsigned int note = (unsigned int)6*random(loc*29.1863);
+    self.sound = [[BounceNoteManager instance] getNote:notes[note]];
+}
+
 -(void)randomizeSize {
     vec2 loc = self.position;
     float size = random(loc*1.234)*.2+.05;
@@ -259,13 +295,8 @@
 
 -(void)randomizeColor {
     vec2 loc = self.position;
-
-    vec4 color;
-    HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             360.*random(64.28327*loc), .4, .05*random(736.2827*loc)+.75   );
-    color.w = 1;
-    _color = color;
     
+    _color = [[[BounceSettings instance] colorGenerator] randomColorFromLocation:loc];
 }
 -(void)randomizeShape {
     vec2 loc = self.position;
@@ -304,7 +335,7 @@
 -(void)grabCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
     
     self.angVel = angVel;
-    [self setVelocity:vel];
+   // [self setVelocity:vel];
      self.angle = angle;
     _springLoc = pos;
    // [self setPosition:pos];
@@ -410,6 +441,9 @@
         case BOUNCE_STAR:
             [self resizeStar];
             break;
+        case BOUNCE_NOTE:
+            [self resizeNote];
+            break;
         default:
             NSAssert(NO, @"resizing unknown shape\n");
             break;
@@ -460,6 +494,9 @@
         case BOUNCE_STAR:
             [self resizeStar];
             break;
+        case BOUNCE_NOTE:
+            [self resizeNote];
+            break;
         default:
             NSAssert(NO, @"resizing unknown shape\n");
             break;
@@ -502,6 +539,89 @@
     _renderable = [[BounceSquareRenderable alloc] initWithInputs:_inputs];
 
 
+}
+
+-(void)setupNote {
+    // Polygon 1
+    unsigned int numPts1 = 7;
+    vec2 poly1[] = {
+        vec2(_size*0.029296875, _size*-0.705078125),
+        vec2(_size*-0.09765625, _size*-0.98046875),
+        vec2(_size*-0.462890625, _size*-1.12890625),
+        vec2(_size*-0.705078125, _size*-0.998046875),
+        vec2(_size*-0.681640625, _size*-0.7265625),
+        vec2(_size*-0.4296875, _size*-0.5546875),
+        vec2(_size*-0.087890625, _size*-0.580078125)
+    };
+    
+    // Polygon 2
+    unsigned int numPts2 = 5;
+    vec2 poly2[] = {
+        vec2(_size*-0.0234375, _size*1.1328125),
+        vec2(_size*0.029296875, _size*1.041015625),
+        vec2(_size*0.029296875, _size*-0.705078125),
+        vec2(_size*-0.0859375, _size*-0.9375),
+        vec2(_size*-0.0859375, _size*1.1328125)
+    };
+    
+    // Polygon 3
+    unsigned int numPts3 = 5;
+    vec2 poly3[] = {
+        vec2(_size*0.455078125, _size*0.611328125),
+        vec2(_size*0.69921875, _size*0.298828125),
+        vec2(_size*0.46484375, _size*0.388671875),
+        vec2(_size*-0.0859375, _size*0.75),
+        vec2(_size*-0.0859375, _size*1.1328125)
+    };
+    
+    // Polygon 4
+    unsigned int numPts4 = 4;
+    vec2 poly4[] = {
+        vec2(_size*0.69921875, _size*0.298828125),
+        vec2(_size*0.716796875, _size*0.0390625),
+        vec2(_size*0.619140625, _size*0.1015625),
+        vec2(_size*0.43359375, _size*0.51171875)
+    };
+    
+    // Polygon 5
+    unsigned int numPts5 = 4;
+    vec2 poly5[] = {
+        vec2(_size*0.716796875, _size*0.0390625),
+        vec2(_size*0.5859375, _size*-0.216796875),
+        vec2(_size*0.521484375, _size*-0.19921875),
+        vec2(_size*0.66015625, _size*0.3125)
+    };
+    
+    // Polygon 6
+    unsigned int numPts6 = 4;
+    vec2 poly6[] = {
+        vec2(_size*0.580078125, _size*-0.216796875),
+        vec2(_size*0.310546875, _size*-0.466796875),
+        vec2(_size*0.26953125, _size*-0.419921875),
+        vec2(_size*0.583984375, _size*-0.091796875)
+    };
+    
+    [self setMass:20*_size*_size];
+
+    
+    float moment = 5*(cpMomentForPoly(_mass, numPts1, (const cpVect*)poly1, cpvzero)+
+                      cpMomentForPoly(_mass, numPts2, (const cpVect*)poly2, cpvzero)+
+                      cpMomentForPoly(_mass, numPts3, (const cpVect*)poly3, cpvzero)+
+                      cpMomentForPoly(_mass, numPts4, (const cpVect*)poly4, cpvzero)+
+                      cpMomentForPoly(_mass, numPts5, (const cpVect*)poly5, cpvzero)+
+                      cpMomentForPoly(_mass, numPts6, (const cpVect*)poly6, cpvzero));
+    
+    [self setMoment:moment];
+    
+    [self addPolyShapeWithNumVerts:numPts1 withVerts:poly1 withOffset:cpvzero];
+    [self addPolyShapeWithNumVerts:numPts2 withVerts:poly2 withOffset:cpvzero];
+    [self addPolyShapeWithNumVerts:numPts3 withVerts:poly3 withOffset:cpvzero];
+    [self addPolyShapeWithNumVerts:numPts4 withVerts:poly4 withOffset:cpvzero];
+    [self addPolyShapeWithNumVerts:numPts5 withVerts:poly5 withOffset:cpvzero];
+    [self addPolyShapeWithNumVerts:numPts6 withVerts:poly6 withOffset:cpvzero];
+    
+    [_renderable release];
+    _renderable = [[BounceNoteRenderable alloc] initWithInputs:_inputs];
 }
 
 -(void)setupRectangle {   
@@ -684,6 +804,89 @@
     
     cpPolyShapeSetVerts(_shapes[0], 4, square_verts, cpvzero);
 }
+
+-(void)resizeNote {    
+    // Polygon 1
+    unsigned int numPts1 = 7;
+    vec2 poly1[] = {
+        vec2(_size*0.029296875, _size*-0.705078125),
+        vec2(_size*-0.09765625, _size*-0.98046875),
+        vec2(_size*-0.462890625, _size*-1.12890625),
+        vec2(_size*-0.705078125, _size*-0.998046875),
+        vec2(_size*-0.681640625, _size*-0.7265625),
+        vec2(_size*-0.4296875, _size*-0.5546875),
+        vec2(_size*-0.087890625, _size*-0.580078125)
+    };
+    
+    // Polygon 2
+    unsigned int numPts2 = 5;
+    vec2 poly2[] = {
+        vec2(_size*-0.0234375, _size*1.1328125),
+        vec2(_size*0.029296875, _size*1.041015625),
+        vec2(_size*0.029296875, _size*-0.705078125),
+        vec2(_size*-0.0859375, _size*-0.9375),
+        vec2(_size*-0.0859375, _size*1.1328125)
+    };
+    
+    // Polygon 3
+    unsigned int numPts3 = 5;
+    vec2 poly3[] = {
+        vec2(_size*0.455078125, _size*0.611328125),
+        vec2(_size*0.69921875, _size*0.298828125),
+        vec2(_size*0.46484375, _size*0.388671875),
+        vec2(_size*-0.0859375, _size*0.75),
+        vec2(_size*-0.0859375, _size*1.1328125)
+    };
+    
+    // Polygon 4
+    unsigned int numPts4 = 4;
+    vec2 poly4[] = {
+        vec2(_size*0.69921875, _size*0.298828125),
+        vec2(_size*0.716796875, _size*0.0390625),
+        vec2(_size*0.619140625, _size*0.1015625),
+        vec2(_size*0.43359375, _size*0.51171875)
+    };
+    
+    // Polygon 5
+    unsigned int numPts5 = 4;
+    vec2 poly5[] = {
+        vec2(_size*0.716796875, _size*0.0390625),
+        vec2(_size*0.5859375, _size*-0.216796875),
+        vec2(_size*0.521484375, _size*-0.19921875),
+        vec2(_size*0.66015625, _size*0.3125)
+    };
+    
+    // Polygon 6
+    unsigned int numPts6 = 4;
+    vec2 poly6[] = {
+        vec2(_size*0.580078125, _size*-0.216796875),
+        vec2(_size*0.310546875, _size*-0.466796875),
+        vec2(_size*0.26953125, _size*-0.419921875),
+        vec2(_size*0.583984375, _size*-0.091796875)
+    };
+
+    [self setMass:20*_size*_size];
+    
+    
+    float moment = 5*(cpMomentForPoly(_mass, numPts1, (const cpVect*)poly1, cpvzero)+
+                      cpMomentForPoly(_mass, numPts2, (const cpVect*)poly2, cpvzero)+
+                      cpMomentForPoly(_mass, numPts3, (const cpVect*)poly3, cpvzero)+
+                      cpMomentForPoly(_mass, numPts4, (const cpVect*)poly4, cpvzero)+
+                      cpMomentForPoly(_mass, numPts5, (const cpVect*)poly5, cpvzero)+
+                      cpMomentForPoly(_mass, numPts6, (const cpVect*)poly6, cpvzero));
+    
+    [self setMoment:moment];
+    
+    cpPolyShapeSetVerts(_shapes[0], numPts1, (cpVect*)poly1, cpvzero);
+    cpPolyShapeSetVerts(_shapes[1], numPts2, (cpVect*)poly2, cpvzero);
+    cpPolyShapeSetVerts(_shapes[2], numPts3, (cpVect*)poly3, cpvzero);
+    cpPolyShapeSetVerts(_shapes[3], numPts4, (cpVect*)poly4, cpvzero);
+    cpPolyShapeSetVerts(_shapes[4], numPts5, (cpVect*)poly5, cpvzero);
+    cpPolyShapeSetVerts(_shapes[5], numPts6, (cpVect*)poly6, cpvzero);
+
+
+}
+
 
 -(void)resizeRectangle {
     float aspect = _size/_size2;
@@ -895,7 +1098,7 @@ drawShape(cpShape *shape, const vec4& color)
 
 -(void)draw {
     [_renderable draw];
-  /*  
+   /* 
     for(int i = 0; i < _numShapes; i++) {
         drawShape(_shapes[i], _color);
     }*/
@@ -962,6 +1165,7 @@ drawShape(cpShape *shape, const vec4& color)
 }
 
 -(void)singleTapAt:(const vec2 &)loc {
+
     if(_isStationary) {
         _isStationary = NO;
     } else if(_age > .5 && _simulation != nil) {

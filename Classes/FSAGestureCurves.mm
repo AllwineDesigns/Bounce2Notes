@@ -11,6 +11,9 @@
 #import "fsa/Noise.hpp"
 #import "FSAUtil.h"
 
+#import "BounceColorGenerator.h"
+#import "BounceSettings.h"
+
 @implementation FSAGestureCurves {
     NSMutableDictionary *_curves;
 }
@@ -46,9 +49,7 @@
     NSValue *key = [NSValue valueWithPointer:uniqueId];
             
     vec4 color;
-    HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             360.*random(64.28327*loc), .4, .05*random(736.2827*loc)+.75   );
-    color.w = 1;
+    color = [[BounceSettings instance].colorGenerator randomColorFromLocation:loc];
     
     FSAGestureCurve *curve = [[FSAGlowyGestureCurve alloc] initWithColor:color];
     

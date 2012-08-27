@@ -45,17 +45,37 @@ static OSStatus inputRenderCallback (void *inRefCon,
     if(sound == NULL) {
         *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
     }
+    float vol = 0;
+    while(sound != NULL) {
+        vol += sound->volume;
+        sound = sound->next;  
+    }
+    callbackData->curVolume = vol;
+
+    sound = prev->next;
+
     while(sound != NULL) {
 
         AudioUnitSampleType *dataInLeft = sound->data->left;
-        AudioUnitSampleType *dataInRight = sound->data->right;
+        AudioUnitSampleType *dataInRight;
+        
+        if(sound->data->isStereo) {
+            dataInRight = sound->data->right;
+        } else {
+            dataInRight = sound->data->left;
+        }
         
         UInt32 sampleNumber = sound->sampleNumber;
         Float32 volume = sound->volume;
         UInt32 frameCount = sound->data->frameCount;
+
         for (UInt32 frameNumber = 0; frameNumber < inNumberFrames && sampleNumber < frameCount; ++frameNumber) {
-            outSamplesChannelLeft[frameNumber] += volume*dataInLeft[sampleNumber];
-            outSamplesChannelRight[frameNumber] += volume*dataInRight[sampleNumber];
+            float t = sampleNumber/1000.;
+            if(t > 1) t = 1;
+            t = t*t*t*volume;
+            
+            outSamplesChannelLeft[frameNumber] += t*dataInLeft[sampleNumber];
+            outSamplesChannelRight[frameNumber] += t*dataInRight[sampleNumber];
             
             ++sampleNumber;
         }
@@ -158,8 +178,10 @@ void audioRouteChangeListenerCallback (
 
 
 #pragma mark -
+
 @implementation FSAAudioPlayer
 @synthesize stereoStreamFormat;
+@synthesize monoStreamFormat;
 @synthesize graphSampleRate;
 @synthesize ioBufferDuration;
 @synthesize ioUnit;
@@ -180,6 +202,8 @@ void audioRouteChangeListenerCallback (
             
     [self setupAudioSession];
     [self setupStereoStreamFormat];
+    [self setupMonoStreamFormat];
+
     [self setupSoundList];
     
     _numSounds = 0;
@@ -244,7 +268,7 @@ void audioRouteChangeListenerCallback (
     // Obtain the actual hardware sample rate and store it for later use in the audio processing graph.
     self.graphSampleRate = [mySession currentHardwareSampleRate];
     
-    self.ioBufferDuration = .005;
+    self.ioBufferDuration = .01;
     [mySession setPreferredIOBufferDuration: ioBufferDuration
                                       error: &audioSessionError];
     
@@ -278,13 +302,35 @@ void audioRouteChangeListenerCallback (
     [self printASBD: stereoStreamFormat];
 }
 
+- (void) setupMonoStreamFormat {
+    
+    // The AudioUnitSampleType data type is the recommended type for sample data in audio
+    //    units. This obtains the byte size of the type for use in filling in the ASBD.
+    size_t bytesPerSample = sizeof (AudioUnitSampleType);
+    
+    // Fill the application audio format struct's fields to define a linear PCM, 
+    //        stereo, noninterleaved stream at the hardware sample rate.
+    monoStreamFormat.mFormatID          = kAudioFormatLinearPCM;
+    monoStreamFormat.mFormatFlags       = kAudioFormatFlagsAudioUnitCanonical;
+    monoStreamFormat.mBytesPerPacket    = bytesPerSample;
+    monoStreamFormat.mFramesPerPacket   = 1;
+    monoStreamFormat.mBytesPerFrame     = bytesPerSample;
+    monoStreamFormat.mChannelsPerFrame  = 1;                  // 1 indicates mono
+    monoStreamFormat.mBitsPerChannel    = 8 * bytesPerSample;
+    monoStreamFormat.mSampleRate        = graphSampleRate;
+    
+    NSLog (@"The mono stream format for the \"beats\" mixer input bus:");
+    [self printASBD: monoStreamFormat];
+    
+}
+
 - (void) setupSoundList {
     NSString *device = machineName();
     int max_sounds = 20;
     if([device isEqualToString:@"iPhone2,1"]) {
         max_sounds = 20;
     } else if([device isEqualToString:@"iPad3,3"]) {
-        max_sounds = 100;
+        max_sounds = 50;
     }
     
     FSASoundStruct *heads = (FSASoundStruct*)calloc(4+max_sounds,sizeof(FSASoundStruct));
@@ -310,7 +356,7 @@ void audioRouteChangeListenerCallback (
     FSASoundData *data = soundData[_numSounds];
     ++_numSounds;
 
-    CFURLRef audioFile = (CFURLRef)[[NSBundle mainBundle] URLForResource:file withExtension:@"caf"];
+    CFURLRef audioFile = (CFURLRef)[[NSBundle mainBundle] URLForResource:file withExtension:@""];
 
     // Instantiate an extended audio file object.
     ExtAudioFileRef audioFileObject = 0;
@@ -365,7 +411,12 @@ void audioRouteChangeListenerCallback (
         if(data->right == NULL) {
             NSLog(@"error allocating memory for right channel data for sound %@", audioFile);
         }
+        data->isStereo = YES;
         importFormat = stereoStreamFormat;
+    } else if(1 == channelCount) {
+        data->left = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
+        data->isStereo = NO;
+        importFormat = monoStreamFormat;
     } else {
         
         NSLog (@"*** WARNING: File format not supported - wrong number of channels");
@@ -421,9 +472,11 @@ void audioRouteChangeListenerCallback (
     bufferList->mBuffers[0].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
     bufferList->mBuffers[0].mData            = data->left;
 
-    bufferList->mBuffers[1].mNumberChannels  = 1;
-    bufferList->mBuffers[1].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
-    bufferList->mBuffers[1].mData            = data->right;
+    if(2 == channelCount) {
+        bufferList->mBuffers[1].mNumberChannels  = 1;
+        bufferList->mBuffers[1].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
+        bufferList->mBuffers[1].mData            = data->right;
+    }
     
     // Perform a synchronous, sequential read of the audio data out of the file and
     //    into the soundStructArray[audioFile].audioDataLeft and (if stereo) .audioDataRight members.
@@ -445,9 +498,10 @@ void audioRouteChangeListenerCallback (
         free (data->left);
         data->left = 0;
         
-        free (data->right);
-        data->right = 0;
-        
+        if(2 == channelCount) {
+            free (data->right);
+            data->right = 0;
+        }
         ExtAudioFileDispose (audioFileObject);            
         return NULL;
     }
@@ -629,13 +683,13 @@ void audioRouteChangeListenerCallback (
         if(same_sound->numSounds < 4) {
             same_sound->volume += volume;
             same_sound->numSounds++;
-            if(same_sound->volume > .5) {
-                same_sound->volume = .5;
+            if(same_sound->volume > .4) {
+                same_sound->volume = .4;
             }
         } else if(same_sound->volume < volume) {
             same_sound->volume = volume;
-            if(same_sound->volume > .5) {
-                same_sound->volume = .5;
+            if(same_sound->volume > .4) {
+                same_sound->volume = .4;
             }
         }
     } else if(soundList.pool->next == NULL) { 
@@ -674,6 +728,24 @@ void audioRouteChangeListenerCallback (
         
         if(soundList.pending_tail == NULL) {
             soundList.pending_tail = sound;
+        }
+    }
+    float maxNewVol = (5-callbackData.curVolume);
+    if(maxNewVol < 0) maxNewVol = 0;
+    if(maxNewVol > .5) maxNewVol = .5;
+    
+    FSASoundStruct* sound = soundList.pending_head->next;
+    float vol = 0;
+    while(sound != NULL) {
+        vol += sound->volume;
+        sound = sound->next;
+    }
+    
+    if(vol > maxNewVol) {
+        sound = soundList.pending_head->next;
+        while(sound != NULL) {
+            sound->volume *= maxNewVol/vol;
+            sound = sound->next;
         }
     }
     

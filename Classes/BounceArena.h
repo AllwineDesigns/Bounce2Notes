@@ -20,7 +20,8 @@
 -initWithRect: (CGRect)rect;
 -(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;
--(BOOL)isInBoundsAt:(const vec2&)loc withPadding:(float)pad;
 
+-(void)setBounciness:(float)b;
+-(void)setFriction:(float)f;
 
 @end

@@ -50,7 +50,8 @@ static FSASoundManager* fsaSoundManager;
 
 
 -(void)dealloc {
-
+    [_player release];
+    [_sounds release];
     [super dealloc];
 }
 

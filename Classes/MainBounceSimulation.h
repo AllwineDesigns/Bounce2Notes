@@ -14,7 +14,10 @@
     float _aspect;
     BounceKillArena *_killArena;
     BounceConfigurationPane *_configPane;
+    BOOL _playMode;
 }
+
+@property (nonatomic) BOOL playMode;
 
 -(id)initWithAspect:(float)aspect;
 

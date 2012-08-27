@@ -30,7 +30,7 @@ static FSATextureManager* fsaTextureManager;
     return self;
 }
 -(void)memoryWarning {
-    for(FSATexture* tex in textures) {
+    for(FSATexture* tex in [textures objectEnumerator]) {
         [tex memoryWarning];
     }
 }
@@ -73,6 +73,12 @@ static FSATextureManager* fsaTextureManager;
 
             
             CGContextRef imageContext = CGBitmapContextCreate(imageData, image.size.width, image.size.height, 8, image.size.width * 4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
+            
+            if(!imageContext) {
+                NSLog(@"attempting to load %@", name);
+                NSAssert(imageContext, @"must have imageContext to continue");
+            }
+
             CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
             CGContextRelease(imageContext); 
             

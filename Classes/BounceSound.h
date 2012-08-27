@@ -9,22 +9,20 @@
 #import <Foundation/Foundation.h>
 #import "FSASound.h"
 
-#define BOUNCE_SOUND_VOLUME 10
+#define BOUNCE_SOUND_VOLUME 2  
 
 @class BounceObject;
 
 @protocol BounceSound <FSASoundDelegate>
 -(void)resized:(float)old_size;
+-(NSString*)label;
 @end
 
 @interface BounceNote : NSObject <BounceSound> {
     id<FSASoundDelegate> _sound;
+    NSString *_label;
 }
 -(id)initWithSound:(id<FSASoundDelegate>)sound;
+-(id)initWithSound:(id<FSASoundDelegate>)sound label:(NSString*)label;
 @end
 
-@interface BouncePentatonicSizeSound : NSObject <BounceSound> {
-    BounceObject *_obj;
-}
--(id)initWithBounceObject:(BounceObject*)obj;
-@end

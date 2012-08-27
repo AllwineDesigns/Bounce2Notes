@@ -210,7 +210,6 @@ typedef struct {
 }
          
 -(void)finishedLoadingTexture:(NSNotification*)notification {
-    NSLog(@"finished loading texture\n");
     if(_curName != _minName) {
         glDeleteTextures(1, &_curName);
     }
@@ -220,6 +219,8 @@ typedef struct {
         loaded = [[_loadedTextureQueue objectAtIndex:0] pointerValue];
         [_loadedTextureQueue removeObjectAtIndex:0];
     }
+    
+    NSLog(@"finished loading texture %u%@\n", loaded->prefix, _filename);
         
     _curPrefix = loaded->prefix;
     _curName = loaded->name;

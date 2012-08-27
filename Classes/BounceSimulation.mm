@@ -12,6 +12,10 @@
 #import <chipmunk/chipmunk_unsafe.h>
 #import "FSATextureManager.h"
 #import "BounceConstants.h"
+#import "BounceShapeGenerator.h"
+#import "BouncePatternGenerator.h"
+
+#import "BounceSlider.h"
 
 int collisionBegin(cpArbiter *arb, cpSpace *space, void *data) {
     return 1;
@@ -147,6 +151,8 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     _delayedRemoveObjects = [[NSMutableSet alloc] initWithCapacity:10];
     _dt = .02;
     
+    _friction = .5;
+    _velLimit = 10;
     _bounciness = .9;
     _gravityScale = 9.789;
         
@@ -178,6 +184,28 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
         [obj setColor:color];
     }
 }
+-(void)setPatternTexturesWithGenerator:(BouncePatternGenerator *)gen {
+    for(BounceObject *obj in _objects) {
+        vec2 loc = obj.position;
+        [obj setPatternTexture:[gen randomPatternTextureWithLocation:loc]];
+    }
+}
+-(void)setBounceShapesWithGenerator:(BounceShapeGenerator *)gen {
+    for(BounceObject *obj in _objects) {
+        vec2 loc = obj.position;
+        [obj setBounceShape:[gen randomBounceShapeWithLocation:loc]];
+    }
+}
+-(void)setBounceShape:(BounceShape)bounceshape {
+    for(BounceObject *obj in _objects) {
+        [obj setBounceShape:bounceshape];
+    }
+}
+-(void)setPatternTexture:(FSATexture *)patternTexture {
+    for(BounceObject *obj in _objects) {
+        [obj setPatternTexture:patternTexture];
+    }
+}
 -(void)randomizeColor {
     for(BounceObject *obj in _objects) {
         [obj randomizeColor];
@@ -188,8 +216,15 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
         [obj randomizeShape];
     }
 }
+-(void)randomizeNote {
+    for(BounceObject *obj in _objects) {
+        [obj randomizeNote];
+    }
+}
 -(void)addObject: (BounceObject*)object {
+    [object setVelocityLimit:_velLimit];
     [object setBounciness:_bounciness];
+    [object setFriction:_friction];
     [_objects addObject:object];
 }
 -(void)removeObject: (BounceObject*)object {
@@ -518,7 +553,8 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         
         [gesture beginGrabAt:loc];
     } else if([gesture isGrabGesture]) {
-        [gesture object].isStationary = YES;
+        BounceObject *obj = [gesture object];
+        obj.isStationary = YES;
     }
 }
 -(void)beginCreate:(void*)uniqueId at:(const vec2&)loc {
@@ -602,10 +638,36 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     }
 }
 
+-(BOOL)respondsToGesture:(void *)uniqueId {
+    BounceGesture *gesture = [self gestureForKey:uniqueId];
+    
+    return gesture != nil;
+}
+
+-(void)setDamping:(float)damping {
+    cpSpaceSetDamping(_space, damping);
+}
+
+-(void)setFriction:(float)f {
+    _friction = f;
+    [_arena setFriction:f];
+    for(BounceObject *obj in _objects) {
+        [obj setFriction:f];
+    }
+}
+
 -(void)setBounciness:(float)b {
     _bounciness = b;
+    [_arena setBounciness:b];
     for(BounceObject *obj in _objects) {
         [obj setBounciness:b];
+    }
+}
+
+-(void)setVelocityLimit:(float)limit {
+    _velLimit = limit;
+    for(BounceObject *obj in _objects) {
+        [obj setVelocityLimit:limit];
     }
 }
 

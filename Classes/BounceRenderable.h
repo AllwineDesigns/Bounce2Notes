@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <fsa/Vector.hpp>
 #import "FSATexture.h"
+#import "FSABuffer.h"
 
 using namespace fsa;
 
@@ -49,10 +50,9 @@ typedef struct {
     vec2 *_vertVels;
     vec2 *_vertShapeUVs;
     vec2 *_vertPatternUVs;
-    
-    unsigned int *_indices;
     unsigned int _numVerts;
-    unsigned int _numIndices;
+
+    FSABuffer *_indexBuffer;
 }
 @property (nonatomic) GLenum blendMode;
 @property (nonatomic) BounceRenderableInputs inputs;
@@ -76,6 +76,10 @@ typedef struct {
 @end
 
 @interface BounceSquareRenderable : BounceRenderable {
+}
+@end
+
+@interface BounceNoteRenderable : BounceRenderable {
 }
 @end
 

@@ -116,8 +116,8 @@
 
     NSTimeInterval time = timestamp-_timestamp;
     
-    if(time < .01) {
-        time = .01;
+    if(time < .04) {
+        time = .04;
     }
     
     NSTimeInterval invtime = 1./time;
@@ -156,8 +156,8 @@
             
             _offsetAngle = curAngle;
             
-            vec2 vel = (newPos-pos)*invtime;
-            float length = vel.length();
+            vec2 vel = .5*(newPos-pos)*invtime;
+          //  float length = vel.length();
             BOOL stationary = _obj.isStationary;
          //   if(length > 5) {
          //       stationary = NO;

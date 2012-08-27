@@ -16,6 +16,9 @@
 
 using namespace fsa;
 
+@class BounceShapeGenerator;
+@class BouncePatternGenerator;
+
 @interface BounceSimulation : NSObject {    
     cpSpace* _space;
         
@@ -24,6 +27,9 @@ using namespace fsa;
     NSMutableDictionary *_gestures;
             
     BounceArena *_arena;
+    
+    float _velLimit;
+    float _friction;
     
     float _bounciness;
     float _gravityScale;
@@ -69,22 +75,32 @@ using namespace fsa;
 -(BOOL)anyObjectsAt:(const vec2&)loc withinRadius:(float)radius;
 -(void)setGravity:(const vec2&)g;
 -(void)setGravityScale:(float)s;
+-(void)setVelocityLimit:(float)limit;
 
 -(void)setPosition:(const vec2&)pos;
 -(void)setVelocity:(const vec2&)vel;
 
 -(void)setBounciness:(float)b;
+-(void)setFriction:(float)f;
 
+-(void)setBounceShapesWithGenerator:(BounceShapeGenerator*)gen;
 -(void)setColor:(const vec4&)color;
+-(void)setBounceShape:(BounceShape)bounceshape;
+-(void)setPatternTexture:(FSATexture*)patternTexture;
+-(void)setPatternTexturesWithGenerator:(BouncePatternGenerator*)gen;
 -(void)randomizeColor;
 -(void)randomizeShape;
+-(void)randomizeNote;
 
 -(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;
 -(BOOL)isInBoundsAt:(const vec2&)loc withPadding:(float)pad;
 
+-(BOOL)respondsToGesture:(void*)uniqueId;
 
 -(BounceGesture*)gestureWithParticipatingObject:(BounceObject*)object;
+
+-(void)setDamping:(float)damping;
 
 -(BOOL)isObjectParticipatingInGestureAt: (const vec2&)loc;
 -(BOOL)isObjectBeingCreatedOrGrabbedAt:(const vec2&)loc;

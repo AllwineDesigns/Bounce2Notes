@@ -31,7 +31,4 @@ void main()
     col.a = r*patColor.a;
 
     gl_FragColor = col;
-//    gl_FragColor = patColor;
-//    gl_FragColor = texColor;
-//    gl_FragColor = vec4(.3,.3,.3, .3);
 }

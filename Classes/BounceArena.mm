@@ -92,4 +92,17 @@
 
     return loc.x >= left && loc.x <= right && loc.y >= bottom && loc.y <= top;
 }
+
+-(void)setBounciness:(float)b {
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetElasticity(_shapes[i], .5*(1-b)+1*b);
+    }
+}
+
+-(void)setFriction:(float)f {
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetFriction(_shapes[i], f);
+    }
+}
+
 @end

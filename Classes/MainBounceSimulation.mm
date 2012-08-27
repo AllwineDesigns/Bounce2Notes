@@ -12,6 +12,8 @@
 
 @implementation MainBounceSimulation
 
+@synthesize playMode = _playMode;
+
 -(id)initWithAspect: (float)aspect {
     float invaspect = 1./aspect;
     
@@ -62,41 +64,101 @@
     [super addToVelocity:v];
 }
 
+-(void)setFriction:(float)f {
+    [super setFriction:f];
+    [_configPane setFriction:f];
+}
+
+-(void)setDamping:(float)damping {
+    [super setDamping:damping];
+    [_configPane setDamping:damping];
+}
+
+-(void)setVelocityLimit:(float)limit {
+    [super setVelocityLimit:limit];
+    [_configPane setVelocityLimit:limit];
+}
+
 -(void)singleTap: (void*)uniqueId at:(const vec2 &)loc {   
     if(![_configPane singleTap:uniqueId at:loc]) {
-        [super singleTap:uniqueId at:loc];
+        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+
+        } else {
+            [super singleTap:uniqueId at:loc];
+        }
     }
 }
 
 -(void)flick: (void*)uniqueId at:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
     if(![_configPane flick:uniqueId at:loc inDirection:dir time:time]) {
-        [super flick:uniqueId at:loc inDirection:dir time:time];
+        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+        
+        } else {
+            [super flick:uniqueId at:loc inDirection:dir time:time];
+        }
     }
 }
 
 -(void)longTouch:(void*)uniqueId at:(const vec2&)loc {
     if(![_configPane longTouch:uniqueId at:loc]) {
-        [super longTouch:uniqueId at:loc];
+        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+        
+        } else {
+            [super longTouch:uniqueId at:loc];
+        }
     }
 }
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
     if(![_configPane beginDrag:uniqueId at:loc]) {
-        [super beginDrag:uniqueId at:loc];
+        if(_playMode && ![[self objectAt:loc] isKindOfClass:[BounceConfigurationTab class]]) {
+            NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+            for(BounceObject *o in objects) {
+                NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
+                if(now-o.lastPlayed > .02) {
+                    [o playSound:.2];
+                    [o.renderable burst:5];
+                    o.intensity = 2.2;
+                    o.lastPlayed = now;
+                }
+            }
+        } else {
+            [super beginDrag:uniqueId at:loc];
+        }
     }
 }
 -(void)drag:(void*)uniqueId at:(const vec2&)loc {
     if(![_configPane drag:uniqueId at:loc]) {
-        [super drag:uniqueId at:loc];
+        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+            NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+            for(BounceObject *o in objects) {
+                NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
+                if(now-o.lastPlayed > .02) {
+                    [o playSound:.2];
+                    [o.renderable burst:5];
+                    o.intensity = 2.2;
+                    o.lastPlayed = now;
+                }
+            }
+        } else {
+            [super drag:uniqueId at:loc];
+        }
     }
 }
 -(void)endDrag:(void*)uniqueId at:(const vec2&)loc {
     if(![_configPane endDrag:uniqueId at:loc]) {
-        [super endDrag:uniqueId at:loc];
+        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+        } else {
+            [super endDrag:uniqueId at:loc];
+        }
     }
 }
 -(void)cancelDrag:(void*)uniqueId at:(const vec2&)loc {
     if(![_configPane cancelDrag:uniqueId at:loc]) {
-        [super cancelDrag:uniqueId at:loc];
+        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+        
+        } else {
+            [super cancelDrag:uniqueId at:loc];
+        }
     }
 }
 

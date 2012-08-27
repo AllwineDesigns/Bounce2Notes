@@ -13,6 +13,7 @@
 #import "FSATextureManager.h"
 #import "FSAShaderManager.h"
 #import "FSASoundManager.h"
+#import "BounceNoteManager.h"
 #import "FSAUtil.h"
 #import "MainBounceSimulation.h"
 #import "fsa/Noise.hpp"
@@ -84,18 +85,10 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishedLoadingResources:) name:@"finishedLoadingResources" object:nil];
     
-    FSASoundManager *soundManager = [FSASoundManager instance];
-    [soundManager getSound:@"c_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"d_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"e_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"f_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"g_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"a_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"b_1" volume:BOUNCE_SOUND_VOLUME];
-    [soundManager getSound:@"c_2" volume:BOUNCE_SOUND_VOLUME];    
+    BounceBallRenderable *r = [[BounceBallRenderable alloc] init];
+    [r release];
     
-    
-//    FSAAudioPlayer *player = [[FSAAudioPlayer alloc] initWithSounds:[NSArray arrayWithObjects:@"c_1", @"d_1", @"e_1", @"f_1", @"g_1", @"a_1", @"b_1", @"c_2", @"d_2", @"e_2", @"f_2", @"g_2", @"a_2", @"b_2", @"c_3", @"d_3", @"e_3", @"f_3", @"g_3", @"a_3", @"b_3", @"c_4", nil] volume:10];
+    [[BounceNoteManager instance] getRest];
 
     multiTapAndDragRecognizer = [[FSAMultiTapAndDragRecognizer alloc] initWithTarget:self];
     multiTapAndDragRecognizer.view = self.view;
@@ -133,11 +126,12 @@
      @"square.jpg",
      @"triangle.jpg",
      @"pentagon.jpg",
+     @"note.jpg",
      @"stationary_ball.png",
      @"stationary_square.png",
      @"stationary_triangle.png",
      @"stationary_pentagon.png",
-     @"music_texture_sheet.jpg",
+     @"stationary_note.png",
      @"glow.jpg",
      @"star.jpg",
      @"stationary_star.png",
@@ -149,8 +143,9 @@
     [texture_manager generateTextureForText:@"Shapes"];
     [texture_manager generateTextureForText:@"Patterns"];
     [texture_manager generateTextureForText:@"Sizes"];
-    [texture_manager generateTextureForText:@"Music"];
+    [texture_manager generateTextureForText:@"Notes"];
     [texture_manager generateTextureForText:@"Colors"];
+    [texture_manager generateTextureForText:@"Save/Load"];
     [texture_manager generateTextureForText:@"Settings"];
     
     [texture_manager generateTextureForText:@"Red"];
@@ -167,12 +162,36 @@
         [texture_manager generateTextureForText:str];
     }
     
+    NSArray *labels = [NSArray arrayWithObjects:@"Octave 2", @"Octave 3", @"Octave 4", @"Octave 5", @"Octave 6", nil];
+    for(NSString* str in labels) {
+        [texture_manager generateTextureForText:str];
+    }
+    
+   labels = [NSArray arrayWithObjects:@"Vacuum", @"Air", @"Water", @"Syrup", nil];
+    for(NSString* str in labels) {
+        [texture_manager generateTextureForText:str];
+    }
+    
+   labels = [NSArray arrayWithObjects:@"Stopped", @"Slow", @"Fast", @"Very Fast", @"No Limit", nil];
+    for(NSString* str in labels) {
+        [texture_manager generateTextureForText:str];
+    }
+    
+    labels = [NSArray arrayWithObjects:@"Frictionless", @"Smooth", @"Coarse", @"Rough", nil];
+    for(NSString* str in labels) {
+        [texture_manager generateTextureForText:str];
+    }
 
     NSArray *gravityLabels = [NSArray arrayWithObjects:@"Weightless", @"Airy", @"Floaty", @"Light", @"Normal", @"Heavy", nil];
     for(NSString* str in gravityLabels) {
         [texture_manager generateTextureForText:str];
     }
+    
+    [texture_manager generateTextureForText:@"Create Mode" forKey:@"Create Mode" withFontSize:40 withOffset:vec2() ];
+    [texture_manager generateTextureForText:@"Play Mode" forKey:@"Play Mode" withFontSize:40 withOffset:vec2() ];
 
+  //  [texture_manager generateTextureForText:@"Note" forKey:@"Note" withFontSize:28 withOffset:vec2(-43,105) ];
+    [texture_manager generateTextureForText:@"Note"];
     [texture_manager generateTextureForText:@"Rectangle"];
     [texture_manager generateTextureForText:@"Capsule"];
     [texture_manager generateTextureForText:@"Circle"];
@@ -180,6 +199,12 @@
     [texture_manager generateTextureForText:@"Pentagon"];
     [texture_manager generateTextureForText:@"Star"];
     [texture_manager generateTextureForText:@"Triangle" forKey:@"Triangle" withFontSize:40 withOffset:vec2() ];
+
+    [texture_manager generateTextureForText:@"Randomize"];
+    [texture_manager generateTextureForText:@"Random" forKey:@"Random" withFontSize:40 withOffset:vec2() ];
+
+
+
 
     NSArray *notes = [NSArray arrayWithObjects:@"C", @"D", @"E", @"F", @"G", @"A", @"B", nil];
     for(NSString* str in notes) {
@@ -189,6 +214,24 @@
                                          forKey:[NSString stringWithFormat:@"%@%@", str, @"flat"] withFontSize:80 withOffset:vec2() ];
         [texture_manager generateTextureForText:str forKey:str withFontSize:80 withOffset:vec2()];
     }
+    NSArray *flatminors = [NSArray arrayWithObjects:@"A", @"E", @"B",nil ];
+    NSArray *minors = [NSArray arrayWithObjects:@"Fm", @"Cm", @"Gm", @"Dm", @"Am", @"Em", @"Bm",nil ]; 
+    NSArray *sharpminors = [NSArray arrayWithObjects:@"F", @"C", @"G", @"D", @"A", nil];
+    
+    for(NSString *str in sharpminors) {
+        [texture_manager generateTextureForText:[NSString stringWithFormat:@"%@%Cm", str, 0x266F] 
+                                         forKey:[NSString stringWithFormat:@"%@%@m", str, @"sharp"] withFontSize:80 withOffset:vec2() ];
+    }
+    
+    for(NSString *str in flatminors) {
+        [texture_manager generateTextureForText:[NSString stringWithFormat:@"%@%Cm", str, 0x266D] 
+                                         forKey:[NSString stringWithFormat:@"%@%@m", str, @"flat"] withFontSize:80 withOffset:vec2() ];
+    }
+    
+    for(NSString *str in minors) {
+        [texture_manager generateTextureForText:str forKey:str withFontSize:80 withOffset:vec2()];
+    }
+    
     
     /*
     //NSString *rest_str = [NSString stringWithFormat:@"%C%C", 0xD834, 0xDD3D];
@@ -198,9 +241,6 @@
     */
     [texture_manager generateTextureForText:@"Major"];
     [texture_manager generateTextureForText:@"Minor"];
-
-    [texture_manager getTexture:@"arrow.jpg"];
-    [texture_manager getTexture:@"downarrow.jpg"];
 
     simulation = [[MainBounceSimulation alloc] initWithAspect:aspect];
     lastUpdate = [[NSProcessInfo processInfo] systemUptime];

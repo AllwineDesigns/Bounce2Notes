@@ -8,6 +8,7 @@
 
 #import "BounceConfigurationSimulation.h"
 #import "BounceConfigurationObject.h"
+#import "BounceSettings.h"
 
 @implementation BounceConfigurationSimulation
 
@@ -38,8 +39,8 @@
             [newobj setPosition:vec2()];
         }
         
-        [configObj setPreviewObject:newobj];
-        [configObj finalizeChange];
+        [configObj setConfigurationValueForObject:newobj];
+
         [newobj addToSimulation:_simulation];
         
         if(![configObj isKindOfClass:[BounceNoteConfigurationObject class]]) {
@@ -58,24 +59,28 @@
 }
 
 -(void)flickObject:(BounceObject *)obj at:(const vec2&)loc withVelocity:(const vec2 &)vel {
-    /*
     if([obj isKindOfClass:[BounceConfigurationObject class]]) {
         BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
         vec2 pos = configObj.position;
         BounceObject *newobj = [_simulation addObjectAt:pos];
             
         newobj.velocity = vel;
-            
-        [configObj setPreviewObject:newobj];
-        [configObj finalizeChange];
+        
+        [configObj setConfigurationValueForObject:newobj];
     }
     
     [super flickObject:obj at:loc withVelocity:vel];
-    */
 }
 
 -(void)flickSpaceAt:(const vec2 &)loc withVelocity:(const vec2 &)vel {
 
+}
+
+-(void)randomizeColor {
+    for(BounceObject *obj in _objects) {
+        vec4 color = [[[BounceSettings instance] colorGenerator] randomColor];
+        [obj setColor:color];
+    }
 }
 
 -(void)step:(float)t {
@@ -107,8 +112,6 @@
 -(void)drag:(void *)uniqueId at:(const vec2 &)loc {
     [super drag:uniqueId at:loc];
     
-    BounceObject *obj = [_simulation objectAt:loc];
-    
     BounceGesture *gesture = [self gestureForKey:uniqueId];
     if(gesture) {
         if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
@@ -117,11 +120,18 @@
             if([self isInBoundsAt:loc]) {
                 [configObj setPreviewObject:nil];
             } else {
-                if(!obj || (![self isObjectBeingPreviewed:obj] && [obj isPreviewable])) {
-                    [configObj setPreviewObject:obj];
-                } else if(configObj.painting) {
+               // BounceObject *obj = [_simulation objectAt:loc];
+                NSSet *objects = [_simulation objectsAt:loc withinRadius:configObj.size];
+                NSMutableSet *previewableObjects = [NSMutableSet setWithCapacity:10];
+                for(BounceObject *obj in objects) {
+                    if([obj isPreviewable] && (![self isObjectBeingPreviewed:obj] || [configObj.previewObjects containsObject:obj])) {
+                        [previewableObjects addObject:obj];
+                    }
+                }
+                if(configObj.painting) {
                     [self tapObject:configObj at:vec2()];
                 }
+                [configObj setPreviewObjects:previewableObjects];
             }
         }
     }
@@ -134,14 +144,10 @@
         if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
 
             BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
+            NSSet *previewObjects = configObj.previewObjects;
             
-            BounceObject *obj = [configObj previewObject];
-            if(obj) {
-                if([self isInBoundsAt:loc]) {
-                    [configObj cancelChange];
-                } else {
-                    [configObj finalizeChange];
-                }
+            if([previewObjects count] > 0) {
+                [configObj finalizeChanges];
             } else if(![self isInBoundsAt:loc]) {
                 vec2 pos = configObj.position;
                 BounceObject *obj = [_simulation addObjectAt:pos];
@@ -150,8 +156,7 @@
                 obj.angle = configObj.angle;
                 obj.angVel = configObj.angVel;
                 
-                [configObj setPreviewObject:obj];
-                [configObj finalizeChange];
+                [configObj setConfigurationValueForObject:obj];
             }
             configObj.painting = NO;
         }
@@ -167,7 +172,7 @@
     if(gesture) {
         if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
             BounceConfigurationObject *configObj = (BounceConfigurationObject*)gesture.object;
-            [configObj cancelChange];
+            [configObj cancelChanges];
         }
     
         [super cancelDrag:uniqueId at:loc];
@@ -178,7 +183,7 @@
     for(BounceObject *o in _objects) {
         if([o isKindOfClass:[BounceConfigurationObject class]]) {
             BounceConfigurationObject *obj = (BounceConfigurationObject*)o;
-            if(obj.previewObject) {
+            if([obj.previewObjects count] > 0) {
                 return YES;
             }
         }
@@ -202,7 +207,8 @@
     for(BounceObject *o in _objects) {
         if([o isKindOfClass:[BounceConfigurationObject class]]) {
             BounceConfigurationObject *ob = (BounceConfigurationObject*)o;
-            if(ob.previewObject == obj) {
+            NSSet *previewObjects = ob.previewObjects;
+            if([previewObjects containsObject:obj]) {
                 return YES;
             }
         }
@@ -217,6 +223,29 @@
         
         if([_simulation isInBounds:obj] && obj.simulationWillDraw) {
             [obj draw];
+        }
+    }
+}
+
+-(void)setBounceShapesWithGenerator:(BounceShapeGenerator *)gen {
+    for(BounceObject *obj in _objects) {
+        if([obj isKindOfClass:[BounceConfigurationObject class]]) {
+            [obj setBounceShape:[gen bounceShape]];
+        }
+    }
+}
+
+-(void)setBounceShape:(BounceShape)bounceshape {
+    for(BounceObject *obj in _objects) {
+        if([obj isKindOfClass:[BounceConfigurationObject class]]) {
+            [obj setBounceShape:bounceshape];
+        }
+    }
+}
+-(void)setPatternTexture:(FSATexture *)patternTexture {
+    for(BounceObject *obj in _objects) {
+        if([obj isKindOfClass:[BounceConfigurationObject class]]) {
+            [obj setPatternTexture:patternTexture];
         }
     }
 }

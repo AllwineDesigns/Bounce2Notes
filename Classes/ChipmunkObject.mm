@@ -165,9 +165,6 @@
 
     cpBodySetPos(_body, (const cpVect&)loc);
     if(_space != NULL) {
-        if(cpBodyIsStatic(_body)) {
-            NSLog(@"reindexing static body\n");
-        }
         for(int i = 0; i < _numShapes; i++) {
             cpSpaceReindexShape(_space, _shapes[i]);
         }
@@ -360,15 +357,16 @@
 
 
 -(void)makeStatic {
+    
     [self makeInfiniteRogue];
     cpBodySetVel(_body, cpvzero);
     cpBodySetAngVel(_body, 0);
     _state = CHIPMUNK_OBJECT_STATIC;
     CP_PRIVATE(_body->w_bias) = 0;
     CP_PRIVATE(_body->v_bias) = cpvzero;
-
+     
+/*
     
-    /*
     _state = CHIPMUNK_OBJECT_STATIC;
 
     
@@ -404,7 +402,7 @@
         cpBodySetVel(_body, cpvzero);
         cpBodySetAngVel(_body, 0);
     }
-     */
+ */
 }
 
 -(void)makeSimulated {

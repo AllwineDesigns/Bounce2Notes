@@ -7,46 +7,70 @@
 //
 
 #import "BounceObject.h"
+#import "BounceColorGenerator.h"
 #import "fsa/Noise.hpp"
 
 @interface BounceConfigurationObject : BounceObject {
-    BounceObject *_previewObject;
-    BOOL _previewing;
     BOOL _painting;
     float _timeSinceLastCreate;
+    
+    NSMutableDictionary *_originals;
+    NSMutableSet *_previewObjects;
 }
 
 @property (nonatomic) BOOL painting;
 @property (nonatomic) float timeSinceLastCreate;
 
 -(void)setPreviewObject:(BounceObject*)obj;
--(BounceObject*)previewObject;
+-(void)setPreviewObjects:(NSSet*)objects;
+-(NSSet*)previewObjects;
 
--(void)previewChange;
--(void)cancelChange;
--(void)finalizeChange;
+-(void)finalizeChanges;
+-(void)cancelChanges;
+
+-(id)originalValueForObject:(BounceObject*)obj;
+-(void)setConfigurationValueForObject:(BounceObject*)obj;
+-(void)setValue: (id)val forObject:(BounceObject*)obj;
 
 @end
 
 @interface BounceShapeConfigurationObject : BounceConfigurationObject {
-    BounceShape _originalShape;
 }
 @end;
 
 @interface BouncePatternConfigurationObject : BounceConfigurationObject {
-    FSATexture* _originalPattern;
 }
-@property (nonatomic, retain) FSATexture* originalPattern;
 @end;
+
+@interface BounceSizeOriginal : NSObject {
+    float _size;
+    float _size2; 
+}
+
+@property (nonatomic) float size;
+@property (nonatomic) float secondarySize;
+
++(BounceSizeOriginal*)sizeWithSize:(float)size secondarySize:(float)size2;
+
+@end
 
 @interface BounceSizeConfigurationObject : BounceConfigurationObject {
-    float _originalSize;
-    float _originalSecondarySize;
+
 }
 @end;
 
+@interface BounceColorOriginal : NSObject {
+    vec4 _color;
+}
+
+@property (nonatomic) vec4 color;
+
++(BounceColorOriginal*)colorWithColor:(const vec4&)col;
+
+@end
+
 @interface BounceColorConfigurationObject : BounceConfigurationObject {
-    vec4 _originalColor;
+    BounceColorGenerator *_colorGenerator;
 }
 @end;
 
@@ -83,7 +107,5 @@
 @end;
 
 @interface BounceNoteConfigurationObject : BounceConfigurationObject {
-    id<BounceSound> _originalNote;
 }
-@property (nonatomic,retain) id<BounceSound> originalNote;
 @end;
