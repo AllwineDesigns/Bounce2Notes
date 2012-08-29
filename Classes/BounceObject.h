@@ -31,6 +31,7 @@ typedef enum {
 } BounceShape;
 
 @interface BounceObject : ChipmunkObject { 
+    
     id<BounceSound> _sound;
     BounceShape _bounceShape;
         
@@ -40,7 +41,7 @@ typedef enum {
     
     NSTimeInterval _lastPlayed;
     
-    BounceSimulation *_simulation;
+    @public BounceSimulation *_simulation;
         
     float _intensity;
     BOOL _isStationary;
@@ -66,6 +67,9 @@ typedef enum {
     
     BounceRenderable *_renderable;
     BounceRenderableInputs _inputs;
+    
+    @public float _damping;
+    @public float _gravityScale;
 }
 
 @property (nonatomic) NSTimeInterval lastPlayed;
@@ -83,6 +87,8 @@ typedef enum {
 @property (nonatomic, retain) id<BounceSound> sound;
 @property (nonatomic, readonly) BounceRenderable* renderable;
 @property (nonatomic) cpContactPointSet contactPoints;
+@property (nonatomic) float damping;
+@property (nonatomic) float gravityScale;
 
 +(id)randomObjectAt: (const vec2&)loc;
 +(id)randomObjectAt:(const vec2 &)loc withVelocity:(const vec2&)vel;
@@ -134,6 +140,8 @@ typedef enum {
 -(void)randomizeSize;
 -(void)randomizeColor;
 -(void)randomizeShape;
+-(void)randomizePattern;
+-(void)clampSize;
 -(float)size;
 -(void)setSize:(float)s;
 -(void)setSize:(float)s secondarySize:(float)s2;

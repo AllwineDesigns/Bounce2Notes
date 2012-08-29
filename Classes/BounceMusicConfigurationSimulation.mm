@@ -270,13 +270,14 @@
 -(void)setPosition:(const vec2 &)pos {
     [super setPosition:pos];
     CGSize dimensions = self.arena.dimensions;
-    [_buffer setPosition:pos+vec2(0,50+dimensions.height*.2)];
-    [_keySlider setPosition:pos+vec2(-.075*dimensions.width,dimensions.height*.2)]; 
-    [_octaveSlider setPosition:pos+vec2(-.075*dimensions.width,dimensions.height*.4)];  
+    float slideDown = -.07*dimensions.height;
+    [_buffer setPosition:pos+vec2(0,50+dimensions.height*.2+slideDown)];
+    [_keySlider setPosition:pos+vec2(-.075*dimensions.width,dimensions.height*.2+slideDown)]; 
+    [_octaveSlider setPosition:pos+vec2(-.075*dimensions.width,dimensions.height*.4+slideDown)];  
 
-    [_tonalitySlider setPosition:pos+vec2(.4*dimensions.width,dimensions.height*.2)];
-    [_modeSlider setPosition:pos+vec2(.4*dimensions.width, dimensions.height*.4)];
-    [_randomizeButton setPosition:pos+vec2(.4*dimensions.width,0)];
+    [_tonalitySlider setPosition:pos+vec2(.4*dimensions.width,dimensions.height*.2+slideDown)];
+    [_modeSlider setPosition:pos+vec2(.4*dimensions.width, dimensions.height*.4+slideDown)];
+    [_randomizeButton setPosition:pos+vec2(.4*dimensions.width,0+slideDown)];
 
 }
 

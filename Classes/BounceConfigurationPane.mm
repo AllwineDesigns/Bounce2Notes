@@ -19,7 +19,7 @@
 #import "BounceMusicConfigurationSimulation.h"
 #import "BounceSettings.h"
 
-#define NUM_TABS 7
+#define NUM_TABS 8
 
 @implementation BounceConfigurationPaneObject 
 
@@ -29,6 +29,7 @@
 @synthesize tappedSpringLoc = _tappedSpringLoc;
 @synthesize inactiveSpringLoc = _inactiveSpringLoc;
 @synthesize activeSpringLoc = _activeSpringLoc;
+@synthesize customSpringLoc = _customSpringLoc;
 
 -(id)init {
     self = [super initStatic];
@@ -59,6 +60,7 @@
         _tappedSpringLoc = vec2(0, -_invaspect-_paneSize.height*.5);
         _activeSpringLoc = vec2(0, -_invaspect+_paneSize.height*.5);
         _inactiveSpringLoc = vec2(0, -_invaspect-_paneSize.height);
+        _customSpringLoc = _activeSpringLoc;
         
         _springLoc = _inactiveSpringLoc;
         
@@ -107,7 +109,11 @@
 }
 
 -(void)activate {
-    _springLoc = _activeSpringLoc;
+    if([BounceSettings instance].paneUnlocked) {
+        _springLoc = _customSpringLoc;
+    } else {
+        _springLoc = _activeSpringLoc;
+    }
 }
 
 -(void)deactivate {
@@ -461,7 +467,7 @@
     CGSize paneSize = [_object paneSize];
     CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, .2*upi);
 
-    vec2 offset(paneSize.width*.5-3.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
+    vec2 offset(paneSize.width*.5-4.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
@@ -485,7 +491,7 @@
     CGSize paneSize = [_object paneSize];
     CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, .2*upi);
 
-    vec2 offset(paneSize.width*.5-2.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
+    vec2 offset(paneSize.width*.5-3.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
@@ -493,6 +499,43 @@
     tab.secondarySize = tabSize.height*.5;
     
     tab.patternTexture = [texManager getTexture:@"Notes"];
+    [tab addToSimulation:_simulation];
+    
+    [_simulationTabs addObject:tab];
+}
+
+-(void)addMiscSimulation {
+    FSATextureManager *texManager = [FSATextureManager instance];
+    BounceSimulation *sim = [[BounceConfigurationSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
+    
+    float size = .15;
+    
+    vec4 color = vec4(.5,.5,.5,1);
+    BouncePasteConfigurationObject * pasteObject = [[BouncePasteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [pasteObject addToSimulation:sim];
+    pasteObject.patternTexture = [texManager getTexture:@"Paste"];
+    [pasteObject release];
+    
+    BounceCopyConfigurationObject *copyObject = [[BounceCopyConfigurationObject alloc] initWithPasteObject:pasteObject];
+    
+    copyObject.patternTexture = [texManager getTexture:@"Copy"];
+    [copyObject addToSimulation:sim];
+    [copyObject release];
+    
+    [_simulations addObject:sim];
+    
+    float upi = [[BounceConstants instance] unitsPerInch];
+    CGSize paneSize = [_object paneSize];
+    CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, .2*upi);
+    
+    vec2 offset(paneSize.width*.5-2.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
+    
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
+    
+    tab.patternTexture = [texManager getTexture:@"Misc"];
     [tab addToSimulation:_simulation];
     
     [_simulationTabs addObject:tab];
@@ -508,7 +551,7 @@
     
     float upi = [[BounceConstants instance] unitsPerInch];
     CGSize paneSize = [_object paneSize];
-    CGSize tabSize = CGSizeMake(paneSize.width/7, .2*upi);
+    CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, .2*upi);
     
     vec2 offset(paneSize.width*.5-1.5*tabSize.width, paneSize.height*.5+tabSize.height*.5);
     
@@ -579,6 +622,7 @@
         [self addSizesSimulation];
         [self addColorsSimulation];
         [self addMusicSimulation];
+        [self addMiscSimulation];
         [self addSaveLoadSimulation];
         [self addSettingsSimulation];
 
@@ -589,14 +633,23 @@
     return self;
 }
 
+-(void)randomizeShape {
+    for(BounceConfigurationTab *tab in _simulationTabs) {
+        tab.bounceShape = [[[BounceSettings instance] bounceShapeGenerator] bounceShape];
+    }
+}
+
 -(void)randomizeColor {
     [_object randomizeColor];
     for(BounceConfigurationTab *tab in _simulationTabs) {
         vec4 color = [[[BounceSettings instance] colorGenerator] randomColor];
         [tab setColor:color];
     }
+    BounceSimulation *miscSim = [_simulations objectAtIndex:5];
     for(BounceSimulation *sim in _simulations) {
-        [sim randomizeColor];
+        if(miscSim != sim) {
+            [sim randomizeColor];
+        }
     }
 }
 
@@ -652,11 +705,11 @@
     BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
     BounceSettings* settings = [BounceSettings instance];
     
-    if(_curSimulation != 0) {
+    if(_curSimulation != 0 && _curSimulation != 5) {
         [sim setBounceShapesWithGenerator:settings.bounceShapeGenerator];
     }
     
-    if(_curSimulation == 2) {
+    if(_curSimulation == 2 && _curSimulation != 5) {
         [sim setPatternTexturesWithGenerator:settings.patternTextureGenerator];
     }
     
@@ -863,6 +916,10 @@
     vec2 pos = _object.position;
     
     BounceConfigurationTab *curTab = [_simulationTabs objectAtIndex:_curSimulation];
+    
+    BounceSimulation *settingsSim = [_simulations objectAtIndex:7];
+    // draw settings simulation before tabs
+    [settingsSim draw];
 
     for(BounceConfigurationTab *tab in _simulationTabs) {
         if(curTab != tab) {
@@ -872,7 +929,9 @@
     [curTab draw];
     
     for(BounceSimulation *sim in _simulations) {
-        [sim draw];
+        if(sim != settingsSim) {
+            [sim draw];
+        }
     }
 
 }

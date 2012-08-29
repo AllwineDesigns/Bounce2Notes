@@ -326,11 +326,11 @@ void audioRouteChangeListenerCallback (
 
 - (void) setupSoundList {
     NSString *device = machineName();
-    int max_sounds = 20;
+    int max_sounds = 15;
     if([device isEqualToString:@"iPhone2,1"]) {
-        max_sounds = 20;
+        max_sounds = 10;
     } else if([device isEqualToString:@"iPad3,3"]) {
-        max_sounds = 50;
+        max_sounds = 40;
     }
     
     FSASoundStruct *heads = (FSASoundStruct*)calloc(4+max_sounds,sizeof(FSASoundStruct));

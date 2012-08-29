@@ -36,6 +36,7 @@
 @synthesize padding = _padding;
 
 @synthesize delegate = _delegate;
+@synthesize selector = _selector;
 
 -(void)setupBounceObjects {
     _track = [[BounceSliderTrack alloc] initWithSlider:self];
@@ -58,6 +59,8 @@
         
         _values = [labels copy];
         _labels = [labels copy];
+        _selector = @selector(changed:);
+
         [self setupBounceObjects];
     }
     return self;
@@ -77,6 +80,8 @@
         _index = _index;
         _curT = (float)index/([labels count]-1);
         _actualT = _curT;
+        _selector = @selector(changed:);
+
         
         [self setupBounceObjects];
 
@@ -103,6 +108,8 @@
         _curT = (float)index/([labels count]-1);
         _actualT = _curT;
         
+        _selector = @selector(changed:);
+        
         [self setupBounceObjects];
     }
     return self;
@@ -114,7 +121,8 @@
 
     [_label release];
     _label = [[_labels objectAtIndex:_index] retain];
-    [_delegate changed:self];
+    //[_delegate changed:self];
+    [_delegate performSelector:_selector withObject:self];
 }
 
 -(void)addToSimulation:(BounceSimulation *)simulation {
@@ -215,7 +223,7 @@
         _label = [_labels objectAtIndex:_index];
         [_label retain];
         
-        [_delegate changed:self];
+        [_delegate performSelector:_selector withObject:self];
     }
 }
 
@@ -261,6 +269,16 @@
 -(void)setIndex:(unsigned int)index {
     _actualT = (float)index/([_values count]-1);
     [self update];
+}
+
+-(void)setParam:(float)t {
+    NSAssert(t >= 0 && t <= 1, @"param must be between 0 and 1 inclusive\n");
+    _actualT = t;
+    [self update];
+}
+
+-(float)param {
+    return _actualT;
 }
 
 -(void)slideTo:(const vec2 &)loc {

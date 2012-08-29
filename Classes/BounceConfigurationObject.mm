@@ -91,7 +91,7 @@
     
     for(BounceObject *obj in _previewObjects) {
         NSValue *val = [NSValue valueWithNonretainedObject:obj];
-        if(0) { // if(!paint_mode) TODO
+        if(![BounceSettings instance].paintMode) {
             [self setValue:[_originals objectForKey:val] forObject:obj];
         }
         [_originals removeObjectForKey:val];
@@ -113,7 +113,10 @@
     for(BounceObject *obj in _previewObjects) {
         [obj drawSelected];
     }
-    [super draw];
+    
+    if([BounceSettings instance].paintMode || [_previewObjects count] == 0) {
+        [super draw];
+    }
 }
 
 -(void)dealloc {
@@ -363,7 +366,92 @@
 
 -(void)setValue:(id)val forObject:(BounceObject *)obj {
     obj.sound = val;
+    [val play:.2];
+
 }
 
 @end
+
+@implementation BouncePasteOriginal
+
+@synthesize bounceShape = _bounceShape;
+@synthesize color = _color;
+@synthesize patternTexture = _patternTexture;
+@synthesize size = _size;
+@synthesize secondarySize = _size2;
+@synthesize sound = _sound;
+
+@end
+
+@implementation BouncePasteConfigurationObject
+@synthesize hasCopied = _hasCopied;
+
+-(void)setConfigurationValueForObject:(BounceObject*)obj {
+    if(_hasCopied) {
+        obj.bounceShape = _bounceShape;
+        obj.color = _color;
+        obj.patternTexture = _patternTexture;
+        [obj setSize:_size secondarySize:_size2];
+        obj.sound = _sound;
+    }
+}
+
+-(id)originalValueForObject:(BounceObject *)obj {
+    BouncePasteOriginal *orig = [[BouncePasteOriginal alloc] init];
+    orig.bounceShape = obj.bounceShape;
+    orig.color = obj.color;
+    orig.patternTexture = obj.patternTexture;
+    orig.size = obj.size;
+    orig.secondarySize = obj.secondarySize;
+    orig.sound = obj.sound;
+    
+    return [orig autorelease];
+}
+
+-(void)setValue:(id)value forObject:(BounceObject *)obj {
+    BouncePasteOriginal *orig = (BouncePasteOriginal*)value;
+    obj.color = orig.color;
+    obj.bounceShape = orig.bounceShape;
+    obj.patternTexture = orig.patternTexture;
+    [obj setSize:orig.size secondarySize:orig.secondarySize];
+    obj.sound = orig.sound;
+}
+
+@end
+
+@implementation BounceCopyConfigurationObject
+
+-(id)initWithPasteObject:(BouncePasteConfigurationObject*)pasteObj {
+    self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-2) withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:.2 withAngle:0];
+    if(self) {
+        _pasteObj = [pasteObj retain];
+    }
+    return self;
+
+}
+
+-(void)setConfigurationValueForObject:(BounceObject*)obj {
+    _pasteObj.hasCopied = YES;
+    _pasteObj.color = obj.color;
+    _pasteObj.bounceShape = obj.bounceShape;
+    _pasteObj.patternTexture = obj.patternTexture;
+    [_pasteObj setSize:obj.size secondarySize:obj.secondarySize];
+    _pasteObj.sound = obj.sound;
+}
+
+-(id)originalValueForObject:(BounceObject *)obj {
+    return [NSNull null];
+}
+
+-(void)setValue:(id)val forObject:(BounceObject *)obj {
+    
+}
+
+-(void)dealloc {
+    [_pasteObj release];
+    [super dealloc];
+}
+
+@end
+
 

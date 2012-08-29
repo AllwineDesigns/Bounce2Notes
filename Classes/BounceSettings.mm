@@ -16,6 +16,24 @@ static BounceSettings *bounceSettings;
 @synthesize bounceShapeGenerator = _bounceShapeGenerator;
 @synthesize patternTextureGenerator = _patternTextureGenerator;
 @synthesize colorGenerator = _colorGenerator;
+@synthesize minSize = _minSize;
+@synthesize maxSize = _maxSize;
+@synthesize friction = _friction;
+@synthesize velocityLimit = _velLimit;
+@synthesize damping = _damping;
+@synthesize gravityScale = _gravityScale;
+@synthesize bounciness = _bounciness;
+@synthesize paintMode = _paintMode;
+@synthesize grabRotates = _grabRotates;
+@synthesize paneUnlocked = _paneUnlocked;
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    
+}
 
 -(id)init {
     self = [super init];
@@ -23,6 +41,15 @@ static BounceSettings *bounceSettings;
         _bounceShapeGenerator = [[BounceShapeGenerator alloc] initWithBounceShape:BOUNCE_BALL];
         _patternTextureGenerator = [[BouncePatternGenerator alloc] initWithPatternTexture:[[FSATextureManager instance] getTexture:@"spiral.jpg"]];
         _colorGenerator = [[BouncePastelColorGenerator alloc] init];
+        _minSize = .05;
+        _maxSize = .25;
+        _friction = .5;
+        _damping = 1;
+        _gravityScale = 9.789;
+        _bounciness = .9;
+        _velLimit = 10;
+        _paintMode = YES;
+        _grabRotates = YES;
     }
     
     return self;

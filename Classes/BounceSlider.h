@@ -47,6 +47,7 @@
     float _padding;
     
     id<BounceSliderDelegate> _delegate;
+    SEL _selector;
     
     float _vel;
 }
@@ -62,6 +63,7 @@
 @property (nonatomic, readonly) BounceObject* track;
 @property (nonatomic, readonly) BounceObject* handle;
 @property (nonatomic, retain) id<BounceSliderDelegate> delegate;
+@property (nonatomic) SEL selector;
 
 @property (nonatomic) float padding;
 
@@ -75,6 +77,9 @@
 -(void)setPosition:(const vec2&)loc;
 -(void)setVelocity:(const vec2&)vel;
 -(void)setLabels:(NSArray*)labels;
+
+-(void)setParam:(float)t;
+-(float)param;
 
 @end
 

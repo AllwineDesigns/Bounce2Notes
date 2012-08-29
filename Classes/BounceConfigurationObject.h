@@ -109,3 +109,34 @@
 @interface BounceNoteConfigurationObject : BounceConfigurationObject {
 }
 @end;
+
+@interface BouncePasteOriginal : NSObject {
+    BounceShape _bounceShape;
+    FSATexture* _patternTexture;
+    vec4 _color;
+    id<BounceSound> _sound;
+    float _size;
+    float _size2;
+}
+
+@property (nonatomic) BounceShape bounceShape;
+@property (nonatomic,retain) FSATexture* patternTexture;
+@property (nonatomic) const vec4& color;
+@property (nonatomic,retain) id<BounceSound> sound;
+@property (nonatomic) float size;
+@property (nonatomic) float secondarySize;
+
+@end
+
+@interface BouncePasteConfigurationObject : BounceConfigurationObject {
+    BOOL _hasCopied;
+}
+
+@property (nonatomic) BOOL hasCopied;
+
+@end
+@interface BounceCopyConfigurationObject : BounceConfigurationObject {
+    BouncePasteConfigurationObject *_pasteObj;
+}
+-(id)initWithPasteObject:(BouncePasteConfigurationObject*)pasteObj;
+@end

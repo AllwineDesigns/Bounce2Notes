@@ -44,16 +44,6 @@
     [_configPane step:_dt];
 }
 
--(void)setBounciness:(float)b {
-    [_configPane setBounciness:b];
-    [super setBounciness:b];
-}
-
--(void)setGravityScale:(float)s {
-    [_configPane setGravityScale:s];
-    [super setGravityScale:s];
-}
-
 -(void)setGravity:(const vec2 &)g {
     [_configPane setGravity:g];
     [super setGravity:g];
@@ -62,21 +52,6 @@
 -(void)addToVelocity:(const vec2 &)v {
     [_configPane addToVelocity:v];
     [super addToVelocity:v];
-}
-
--(void)setFriction:(float)f {
-    [super setFriction:f];
-    [_configPane setFriction:f];
-}
-
--(void)setDamping:(float)damping {
-    [super setDamping:damping];
-    [_configPane setDamping:damping];
-}
-
--(void)setVelocityLimit:(float)limit {
-    [super setVelocityLimit:limit];
-    [_configPane setVelocityLimit:limit];
 }
 
 -(void)singleTap: (void*)uniqueId at:(const vec2 &)loc {   

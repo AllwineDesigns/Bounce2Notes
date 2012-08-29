@@ -10,6 +10,7 @@
 #import "fsa/Vector.hpp"
 #import "BounceConfigurationPane.h"
 #import "BounceConstants.h"
+#import "BounceSettings.h"
 
 using namespace fsa;
 
@@ -18,7 +19,7 @@ using namespace fsa;
 @synthesize offset = _offset;
 
 -(id)initWithPane:(BounceConfigurationPane *)pane index:(unsigned int)index offset:(const vec2 &)offset {
-    self = [super initObjectWithShape:BOUNCE_CAPSULE at:vec2(0,-5) withVelocity:vec2() withColor:vec4() withSize:.15 withAngle:0];
+    self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-5) withVelocity:vec2() withColor:vec4() withSize:.15 withAngle:0];
     
     if(self) {
         _pane = pane;
@@ -32,7 +33,7 @@ using namespace fsa;
         [self setPosition: pos];
         
         _offset = offset;
-        _isStationary = YES;
+        _isStationary = NO;
 
         [self makeStatic];
     }
@@ -40,8 +41,12 @@ using namespace fsa;
     return self;
 }
 
+-(void)makeSimulated {
+    [self makeStatic];
+}
+
 //-(void)makeStatic {
- //   [self makeHeavyRogue];
+//    [self makeHeavyRogue];
 //}
 
 -(void)playSound:(float)volume {
@@ -71,13 +76,15 @@ using namespace fsa;
     [_pane setCurrentSimulation:_index];
 
     vec2 springLoc(_pane.object.springLoc);
+    if([BounceSettings instance].paneUnlocked) {
+        springLoc.x = pos.x-_offset.x;
+    }
     springLoc.y = pos.y-_offset.y;
     [_pane.object setSpringLoc:springLoc];
+    [_pane.object setCustomSpringLoc:springLoc];
+
 }
 -(void)endGrabCallback {
-    vec2 activeLoc = _pane.object.activeSpringLoc;
-    vec2 inactiveLoc = _pane.object.inactiveSpringLoc;
-    
     vec2 springLoc = _pane.object.springLoc;
     
     BounceConstants *constants = [BounceConstants instance];

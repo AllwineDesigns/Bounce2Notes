@@ -17,6 +17,22 @@
 #import "BounceNoteManager.h"
 #import "BounceSettings.h"
 
+static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt) {
+    BounceObject *obj = (BounceObject*)cpBodyGetUserData(body);
+    
+    float d = obj->_damping;
+    float scale = obj->_gravityScale;
+    vec2 g = scale*obj->_simulation->_gravity;
+    
+    /*
+    float d = obj.damping;
+    float scale = obj.gravityScale;
+    vec2 g = scale*obj.simulation.gravity;
+     */
+	
+	cpBodyUpdateVelocity(body, (cpVect&)g, d, dt);
+}
+
 @implementation BounceObject
 
 @synthesize lastPlayed = _lastPlayed;
@@ -34,6 +50,8 @@
 @synthesize sound = _sound;
 @synthesize renderable = _renderable;
 @synthesize contactPoints = _contactPoints;
+@synthesize gravityScale = _gravityScale;
+@synthesize damping = _damping;
 
 +(id)randomObjectAt: (const vec2&)loc {
     BounceObject *obj = [[BounceObject alloc] initRandomObjectAt:loc];
@@ -67,7 +85,10 @@
 }
 
 -(id)initRandomObjectWithShape: (BounceShape)bounceShape at: (const vec2&)loc withVelocity:(const vec2&)vel {
-    float size = random(loc*1.234)*.2+.05;
+    float maxSize = [BounceSettings instance].maxSize;
+    float minSize = [BounceSettings instance].maxSize;
+    float sizeT = random(loc*1.234);
+    float size = (1-sizeT)*minSize+sizeT*maxSize;
     vec4 color;
     color = [[[BounceSettings instance] colorGenerator] randomColorFromLocation:loc];
     float angle = 2*PI*random(34.2938*loc);
@@ -80,6 +101,7 @@
     self = [super init];
     
     if(self) {
+        _body->velocity_func = BounceVelocityFunction;
         _size = size;
         _size2 = _size*GOLDEN_RATIO;
         
@@ -190,12 +212,9 @@
     [_renderable burst:5];
     
     for(int i = 0; i < _numShapes; i++) {
-        cpShapeSetFriction(_shapes[i], .5);
-        cpShapeSetElasticity(_shapes[i], .95);
-      //  cpShapeSetElasticity(_shapes[i], .3);
-
         cpShapeSetCollisionType(_shapes[i], OBJECT_TYPE);
     }
+    [self setFriction:_friction];
     [self setBounciness:_bounciness];  
     [self needsSize];
 }
@@ -286,23 +305,43 @@
     self.sound = [[BounceNoteManager instance] getNote:notes[note]];
 }
 
+-(void)clampSize {
+    float minSize = [BounceSettings instance].minSize;
+    float maxSize = [BounceSettings instance].maxSize;
+    
+    float aspect = _size/_size2;
+    float invaspect = 1./aspect;
+    if(_size < minSize) {
+        [self setSize:minSize secondarySize:invaspect*minSize];
+    } else if(_size > maxSize) {
+        [self setSize:maxSize secondarySize:invaspect*maxSize];
+    }
+}
+
 -(void)randomizeSize {
     vec2 loc = self.position;
-    float size = random(loc*1.234)*.2+.05;
+    float minSize = [BounceSettings instance].minSize;
+    float maxSize = [BounceSettings instance].maxSize;
+    float size = random(loc*1.234)*(maxSize-minSize)+minSize;
     _size2 = size*GOLDEN_RATIO;
     self.size = size;
+}
+
+-(void)randomizePattern {
+    vec2 loc = self.position;
+    
+    self.patternTexture = [[[BounceSettings instance] patternTextureGenerator] randomPatternTextureWithLocation:loc];
 }
 
 -(void)randomizeColor {
     vec2 loc = self.position;
     
-    _color = [[[BounceSettings instance] colorGenerator] randomColorFromLocation:loc];
+    _color = [[[BounceSettings instance] colorGenerator] randomColor];
 }
 -(void)randomizeShape {
     vec2 loc = self.position;
 
-    BounceShape bounceShape = BounceShape(random(loc*23.9273)*NUM_BOUNCE_SHAPES);
-    self.bounceShape = bounceShape;
+    self.bounceShape = [[[BounceSettings instance] bounceShapeGenerator] bounceShape];
     
 }
 

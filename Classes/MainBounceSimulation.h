@@ -10,7 +10,7 @@
 #import "BounceKillArena.h"
 #import "BounceConfigurationPane.h"
 
-@interface MainBounceSimulation : BounceSimulation {
+@interface MainBounceSimulation : BounceSimulation <NSCoding> {
     float _aspect;
     BounceKillArena *_killArena;
     BounceConfigurationPane *_configPane;

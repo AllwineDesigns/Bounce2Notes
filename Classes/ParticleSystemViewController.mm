@@ -143,8 +143,9 @@
     [texture_manager generateTextureForText:@"Shapes"];
     [texture_manager generateTextureForText:@"Patterns"];
     [texture_manager generateTextureForText:@"Sizes"];
-    [texture_manager generateTextureForText:@"Notes"];
     [texture_manager generateTextureForText:@"Colors"];
+    [texture_manager generateTextureForText:@"Notes"];
+    [texture_manager generateTextureForText:@"Misc"];
     [texture_manager generateTextureForText:@"Save/Load"];
     [texture_manager generateTextureForText:@"Settings"];
     
@@ -239,9 +240,25 @@
 
     [texture_manager generateTextureForText:rest_str forKey:@"rest" withFontName:@"Symbola" withFontSize:80 withOffset:vec2() ];
     */
+    
+    [texture_manager generateTextureForText:@"Copy"];
+    [texture_manager generateTextureForText:@"Paste"];
+    
     [texture_manager generateTextureForText:@"Major"];
     [texture_manager generateTextureForText:@"Minor"];
-
+    
+    [texture_manager generateTextureForText:@"All"];
+    [texture_manager generateTextureForText:@"New"];
+    
+    [texture_manager generateTextureForText:@"Paint Mode"];
+    [texture_manager generateTextureForText:@"Assign Mode"];
+    
+    [texture_manager generateTextureForText:@"Spin Mode"];
+    [texture_manager generateTextureForText:@"Move Mode"];
+    
+    [texture_manager generateTextureForText:@"Pane Unlocked"];
+    [texture_manager generateTextureForText:@"Pane Locked"];
+     
     simulation = [[MainBounceSimulation alloc] initWithAspect:aspect];
     lastUpdate = [[NSProcessInfo processInfo] systemUptime];
 

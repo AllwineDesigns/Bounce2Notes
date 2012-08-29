@@ -19,7 +19,7 @@ using namespace fsa;
 @class BounceShapeGenerator;
 @class BouncePatternGenerator;
 
-@interface BounceSimulation : NSObject {    
+@interface BounceSimulation : NSObject <NSCoding> {    
     cpSpace* _space;
         
     NSMutableSet *_objects;
@@ -27,13 +27,8 @@ using namespace fsa;
     NSMutableDictionary *_gestures;
             
     BounceArena *_arena;
-    
-    float _velLimit;
-    float _friction;
-    
-    float _bounciness;
-    float _gravityScale;
-    vec2 _gravity;
+        
+    @public vec2 _gravity;
     
     float _dt;
     float _timeRemainder;
@@ -42,6 +37,9 @@ using namespace fsa;
 @property (nonatomic, readonly) NSSet *objects;
 @property (nonatomic, readonly) cpSpace* space;
 @property (nonatomic, readonly) BounceArena* arena;
+
+-(id)initWithCoder:(NSCoder *)aDecoder;
+-(void)encodeWithCoder:(NSCoder *)aCoder;
 
 -(id)initWithRect: (CGRect)rect;
 
@@ -73,6 +71,7 @@ using namespace fsa;
 -(BounceObject*)addObjectAt:(const vec2&)loc withVelocity:(const vec2&)vel;
 -(BOOL)isObjectAt:(const vec2&)loc;
 -(BOOL)anyObjectsAt:(const vec2&)loc withinRadius:(float)radius;
+-(vec2)gravity;
 -(void)setGravity:(const vec2&)g;
 -(void)setGravityScale:(float)s;
 -(void)setVelocityLimit:(float)limit;
@@ -91,6 +90,9 @@ using namespace fsa;
 -(void)randomizeColor;
 -(void)randomizeShape;
 -(void)randomizeNote;
+-(void)randomizePattern;
+-(void)randomizeSize;
+-(void)clampSize;
 
 -(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;

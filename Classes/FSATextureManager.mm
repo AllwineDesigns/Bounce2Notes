@@ -9,10 +9,13 @@
 #import "FSATextureManager.h"
 #import "PVRTexture.h"
 #import "FSAUtil.h"
+#import "FSABackgroundQueue.h"
 
 static FSATextureManager* fsaTextureManager;
 
 @implementation FSATextureManager
+
+@synthesize lastMemoryWarning;
 
 -(id)init {
     self = [super init];
@@ -29,7 +32,10 @@ static FSATextureManager* fsaTextureManager;
     
     return self;
 }
+
 -(void)memoryWarning {
+    [[FSABackgroundQueue instance] suspendFor:5];
+    lastMemoryWarning = [[NSProcessInfo processInfo] systemUptime];
     for(FSATexture* tex in [textures objectEnumerator]) {
         [tex memoryWarning];
     }
@@ -103,20 +109,20 @@ static FSATextureManager* fsaTextureManager;
     return tex;
 }
 
--(void)generateTextureForText:(NSString *)txt {
-    [self generateTextureForText:txt forKey:txt withFontSize:50 withOffset:vec2()];
-}
--(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontSize: (float)size withOffset: (const vec2&)offset {
-    [self generateTextureForText:txt forKey:key withFontName:@"Arial" withFontSize:size withOffset:offset];
+-(FSATexture*)generateTemporaryTextureForText:(NSString *)txt {
+    return [self generateTemporaryTextureForText:txt withFontSize:50 withOffset:vec2()];
 }
 
--(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontName: (NSString*)fontName withFontSize: (float)size withOffset: (const vec2&)offset {
-    NSAssert(([textures objectForKey:key] == nil), ([NSString stringWithFormat:@"texture exists for key: %@\n", key]));
+-(FSATexture*)generateTemporaryTextureForText:(NSString *)txt withFontSize:(float)size withOffset:(const vec2 &)offset {
+    return [self generateTemporaryTextureForText:txt withFontName:@"Arial" withFontSize:size withOffset:offset];
+}
+
+-(FSATexture*)generateTemporaryTextureForText:(NSString *)txt withFontName:(NSString *)fontName withFontSize:(float)size withOffset:(const vec2 &)offset {
     
     UIFont *font = [UIFont fontWithName:fontName size:startTextTextureSize/512.*size];
     
     CGSize renderedSize = [txt sizeWithFont:font];
-
+    
     uint32_t height = startTextTextureSize;
     uint32_t width = nextPowerOfTwo(renderedSize.width);
     
@@ -148,11 +154,11 @@ static FSATextureManager* fsaTextureManager;
     
     CGContextFillRect(context, CGRectMake(0, 0, width, height));
     CGContextSetFillColorWithColor(context, color);
-
+    
     CGContextTranslateCTM(context, 0.0f, height);
     CGContextScaleCTM(context, 1.0f, -1.0f);
     CGContextTranslateCTM(context, offset.x, offset.y);
-
+    
     
     UIGraphicsPushContext(context);
     
@@ -178,11 +184,26 @@ static FSATextureManager* fsaTextureManager;
     glGenerateMipmap(GL_TEXTURE_2D);
     
     delete [] data;
-
+    
     FSATexture *tex = [[FSATexture alloc] initWithName:textureID width:width height:height];
+    return [tex autorelease];
+}
+
+-(void)generateTextureForText:(NSString *)txt {
+    [self generateTextureForText:txt forKey:txt withFontSize:50 withOffset:vec2()];
+}
+-(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontSize: (float)size withOffset: (const vec2&)offset {
+    [self generateTextureForText:txt forKey:key withFontName:@"Arial" withFontSize:size withOffset:offset];
+}
+
+-(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontName: (NSString*)fontName withFontSize: (float)size withOffset: (const vec2&)offset {
+    NSAssert(([textures objectForKey:key] == nil), ([NSString stringWithFormat:@"texture exists for key: %@\n", key]));
+    FSATexture *tex = [self generateTemporaryTextureForText:txt withFontName:fontName withFontSize:size withOffset:offset];
     [textures setObject:tex forKey:key];
     
     NSLog(@"loaded text \"%@\" into textureId %d as %@\n", txt, tex.name, key);
+    
+
 }
 
 -(void)dealloc {

@@ -15,6 +15,14 @@
 @synthesize shapes = _shapes;
 @synthesize numShapes = _numShapes;
 
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    
+}
+
 -(id)init {
     self = [super init];
     

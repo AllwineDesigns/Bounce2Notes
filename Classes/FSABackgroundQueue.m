@@ -22,6 +22,16 @@ static FSABackgroundQueue* fsaBackgroundQueue;
     return self;
 }
 
+-(void)resume {
+    [self setSuspended:NO];
+}
+
+-(void)suspendFor:(NSTimeInterval)seconds {
+    [self setSuspended:YES];
+    
+    [self performSelector:@selector(resume) withObject:nil afterDelay:seconds];
+}
+
 +(void)initialize {
     static BOOL initialized = NO;
     if(!initialized)

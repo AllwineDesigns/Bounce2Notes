@@ -14,6 +14,8 @@
 
 @property (nonatomic, retain) EAGLSharegroup* sharegroup;
 
+-(void)resume;
+-(void)suspendFor:(NSTimeInterval)seconds;
 +(FSABackgroundQueue*)instance;
 
 @end

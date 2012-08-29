@@ -28,6 +28,8 @@ typedef enum {
     vec2 _activeSpringLoc;
     vec2 _inactiveSpringLoc;
     
+    vec2 _customSpringLoc;
+    
     vec2 _springLoc;
     vec2 _vel;
     vec4 _color;
@@ -37,6 +39,7 @@ typedef enum {
 @property (nonatomic) const vec2& tappedSpringLoc;
 @property (nonatomic) const vec2& inactiveSpringLoc;
 @property (nonatomic) const vec2& activeSpringLoc;
+@property (nonatomic) const vec2& customSpringLoc;
 @property (nonatomic) vec4 color;
 @property (nonatomic) CGSize paneSize;
 
@@ -85,6 +88,7 @@ typedef enum {
 -(void)addToVelocity:(const vec2&)v;
 
 -(void)randomizeColor;
+-(void)randomizeShape;
 
 -(void)setBounciness:(float)b;
 -(void)setVelocityLimit:(float)limit;

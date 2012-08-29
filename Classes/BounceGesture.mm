@@ -8,6 +8,7 @@
 
 #import "BounceGesture.h"
 #import "BounceSound.h"
+#import "BounceSettings.h"
 
 @implementation BounceGesture
 
@@ -144,26 +145,30 @@
             break;
         }
         case BOUNCE_GESTURE_GRAB: {
-            vec2 curOffset = to-pos;
-            float curAngle = atan2f(curOffset.y, curOffset.x);
-            float ballAngle = _obj.angle;
+            if([BounceSettings instance].grabRotates) {
+                vec2 curOffset = to-pos;
+                float curAngle = atan2f(curOffset.y, curOffset.x);
+                float ballAngle = _obj.angle;
+                
+                float newAngle = ballAngle+curAngle-_offsetAngle;
+                vec2 dir(cos(curAngle), sin(curAngle));
+                
+                _offset = _offsetR*dir;
+                vec2 newPos = to-_offset;
+                
+                _offsetAngle = curAngle;
+                
+                vec2 vel = .5*(newPos-pos)*invtime;
+                BOOL stationary = _obj.isStationary;
+                [_obj grabCallbackWithPosition:newPos velocity:vel angle:newAngle angVel:(newAngle-ballAngle)*invtime stationary:stationary];
+            } else {
+                vec2 newPos = to-_offset;
+                vec2 vel = .5*(newPos-pos)*invtime;
+
+                [_obj grabCallbackWithPosition:newPos velocity:vel angle:_obj.angle angVel:0 stationary:_obj.isStationary];
+            }
             
-            float newAngle = ballAngle+curAngle-_offsetAngle;
-            vec2 dir(cos(curAngle), sin(curAngle));
-            
-            _offset = _offsetR*dir;
-            vec2 newPos = to-_offset;
-            
-            _offsetAngle = curAngle;
-            
-            vec2 vel = .5*(newPos-pos)*invtime;
-          //  float length = vel.length();
-            BOOL stationary = _obj.isStationary;
-         //   if(length > 5) {
-         //       stationary = NO;
-         //   }
-            
-            [_obj grabCallbackWithPosition:newPos velocity:vel angle:newAngle angVel:(newAngle-ballAngle)*invtime stationary:stationary];
+
             [_obj grabCallback:to];
             break;
         }

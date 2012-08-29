@@ -30,7 +30,7 @@
 }
 
 -(void)tapObject:(BounceObject *)obj at:(const vec2&)loc {
-    if([obj isKindOfClass:[BounceConfigurationObject class]]) {
+    if([obj isKindOfClass:[BounceConfigurationObject class]] && ![obj isKindOfClass:[BounceCopyConfigurationObject class]]) {
         BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
         vec2 pos = configObj.position;
         BounceObject *newobj = [BounceObject randomObjectAt:pos];
@@ -90,7 +90,7 @@
         if([bobj isKindOfClass:[BounceConfigurationObject class]]) {
             BounceConfigurationObject *obj = (BounceConfigurationObject*)bobj;
             float timeSinceLastCreate = obj.timeSinceLastCreate;
-            if(obj.painting && timeSinceLastCreate > .1) {
+            if(obj.painting && timeSinceLastCreate > .1 && [BounceSettings instance].paintMode) {
                 [self tapObject:obj at:vec2()];
                 obj.timeSinceLastCreate = 0;
             }
@@ -102,9 +102,28 @@
     BounceGesture *gesture = [self gestureForKey:uniqueId];
 
     if(gesture) {
-        if([[gesture object] isKindOfClass:[BounceConfigurationObject class]]) {
+        if([[gesture object] isKindOfClass:[BounceConfigurationObject class]] && ![[gesture object] isKindOfClass:[BounceCopyConfigurationObject class]]) {
             BounceConfigurationObject *configObj = (BounceConfigurationObject*)[gesture object];
-            configObj.painting = YES;
+            
+            if([BounceSettings instance].paintMode) {
+                configObj.painting = YES;
+            } else if([configObj.previewObjects count] == 0) {
+                vec2 pos = configObj.position;
+                BounceObject *newobj = [BounceObject randomObjectAt:pos];
+                
+                [configObj setConfigurationValueForObject:newobj];
+                
+                [newobj addToSimulation:_simulation];
+                
+                if(![configObj isKindOfClass:[BounceNoteConfigurationObject class]]) {
+                    [newobj playSound:.2];
+                }
+                newobj.angle = configObj.angle;
+                newobj.isStationary = YES;
+                [newobj makeStatic];
+                
+                [configObj setPreviewObject:newobj];
+            }
         }
     }
 }
@@ -120,18 +139,26 @@
             if([self isInBoundsAt:loc]) {
                 [configObj setPreviewObject:nil];
             } else {
-               // BounceObject *obj = [_simulation objectAt:loc];
-                NSSet *objects = [_simulation objectsAt:loc withinRadius:configObj.size];
-                NSMutableSet *previewableObjects = [NSMutableSet setWithCapacity:10];
-                for(BounceObject *obj in objects) {
+                if([BounceSettings instance].paintMode) {
+                    NSSet *objects = [_simulation objectsAt:loc withinRadius:configObj.size];
+                    NSMutableSet *previewableObjects = [NSMutableSet setWithCapacity:10];
+                    for(BounceObject *obj in objects) {
+                        if([obj isPreviewable] && (![self isObjectBeingPreviewed:obj] || [configObj.previewObjects containsObject:obj])) {
+                            [previewableObjects addObject:obj];
+                        }
+                    }
+                    if(configObj.painting) {
+                        [self tapObject:configObj at:vec2()];
+                    }
+                    [configObj setPreviewObjects:previewableObjects];
+                } else {
+                    BounceObject *obj = [_simulation objectAt:loc];
                     if([obj isPreviewable] && (![self isObjectBeingPreviewed:obj] || [configObj.previewObjects containsObject:obj])) {
-                        [previewableObjects addObject:obj];
+                        [configObj setPreviewObject:obj];
+                    } else {
+                        [configObj setPreviewObject:nil];
                     }
                 }
-                if(configObj.painting) {
-                    [self tapObject:configObj at:vec2()];
-                }
-                [configObj setPreviewObjects:previewableObjects];
             }
         }
     }
@@ -149,14 +176,16 @@
             if([previewObjects count] > 0) {
                 [configObj finalizeChanges];
             } else if(![self isInBoundsAt:loc]) {
-                vec2 pos = configObj.position;
-                BounceObject *obj = [_simulation addObjectAt:pos];
-                
-                [obj setVelocity:configObj.velocity];
-                obj.angle = configObj.angle;
-                obj.angVel = configObj.angVel;
-                
-                [configObj setConfigurationValueForObject:obj];
+                if(![configObj isKindOfClass:[BounceCopyConfigurationObject class]]) {
+                    vec2 pos = configObj.position;
+                    BounceObject *obj = [_simulation addObjectAt:pos];
+                    
+                    [obj setVelocity:configObj.velocity];
+                    obj.angle = configObj.angle;
+                    obj.angVel = configObj.angVel;
+                    
+                    [configObj setConfigurationValueForObject:obj];
+                }
             }
             configObj.painting = NO;
         }

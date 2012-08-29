@@ -20,7 +20,7 @@ typedef enum {
     CHIPMUNK_OBJECT_INFINITE_ROGUE
 } ChipmunkObjectState;
 
-@interface ChipmunkObject : NSObject {
+@interface ChipmunkObject : NSObject <NSCoding> {
     ChipmunkObjectState _state;
     cpSpace *_space;
     cpBody *_body;
@@ -35,6 +35,9 @@ typedef enum {
 @property (nonatomic, readonly) cpBody* body;
 @property (nonatomic, readonly) cpShape** shapes;
 @property (nonatomic, readonly) int numShapes;
+
+-(id)initWithCoder:(NSCoder *)aDecoder;
+-(void)encodeWithCoder:(NSCoder *)aCoder;
 
 -(id)init;
 -(id)initInfiniteRogue;

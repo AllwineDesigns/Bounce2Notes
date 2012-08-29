@@ -14,6 +14,7 @@
 #import "BounceConstants.h"
 #import "BounceShapeGenerator.h"
 #import "BouncePatternGenerator.h"
+#import "BounceSettings.h"
 
 #import "BounceSlider.h"
 
@@ -145,16 +146,19 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 @synthesize space = _space;
 @synthesize arena = _arena;
 
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    
+}
+
 -(id)initWithRect: (CGRect)rect {
     _gestures = [[NSMutableDictionary alloc] initWithCapacity:10];
     _objects = [[NSMutableSet alloc] initWithCapacity:10];
     _delayedRemoveObjects = [[NSMutableSet alloc] initWithCapacity:10];
     _dt = .02;
-    
-    _friction = .5;
-    _velLimit = 10;
-    _bounciness = .9;
-    _gravityScale = 9.789;
         
     _space = cpSpaceNew();
     cpSpaceSetCollisionSlop(_space, .02);
@@ -206,6 +210,13 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
         [obj setPatternTexture:patternTexture];
     }
 }
+-(void)randomizePattern {
+    for(BounceObject *obj in _objects) {
+        if(obj.isPreviewable) {
+            [obj randomizePattern];
+        }
+    }
+}
 -(void)randomizeColor {
     for(BounceObject *obj in _objects) {
         [obj randomizeColor];
@@ -213,18 +224,40 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 -(void)randomizeShape {
     for(BounceObject *obj in _objects) {
-        [obj randomizeShape];
+        if(obj.isPreviewable) {
+            [obj randomizeShape];
+        }
     }
 }
 -(void)randomizeNote {
     for(BounceObject *obj in _objects) {
-        [obj randomizeNote];
+        if(obj.isPreviewable) {
+            [obj randomizeNote];
+        }
+    }
+}
+
+-(void)randomizeSize {
+    for(BounceObject *obj in _objects) {
+        if(obj.isPreviewable) {
+            [obj randomizeSize];
+        }
+    }
+}
+-(void)clampSize {
+    for(BounceObject *obj in _objects) {
+        if(obj.isPreviewable) {
+            [obj clampSize];
+        }
     }
 }
 -(void)addObject: (BounceObject*)object {
-    [object setVelocityLimit:_velLimit];
-    [object setBounciness:_bounciness];
-    [object setFriction:_friction];
+    BounceSettings *settings = [BounceSettings instance];
+    [object setVelocityLimit:settings.velocityLimit];
+    [object setBounciness:settings.bounciness];
+    [object setFriction:settings.friction];
+    [object setGravityScale:settings.gravityScale];
+    [object setDamping:settings.damping];
     [_objects addObject:object];
 }
 -(void)removeObject: (BounceObject*)object {
@@ -395,17 +428,21 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 }
 
 -(void)setGravityScale:(float)s {
-    _gravityScale = s;
-
-    vec2 gravity = _gravityScale*_gravity;
-
-    cpSpaceSetGravity(_space, (cpVect&)gravity);
+   // _gravityScale = s;
+   // vec2 gravity = _gravityScale*_gravity;
+   // cpSpaceSetGravity(_space, (cpVect&)gravity);
+    
+    for(BounceObject *obj in _objects) {
+        [obj setGravityScale:s];
+    }
+}
+-(vec2)gravity {
+    return _gravity;
 }
 -(void)setGravity:(const vec2&)g {
-   // cpSpaceSetGravity(_space, cpvzero);
     _gravity = g;
-    vec2 gravity = _gravityScale*_gravity;
-    cpSpaceSetGravity(_space, (cpVect&)gravity);
+  //  vec2 gravity = _gravityScale*_gravity;
+   // cpSpaceSetGravity(_space, (cpVect&)gravity);
 }
 
 -(BOOL)isObjectParticipatingInGestureAt: (const vec2&)loc {
@@ -554,7 +591,9 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         [gesture beginGrabAt:loc];
     } else if([gesture isGrabGesture]) {
         BounceObject *obj = [gesture object];
-        obj.isStationary = YES;
+        if(obj.isPreviewable) {
+            obj.isStationary = YES;
+        }
     }
 }
 -(void)beginCreate:(void*)uniqueId at:(const vec2&)loc {
@@ -645,27 +684,27 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 }
 
 -(void)setDamping:(float)damping {
-    cpSpaceSetDamping(_space, damping);
+    for(BounceObject *obj in _objects) {
+        [obj setDamping:damping];
+    }
+   // cpSpaceSetDamping(_space, damping);
 }
 
 -(void)setFriction:(float)f {
-    _friction = f;
-    [_arena setFriction:f];
+   // [_arena setFriction:f];
     for(BounceObject *obj in _objects) {
         [obj setFriction:f];
     }
 }
 
 -(void)setBounciness:(float)b {
-    _bounciness = b;
-    [_arena setBounciness:b];
+  //  [_arena setBounciness:b];
     for(BounceObject *obj in _objects) {
         [obj setBounciness:b];
     }
 }
 
 -(void)setVelocityLimit:(float)limit {
-    _velLimit = limit;
     for(BounceObject *obj in _objects) {
         [obj setVelocityLimit:limit];
     }
