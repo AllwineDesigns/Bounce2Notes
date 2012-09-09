@@ -30,14 +30,14 @@ typedef enum {
     NUM_BOUNCE_SHAPES
 } BounceShape;
 
-@interface BounceObject : ChipmunkObject { 
-    
+@interface BounceObject : ChipmunkObject <NSCoding> { 
     id<BounceSound> _sound;
     BounceShape _bounceShape;
         
     BOOL _isPreviewable;
     BOOL _isRemovable;
     BOOL _simulationWillDraw;
+    BOOL _simulationWillArchive;
     
     NSTimeInterval _lastPlayed;
     
@@ -74,9 +74,10 @@ typedef enum {
 
 @property (nonatomic) NSTimeInterval lastPlayed;
 @property (nonatomic) BOOL simulationWillDraw;
+@property (nonatomic) BOOL simulationWillArchive;
 @property (nonatomic) BOOL isPreviewable;
 @property (nonatomic) BOOL isRemovable;
-@property (nonatomic, retain) BounceSimulation* simulation;
+@property (nonatomic, assign) BounceSimulation* simulation;
 @property (nonatomic, readonly) BOOL hasSecondarySize;
 @property (nonatomic) BOOL isStationary;
 @property (nonatomic) const vec4& color;
@@ -141,7 +142,6 @@ typedef enum {
 -(void)randomizeColor;
 -(void)randomizeShape;
 -(void)randomizePattern;
--(void)clampSize;
 -(float)size;
 -(void)setSize:(float)s;
 -(void)setSize:(float)s secondarySize:(float)s2;

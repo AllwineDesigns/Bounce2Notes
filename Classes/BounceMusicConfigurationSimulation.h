@@ -11,18 +11,10 @@
 #import "BounceConfigurationSimulation.h"
 #import "BounceSlider.h"
 #import "BounceButton.h"
+#import "BouncePages.h"
 
-@interface BounceMusicConfigurationSimulation : BounceConfigurationSimulation <BounceSliderDelegate,BounceButtonDelegate> {
-    BounceSlider *_keySlider;
-    BounceSlider *_octaveSlider;
-    BounceSlider *_tonalitySlider;
-    BounceSlider *_modeSlider;
-    BounceButton *_randomizeButton;
-    
-    ChipmunkObject *_buffer;
-    
-    NSArray *_noteConfigObjects;
+@interface BounceMusicConfigurationSimulation : BounceConfigurationSimulation {
+
 }
--(id)initWithRect:(CGRect)rect bounceSimulation:(BounceSimulation*)sim;
--(void)updateConfigObjects;
+-(id)initWithRect:(CGRect)rect bounceSimulation:(MainBounceSimulation*)sim;
 @end

@@ -11,43 +11,52 @@
 #import "BounceColorGenerator.h"
 #import "BounceShapeGenerator.h"
 #import "BouncePatternGenerator.h"
+#import "BounceSizeGenerator.h"
 
-@interface BounceSettings : NSObject <NSCoding> {
+@interface BounceSettings : NSObject <NSCoding, NSCopying> {
     BounceShapeGenerator *_bounceShapeGenerator; 
     BouncePatternGenerator *_patternTextureGenerator;
     BounceColorGenerator *_colorGenerator;
-    float _minSize;
-    float _maxSize;
+    BounceSizeGenerator *_sizeGenerator;
+    
     float _bounciness;
     float _friction;
     float _velLimit;
     float _damping;
     float _gravityScale;
     
+    BOOL _affectAllObjects;
+    
     BOOL _paintMode;
     BOOL _grabRotates;
     BOOL _paneUnlocked;
+    
+    BOOL _playMode;
     
 }
 @property (nonatomic, retain) BounceShapeGenerator* bounceShapeGenerator;
 @property (nonatomic, retain) BouncePatternGenerator* patternTextureGenerator;
 @property (nonatomic, retain) BounceColorGenerator* colorGenerator;
-@property (nonatomic) float minSize;
-@property (nonatomic) float maxSize;
+@property (nonatomic, retain) BounceSizeGenerator* sizeGenerator;
+
 @property (nonatomic) float bounciness;
 @property (nonatomic) float friction;
 @property (nonatomic) float velocityLimit;
 @property (nonatomic) float damping;
 @property (nonatomic) float gravityScale;
+
+@property (nonatomic) BOOL affectAllObjects;
+
 @property (nonatomic) BOOL grabRotates;
 @property (nonatomic) BOOL paintMode;
 @property (nonatomic) BOOL paneUnlocked;
-
+@property (nonatomic) BOOL playMode;
 
 -(id)initWithCoder:(NSCoder *)aDecoder;
 -(void)encodeWithCoder:(NSCoder *)aCoder;
 
 -(id)init;
+-(void)updateSettings:(BounceSettings*)settings;
 +(BounceSettings*)instance;
 
 @end

@@ -11,7 +11,7 @@
 
 using namespace fsa;
 
-@interface BounceColorGenerator : NSObject {
+@interface BounceColorGenerator : NSObject <NSCoding> {
     
 }
 -(vec4)randomColor;

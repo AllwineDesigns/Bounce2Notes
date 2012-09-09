@@ -13,168 +13,116 @@
 #import "FSATextureManager.h"
 #import "BounceSettings.h"
 #import "BounceShapeGenerator.h"
-
-@implementation BounceSettingsPages
-
-@synthesize pageWidth = _pageWidth;
-@synthesize pageHeight = _pageHeight;
-@synthesize position = _pos;
-@synthesize velocity = _vel;
-@synthesize currentPage = _curPage;
-@synthesize touchOffset = _touchOffset;
-
--(id)initWithPageWidth:(float)width pageHeight:(float)height {
-    self = [super init];
-    if(self) {
-        _pageWidth = width;
-        _pageHeight = height;
-        _pages = [[NSMutableArray alloc] initWithCapacity:4];
-    }
-    
-    return self;
-}
-
--(void)setTouchOffset:(float)touchOffset {
-    _touchOffset = touchOffset;
-    
-    _springLoc = -_pageWidth*_curPage+_touchOffset;
-}
-
--(void)setCurrentPage:(unsigned int)currentPage {
-    _curPage = currentPage;
-    
-    _springLoc = -_pageWidth*_curPage+_touchOffset;
-}
-
--(void)addPage:(BounceSettingsPage*)page {
-    page.parent = self;
-    page.pageOffset = [_pages count]*_pageWidth;
-    [_pages addObject:page];
-}
--(void)step:(float)dt {
-    float spring_k = 130;
-    float drag = .2;
-    
-    _pos += _vel*dt;
-    
-    float a = spring_k*(_springLoc-_pos);
-    
-    _vel +=  a*dt-drag*_vel;
-    
-    for(BounceSettingsPage* page in _pages) {
-        [page step:dt];
-    }
-}
--(void)updatePositions:(const vec2&)panePosition {
-    for(BounceSettingsPage *page in _pages) {
-        [page updatePositions:panePosition];
-    }
-}
-
--(unsigned int)count {
-    return [_pages count];
-}
-
--(void)nextPage {
-    if(_curPage < [_pages count]-1) {
-        //[self finalizeScroll];
-        [self setCurrentPage:_curPage+1];
-    }
-}
--(void)previousPage {
-    if(_curPage > 0) {
-        //[self finalizeScroll];
-        [self setCurrentPage:_curPage-1];
-    }
-}
-
--(void)setScroll:(float)scroll {
-    [[_pages objectAtIndex:_curPage] setScroll:scroll];
-}
-
--(void)finalizeScroll {
-    [[_pages objectAtIndex:_curPage] finalizeScroll];
-}
-
--(void)dealloc {
-    [_pages dealloc];
-    [super dealloc];
-}
-
-@end
-
-@implementation BounceSettingsPage
-@synthesize parent = _parent;
-@synthesize pageOffset = _pageOffset;
-
--(id)init {
-    self = [super init];
-    if(self) {
-        _objects = [[NSMutableArray alloc] initWithCapacity:2];
-    }
-    return self;
-}
-
--(void)step:(float)dt {
-    float spring_k = 130;
-    float drag = .2;
-    
-    _verticalPos += _verticalVel*dt;
-    
-    float a = spring_k*(_verticalSpringLoc+_verticalScroll-_verticalPos);
-    
-    _verticalVel +=  a*dt-drag*_verticalVel;
-}
-
--(void)setScroll:(float)scroll {
-    _verticalScroll = scroll;
-}
-
--(void)finalizeScroll {
-    _verticalSpringLoc += _verticalScroll;
-    if(_verticalSpringLoc < _top) {
-        _verticalSpringLoc = _top;
-    } else if(_verticalSpringLoc > _bottom) {
-        _verticalSpringLoc = _bottom;
-    }
-    _verticalScroll = 0;
-}
-
--(void)addWidget:(id)widget offset:(const vec2&)offset {
-    if(-offset.y-_parent.pageHeight*.5 < _top) {
-        _top = offset.y-_parent.pageHeight*.5;
-    } else if(-offset.y+_parent.pageHeight*.5 > _bottom) {
-        _bottom = -offset.y+_parent.pageHeight*.5;
-    }
-    [_objects addObject:widget];
-    _offsets.push_back(offset);
-}
--(void)updatePositions:(const vec2&)panePosition {
-    unsigned int numObjects = [_objects count];
-    float pagesPos = _parent.position;
-    for(unsigned int i = 0; i < numObjects; i++) {
-        id<BounceSettingsWidget> widget = [_objects objectAtIndex:i];
-        vec2 offset = _offsets[i];
-        vec2 pos = panePosition+offset+vec2(_pageOffset+pagesPos, _verticalPos);
-
-        [widget setPosition:pos];
-    }
-}
-
--(void)dealloc {
-    [_objects release];
-    [super dealloc];
-}
-@end
+#import "BounceConfigurationObject.h"
+#import "BounceSizeGenerator.h"
 
 @implementation BounceSettingsSimulation
 
-@synthesize pane = _pane;
+-(void)setupMusicSliders {
+    NSArray *labels = [NSArray arrayWithObjects:@"Cflat", @"Gflat", @"Dflat", @"Aflat", @"Eflat", @"Bflat", @"F", @"C", @"G", @"D", @"A", @"E", @"B", @"Fsharp", @"Csharp", nil];
+    
+    CGSize dimensions = self.arena.dimensions;
+    
+    BounceSlider *slider = [[BounceSlider alloc] initWithLabels:labels index:7];
+    [slider.handle setPosition:vec2(-2,0)];
+    slider.handle.bounceShape = BOUNCE_BALL;
+    slider.handle.size = dimensions.height*.08;
+    slider.handle.sound = [[BounceNoteManager instance] getRest];
+    
+    [slider.track setPosition:vec2(-2,0)];
+    slider.track.size = dimensions.width*.375;
+    slider.track.sound = [[BounceNoteManager instance] getRest];
+    
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    
+    slider.delegate = self;
+    slider.selector = @selector(changedMusicSlider:);
+    slider.padding = dimensions.width*.05;
+    
+    [slider addToSimulation:self];
+    _keySlider = slider;
+    
+    labels = [NSArray arrayWithObjects:@"Major", @"Minor", nil];
+    slider = [[BounceSlider alloc] initWithLabels:labels index:0];
+    [slider.handle setPosition:vec2(-2,0)];
+    slider.handle.bounceShape = BOUNCE_RECTANGLE;
+    slider.handle.size = dimensions.height*.1;
+    slider.handle.secondarySize = dimensions.height*.06;
+    slider.handle.sound = [[BounceNoteManager instance] getRest];
+    
+    [slider.track setPosition:vec2(-2,0)];
+    slider.track.size = dimensions.width*.05;
+    slider.track.sound = [[BounceNoteManager instance] getRest];
+    
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    
+    slider.delegate = self;
+    slider.selector = @selector(changedMusicSlider:);
+    slider.padding = dimensions.width*.02;
+    
+    
+    [slider addToSimulation:self];
+    _tonalitySlider = slider;
+    
+    labels = [NSArray arrayWithObjects:@"Play Mode", @"Create Mode", nil];
+    slider = [[BounceSlider alloc] initWithLabels:labels index:1];
+    [slider.handle setPosition:vec2(-2,0)];
+    slider.handle.bounceShape = BOUNCE_CAPSULE;
+    slider.handle.size = dimensions.height*.1;
+    slider.handle.secondarySize = dimensions.height*.06;
+    slider.handle.sound = [[BounceNoteManager instance] getRest];
+    
+    [slider.track setPosition:vec2(-2,0)];
+    slider.track.size = dimensions.width*.05;
+    slider.track.sound = [[BounceNoteManager instance] getRest];
+    
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    
+    slider.delegate = self;
+    slider.selector = @selector(changedMusicSlider:);
+    slider.padding = dimensions.width*.02;
+    
+    [slider addToSimulation:self];
+    _modeSlider = slider;
+    
+    
+    labels = [NSArray arrayWithObjects:@"Octave 2", @"Octave 3", @"Octave 4", @"Octave 5", @"Octave 6", nil]; 
+    NSArray *values = [NSArray arrayWithObjects:
+                       [NSNumber numberWithUnsignedInt:2], 
+                       [NSNumber numberWithUnsignedInt:3],
+                       [NSNumber numberWithUnsignedInt:4], 
+                       [NSNumber numberWithUnsignedInt:5], 
+                       [NSNumber numberWithUnsignedInt:6], nil];
+    slider = [[BounceSlider alloc] initWithLabels:labels values:values index:2];
+    [slider.handle setPosition:vec2(-2,0)];
+    slider.handle.bounceShape = BOUNCE_BALL;
+    slider.handle.size = dimensions.height*.08;
+    slider.handle.sound = [[BounceNoteManager instance] getRest];
+    
+    [slider.track setPosition:vec2(-2,0)];
+    slider.track.size = dimensions.width*.375;
+    slider.track.sound = [[BounceNoteManager instance] getRest];
+    
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    
+    slider.delegate = self;
+    slider.selector = @selector(changedMusicSlider:);
+    slider.padding = dimensions.width*.05;
+    
+    [slider addToSimulation:self];
+    _octaveSlider = slider;
+    
+}
+
+-(void)setColor:(const vec4 &)color {
+    [super setColor:color];
+    for(BounceObject *obj in _noteConfigObjects) {
+        [obj setColor:color];
+    }
+}
 
 -(void)setupFrictionSlider {
     CGSize dimensions = self.arena.dimensions;
-
-    float upi = [[BounceConstants instance] unitsPerInch];
     
     NSArray *labels = [NSArray arrayWithObjects:@"Frictionless", @"Smooth", @"Coarse", @"Rough", nil];
     NSArray *values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
@@ -190,13 +138,15 @@
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .3*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     slider.delegate = self;
     slider.selector = @selector(changedFrictionSlider:);
     slider.padding = .07*dimensions.width;
+    
+    _updatingSettings = NO;
 
     [slider addToSimulation:self];
     
@@ -205,8 +155,6 @@
 
 -(void)setupVelLimitSlider {
     CGSize dimensions = self.arena.dimensions;
-
-    float upi = [[BounceConstants instance] unitsPerInch];
     
     NSArray *labels = [NSArray arrayWithObjects:@"Stopped", @"Slow", @"Fast", @"Very Fast", @"No Limit", nil];
     NSArray *values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0],
@@ -223,7 +171,7 @@
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .3*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
@@ -239,8 +187,6 @@
 
 -(void)setupDampingSlider {
     CGSize dimensions = self.arena.dimensions;
-
-    float upi = [[BounceConstants instance] unitsPerInch];
     
     NSArray *labels = [NSArray arrayWithObjects:@"Vacuum", @"Air", @"Water", @"Syrup", nil];
     NSArray *values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:1],
@@ -256,7 +202,7 @@
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .3*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
@@ -271,8 +217,6 @@
 
 -(void)setupShapesSlider {
     CGSize dimensions = self.arena.dimensions;
-
-    float upi = [[BounceConstants instance] unitsPerInch];
 
     NSArray *labels = [NSArray arrayWithObjects:@"Circle", @"Square", @"Triangle", @"Pentagon", @"Star", @"Rectangle", @"Capsule", @"Note", @"Random", nil];
     NSArray *values = [NSArray arrayWithObjects:[[BounceShapeGenerator alloc] initWithBounceShape:BOUNCE_BALL],
@@ -297,7 +241,7 @@
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .3*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
@@ -312,9 +256,6 @@
 
 -(void)setupColorSlider {
     CGSize dimensions = self.arena.dimensions;
-
-    float upi = [[BounceConstants instance] unitsPerInch];
-    FSATextureManager *texManager = [FSATextureManager instance];
     
     NSArray *labels = [NSArray arrayWithObjects:@"Pastel", @"Red", @"Orange", @"Yellow", @"Green", @"Blue", @"Purple", @"Gray", @"Random", nil];
     NSArray *values = [NSArray arrayWithObjects:[[BouncePastelColorGenerator alloc] init],
@@ -339,7 +280,7 @@
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .3*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
@@ -354,18 +295,17 @@
 
 -(void)setupPatternsSlider {
     CGSize dimensions = self.arena.dimensions;
-    float upi = [[BounceConstants instance] unitsPerInch];
     FSATextureManager *texManager = [FSATextureManager instance];
     
-    NSArray *labels = [NSArray arrayWithObjects:@"", @"", @"", @"", @"", @"", @"", @"", @"", @"", nil];
+    NSArray *labels = [NSArray arrayWithObjects:@"", /*@"",*/ @"", @"", @"", @"", /*@"",*/ @"", @"", @"", nil];
     NSArray *values = [NSArray arrayWithObjects:
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"spiral.jpg"]],
-                       [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"checkered.jpg"]],
+                      // [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"checkered.jpg"]],
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"plasma.jpg"]],
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"sections.jpg"]],
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"weave.jpg"]], 
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"stripes.jpg"]], 
-                       [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"squares.jpg"]],    
+                      // [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"squares.jpg"]],    
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"black.jpg"]],
                        [[BouncePatternGenerator alloc] initWithPatternTexture:[texManager getTexture:@"white.jpg"]], 
                        [[BounceRandomPatternGenerator alloc] init], nil];
@@ -382,7 +322,7 @@
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .3*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.handle.patternTexture = [slider.value patternTexture];
@@ -396,86 +336,62 @@
     _patternsSlider = slider;
 }
 
--(void)setupMinSizeSlider {
+-(void)setupSizeSlider {
     CGSize dimensions = self.arena.dimensions;
         
-    NSArray *labels = [NSArray arrayWithObjects:@"", @"", nil];
-    NSArray *values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:.03],
-                       [NSNumber numberWithFloat:.5], nil];
+    NSArray *labels = [NSArray arrayWithObjects:@"Teeny", @"Tiny", @"Small", @"Medium", @"Large", @"Random", nil];
+    NSArray *values = [NSArray arrayWithObjects:[[BounceSizeGenerator alloc] initWithSize:.03],
+                       [[BounceSizeGenerator alloc] initWithSize:.05],
+                       [[BounceSizeGenerator alloc] initWithSize:.1],
+                       [[BounceSizeGenerator alloc] initWithSize:.15],
+                       [[BounceSizeGenerator alloc] initWithSize:.2],
+                       [[BounceRandomSizeGenerator alloc] init],
+                       nil];
     
-    BounceSlider *slider = [[BounceSlider alloc] initContinuousWithLabels:labels values:values index:0];
+    for(NSObject *v in values) {
+        [v release];
+    }
+    
+    BounceSlider *slider = [[BounceSlider alloc] initContinuousWithLabels:labels values:values index:5];
     slider.handle.bounceShape = BOUNCE_BALL;
-    slider.param = .04255;
-
-    slider.handle.size = [slider.value floatValue];
-    slider.handle.secondarySize = [slider.value floatValue]*GOLDEN_RATIO;
+    CGSize size = [(BounceSizeGenerator*)slider.value size];
+    slider.handle.size = size.width;
+    slider.handle.secondarySize = size.height;
     slider.handle.sound = [[BounceNoteManager instance] getRest];
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .15*dimensions.width;
+    slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-  //  slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     slider.delegate = self;
-    slider.selector = @selector(changedMinSizeSlider:);
+    slider.selector = @selector(changedSizeSlider:);
     slider.padding = .05*dimensions.width;
 
     [slider addToSimulation:self];
     
-    _minSizeSlider = slider;
-}
-
--(void)setupMaxSizeSlider {
-    CGSize dimensions = self.arena.dimensions;
-    
-    NSArray *labels = [NSArray arrayWithObjects:@"", @"", nil];
-    NSArray *values = [NSArray arrayWithObjects:[NSNumber numberWithFloat:.03],
-                       [NSNumber numberWithFloat:.5], nil];
-    
-    BounceSlider *slider = [[BounceSlider alloc] initContinuousWithLabels:labels values:values index:1];
-
-    slider.handle.bounceShape = BOUNCE_BALL;
-    slider.param = .468085;
-
-    slider.handle.size = [slider.value floatValue];
-    slider.handle.secondarySize = [slider.value floatValue]*GOLDEN_RATIO;
-    slider.handle.sound = [[BounceNoteManager instance] getRest];
-    slider.handle.isStationary = NO;
-
-    
-    slider.track.position = vec2(-2,0);
-    slider.track.size = .15*dimensions.width;
-    slider.track.sound = [[BounceNoteManager instance] getRest];
-    
-   // slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    slider.delegate = self;
-    slider.selector = @selector(changedMaxSizeSlider:);
-    slider.padding = .05*dimensions.width;
-
-    [slider addToSimulation:self];
-    
-    _maxSizeSlider = slider;
+    _sizeSlider = slider;
 }
 
 -(BounceSlider*)allNewSlider {
     CGSize dimensions = self.arena.dimensions;
     
-    NSArray *labels = [NSArray arrayWithObjects:@"All", @"New", nil];
+    NSArray *labels = [NSArray arrayWithObjects:@"Affect All", @"Affect New", nil];
     NSArray *values = [NSArray arrayWithObjects:[NSNumber numberWithBool:YES],
                        [NSNumber numberWithBool:NO], nil];
     
     BounceSlider *slider = [[BounceSlider alloc] initWithLabels:labels values:values index:0];
     
     slider.handle.position = vec2(-2,0);
-    slider.handle.bounceShape = BOUNCE_BALL;    
-    slider.handle.size = .1*dimensions.height;
-    slider.handle.secondarySize = .1*dimensions.height*GOLDEN_RATIO;
+    slider.handle.bounceShape = BOUNCE_CAPSULE;    
+    slider.handle.size = .2*dimensions.height;
+    slider.handle.secondarySize = .1*dimensions.height;
     slider.handle.sound = [[BounceNoteManager instance] getRest];
     slider.handle.isStationary = NO;
     
     slider.track.position = vec2(-2,0);
-    slider.track.size = .05*dimensions.width;
+    slider.track.size = .1*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.padding = .015*dimensions.width;
@@ -487,96 +403,25 @@
     return slider;
 }
 
--(void)changedAllNewBouncinessSlider:(BounceSlider *)slider {
+-(void)changedAffectsAllObjectsSlider:(BounceSlider *)slider {
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
+    [BounceSettings instance].affectAllObjects = [slider.value boolValue];
+    if([slider.value boolValue] && !_updatingSettings) {
         [self changedBouncinessSlider:_bouncinessSlider];
-    }
-}
-
--(void)changedAllNewColorSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
         [self changedColorSlider:_colorSlider];
-    }
-}
-
--(void)changedAllNewDampingSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
         [self changedDampingSlider:_dampingSlider];
-    }
-}
-
--(void)changedAllNewFrictionSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
         [self changedFrictionSlider:_frictionSlider];
-    }
-}
-
--(void)changedAllNewGravitySlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
         [self changedGravitySlider:_gravitySlider];
-    }
-}
-
--(void)changedAllNewPatternsSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
         [self changedPatternsSlider:_patternsSlider];
-    }
-}
-
--(void)changedAllNewShapesSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
+        [self changedSizeSlider:_sizeSlider];
+        [self changedVelLimitSlider:_velLimitSlider];
         [self changedShapesSlider:_shapesSlider];
     }
 }
 
--(void)changedAllNewSizeSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
-        [_simulation clampSize]; 
-    }
-}
-
--(void)changedAllNewVelLimitSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    if([slider.value boolValue]) {
-        [self changedVelLimitSlider:_velLimitSlider];
-    }
-}
-
 -(void)setupAllNewSliders {
-    _allNewColorSlider = [self allNewSlider];
-    _allNewColorSlider.selector = @selector(changedAllNewColorSlider:);
-    
-    _allNewBouncinessSlider = [self allNewSlider];
-    _allNewBouncinessSlider.selector = @selector(changedAllNewBouncinessSlider:);
-    
-    _allNewDampingSlider = [self allNewSlider];
-    _allNewDampingSlider.selector = @selector(changedAllNewDampingSlider:);
-    
-    _allNewFrictionSlider = [self allNewSlider];
-    _allNewFrictionSlider.selector = @selector(changedAllNewFrictionSlider:);
-    
-    _allNewGravitySlider = [self allNewSlider];
-    _allNewGravitySlider.selector = @selector(changedAllNewGravitySlider:);
-    
-    _allNewPatternsSlider = [self allNewSlider];
-    _allNewPatternsSlider.selector = @selector(changedAllNewPatternsSlider:);
-    
-    _allNewShapesSlider = [self allNewSlider];
-    _allNewShapesSlider.selector = @selector(changedAllNewShapesSlider:);
-    
-    _allNewSizeSlider = [self allNewSlider];
-    _allNewSizeSlider.selector = @selector(changedAllNewSizeSlider:);
-    
-    _allNewVelLimitSlider = [self allNewSlider];
-    _allNewVelLimitSlider.selector = @selector(changedAllNewVelLimitSlider:);
+    _affectsAllObjectsSlider = [self allNewSlider];
+    _affectsAllObjectsSlider.selector = @selector(changedAffectsAllObjectsSlider:);
 }
 
 -(void)setupPaintModeSlider {
@@ -669,73 +514,316 @@
     _paneUnlockedSlider = slider;
 }
 
+-(void)setupCopyPaste {
+    FSATextureManager *texManager = [FSATextureManager instance];
+    vec4 color = vec4(.5,.5,.5,1);
+
+    BouncePasteConfigurationObject * pasteObject = [[BouncePasteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -2) withVelocity:vec2() withColor:color withSize:.15 withAngle:0];
+    [pasteObject addToSimulation:self];
+    pasteObject.patternTexture = [texManager getTexture:@"Paste"];
+    [pasteObject release];
+    _pasteObject = pasteObject;
+    
+    BounceCopyConfigurationObject *copyObject = [[BounceCopyConfigurationObject alloc] initWithPasteObject:pasteObject];
+    
+    copyObject.patternTexture = [texManager getTexture:@"Copy"];
+    [copyObject addToSimulation:self];
+    [copyObject release];
+    _copyObject = copyObject;
+    
+    CGSize size = self.arena.dimensions;
+    CGRect rect = CGRectMake(-size.width*.5, -size.height*.5, size.width, size.height);
+
+    _copyPasteArena = [[BounceArena alloc] initWithRect:rect];
+    [_copyPasteArena addToSpace:_space];
+}
+
+-(void)setupMusicBounceObjects {
+    float size = .15;
+    
+    BounceSimulation *sim = self;
+    BounceNoteManager *noteManager = [BounceNoteManager instance];
+    FSATextureManager *texManager = [FSATextureManager instance];
+    
+    vec4 color;
+    
+    float small = .04;
+    float big = .15;
+    
+    // float small = .06;
+    // float big = .2;
+    float t;
+    int notes = 8;
+    
+    float aspect = [[BounceConstants instance] aspect];
+    float invaspect = 1./aspect;
+    
+    NSMutableArray *noteConfigObjects = [[NSMutableArray alloc] initWithCapacity:8];
+    
+    BounceNoteConfigurationObject * configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    [configObject addToSimulation:sim];
+    configObject.sound = [noteManager getNote:0];
+    t = 0./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:1];
+    t = 1./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:2];
+    t = 2./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:3];
+    t = 3./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:4];
+    t = 4./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:5];
+    t = 5./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:6];
+    t = 6./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getNote:7];
+    t = 7./(notes-1);
+    configObject.size = small*t+(1-t)*big;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:configObject.sound.label];
+    [configObject addToSimulation:sim];
+    [configObject release];
+    
+    configObject = [[BounceNoteConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -invaspect-1) withVelocity:vec2() withColor:color withSize:size withAngle:0];
+    [noteConfigObjects addObject:configObject];
+    configObject.sound = [noteManager getRest];
+    configObject.size = .08;
+    configObject.secondarySize = configObject.size*GOLDEN_RATIO;
+    configObject.patternTexture = [texManager getTexture:@"rest.png"];
+    // [configObject setPatternForTextureSheet:@"music_texture_sheet.jpg" row:4 col:1 numRows:5 numCols:5];
+    [configObject addToSimulation:sim];
+
+    [configObject release];
+    
+    _buffer = [[ChipmunkObject alloc] initStatic];
+    [_buffer addSegmentShapeWithRadius:50 fromA:vec2(-50,0) toB:vec2(50,0)];
+    [_buffer addToSpace:_space];
+    
+    CGSize s = self.arena.dimensions;
+    CGRect rect = CGRectMake(-s.width*.5, -s.height*.5, s.width, s.height);
+    _musicArena = [[BounceArena alloc] initWithRect:rect];
+    [_musicArena addToSpace:_space];
+     
+    _noteConfigObjects = noteConfigObjects;
+}
+
+
 -(void)setupPages {
     CGSize dimensions = self.arena.dimensions;
-    _pages = [[BounceSettingsPages alloc] initWithPageWidth:dimensions.width pageHeight:dimensions.height];
+    _pages = [[BouncePages alloc] initWithPageWidth:dimensions.width pageHeight:dimensions.height];
     float spacing = .15 *dimensions.height;
     float tspacing = .25 *dimensions.height;
     
-    BounceSettingsPage *page = [[BounceSettingsPage alloc] init];
-    [page addWidget:_allNewShapesSlider offset:vec2(-.35*dimensions.width, tspacing)];
-    [page addWidget:_shapesSlider offset:vec2(.1*dimensions.width,tspacing)];
-    [page addWidget:_allNewPatternsSlider offset:vec2(-.35*dimensions.width, -spacing)];
-    [page addWidget:_patternsSlider offset:vec2(.1*dimensions.width,-spacing)];
-
+    BouncePage *page = [[BouncePage alloc] init];
+    [page addWidget:_shapesSlider offset:vec2(0,tspacing)];
+    [page addWidget:_patternsSlider offset:vec2(0,-spacing)];
+    cpLayers layers = (1 << [_pages count]);
+    [_shapesSlider.handle setLayers:layers];
+    [_shapesSlider.track setLayers:layers];
+    [_patternsSlider.handle setLayers:layers];
+    [_patternsSlider.track setLayers:layers];
     [_pages addPage:page];
     [page release];
 
     
-    page = [[BounceSettingsPage alloc] init];
-    [page addWidget:_allNewColorSlider offset:vec2(-.35*dimensions.width, tspacing)];
-    [page addWidget:_colorSlider offset:vec2(.1*dimensions.width,tspacing)];
-    [page addWidget:_allNewSizeSlider offset:vec2(-.35*dimensions.width, -spacing)];
-    [page addWidget:_minSizeSlider offset:vec2(-.05*dimensions.width, -spacing)];
-    [page addWidget:_maxSizeSlider offset:vec2(.25*dimensions.width, -spacing)];
+    page = [[BouncePage alloc] init];
+    [page addWidget:_colorSlider offset:vec2(0,tspacing)];
+    [page addWidget:_sizeSlider offset:vec2(0, -spacing)];
+    
+    layers = (1 << [_pages count]);
+    [_colorSlider.handle setLayers:layers];
+    [_colorSlider.track setLayers:layers];
+    [_sizeSlider.handle setLayers:layers];
+    [_sizeSlider.track setLayers:layers];
+
     [_pages addPage:page];
     [page release];
      
 
-    page = [[BounceSettingsPage alloc] init];
-    [page addWidget:_allNewBouncinessSlider offset:vec2(-.35*dimensions.width, tspacing)];
-    [page addWidget:_bouncinessSlider offset:vec2(.1*dimensions.width,tspacing)];
-    [page addWidget:_allNewGravitySlider offset:vec2(-.35*dimensions.width, -spacing)];
-    [page addWidget:_gravitySlider offset:vec2(.1*dimensions.width,-spacing)];
+    page = [[BouncePage alloc] init];
+    [page addWidget:_bouncinessSlider offset:vec2(0,tspacing)];
+    [page addWidget:_gravitySlider offset:vec2(0,-spacing)];
+    layers = (1 << [_pages count]);
+    [_bouncinessSlider.handle setLayers:layers];
+    [_bouncinessSlider.track setLayers:layers];
+    [_gravitySlider.handle setLayers:layers];
+    [_gravitySlider.track setLayers:layers];    
     [_pages addPage:page];
     [page release];
   
     
-    page = [[BounceSettingsPage alloc] init];
-    [page addWidget:_allNewDampingSlider offset:vec2(-.35*dimensions.width, tspacing)];
-    [page addWidget:_dampingSlider offset:vec2(.1*dimensions.width,tspacing)];
-    [page addWidget:_allNewVelLimitSlider offset:vec2(-.35*dimensions.width, -spacing)];
-    [page addWidget:_velLimitSlider offset:vec2(.1*dimensions.width,-spacing)];
+    page = [[BouncePage alloc] init];
+    [page addWidget:_dampingSlider offset:vec2(0,tspacing)];
+    [page addWidget:_velLimitSlider offset:vec2(0,-spacing)];
+    layers = (1 << [_pages count]);
+    [_dampingSlider.handle setLayers:layers];
+    [_dampingSlider.track setLayers:layers];
+    [_velLimitSlider.handle setLayers:layers];
+    [_velLimitSlider.track setLayers:layers];   
     [_pages addPage:page];
     [page release];
 
-    page = [[BounceSettingsPage alloc] init];
-    [page addWidget:_allNewFrictionSlider offset:vec2(-.35*dimensions.width, (tspacing-spacing)*.5)];
-    [page addWidget:_frictionSlider offset:vec2(.1*dimensions.width,(tspacing-spacing)*.5)];
+    page = [[BouncePage alloc] init];
+    [page addWidget:_frictionSlider offset:vec2(0,tspacing)];
+    layers = (1 << [_pages count]);
+    [_frictionSlider.handle setLayers:layers];
+    [_frictionSlider.track setLayers:layers];  
     [_pages addPage:page];
     [page release];
     
-    page = [[BounceSettingsPage alloc] init];
-    [page addWidget:_paintModeSlider offset:vec2(-.2*dimensions.width,tspacing)];
-    [page addWidget:_grabRotatesSlider offset:vec2(.2*dimensions.width,tspacing)];
-    [page addWidget:_paneUnlockedSlider offset:vec2(-.2*dimensions.width,-spacing)];
+    page = [[BouncePage alloc] init];
+    [page addWidget:_affectsAllObjectsSlider offset:vec2(-.2*dimensions.width,tspacing)];
+    [page addWidget:_paneUnlockedSlider offset:vec2(.2*dimensions.width,tspacing)];
+    [page addWidget:_paintModeSlider offset:vec2(-.2*dimensions.width,-spacing)];
+    [page addWidget:_grabRotatesSlider offset:vec2(.2*dimensions.width,-spacing)];
+    layers = (1 << [_pages count]);
+    [_affectsAllObjectsSlider.handle setLayers:layers];
+    [_affectsAllObjectsSlider.track setLayers:layers];  
+    
+    [_paneUnlockedSlider.handle setLayers:layers];
+    [_paneUnlockedSlider.track setLayers:layers];  
+    
+    [_paintModeSlider.handle setLayers:layers];
+    [_paintModeSlider.track setLayers:layers];  
+    
+    [_grabRotatesSlider.handle setLayers:layers];
+    [_grabRotatesSlider.track setLayers:layers];  
 
     [_pages addPage:page];
     [page release];
-     
+    
+    page = [[BouncePage alloc] init];
+    [page addWidget:_copyPasteArena offset:vec2()];
+    layers = (1 << [_pages count]);
+    cpLayers copyPasteLayers = layers;
+    [_copyPasteArena setLayers:layers];
+    [_copyObject setLayers:layers];
+    [_pasteObject setLayers:layers];
+    [_pages addPage:page];
+    [page release];
+    
+    float slideDown = -.07*dimensions.height;
+    page = [[BouncePage alloc] init];
+    layers = (1 << [_pages count]);
+    cpLayers musicLayers = layers;
+    [page addWidget:_musicArena offset:vec2()];
+    [page addWidget:_buffer offset:vec2(0,50+dimensions.height*.2+slideDown)];
+    [page addWidget:_keySlider offset:vec2(-.075*dimensions.width,dimensions.height*.2+slideDown)];
+    [page addWidget:_octaveSlider offset:vec2(-.075*dimensions.width,dimensions.height*.4+slideDown)];
+    [page addWidget:_tonalitySlider offset:vec2(.4*dimensions.width,dimensions.height*.2+slideDown)];
+    [page addWidget:_modeSlider offset:vec2(.4*dimensions.width, dimensions.height*.4+slideDown)];
+    
+    [_musicArena setLayers:layers];
+    [_buffer setLayers:layers];
+    [_keySlider setLayers:layers];
+    [_octaveSlider setLayers:layers];
+    [_tonalitySlider setLayers:layers];
+    [_modeSlider setLayers:layers];
+    
+    for(BounceObject *obj in _noteConfigObjects) {
+        [obj setLayers:layers];
+    }
+    
+    [_pages addPage:page];
+    [page release];
+    
+    cpLayers mainArenaLayers = CP_ALL_LAYERS ^ copyPasteLayers ^ musicLayers;
+
+    [_arena setLayers:mainArenaLayers];
 }
 
--(id)initWithRect:(CGRect)rect bounceSimulation:(BounceSimulation *)sim {
+-(void)updateConfigObjects {
+    
+    float small = .04;
+    float big = .12;
+    BounceNoteManager *noteManager = [BounceNoteManager instance];
+    for(unsigned int i = 0; i < 8; i++) {
+        BounceNoteConfigurationObject *obj = [_noteConfigObjects objectAtIndex:i];
+        BounceNote *note = [noteManager getNote:i];
+        
+        if(note != [noteManager getRest]) {
+            obj.sound = note;
+            obj.patternTexture = [[FSATextureManager instance] getTexture:obj.sound.label];
+            // float t = (float)(8*(noteManager.octave-2)+i)/(39);
+            // t *= t;
+            float t = (float)i/7;
+            obj.size = (t*small+(1-t)*big)+(.04-(noteManager.octave-2)*.01);
+            
+            if(![obj hasBeenAddedToSimulation]) {
+                [obj addToSimulation:self];
+            }
+        } else {
+            if([obj hasBeenAddedToSimulation]) {
+                [obj removeFromSimulation];
+            }
+        }
+        
+    }
+}
+
+-(id)initWithRect:(CGRect)rect bounceSimulation:(MainBounceSimulation *)sim {
     self = [super initWithRect:rect bounceSimulation:sim];
     
     if(self) {
         CGSize dimensions = self.arena.dimensions;
-        float upi = [[BounceConstants instance] unitsPerInch];
-        NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Bouncy", @"Springy", @"Squishy", @"Rigid", nil];
-        NSArray *bouncinessValues = [NSArray arrayWithObjects:[NSNumber numberWithFloat:1],[NSNumber numberWithFloat:.9], [NSNumber numberWithFloat:.5], [NSNumber numberWithFloat:0], nil];
+        NSArray *bouncinessLabels = [NSArray arrayWithObjects:@"Rigid",  @"Squishy", @"Springy",@"Bouncy", nil];
+        NSArray *bouncinessValues = [NSArray arrayWithObjects:[NSNumber numberWithFloat:0], [NSNumber numberWithFloat:.5], [NSNumber numberWithFloat:.9], [NSNumber numberWithFloat:1], nil];
         _bouncinessSlider = [[BounceSlider alloc] initContinuousWithLabels:bouncinessLabels values:bouncinessValues index:1];
         _bouncinessSlider.handle.bounceShape = BOUNCE_CAPSULE;
         _bouncinessSlider.handle.size = .2*dimensions.height;
@@ -745,8 +833,7 @@
         _bouncinessSlider.handle.sound = [[BounceNoteManager instance] getRest];
 
         _bouncinessSlider.track.position = vec2(-2,0);
-        _bouncinessSlider.track.angle = PI;
-        _bouncinessSlider.track.size = .3*dimensions.width;
+        _bouncinessSlider.track.size = .4*dimensions.width;
         _bouncinessSlider.track.isStationary = NO;
 
         _bouncinessSlider.track.sound = [[BounceNoteManager instance] getRest];
@@ -779,7 +866,7 @@
 
 
         _gravitySlider.track.position = vec2(-2,0);
-        _gravitySlider.track.size = .3*dimensions.width;
+        _gravitySlider.track.size = .4*dimensions.width;
         _gravitySlider.track.sound = [[BounceNoteManager instance] getRest];
         _gravitySlider.track.isStationary = NO;
 
@@ -799,12 +886,14 @@
         [self setupVelLimitSlider];
         [self setupFrictionSlider];
         [self setupColorSlider];
-        [self setupMinSizeSlider];
-        [self setupMaxSizeSlider];
+        [self setupSizeSlider];
         [self setupAllNewSliders];
         [self setupPaintModeSlider];
         [self setupGrabRotatesSlider];
         [self setupPaneUnlockedSlider];
+        [self setupCopyPaste];
+        [self setupMusicSliders];
+        [self setupMusicBounceObjects];
         [self setupPages];
         
         unsigned int numPages = [_pages count];
@@ -835,9 +924,33 @@
         _pageSlider.delegate = self;
         _pageSlider.selector = @selector(changedPageSlider:);
         [_pageSlider addToSimulation:self];
+        [_pageSlider.handle setLayers:1];
+        [_pageSlider.track setLayers:1];
+
     }
     
     return self;
+}
+
+-(void)tapObject:(BounceObject *)obj at:(const vec2 &)loc {
+    if([obj isKindOfClass:[BounceNoteConfigurationObject class]] && [BounceSettings instance].playMode) {
+        [obj.sound play:.2];
+        [obj singleTapAt:loc];
+    } else {
+        [super tapObject:obj at:loc];
+    }
+}
+
+-(void)setAngle:(float)angle {
+    [super setAngle:angle];
+    [_pages setAngle:angle];
+    [_pageSlider setAngle:angle];
+}
+
+-(void)setAngVel:(float)angVel {
+    [super setAngVel:angVel];
+    [_pages setAngVel:angVel];
+    [_pageSlider setAngVel:angVel];
 }
 
 -(BOOL)respondsToGesture:(void *)uniqueId {
@@ -850,11 +963,26 @@
 -(void)flick:(void *)uniqueId at:(const vec2 &)loc inDirection:(const vec2 &)dir time:(NSTimeInterval)time {
     
     if(_sliding == uniqueId) {
-        BOOL horizontalFlick = (fabsf(dir.x) > fabsf(dir.y));
+        
+        BouncePaneSideInfo info = [_pane.object getSideInfo];
+        
+        vec2 v = dir;
+        vec2 parallel = info.dir*info.dir.dot(v);
+        vec2 perp = v-parallel;
+        vec2 h = info.dir;
+        h.rotate(M_PI_2);
+        float horizontal = h.dot(perp);
+        
+        BOOL horizontalFlick = perp.length() > parallel.length();
+        
+        NSLog(@"horizontalFlick: %u\n", horizontalFlick);
+        NSLog(@"horizontal: %f\n", horizontal);
+
+        
         if(horizontalFlick) {
-            if(dir.x > 0) {
+            if(horizontal > 0) {
                 [_pages previousPage];
-            } else if(dir.x < 0) {
+            } else if(horizontal < 0) {
                 [_pages nextPage];
             }
         }
@@ -873,10 +1001,15 @@
 
 -(void)drag:(void *)uniqueId at:(const vec2 &)loc {
     if(_sliding == uniqueId) {
-        float horizontal = loc.x-_beginSlidingPos.x;
-        float vertical = loc.y-_beginSlidingPos.y;
+        BouncePaneSideInfo info = [_pane.object getSideInfo];
+        
+        vec2 v = loc-_beginSlidingPos;
+        vec2 parallel = info.dir*info.dir.dot(v);
+        vec2 perp = v-parallel;
+        vec2 h = info.dir;
+        h.rotate(M_PI_2);
+        float horizontal = h.dot(perp);
         _pages.touchOffset = horizontal;
-       // _pages.scroll = vertical;
     }
 
     [super drag:uniqueId at:loc];
@@ -885,10 +1018,16 @@
 -(void)endDrag:(void *)uniqueId at:(const vec2 &)loc {
     if(_sliding == uniqueId) {
         CGSize dimensions = self.arena.dimensions;
-        float horizontal = loc.x-_beginSlidingPos.x;
-        float vertical = loc.y-_beginSlidingPos.y;
-       // _pages.scroll = vertical;
-       // [_pages finalizeScroll];
+        
+        BouncePaneSideInfo info = [_pane.object getSideInfo];
+        
+        vec2 v = loc-_beginSlidingPos;
+        vec2 parallel = info.dir*info.dir.dot(v);
+        vec2 perp = v-parallel;
+        
+        vec2 h = info.dir;
+        h.rotate(M_PI_2);
+        float horizontal = h.dot(perp);
         
         if(horizontal > dimensions.width*.5) {
             [_pages previousPage];
@@ -907,14 +1046,13 @@
     if(_sliding == uniqueId) {
         _sliding = 0;
         _pages.touchOffset = 0;
-      //  [_pages finalizeScroll];
     }
     [super cancelDrag:uniqueId at:loc];
 }
 
 -(void)changedBouncinessSlider:(BounceSlider *)slider {
     [BounceSettings instance].bounciness = [slider.value floatValue];
-    if([_allNewBouncinessSlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setBounciness:[slider.value floatValue]];
     }
     [_simulation.arena setBounciness:[slider.value floatValue]];
@@ -927,7 +1065,7 @@
 
 -(void)changedGravitySlider:(BounceSlider *)slider {
     [BounceSettings instance].gravityScale = [slider.value floatValue];
-    if([_allNewGravitySlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setGravityScale:[slider.value floatValue]];
     }
     [_pane setGravityScale:[slider.value floatValue]];
@@ -941,15 +1079,13 @@
     BouncePatternGenerator *patternGen = slider.value;
     [BounceSettings instance].patternTextureGenerator = patternGen;
     [slider.handle.renderable burst:5];
-    _minSizeSlider.handle.patternTexture = [patternGen patternTexture];
-    _maxSizeSlider.handle.patternTexture = [patternGen patternTexture];
     if([patternGen isKindOfClass:[BounceRandomPatternGenerator class]]) {
         slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"Random"];
     } else {
         slider.handle.patternTexture = [patternGen patternTexture];
     }
     
-    if([_allNewPatternsSlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation randomizePattern];
     }
 }
@@ -961,9 +1097,8 @@
     slider.handle.bounceShape = [shapeGen bounceShape];
     _patternsSlider.handle.bounceShape = [shapeGen bounceShape];
     _colorSlider.handle.bounceShape = [shapeGen bounceShape];
-    _maxSizeSlider.handle.bounceShape = [shapeGen bounceShape];
-    _minSizeSlider.handle.bounceShape = [shapeGen bounceShape];
-    if([_allNewShapesSlider.value boolValue]) {
+    _sizeSlider.handle.bounceShape = [shapeGen bounceShape];
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation randomizeShape];
     }
     [_pane randomizeShape];
@@ -971,7 +1106,7 @@
 
 -(void)changedDampingSlider:(BounceSlider *)slider {
     [BounceSettings instance].damping = [slider.value floatValue];
-    if([_allNewDampingSlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setDamping:[slider.value floatValue]];
     }
     [_pane setDamping:[slider.value floatValue]];
@@ -983,7 +1118,7 @@
 
 -(void)changedVelLimitSlider:(BounceSlider *)slider {
     [BounceSettings instance].velocityLimit = [slider.value floatValue];
-    if([_allNewVelLimitSlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setVelocityLimit:[slider.value floatValue]];
     }
     [_pane setVelocityLimit:[slider.value floatValue]];
@@ -995,7 +1130,7 @@
 
 -(void)changedFrictionSlider:(BounceSlider *)slider {
     [BounceSettings instance].friction = [slider.value floatValue];
-    if([_allNewFrictionSlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setFriction:[slider.value floatValue]];
     }
     [_simulation.arena setFriction:[slider.value floatValue]];
@@ -1011,42 +1146,87 @@
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     [slider.handle.renderable burst:5]; 
     [_pane randomizeColor];
-    if([_allNewColorSlider.value boolValue]) {
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation randomizeColor];
     }
 }
 
--(void)changedMinSizeSlider:(BounceSlider *)slider {
-    float size = [slider.value floatValue];
-    float maxSize = [_maxSizeSlider.value floatValue];
+-(void)changedSizeSlider:(BounceSlider *)slider {
+    [BounceSettings instance].sizeGenerator = slider.value;
     
-    slider.handle.size = size;
-    slider.handle.secondarySize = size*GOLDEN_RATIO;
+    CGSize size = [(BounceSizeGenerator*)slider.value size];
     
-    if(size > maxSize) {
-        _maxSizeSlider.param = _minSizeSlider.param;
-    }
-    [BounceSettings instance].minSize = size;
-    
-    if([_allNewSizeSlider.value boolValue]) {
-        [_simulation clampSize];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    slider.handle.size = size.width;
+    slider.handle.secondarySize = size.height;
+        
+    if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
+        [_simulation randomizeSize];
     }
 }
 
--(void)changedMaxSizeSlider:(BounceSlider *)slider {
-    float size = [slider.value floatValue];
-    float minSize = [_minSizeSlider.value floatValue];
+-(void)setVelocity:(const vec2 &)vel {
+    [super setVelocity:vel];
+    [_buffer setVelocity:vel];
+    [_octaveSlider setVelocity:vel];
+    [_keySlider setVelocity: vel];
+    [_tonalitySlider setVelocity:vel];
+    [_modeSlider setVelocity:vel];
+}
+
+-(void)prepare {
+    [self updateSettings];
+}
+
+-(void)updateSettings {
+    _updatingSettings = YES;
+    BounceSettings *settings = [BounceSettings instance];
+    _affectsAllObjectsSlider.index = settings.affectAllObjects ? 0 : 1;
     
-    slider.handle.size = size;
-    slider.handle.secondarySize = size*GOLDEN_RATIO;
+    _paneUnlockedSlider.index = settings.paneUnlocked ? 1 : 0;
+    _grabRotatesSlider.index = settings.grabRotates ? 0 : 1;
+    _paintModeSlider.index = settings.paintMode ? 0 : 1;
     
-    if(size < minSize) {
-        _minSizeSlider.param = _maxSizeSlider.param;
-    }
-    [BounceSettings instance].maxSize = size;
+    _bouncinessSlider.value = [NSNumber numberWithFloat:settings.bounciness];
+    _sizeSlider.value = settings.sizeGenerator;
+    _shapesSlider.value = settings.bounceShapeGenerator;
+    _patternsSlider.value = settings.patternTextureGenerator;
+    _colorSlider.value = settings.colorGenerator;
+    _dampingSlider.value = [NSNumber numberWithFloat:settings.damping];
+    _gravitySlider.value = [NSNumber numberWithFloat:settings.gravityScale];
+    _frictionSlider.value = [NSNumber numberWithFloat:settings.friction];
+    _velLimitSlider.value = [NSNumber numberWithFloat:settings.velocityLimit]; 
     
-    if([_allNewSizeSlider.value boolValue]) {
-        [_simulation clampSize];
+    _modeSlider.index = settings.playMode ? 0 : 1;
+    
+    _updatingSettings = NO;
+}
+
+-(void)changedMusicSlider:(BounceSlider *)slider {
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    
+    BounceNoteManager *noteManager = [BounceNoteManager instance];
+    [slider.handle.renderable burst:5];
+    
+    if(slider == _keySlider) {
+        noteManager.key = slider.label;
+        [self updateConfigObjects];
+    } else if(slider == _tonalitySlider) {
+        if([slider.label isEqualToString:@"Major"]) {
+            [noteManager useMajorIntervals];
+            NSArray *labels = [NSArray arrayWithObjects:@"Cflat", @"Gflat", @"Dflat", @"Aflat", @"Eflat", @"Bflat", @"F", @"C", @"G", @"D", @"A", @"E", @"B", @"Fsharp", @"Csharp", nil];
+            [_keySlider setLabels:labels];
+            
+        } else if([slider.label isEqualToString:@"Minor"]) {
+            [noteManager useMinorIntervals];
+            NSArray *labels = [NSArray arrayWithObjects:@"Aflatm", @"Eflatm", @"Bflatm", @"Fm", @"Cm", @"Gm", @"Dm", @"Am", @"Em", @"Bm", @"Fsharpm", @"Csharpm", @"Gsharpm", @"Dsharpm", @"Asharpm", nil];
+            [_keySlider setLabels:labels];
+        }
+    } else if(slider == _modeSlider) {
+        [BounceSettings instance].playMode = [slider.value isEqualToString:@"Play Mode"];
+    } else if(slider == _octaveSlider) {
+        noteManager.octave = [slider.value unsignedIntValue];
+        [self updateConfigObjects];  
     }
 }
 
@@ -1085,39 +1265,38 @@
     
     CGSize dimensions = self.arena.dimensions;
     float spacing = .45 *dimensions.height;
+    
+    vec2 offset(0,-spacing);
+    
+    offset.rotate(-self.arena.angle);
 
-    [_pageSlider setPosition:pos-vec2(0,spacing)];
+    [_pageSlider setPosition:pos+offset];
      
     [_pages updatePositions:pos];
 
 }
 
--(void)next {
-    [super next];
-    [_bouncinessSlider step:_dt];
-    [_gravitySlider step:_dt];
-    [_pageSlider step:_dt];
-    [_shapesSlider step:_dt];
-    [_patternsSlider step:_dt];
-    [_dampingSlider step:_dt];
-    [_velLimitSlider step:_dt];
-    [_frictionSlider step:_dt];
-    [_colorSlider step:_dt];
-    [_minSizeSlider step:_dt];
-    [_maxSizeSlider step:_dt];
-    [_allNewBouncinessSlider step:_dt];
-    [_allNewGravitySlider step:_dt];
-    [_allNewShapesSlider step:_dt];
-    [_allNewPatternsSlider step:_dt];
-    [_allNewDampingSlider step:_dt];
-    [_allNewVelLimitSlider step:_dt];
-    [_allNewFrictionSlider step:_dt];
-    [_allNewColorSlider step:_dt];
-    [_allNewSizeSlider step:_dt];
+-(void)step:(float)dt {
+    [_bouncinessSlider step:dt];
+    [_gravitySlider step:dt];
+    [_pageSlider step:dt];
+    [_shapesSlider step:dt];
+    [_patternsSlider step:dt];
+    [_dampingSlider step:dt];
+    [_velLimitSlider step:dt];
+    [_frictionSlider step:dt];
+    [_colorSlider step:dt];
+    [_sizeSlider step:dt];
+    [_affectsAllObjectsSlider step:dt];
     
-    [_paintModeSlider step:_dt];
-    [_grabRotatesSlider step:_dt];
-    [_paneUnlockedSlider step:_dt];
+    [_paintModeSlider step:dt];
+    [_grabRotatesSlider step:dt];
+    [_paneUnlockedSlider step:dt];
+    
+    [_octaveSlider step:dt];
+    [_keySlider step:dt];
+    [_tonalitySlider step:dt];
+    [_modeSlider step:dt];
 
     BounceSettings *settings = [BounceSettings instance];
 
@@ -1135,100 +1314,9 @@
         }
         _timeSinceRandomsRefresh = 0;
     } */
-    [_pages step:_dt];
-}
-
--(void)drawRectangle {
-    vec2 pos = self.arena.position;
+    [_pages step:dt];
     
-    CGSize dimensions = self.arena.dimensions;
-    
-    float top = pos.y+dimensions.height*.5;
-    float bottom = pos.y-dimensions.height*.5;
-    float left = pos.x-dimensions.width*.5;
-    float right = pos.x+dimensions.width*.5;
-    
-    vec2 verts[4];
-    verts[0] = vec2(right, top);
-    verts[1] = vec2(left, top);
-    verts[2] = vec2(left, bottom);
-    verts[3] = vec2(right, bottom);
-    
-    unsigned int indices[6];
-    
-    FSAShader *shader = [[FSAShaderManager instance] getShader:@"ColorShader"];
-    [shader setPtr:verts forAttribute:@"position"];
-    
-    indices[0] = 0;
-    indices[1] = 1;
-    indices[2] = 2;
-    indices[3] = 0;
-    indices[4] = 2;
-    indices[5] = 3;
-    
-    vec4 color(0,0,0,1);
-    [shader setPtr:&color forUniform:@"color"];
-    
-    [shader enable];
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
-    [shader disable];
-}
-
--(void)draw {
-    glEnable(GL_STENCIL_TEST);
-    
-    glStencilFunc(GL_ALWAYS, 1, 1);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    
-    
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ZERO, GL_ONE);
-    [self drawRectangle];
-    glDisable(GL_BLEND);
-    
-    glStencilFunc(GL_EQUAL, 1, 1);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-    
-    [super draw];
-    
-    [_allNewColorSlider draw];
-    [_allNewBouncinessSlider.track draw];
-    [_allNewDampingSlider draw];
-    [_allNewFrictionSlider draw];
-    [_allNewGravitySlider.track draw];
-    [_allNewPatternsSlider draw];
-    [_allNewShapesSlider draw];
-    [_allNewSizeSlider draw];
-    [_allNewVelLimitSlider draw];
-
-    [_shapesSlider draw];
-    [_patternsSlider draw];
-    [_dampingSlider draw];
-    [_velLimitSlider draw];
-    [_frictionSlider draw];
-    [_minSizeSlider.track draw];
-    [_maxSizeSlider.track draw];
-    [_colorSlider.track draw];
-    [_gravitySlider.track draw];
-    [_bouncinessSlider.track draw];
-
-    [_minSizeSlider.handle draw];
-    [_maxSizeSlider.handle draw];
-    [_colorSlider.handle draw];
-    [_bouncinessSlider.handle draw];
-    [_gravitySlider.handle draw];
-    [_allNewGravitySlider.handle draw];
-    [_allNewBouncinessSlider.handle draw];
-    
-    [_paintModeSlider draw];
-    [_grabRotatesSlider draw];
-    [_paneUnlockedSlider draw];
-    
-    [_pageSlider draw];
-
-    
-    glDisable(GL_STENCIL_TEST);
-
+    [super step:dt];
 }
 
 -(void)dealloc {
@@ -1241,15 +1329,20 @@
     [_frictionSlider release];
     [_velLimitSlider release];
     [_colorSlider release];
-    [_allNewBouncinessSlider release];
-    [_allNewColorSlider release];
-    [_allNewDampingSlider release];
-    [_allNewFrictionSlider release];
-    [_allNewGravitySlider release];
-    [_allNewPatternsSlider release];
-    [_allNewShapesSlider release];
-    [_allNewSizeSlider release];
-    [_allNewVelLimitSlider release];
+    [_affectsAllObjectsSlider release];
+    
+    [_keySlider release];
+    [_octaveSlider release];
+    [_tonalitySlider release];
+    [_modeSlider release];
+    [_buffer removeFromSpace];
+    [_buffer release];
+    [_copyPasteArena removeFromSpace];
+    [_copyPasteArena release];
+    [_musicArena removeFromSpace];
+    [_musicArena release];
+    
+    [_noteConfigObjects release];
     
     [_pages release];
 

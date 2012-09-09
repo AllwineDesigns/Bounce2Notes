@@ -9,10 +9,17 @@
 #import "BounceColorGenerator.h"
 #import "FSAUtil.h"
 #import "fsa/Noise.hpp"
-
-#define RANDFLOAT ((float)arc4random()/4294967295)
+#import "FSAUtil.h"
 
 @implementation BounceColorGenerator
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    return [self init];
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+}
+
 
 -(vec4)randomColor {
     NSAssert(NO, @"randomColor must be implemented by subclass");
@@ -30,6 +37,10 @@
 -(vec4)perlinColorFromLocation:(const vec2&)loc time:(NSTimeInterval)time {
     NSAssert(NO, @"perlinColorFromLocation:time: must be implemented by subclass");
     return vec4();
+}
+
+-(BOOL)isEqual:(id)object {
+    return [object class] == [self class];
 }
 @end
 
@@ -83,7 +94,7 @@
 -(vec4)colorFromK:(float)k k2:(float)k2 k3:(float)k3 {
     vec4 color(0,0,0,1);
     HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             10.*k, .2*k3+.8, .8*k2+.2   );
+             10.*k, .2*k3+.8, .6*k2+.4   );
     return color;
 }
 
@@ -136,7 +147,7 @@
 -(vec4)colorFromK:(float)k k2:(float)k2 k3:(float)k3 {
     vec4 color(0,0,0,1);
     HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             15.*k+15, .2*k3+.8, .8*k2+.2   );
+             15.*k+15, .2*k3+.8, .6*k2+.4   );
     return color;
 }
 
@@ -188,7 +199,7 @@
 -(vec4)colorFromK:(float)k k2:(float)k2 k3:(float)k3 {
     vec4 color(0,0,0,1);
     HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             15.*k+45, .2*k3+.8, .8*k2+.2   );
+             15.*k+45, .2*k3+.8, .6*k2+.4   );
     return color;
 }
 
@@ -240,7 +251,7 @@
 -(vec4)colorFromK:(float)k k2:(float)k2 k3:(float)k3 {
     vec4 color(0,0,0,1);
     HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             30.*k+100, .2*k3+.8, .8*k2+.2   );
+             30.*k+100, .2*k3+.8, .6*k2+.4   );
     return color;
 }
 
@@ -292,7 +303,7 @@
 -(vec4)colorFromK:(float)k k2:(float)k2 k3:(float)k3 {
     vec4 color(0,0,0,1);
     HSVtoRGB(&(color.x), &(color.y), &(color.z), 
-             45.*k+215, .2*k3+.8, .8*k2+.2   );
+             45.*k+215, .2*k3+.8, .6*k2+.4   );
     return color;
 }
 

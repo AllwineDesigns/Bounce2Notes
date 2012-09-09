@@ -18,6 +18,8 @@
 #import "MainBounceSimulation.h"
 #import "fsa/Noise.hpp"
 #import "FSABackgroundQueue.h"
+#import "BounceSavedSimulation.h"
+#import "BounceFileManager.h"
 
 #define BOUNCE_LITE_MAX_BALLS 15
 
@@ -47,6 +49,12 @@
     [(EAGLView *)self.view setFramebuffer];
         
     alertView = [[UIAlertView alloc] initWithTitle:@"Upgrade to full version" message:@"You must have the full version to create more balls." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Buy!", @"Dismiss All",  nil];
+    
+    saveView = [[UIAlertView alloc] initWithTitle:@"Save" message:@"" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Save",  nil];
+    saveView.alertViewStyle = UIAlertViewStylePlainTextInput;
+    
+    fileExistsView = [[UIAlertView alloc] initWithTitle:@"Simulation exists!" message:@"Are you sure you want to overwrite this simulation?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes",  nil];
+    
     dismissAllUpgradeAlerts = NO;
     
     gestureCurves = [[FSAGestureCurves alloc] init];
@@ -56,6 +64,8 @@
     
     CGRect frame = [self.view frame];
     aspect = frame.size.width/frame.size.height;
+    
+    _dt = .02;
     
     FSAShaderManager *shaderManager = [FSAShaderManager instance];
     
@@ -85,10 +95,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishedLoadingResources:) name:@"finishedLoadingResources" object:nil];
     
-    BounceBallRenderable *r = [[BounceBallRenderable alloc] init];
-    [r release];
-    
-    [[BounceNoteManager instance] getRest];
+    // initialize note manager
+    [BounceNoteManager instance];
 
     multiTapAndDragRecognizer = [[FSAMultiTapAndDragRecognizer alloc] initWithTarget:self];
     multiTapAndDragRecognizer.view = self.view;
@@ -96,10 +104,54 @@
     animating = FALSE;
     animationFrameInterval = 2;
     self.displayLink = nil;
+    
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationChanged:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+    
+ //   [[UIApplication sharedApplication] setStatusBarOrientation:
+ //    UIInterfaceOrientationLandscapeRight];
+}
+
+- (void)orientationChanged:(NSNotification *)notification {
+    UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+    if(_ready) {
+        switch (deviceOrientation) {
+            case UIDeviceOrientationPortrait:
+                _configPane.orientation = BOUNCE_PANE_PORTRAIT;
+                break;
+            case UIDeviceOrientationPortraitUpsideDown:
+                _configPane.orientation = BOUNCE_PANE_PORTRAIT_UPSIDE_DOWN;
+                break;
+            case UIDeviceOrientationLandscapeRight:
+                _configPane.orientation = BOUNCE_PANE_LANDSCAPE_RIGHT;
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                _configPane.orientation = BOUNCE_PANE_LANDSCAPE_LEFT;
+                break;
+            case UIDeviceOrientationFaceUp:
+                break;
+            case UIDeviceOrientationFaceDown:
+                break;
+                
+            default:                
+                break;
+        }
+    }
+
 }
 
 -(void)finishedLoadingResources:(NSNotification*)notification {
     _ready = YES;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:@"lastexit.bounce"];
+    if([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        [self loadSimulation:@"lastexit.bounce"];
+    }
 }
 
 -(void)loadResources {
@@ -118,9 +170,9 @@
     NSArray *texturesToCache = [NSArray arrayWithObjects:@"spiral.jpg", 
      @"plasma.jpg",
      @"stripes.jpg", 
-     @"checkered.jpg", 
+   //  @"checkered.jpg", 
      @"sections.jpg", 
-     @"squares.jpg", 
+    // @"squares.jpg", 
      @"weave.jpg", 
      @"ball.jpg",
      @"square.jpg",
@@ -145,9 +197,8 @@
     [texture_manager generateTextureForText:@"Sizes"];
     [texture_manager generateTextureForText:@"Colors"];
     [texture_manager generateTextureForText:@"Notes"];
-    [texture_manager generateTextureForText:@"Misc"];
     [texture_manager generateTextureForText:@"Save/Load"];
-    [texture_manager generateTextureForText:@"Settings"];
+    [texture_manager generateTextureForText:@"Advanced"];
     
     [texture_manager generateTextureForText:@"Red"];
     [texture_manager generateTextureForText:@"Green"];
@@ -182,11 +233,18 @@
     for(NSString* str in labels) {
         [texture_manager generateTextureForText:str];
     }
+    
+    labels = [NSArray arrayWithObjects:@"Teeny", @"Tiny", @"Small", @"Medium", @"Large", nil];
+    for(NSString* str in labels) {
+        [texture_manager generateTextureForText:str];
+    }
 
     NSArray *gravityLabels = [NSArray arrayWithObjects:@"Weightless", @"Airy", @"Floaty", @"Light", @"Normal", @"Heavy", nil];
     for(NSString* str in gravityLabels) {
         [texture_manager generateTextureForText:str];
     }
+    
+
     
     [texture_manager generateTextureForText:@"Create Mode" forKey:@"Create Mode" withFontSize:40 withOffset:vec2() ];
     [texture_manager generateTextureForText:@"Play Mode" forKey:@"Play Mode" withFontSize:40 withOffset:vec2() ];
@@ -240,6 +298,7 @@
 
     [texture_manager generateTextureForText:rest_str forKey:@"rest" withFontName:@"Symbola" withFontSize:80 withOffset:vec2() ];
     */
+    [texture_manager generateTextureForText:@"Twinkle"];
     
     [texture_manager generateTextureForText:@"Copy"];
     [texture_manager generateTextureForText:@"Paste"];
@@ -247,8 +306,8 @@
     [texture_manager generateTextureForText:@"Major"];
     [texture_manager generateTextureForText:@"Minor"];
     
-    [texture_manager generateTextureForText:@"All"];
-    [texture_manager generateTextureForText:@"New"];
+    [texture_manager generateTextureForText:@"Affect All"];
+    [texture_manager generateTextureForText:@"Affect New"];
     
     [texture_manager generateTextureForText:@"Paint Mode"];
     [texture_manager generateTextureForText:@"Assign Mode"];
@@ -258,9 +317,15 @@
     
     [texture_manager generateTextureForText:@"Pane Unlocked"];
     [texture_manager generateTextureForText:@"Pane Locked"];
+    
+    [texture_manager generateTextureForText:@"Save"];
+    [texture_manager generateTextureForText:@"Load"];
      
     simulation = [[MainBounceSimulation alloc] initWithAspect:aspect];
+    simulation.delegate = self;
     lastUpdate = [[NSProcessInfo processInfo] systemUptime];
+    
+    _configPane = [[BounceConfigurationPane alloc] initWithBounceSimulation:simulation];
 
     NSLog(@"loaded textures and created simulation\n");
     
@@ -271,6 +336,31 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:@"finishedLoadingResources" object:nil];
 }
 
+-(void)saveSimulation {
+    [saveView show];
+}
+
+-(void)loadSimulation:(NSString *)file {
+    BounceFileManager *fileManager = [BounceFileManager instance];
+    
+    if([fileManager fileExists:file]) {
+        BounceSavedSimulation *load = [fileManager loadFile:file];
+        if(load) {
+            [[BounceSettings instance] updateSettings:load.settings];
+            [_configPane updateSettings];
+            
+            _configPane.simulation = load.simulation;
+            [simulation release];
+            simulation = [load.simulation retain];
+            simulation.delegate = self;
+        } else {
+            // TODO do invalid file
+        }
+    } else {
+        // TODO do file does not exist
+    }
+}
+
 - (void)dealloc
 {
     
@@ -278,8 +368,10 @@
     if ([EAGLContext currentContext] == context)
         [EAGLContext setCurrentContext:nil];
 
+    [saveView release];
     [alertView release];
     [context release];
+    [_configPane release];
     [simulation release];
     [gestureCurves release];
     
@@ -303,7 +395,13 @@
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    [simulation singleTap:gesture at:loc];
+    if(![_configPane singleTap:gesture at:loc]) {
+        if([BounceSettings instance].playMode && [simulation gestureForKey:gesture] == nil) {
+            
+        } else {
+            [simulation singleTap:gesture at:loc];
+        }
+    }
 }
 
 -(void)displayUpgradeAlert {
@@ -313,15 +411,37 @@
 }
 
 -(void)alertView: (UIAlertView*)view clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 2:
-            dismissAllUpgradeAlerts = YES;
-        case 0:    
-            break;
-            
-        default:
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/bounce!!/id530767513?ls=1&mt=8"]];
-            break;
+    if(view == alertView) {
+        switch (buttonIndex) {
+            case 2:
+                dismissAllUpgradeAlerts = YES;
+            case 0:    
+                break;
+                
+            default:
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/bounce!!/id530767513?ls=1&mt=8"]];
+                break;
+        }
+    } else if(view == saveView) {
+        BounceFileManager *fileManager = [BounceFileManager instance];
+        switch (buttonIndex) {
+            case 0:
+                break;
+                
+            default:
+                UITextField *text = [view textFieldAtIndex:0];
+                NSString *file = text.text;
+                if([file length] > 0) {
+                    if([fileManager fileExists:file]) {
+                        // TODO do are you sure you want to overwrite?
+                    } else {
+                        [fileManager save:simulation withSettings:[BounceSettings instance] toFile:file];
+                        [_configPane updateSavedSimulations];
+                    }
+                }
+                break;
+        }
+
     }
 }
 
@@ -390,51 +510,41 @@
 }
 
 -(void)cancelThreeFingerDrag: (FSAMultiGesture*)gesture {
-//    NSLog(@"cancel three finger drag\n");
-    vec2 loc(gesture.location);
-    [self pixels2sim:loc];
-    /*
     switch(gesture.side) {
         case FSA_TOP:
-            if(simulation->isRemovingBallsTop()) {
-                simulation->endRemovingBallsTop();
-            }
+            [simulation endTopSwipe:gesture];
             break;
         case FSA_BOTTOM:
-            if(simulation->isRemovingBallsBottom()) {
-                simulation->endRemovingBallsBottom();
-            }
+            [simulation endBottomSwipe:gesture];
             break;
         case FSA_LEFT:
-            if(simulation->isRemovingBallsLeft()) {
-                simulation->endRemovingBallsLeft();
-            }
+            [simulation endLeftSwipe:gesture];
             break;
         case FSA_RIGHT:
-            if(simulation->isRemovingBallsRight()) {
-                simulation->endRemovingBallsRight();
-            }
+            [simulation endRightSwipe:gesture];
             break;
-            
     }
-     */
-
 }
 
 
 -(void)beginDrag: (FSAMultiGesture*)gesture {
     vec2 loc(gesture.beginLocation);
     [self pixels2sim:loc];
-    [simulation beginDrag:gesture at:loc];
+    
     [gestureCurves beginDrag:gesture at:loc];
-
+    
+    if(![_configPane beginDrag:gesture at:loc]) {
+        [simulation beginDrag:gesture at:loc];
+    }
 }
 
 -(void)longTouch:(FSAMultiGesture*)gesture {
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    [simulation longTouch:gesture at:loc];
+    if(![_configPane longTouch:gesture at:loc]) {
+        [simulation longTouch:gesture at:loc];
+    }
 }
 
 -(void)flick: (FSAMultiGesture*)gesture {
@@ -446,24 +556,31 @@
     
     vec2 dir = loc-loc2;
     NSTimeInterval time = gesture.timestamp-gesture.beginTimestamp;
-    
-    [simulation flick:gesture at:loc2 inDirection:dir time:time];
+    if(![_configPane flick:gesture at:loc2 inDirection:dir time:time]) {
+        [simulation flick:gesture at:loc2 inDirection:dir time:time];
+    }
 }
 
 -(void)drag: (FSAMultiGesture*)gesture {
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    [simulation drag:gesture at:loc];
     [gestureCurves drag:gesture at:loc];
+
+    if(![_configPane drag:gesture at:loc]) {
+        [simulation drag:gesture at:loc];
+    }
 }
 
 -(void)endDrag: (FSAMultiGesture*)gesture {
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    [simulation endDrag:gesture at:loc];
     [gestureCurves endDrag:gesture at:loc];
+
+    if(![_configPane endDrag:gesture at:loc]) {
+        [simulation endDrag:gesture at:loc];
+    }
 }
 
 -(void)cancelDrag: (FSAMultiGesture*)gesture {
@@ -471,14 +588,17 @@
     vec2 loc2(gesture.location);
     [self pixels2sim:loc];
     [self pixels2sim:loc2];
-
-    [simulation cancelDrag:gesture at:loc2];
+    
     [gestureCurves cancelDrag:gesture at:loc];
 
+    if(![_configPane cancelDrag:gesture at:loc2]) {
+        [simulation cancelDrag:gesture at:loc2];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    //[self loadSimulation:@""];
     [self startAnimation];
     
     [super viewWillAppear:animated];
@@ -486,13 +606,14 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+
     [self stopAnimation];
     
     [super viewWillDisappear:animated];
 }
 
 - (void)viewDidUnload
-{
+{    
 	[super viewDidUnload];
 
     // Tear down context.
@@ -580,12 +701,28 @@
             add_to_vel -= unit_accel*8;
             add_to_vel *= -.2;
             [simulation addToVelocity:add_to_vel];
+            [_configPane addToVelocity:add_to_vel];
         }
         
         vec2 g(acceleration.x, acceleration.y);
         [simulation setGravity:g];
-        [simulation step:timeSinceLastDraw];
+        [_configPane setGravity:g];
+                
+        float t = timeSinceLastDraw+_timeRemainder;
+        if(t > 5*_dt) {
+            t = 5*_dt;
+        }
+        
+        while(t >= _dt) {
+            [simulation step:_dt];
+            [_configPane step:_dt];
+            t -= _dt;
+        }
+        
+        _timeRemainder = t;
+        
         [simulation draw];
+        [_configPane draw];
         
         [gestureCurves step:timeSinceLastDraw];
         [gestureCurves draw];

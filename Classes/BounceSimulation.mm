@@ -56,8 +56,9 @@ int preSolve(cpArbiter *arb, cpSpace *space, void *data) {
     
     vec2 vel1(obj1.velocity);
     [obj1 setLastVelocity: vel1];
-    
+
     if(obj2) {
+
         vec2 vel2(obj2.velocity);
         [obj2 setLastVelocity: vel2];
     }
@@ -147,18 +148,42 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 @synthesize arena = _arena;
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
+    BounceArena *arena = [aDecoder decodeObjectForKey:@"BounceSimulationArena"];   
+    self = [self initWithRect:arena.rect];
+
+    _gravity.x = [aDecoder decodeFloatForKey:@"BounceSimulationGravityX"];
+    _gravity.y = [aDecoder decodeFloatForKey:@"BounceSimulationGravityY"];
+            
+    NSSet *objects = [aDecoder decodeObjectForKey:@"BounceSimulationObjects"];
+    for(BounceObject *obj in objects) {
+        obj.simulation = self;
+        [obj addToSpace:self.space];
+        [_objects addObject:obj];
+    }
     
+    return self;
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder {
+    NSMutableSet *set = [[NSMutableSet alloc] initWithCapacity:[_objects count]];
+    for(BounceObject *obj in _objects) {
+        if(obj.simulationWillArchive) {
+            [set addObject:obj];
+        }
+    }
+    [aCoder encodeObject:set forKey:@"BounceSimulationObjects"];
+    [set release];
     
+    [aCoder encodeObject:_arena forKey:@"BounceSimulationArena"];
+    [aCoder encodeFloat:_gravity.x forKey:@"BounceSimulationGravityX"];
+    [aCoder encodeFloat:_gravity.y forKey:@"BounceSimulationGravityY"];
 }
 
 -(id)initWithRect: (CGRect)rect {
     _gestures = [[NSMutableDictionary alloc] initWithCapacity:10];
-    _objects = [[NSMutableSet alloc] initWithCapacity:10];
+//    _objects = [[NSMutableSet alloc] initWithCapacity:10];
+    _objects = [[NSMutableArray alloc] initWithCapacity:10];
     _delayedRemoveObjects = [[NSMutableSet alloc] initWithCapacity:10];
-    _dt = .02;
         
     _space = cpSpaceNew();
     cpSpaceSetCollisionSlop(_space, .02);
@@ -179,6 +204,12 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 -(void)setVelocity:(const vec2&)vel {
     self.arena.velocity = vel;
+}
+-(void)setAngle:(float)angle {
+    self.arena.angle = angle;
+}
+-(void)setAngVel:(float)angVel {
+    self.arena.angVel = angVel;
 }
 
 
@@ -244,13 +275,7 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
         }
     }
 }
--(void)clampSize {
-    for(BounceObject *obj in _objects) {
-        if(obj.isPreviewable) {
-            [obj clampSize];
-        }
-    }
-}
+
 -(void)addObject: (BounceObject*)object {
     BounceSettings *settings = [BounceSettings instance];
     [object setVelocityLimit:settings.velocityLimit];
@@ -323,6 +348,53 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     }
 }
 
+static void getAllBounceObjectsNearestQueryFunc(cpShape *shape, float dist, cpVect p, void* data) {
+    BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;
+    
+    cpBody *body = cpShapeGetBody(shape);
+    ChipmunkObject *obj = (ChipmunkObject*)cpBodyGetUserData(body);
+    
+    if([obj isKindOfClass:[BounceObject class]]) {
+        [queryStruct->set addObject:obj];
+    }
+}
+
+static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, cpVect p, void* data) {
+    BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;
+    
+    cpBody *body = cpShapeGetBody(shape);
+    ChipmunkObject *obj = (ChipmunkObject*)cpBodyGetUserData(body);
+    
+    if([obj isKindOfClass:[BounceObject class]]) {
+        if(dist < queryStruct->minDist) {
+            queryStruct->nearest = (BounceObject*)obj;
+            queryStruct->minDist = dist;
+        }
+    }
+}
+-(NSSet*)objectsAt:(const vec2 &)loc withinRadius:(float)radius {
+    BounceQueryStruct queryStruct;
+    NSMutableSet *objects = [NSMutableSet setWithCapacity:10];
+    
+    queryStruct.set = objects;
+    queryStruct.simulation = self;
+    
+    cpSpaceNearestPointQuery(_space, (cpVect&)loc, radius, CP_ALL_LAYERS, CP_NO_GROUP, getAllBounceObjectsNearestQueryFunc, (void*)&queryStruct);
+    
+    return objects;
+}
+-(BounceObject*)objectAt:(const vec2 &)loc {
+    BounceQueryStruct queryStruct;
+    
+    queryStruct.nearest = nil;
+    queryStruct.minDist = 10000;
+    queryStruct.simulation = self;
+    
+    cpSpaceNearestPointQuery(_space, (cpVect&)loc, .2*[BounceConstants instance].unitsPerInch, CP_ALL_LAYERS, CP_NO_GROUP, getNearestBounceObjectNearestQueryFunc, (void*)&queryStruct);
+    
+    return queryStruct.nearest;
+}
+/*
 -(NSSet*)objectsAt:(const vec2 &)loc withinRadius:(float)radius {
     BounceQueryStruct queryStruct;
     
@@ -344,6 +416,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
 }
 
 -(BounceObject*)objectAt:(const vec2 &)loc {
+    
     NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
     float minDist = 9999;
     BounceObject *obj = nil;
@@ -358,33 +431,20 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     
     return obj;
 }
+ */
 
--(void)step: (float)t {
-    t += _timeRemainder;
+-(void)step: (float)dt {
+    cpSpaceStep(_space, dt);
     
-    if(t > 5*_dt) {
-        t = 5*_dt;
+    for(BounceObject *obj in _objects) {
+        [obj step:dt];
     }
-    
-    while(t > _dt) {
-        [self next];
-        t -= _dt;
-    }
-    
-    _timeRemainder = t;
     
     for(BounceObject *obj in _delayedRemoveObjects) {
         [obj removeFromSimulation];
     }
     
     [_delayedRemoveObjects removeAllObjects];
-}
--(void)next {
-    cpSpaceStep(_space, _dt);
-    
-    for(BounceObject *obj in _objects) {
-        [obj step:_dt];
-    }
 }
 
 -(void)addToVelocity:(const vec2&)v {
@@ -586,6 +646,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         if(![obj hasBeenAddedToSimulation]) {
             [obj randomizeSize];
             [obj addToSimulation:self];
+            [obj playSound:.2];
         }
         
         [gesture beginGrabAt:loc];
@@ -687,7 +748,8 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     for(BounceObject *obj in _objects) {
         [obj setDamping:damping];
     }
-   // cpSpaceSetDamping(_space, damping);
+                                   
+ //   cpSpaceSetDamping(_space, damping);
 }
 
 -(void)setFriction:(float)f {
@@ -726,8 +788,6 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     [super dealloc];
 }
 
-
-
 -(void)draw {
     for(BounceObject *obj in _objects) {
         if(obj.simulationWillDraw) {
@@ -735,6 +795,5 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         }
     }
 }
-
 
 @end

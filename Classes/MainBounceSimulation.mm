@@ -9,10 +9,31 @@
 #import "MainBounceSimulation.h"
 #import "BounceConstants.h"
 #import "FSAShaderManager.h"
+#import "BounceSettings.h"
 
 @implementation MainBounceSimulation
 
-@synthesize playMode = _playMode;
+@synthesize delegate = _delegate;
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    
+    _aspect = [aDecoder decodeFloatForKey:@"MainBounceSimulationAspect"];
+    
+    float invaspect = 1./_aspect;
+    CGRect rect = CGRectMake(-1,-invaspect, 2, 2*invaspect);
+    
+    _killArena = [[BounceKillArena alloc] initWithRect:rect simulation:self];
+    [_killArena addToSpace:_space];
+        
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeFloat:_aspect forKey:@"MainBounceSimulationAspect"];
+}
 
 -(id)initWithAspect: (float)aspect {
     float invaspect = 1./aspect;
@@ -25,115 +46,87 @@
         _aspect = aspect;
         _killArena = [[BounceKillArena alloc] initWithRect:rect simulation:self];
         [_killArena addToSpace:_space];
-        
-        _configPane = [[BounceConfigurationPane alloc] initWithBounceSimulation:self];
-        
+                
         [[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()] addToSimulation:self];
     }
     
     return self;
 }
 
-//-(void)step:(float)t {
-//    [super step:t];
-//    [_configPane step:t];
-//}
-
--(void)next {
-    [super next];
-    [_configPane step:_dt];
-}
-
 -(void)setGravity:(const vec2 &)g {
-    [_configPane setGravity:g];
     [super setGravity:g];
 }
 
 -(void)addToVelocity:(const vec2 &)v {
-    [_configPane addToVelocity:v];
     [super addToVelocity:v];
 }
 
 -(void)singleTap: (void*)uniqueId at:(const vec2 &)loc {   
-    if(![_configPane singleTap:uniqueId at:loc]) {
-        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+    if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
 
-        } else {
-            [super singleTap:uniqueId at:loc];
-        }
+    } else {
+        [super singleTap:uniqueId at:loc];
     }
 }
 
 -(void)flick: (void*)uniqueId at:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
-    if(![_configPane flick:uniqueId at:loc inDirection:dir time:time]) {
-        if(_playMode && [self gestureForKey:uniqueId] == nil) {
-        
-        } else {
-            [super flick:uniqueId at:loc inDirection:dir time:time];
-        }
+    if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
+    
+    } else {
+        [super flick:uniqueId at:loc inDirection:dir time:time];
     }
 }
 
 -(void)longTouch:(void*)uniqueId at:(const vec2&)loc {
-    if(![_configPane longTouch:uniqueId at:loc]) {
-        if(_playMode && [self gestureForKey:uniqueId] == nil) {
+    if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
         
-        } else {
-            [super longTouch:uniqueId at:loc];
-        }
+    } else {
+        [super longTouch:uniqueId at:loc];
     }
 }
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
-    if(![_configPane beginDrag:uniqueId at:loc]) {
-        if(_playMode && ![[self objectAt:loc] isKindOfClass:[BounceConfigurationTab class]]) {
-            NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
-            for(BounceObject *o in objects) {
-                NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
-                if(now-o.lastPlayed > .02) {
-                    [o playSound:.2];
-                    [o.renderable burst:5];
-                    o.intensity = 2.2;
-                    o.lastPlayed = now;
-                }
+    if([BounceSettings instance].playMode && ![[self objectAt:loc] isKindOfClass:[BounceConfigurationTab class]]) {
+        NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+        for(BounceObject *o in objects) {
+            NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
+            if(now-o.lastPlayed > .02) {
+                [o playSound:.2];
+                [o.renderable burst:5];
+                o.intensity = 2.2;
+                o.lastPlayed = now;
             }
-        } else {
-            [super beginDrag:uniqueId at:loc];
         }
+    } else {
+        [super beginDrag:uniqueId at:loc];
     }
 }
 -(void)drag:(void*)uniqueId at:(const vec2&)loc {
-    if(![_configPane drag:uniqueId at:loc]) {
-        if(_playMode && [self gestureForKey:uniqueId] == nil) {
-            NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
-            for(BounceObject *o in objects) {
-                NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
-                if(now-o.lastPlayed > .02) {
-                    [o playSound:.2];
-                    [o.renderable burst:5];
-                    o.intensity = 2.2;
-                    o.lastPlayed = now;
-                }
+    if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
+        NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+        for(BounceObject *o in objects) {
+            NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
+            if(now-o.lastPlayed > .02) {
+                [o playSound:.2];
+                [o.renderable burst:5];
+                o.intensity = 2.2;
+                o.lastPlayed = now;
             }
-        } else {
-            [super drag:uniqueId at:loc];
         }
+    } else {
+        [super drag:uniqueId at:loc];
     }
 }
 -(void)endDrag:(void*)uniqueId at:(const vec2&)loc {
-    if(![_configPane endDrag:uniqueId at:loc]) {
-        if(_playMode && [self gestureForKey:uniqueId] == nil) {
-        } else {
-            [super endDrag:uniqueId at:loc];
-        }
+    if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
+    } else {
+        [super endDrag:uniqueId at:loc];
     }
 }
 -(void)cancelDrag:(void*)uniqueId at:(const vec2&)loc {
-    if(![_configPane cancelDrag:uniqueId at:loc]) {
-        if(_playMode && [self gestureForKey:uniqueId] == nil) {
-        
-        } else {
-            [super cancelDrag:uniqueId at:loc];
-        }
+    if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
+    
+    } else {
+        [super cancelDrag:uniqueId at:loc];
     }
 }
 
@@ -206,17 +199,23 @@
     }
 }
 
+-(void)saveSimulation {
+    [_delegate saveSimulation];
+}
+
+-(void)loadSimulation:(NSString *)file {
+    [_delegate loadSimulation:file];
+}
+
 -(void)draw {
     [super draw];
     [_killArena draw];
-    [_configPane draw];
                         
 }
 
 -(void)dealloc {
     [_killArena removeFromSpace];
     [_killArena release]; _killArena = nil;
-    [_configPane release]; _configPane = nil;
     
     [super dealloc];
 }

@@ -16,6 +16,7 @@
 extern "C" {
 #endif
     
+    
 CGSize screenSize() {
     CGRect screenBounds = [[UIScreen mainScreen] bounds];
     CGFloat screenScale = [[UIScreen mainScreen] scale];

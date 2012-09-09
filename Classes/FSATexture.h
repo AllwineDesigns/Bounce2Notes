@@ -8,14 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FSATexture : NSObject  
+@interface FSATexture : NSObject  {
+    NSString *_key;
+}
+@property (nonatomic, retain) NSString *key;
 @property (nonatomic, readonly) GLuint name;
 @property (nonatomic, readonly) unsigned int width;
 @property (nonatomic, readonly) unsigned int height;
 @property (nonatomic, readonly) float aspect;
 @property (nonatomic, readonly) float inverseAspect;
 
--(id)initWithName: (GLuint)name width:(unsigned int)width height:(unsigned int)height;
+-(id)initWithKey:(NSString*)key name: (GLuint)name width:(unsigned int)width height:(unsigned int)height;
 -(void)memoryWarning;
 -(void)needsSize:(float)size;
 -(void)deleteTexture;

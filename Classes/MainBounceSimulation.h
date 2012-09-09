@@ -10,14 +10,20 @@
 #import "BounceKillArena.h"
 #import "BounceConfigurationPane.h"
 
-@interface MainBounceSimulation : BounceSimulation <NSCoding> {
+@protocol BounceSaveLoadDelegate <NSObject>
+
+-(void)saveSimulation;
+-(void)loadSimulation:(NSString*)file;
+
+@end
+
+@interface MainBounceSimulation : BounceSimulation <BounceSaveLoadDelegate> {
     float _aspect;
     BounceKillArena *_killArena;
-    BounceConfigurationPane *_configPane;
-    BOOL _playMode;
+    id<BounceSaveLoadDelegate> _delegate;
 }
 
-@property (nonatomic) BOOL playMode;
+@property (nonatomic, assign) id<BounceSaveLoadDelegate> delegate;
 
 -(id)initWithAspect:(float)aspect;
 

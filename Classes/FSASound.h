@@ -10,6 +10,7 @@
 #import "FSAAudioPlayer.h"
 
 @protocol FSASoundDelegate <NSObject>
+-(NSString*)key;
 -(void)play: (float)volume;
 @end
 
@@ -17,11 +18,12 @@
     FSAAudioPlayer *_player;
     FSASoundData *_data;
     float _volume;
+    NSString* _key;
     
 }
 @property (nonatomic) float volume;
 
--(id)initWithAudioPlayer:(FSAAudioPlayer*)player soundData:(FSASoundData*)data volume:(float)vol;
+-(id)initWithKey: (NSString*)key audioPlayer:(FSAAudioPlayer*)player soundData:(FSASoundData*)data volume:(float)vol;
 @end
 
 @interface FSARest : NSObject <FSASoundDelegate> {

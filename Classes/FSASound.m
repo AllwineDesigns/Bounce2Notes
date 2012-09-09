@@ -12,9 +12,10 @@
 
 @synthesize volume = _volume;
 
--(id)initWithAudioPlayer:(FSAAudioPlayer*)player soundData:(FSASoundData*)data volume:(float)vol {
+-(id)initWithKey:(NSString*)key audioPlayer:(FSAAudioPlayer*)player soundData:(FSASoundData*)data volume:(float)vol {
     self = [super init];
     if(self) {
+        _key = [key retain];
         _player = player;
         [player retain];
         
@@ -23,12 +24,16 @@
     }
     return self;
 }
+-(NSString*)key {
+    return _key;
+}
 
 -(void)play:(float)volume {
     [_player playSound:_data volume:_volume*volume];
 }
 
 -(void)dealloc {
+    [_key release];
     [_player release];
     [super dealloc];
 }
@@ -36,6 +41,9 @@
 @end
 
 @implementation FSARest
+-(NSString*)key {
+    return @"rest";
+}
 -(void)play:(float)volume {
 }
 -(void)setVolume:(float)f {

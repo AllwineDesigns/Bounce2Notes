@@ -38,6 +38,8 @@ using namespace fsa;
 -(FSATexture*)generateTemporaryTextureForText: (NSString*)txt withFontSize: (float)size withOffset: (const vec2&)offset;
 -(FSATexture*)generateTemporaryTextureForText: (NSString*)txt;
 
+-(FSATexture*)getTextTexture:(NSString*)name;
+
 
 -(FSATexture*)getTexture: (NSString*)name;
 -(void)addLargeTexture: (NSString*)name;

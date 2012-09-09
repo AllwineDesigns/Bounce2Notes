@@ -117,7 +117,7 @@ static BounceNoteManager* bounceNoteManager;
         _intervals = _major_intervals;
         
         NSMutableArray *sounds = [[NSMutableArray alloc] initWithCapacity:72];
-        NSArray *names = [[NSArray alloc] initWithObjects:
+        NSArray *names = [NSArray arrayWithObjects:
                           @"rest",
                           @"rest",
                           @"rest",
@@ -302,11 +302,16 @@ static BounceNoteManager* bounceNoteManager;
 -(void)useMajorIntervals {
     _intervals = _major_intervals;
 }
+-(FSASound*)getSound:(unsigned int)index {
+    unsigned int keyIndex = [[_keyIndices objectForKey:_key] unsignedIntValue]; 
+
+    return [_sounds objectAtIndex:(_intervals[index%7]+keyIndex+12*(_octave-2+index/7))];
+}
 
 -(BounceNote*)getNote:(unsigned int)index {
     unsigned int keyIndex = [[_keyIndices objectForKey:_key] unsignedIntValue]; 
     
-    FSASound *sound = [_sounds objectAtIndex:(_intervals[index%7]+keyIndex+12*(_octave-2+index/7))];
+    FSASound *sound = [self getSound:index];
     NSString *label = [self getLabelForIndex:(_intervals[index%7]+keyIndex)%12];
     
     if(sound == [[FSASoundManager instance] getSound:@"rest"]) {

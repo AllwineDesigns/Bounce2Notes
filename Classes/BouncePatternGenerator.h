@@ -13,7 +13,7 @@
 
 using namespace fsa;
 
-@interface BouncePatternGenerator : NSObject {
+@interface BouncePatternGenerator : NSObject <NSCoding> {
     FSATexture *_patternTexture;
 }
 

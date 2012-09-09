@@ -9,19 +9,33 @@
 #import "BounceConfigurationSimulation.h"
 #import "BounceConfigurationObject.h"
 #import "BounceSettings.h"
+#import "BounceSlider.h"
 
 @implementation BounceConfigurationSimulation
 
--(id)initWithRect:(CGRect)rect bounceSimulation:(BounceSimulation *)sim {
+@synthesize pane = _pane;
+
+-(void)updateSettings {
+    
+}
+
+-(id)initWithRect:(CGRect)rect bounceSimulation:(MainBounceSimulation *)sim {
     self = [super initWithRect:rect];
     
     if(self) {
         _simulation = sim;
-        [_simulation retain];
         
        // [_arena makeHeavyRogue];
     }
     return self;
+}
+
+-(void)prepare {
+    
+}
+
+-(void)setSimulation:(MainBounceSimulation *)sim {
+    _simulation = sim;
 }
 
 -(void)beginCreate:(void *)uniqueId at:(const vec2 &)loc {
@@ -58,6 +72,7 @@
 
 }
 
+/*
 -(void)flickObject:(BounceObject *)obj at:(const vec2&)loc withVelocity:(const vec2 &)vel {
     if([obj isKindOfClass:[BounceConfigurationObject class]]) {
         BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
@@ -71,6 +86,7 @@
     
     [super flickObject:obj at:loc withVelocity:vel];
 }
+*/
 
 -(void)flickSpaceAt:(const vec2 &)loc withVelocity:(const vec2 &)vel {
 
@@ -107,7 +123,7 @@
             
             if([BounceSettings instance].paintMode) {
                 configObj.painting = YES;
-            } else if([configObj.previewObjects count] == 0) {
+            } else if([configObj.previewObjects count] == 0 && ! [self isInBoundsAt:loc]) {
                 vec2 pos = configObj.position;
                 BounceObject *newobj = [BounceObject randomObjectAt:pos];
                 
@@ -247,11 +263,20 @@
 }
 
 -(void)draw {
-    for(BounceObject *obj in _objects) {
-        vec2 pos = obj.position;
-        
-        if([_simulation isInBounds:obj] && obj.simulationWillDraw) {
+    for(BounceObject *obj in _objects) {        
+        if([_simulation isInBounds:obj] && obj.simulationWillDraw && (![self isObjectParticipatingInGesture:obj] || [obj isKindOfClass:[BounceSliderTrack class]])) {
             [obj draw];
+        }
+    }
+}
+
+-(void)drawObjectsParticipatingInGestures {
+    for(BounceGesture *gesture in [_gestures objectEnumerator]) {
+        BounceObject *obj = [gesture object];
+
+        if(![obj isKindOfClass:[BounceSliderTrack class]]) {
+            [obj draw];
+
         }
     }
 }

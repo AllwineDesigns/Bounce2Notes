@@ -19,22 +19,19 @@ using namespace fsa;
 @class BounceShapeGenerator;
 @class BouncePatternGenerator;
 
-@interface BounceSimulation : NSObject <NSCoding> {    
+@interface BounceSimulation : NSObject <NSCoding> {
     cpSpace* _space;
         
-    NSMutableSet *_objects;
+    NSMutableArray *_objects;
     NSMutableSet *_delayedRemoveObjects;
     NSMutableDictionary *_gestures;
             
     BounceArena *_arena;
         
     @public vec2 _gravity;
-    
-    float _dt;
-    float _timeRemainder;
 }
 
-@property (nonatomic, readonly) NSSet *objects;
+@property (nonatomic, readonly) NSArray *objects;
 @property (nonatomic, readonly) cpSpace* space;
 @property (nonatomic, readonly) BounceArena* arena;
 
@@ -56,8 +53,7 @@ using namespace fsa;
 
 -(void)addToSpace:(ChipmunkObject*)obj;
 
--(void)step: (float)t;
--(void)next;
+-(void)step: (float)dt;
 
 -(void)addToVelocity:(const vec2&)v;
 -(void)addVelocity: (const vec2&)vel toObjectsAt:(const vec2&)loc  withinRadius:(float) radius;
@@ -78,6 +74,8 @@ using namespace fsa;
 
 -(void)setPosition:(const vec2&)pos;
 -(void)setVelocity:(const vec2&)vel;
+-(void)setAngle:(float)angle;
+-(void)setAngVel:(float)angVel;
 
 -(void)setBounciness:(float)b;
 -(void)setFriction:(float)f;
@@ -92,7 +90,6 @@ using namespace fsa;
 -(void)randomizeNote;
 -(void)randomizePattern;
 -(void)randomizeSize;
--(void)clampSize;
 
 -(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;
@@ -133,6 +130,8 @@ using namespace fsa;
 @end
 
 typedef struct {
+    BounceObject *nearest;
+    float minDist;
     NSMutableSet *set;
     BounceSimulation *simulation;
 } BounceQueryStruct;

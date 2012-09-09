@@ -12,7 +12,7 @@
 
 using namespace fsa;
 
-@interface BounceShapeGenerator : NSObject {
+@interface BounceShapeGenerator : NSObject <NSCoding> {
     BounceShape _bounceShape;
 }
 

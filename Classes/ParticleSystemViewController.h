@@ -25,14 +25,19 @@
 #import "FSAAudioPlayer.h"
 #import "FSAGestureCurves.h"
 
-@interface ParticleSystemViewController : UIViewController
+@interface ParticleSystemViewController : UIViewController <BounceSaveLoadDelegate>
 {
     EAGLContext *context;
     
     MainBounceSimulation *simulation;
+    BounceConfigurationPane *_configPane;
+    
+    float _dt;
+    float _timeRemainder;
+    NSTimeInterval lastUpdate;
+    
     FSAGestureCurves *gestureCurves;
     
-    NSTimeInterval lastUpdate;
     CMMotionManager *motionManager;
     
     FSAMultiTapAndDragRecognizer *multiTapAndDragRecognizer;
@@ -45,6 +50,9 @@
     BOOL _ready;
     
     UIAlertView *alertView;
+    UIAlertView *saveView;
+    UIAlertView *fileExistsView;
+    
     BOOL dismissAllUpgradeAlerts;
 }
 

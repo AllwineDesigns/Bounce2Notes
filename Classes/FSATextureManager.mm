@@ -27,7 +27,15 @@ static FSATextureManager* fsaTextureManager;
 
         CGSize size = screenSize();
         largeTexturePrefix = nextPowerOfTwo(size.width);
-        startTextTextureSize = nextPowerOfTwo(size.width*.25);
+        
+        NSString *device = machineName();
+        
+
+        if([device hasPrefix:@"iPhone"] || [device isEqualToString:@"iPad3,3"]) {
+            startTextTextureSize = nextPowerOfTwo(size.width*.25);
+        } else {
+            startTextTextureSize = nextPowerOfTwo(size.width*.1);
+        }
     }
     
     return self;
@@ -66,7 +74,7 @@ static FSATextureManager* fsaTextureManager;
             NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];            
             PVRTexture *pvrtex = [[PVRTexture alloc] initWithContentsOfFile:path];
             
-            tex = [[FSATexture alloc] initWithName:pvrtex.name width:pvrtex.width height:pvrtex.height];
+            tex = [[FSATexture alloc] initWithKey:name name:pvrtex.name width:pvrtex.width height:pvrtex.height];
             
             [textures setObject:tex forKey:name];
         } else {
@@ -98,7 +106,7 @@ static FSATextureManager* fsaTextureManager;
             free(imageData);
             glGenerateMipmap(GL_TEXTURE_2D);
             
-            tex = [[FSATexture alloc] initWithName:texId width:image.size.width height:image.size.height];
+            tex = [[FSATexture alloc] initWithKey:name name:texId width:image.size.width height:image.size.height];
             
             [textures setObject:tex forKey:name];
             
@@ -131,7 +139,7 @@ static FSATextureManager* fsaTextureManager;
     } else {
         width = height;
     }
-    
+        
     const int bitsPerElement = 8;
     int sizeInBytes = height*width;
     int texturePitch = width;
@@ -185,7 +193,7 @@ static FSATextureManager* fsaTextureManager;
     
     delete [] data;
     
-    FSATexture *tex = [[FSATexture alloc] initWithName:textureID width:width height:height];
+    FSATexture *tex = [[FSATexture alloc] initWithKey:@"" name:textureID width:width height:height];
     return [tex autorelease];
 }
 
@@ -199,11 +207,27 @@ static FSATextureManager* fsaTextureManager;
 -(void)generateTextureForText: (NSString*)txt forKey:(NSString*)key withFontName: (NSString*)fontName withFontSize: (float)size withOffset: (const vec2&)offset {
     NSAssert(([textures objectForKey:key] == nil), ([NSString stringWithFormat:@"texture exists for key: %@\n", key]));
     FSATexture *tex = [self generateTemporaryTextureForText:txt withFontName:fontName withFontSize:size withOffset:offset];
+    tex.key = key;
     [textures setObject:tex forKey:key];
     
     NSLog(@"loaded text \"%@\" into textureId %d as %@\n", txt, tex.name, key);
     
 
+}
+
+-(FSATexture*)getTextTexture:(NSString *)name {
+    NSString* largeName = [largeTextures objectForKey:name];
+    if(largeName != nil) {
+        name = largeName;
+    }
+    FSATexture *tex = [textures objectForKey:name];
+    if(tex == nil) {
+        tex = [self generateTemporaryTextureForText:name withFontSize:50 withOffset:vec2()];
+        tex.key = name;
+        [textures setObject:tex forKey:name];
+    }
+    
+    return tex;
 }
 
 -(void)dealloc {

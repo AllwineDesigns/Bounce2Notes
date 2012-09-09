@@ -52,7 +52,7 @@
     float _vel;
 }
 
-@property (nonatomic, readonly) id value;
+@property (nonatomic, retain) id value;
 @property (nonatomic, readonly) NSString* label;
 @property (nonatomic) unsigned int index;
 
@@ -76,7 +76,10 @@
 -(void)step: (float)dt;
 -(void)setPosition:(const vec2&)loc;
 -(void)setVelocity:(const vec2&)vel;
+-(void)setAngle:(float)angle;
+-(void)setAngVel:(float)angVel;
 -(void)setLabels:(NSArray*)labels;
+-(void)setLayers:(cpLayers)l;
 
 -(void)setParam:(float)t;
 -(float)param;

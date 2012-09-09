@@ -15,14 +15,6 @@
 @synthesize shapes = _shapes;
 @synthesize numShapes = _numShapes;
 
--(id)initWithCoder:(NSCoder *)aDecoder {
-    
-}
-
--(void)encodeWithCoder:(NSCoder *)aCoder {
-    
-}
-
 -(id)init {
     self = [super init];
     
@@ -31,6 +23,8 @@
         _shapes = (cpShape**)malloc(sizeof(cpShape*));
         _numShapes = 0;
         _allocatedShapes = 1;
+        _group = CP_NO_GROUP;
+        _layers = CP_ALL_LAYERS;
         
         _space = NULL;
         
@@ -51,6 +45,9 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
+        _group = CP_NO_GROUP;
+        _layers = CP_ALL_LAYERS;
+        
         _body = cpBodyNew(1, 1);
         cpBodySetUserData(_body, self);
 
@@ -68,6 +65,9 @@
         _shapes = (cpShape**)malloc(sizeof(cpShape*));
         _numShapes = 0;
         _allocatedShapes = 1;
+        
+        _group = CP_NO_GROUP;
+        _layers = CP_ALL_LAYERS;
         
         _body = cpBodyNew(999999, 999999);
         cpBodySetUserData(_body, self);
@@ -87,6 +87,9 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
+        _group = CP_NO_GROUP;
+        _layers = CP_ALL_LAYERS;
+        
         _body = cpBodyNew(INFINITY, INFINITY);
         cpBodySetUserData(_body, self);
         
@@ -105,9 +108,11 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
+        _group = CP_NO_GROUP;
+        _layers = CP_ALL_LAYERS;
         
-       // _body = cpBodyNewStatic();
-        _body = cpBodyNew(INFINITY, INFINITY); 
+        _body = cpBodyNewStatic();
+       // _body = cpBodyNew(INFINITY, INFINITY); 
         cpBodySetUserData(_body, self);
          
         _mass = 1;
@@ -138,6 +143,8 @@
     }
     _shapes[_numShapes] = shape;
     if(_space != NULL) {
+        cpShapeSetLayers(shape, _layers);
+        cpShapeSetGroup(shape, _group);
         cpSpaceAddShape(_space, shape);
     }
     _numShapes++;
@@ -365,15 +372,15 @@
 
 
 -(void)makeStatic {
-    
+    /*
     [self makeInfiniteRogue];
     cpBodySetVel(_body, cpvzero);
     cpBodySetAngVel(_body, 0);
     _state = CHIPMUNK_OBJECT_STATIC;
     CP_PRIVATE(_body->w_bias) = 0;
     CP_PRIVATE(_body->v_bias) = cpvzero;
-     
-/*
+     */
+
     
     _state = CHIPMUNK_OBJECT_STATIC;
 
@@ -410,7 +417,7 @@
         cpBodySetVel(_body, cpvzero);
         cpBodySetAngVel(_body, 0);
     }
- */
+ 
 }
 
 -(void)makeSimulated {
@@ -443,12 +450,40 @@
 }
 
 -(void)setGroup:(cpGroup)g {
+    _group = g;
     for(int i = 0; i < _numShapes; i++) {
         cpShapeSetGroup(_shapes[i], g);
     }
 }
 
+-(void)setLayers:(cpLayers)l {
+    _layers = l;
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetLayers(_shapes[i], l);
+    }
+}
+
+-(void)printLayers {
+    NSLog(@"Layers for %@:\n", self);
+    for(int i = 0; i < _numShapes; i++) {
+        NSMutableString *str = [NSMutableString stringWithCapacity:32];
+        for(cpLayers numberCopy = cpShapeGetLayers(_shapes[i]); numberCopy > 0; numberCopy >>= 1)
+        {
+            // Prepend "0" or "1", depending on the bit
+            [str insertString:((numberCopy & 1) ? @"1" : @"0") atIndex:0];
+        }
+        
+        NSLog(@"shape %d: %@", i,str);
+    }
+}
+
 -(void)dealloc {
+    if(_space) {
+        cpSpaceRemoveBody(_space, _body);
+        for(int i = 0; i < _numShapes; i++) {
+            cpSpaceRemoveShape(_space, _shapes[i]);
+        }
+    }
     for(int i = 0; i < _numShapes; i++) {
         cpShapeFree(_shapes[i]);
     }

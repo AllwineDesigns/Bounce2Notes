@@ -12,6 +12,7 @@
 #import "fsa/Noise.hpp"
 #import "FSAUtil.h"
 #import "BounceSettings.h"
+#import "BounceConfigurationSimulation.h"
 
 @implementation BounceConfigurationObject
 
@@ -22,7 +23,7 @@
     self = [super initObjectWithShape:bounceShape at:loc withVelocity:vel withColor:color withSize:size withAngle:angle];
     
     if(self) {
-        [_sound release];
+        [(NSObject*)_sound release];
         _sound = [[[BounceNoteManager instance] getRest] retain];
         
         _previewObjects = [[NSMutableSet alloc] initWithCapacity:10];
@@ -130,6 +131,17 @@
 
 @implementation BounceShapeConfigurationObject
 
+-(void)singleTapAt:(const vec2 &)loc {
+    [super singleTapAt:loc];
+    
+    BounceShapeGenerator *gen = [[[BounceShapeGenerator alloc] initWithBounceShape:_bounceShape] autorelease];
+
+    if(![gen isEqual:[BounceSettings instance].bounceShapeGenerator]) {
+        [BounceSettings instance].bounceShapeGenerator =   gen;  
+        [[(BounceConfigurationSimulation*)_simulation pane] randomizeShape];
+    }
+}
+
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
     obj.bounceShape = _bounceShape;
 }
@@ -146,6 +158,12 @@
 @end
 
 @implementation BouncePatternConfigurationObject
+
+-(void)singleTapAt:(const vec2 &)loc {
+    [super singleTapAt:loc];
+    
+    [BounceSettings instance].patternTextureGenerator = [[[BouncePatternGenerator alloc] initWithPatternTexture:_patternTexture] autorelease];    
+}
 
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
     obj.patternTexture = _patternTexture;
@@ -178,6 +196,12 @@
 
 @implementation BounceSizeConfigurationObject
 
+-(void)singleTapAt:(const vec2 &)loc {
+    [super singleTapAt:loc];
+    
+    [BounceSettings instance].sizeGenerator = [[[BounceSizeGenerator alloc] initWithSize:_size] autorelease];    
+}
+
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
     [obj setSize:_size secondarySize:_size*GOLDEN_RATIO];
 }
@@ -208,6 +232,13 @@
 @end
 
 @implementation BounceColorConfigurationObject
+
+-(void)singleTapAt:(const vec2 &)loc {
+    [super singleTapAt:loc];
+    
+    [BounceSettings instance].colorGenerator = _colorGenerator;
+    [[(BounceConfigurationSimulation*)_simulation pane] randomizeColor];
+}
 
 
 -(void)setColor:(const vec4 &)color {
@@ -385,7 +416,9 @@
 
 @implementation BouncePasteConfigurationObject
 @synthesize hasCopied = _hasCopied;
-
+-(void)playSound:(float)volume {
+    
+}
 -(void)setConfigurationValueForObject:(BounceObject*)obj {
     if(_hasCopied) {
         obj.bounceShape = _bounceShape;
@@ -422,7 +455,7 @@
 @implementation BounceCopyConfigurationObject
 
 -(id)initWithPasteObject:(BouncePasteConfigurationObject*)pasteObj {
-    self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-2) withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:.2 withAngle:0];
+    self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-2) withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:.15 withAngle:0];
     if(self) {
         _pasteObj = [pasteObj retain];
     }

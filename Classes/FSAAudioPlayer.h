@@ -13,6 +13,8 @@ typedef struct {
     AudioUnitSampleType *left;
     AudioUnitSampleType *right;
     UInt32 frameCount;
+    float *maxLeftSample;
+    float *maxRightSample;
     BOOL isStereo;
 } FSASoundData;
 
@@ -45,7 +47,7 @@ typedef struct FSAAudioCallbackData {
     FSASoundList *soundList;
     NSLock *pending_lock;
     NSLock *finished_lock;
-    float curVolume;
+    float curMaxSample;
     
   //  FSAAudioPlayer *player;
 } FSAAudioCallbackData;

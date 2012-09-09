@@ -12,6 +12,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+#define RANDFLOAT ((float)arc4random()/4294967295)
+
 
 //from bit twiddling hacks
 inline uint32_t nextPowerOfTwo(uint32_t v)

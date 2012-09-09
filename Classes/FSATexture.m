@@ -19,13 +19,14 @@
     float _invaspect;
 }
 
+@synthesize key = _key;
 @synthesize name = _name;
 @synthesize width = _width;
 @synthesize height = _height;
 @synthesize aspect = _aspect;
 @synthesize inverseAspect = _invaspect;
 
--(id)initWithName:(GLuint)name width:(unsigned int)width height:(unsigned int)height {
+-(id)initWithKey:(NSString*)key name:(GLuint)name width:(unsigned int)width height:(unsigned int)height {
     self = [super init];
     
     if(self) {
@@ -102,6 +103,7 @@ typedef struct {
         _maxPrefix = maxPrefix;
         _curPrefix = minPrefix;
         _filename = file;
+        _key = file;
         _loadPrefixQueue = [[NSMutableArray alloc] initWithCapacity:3];
         _loadedTextureQueue = [[NSMutableArray alloc] initWithCapacity:3];
         

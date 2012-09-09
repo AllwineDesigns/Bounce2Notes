@@ -9,12 +9,21 @@
 #import "BouncePatternGenerator.h"
 #import "fsa/Noise.hpp"
 #import "FSATextureManager.h"
-
-#define RANDFLOAT ((float)arc4random()/4294967295)
+#import "FSAUtil.h"
 
 @implementation BouncePatternGenerator
 
 @synthesize patternTexture = _patternTexture;
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    _patternTexture = [[[FSATextureManager instance] getTexture:[aDecoder decodeObjectForKey:@"BouncePatternGeneratorPattern"]] retain];
+    
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_patternTexture.key forKey:@"BouncePatternGeneratorPattern"];
+}
 
 -(id)initWithPatternTexture:(FSATexture *)patternTexture {
     self = [super init];
@@ -29,6 +38,10 @@
     return _patternTexture;
 }
 
+-(BOOL)isEqual:(id)object {
+    return [object isKindOfClass:[BouncePatternGenerator class]] && _patternTexture == ((BouncePatternGenerator*)object)->_patternTexture;
+}
+
 -(void)dealloc {
     [_patternTexture release];
     [super dealloc];
@@ -36,6 +49,14 @@
 @end
 
 @implementation BounceRandomPatternGenerator
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    return [self init];
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    
+}
 
 -(id)init {
     self = [super init];
@@ -45,11 +66,11 @@
         [texManager getTexture:@"spiral.jpg"],
         [texManager getTexture:@"plasma.jpg"],
         [texManager getTexture:@"weave.jpg"],
-        [texManager getTexture:@"checkered.jpg"],
+       // [texManager getTexture:@"checkered.jpg"],
         [texManager getTexture:@"black.jpg"],
         [texManager getTexture:@"white.jpg"],
         [texManager getTexture:@"sections.jpg"],
-        [texManager getTexture:@"squares.jpg"],
+       // [texManager getTexture:@"squares.jpg"],
         [texManager getTexture:@"stripes.jpg"],
                      nil ];
     }
@@ -66,6 +87,10 @@
     unsigned int i = (unsigned int)(random(loc*12.34)*[_patterns count]);
     
     return [_patterns objectAtIndex:i];
+}
+
+-(BOOL)isEqual:(id)object {
+    return [object isKindOfClass:[BounceRandomPatternGenerator class]];
 }
 
 -(void)dealloc {

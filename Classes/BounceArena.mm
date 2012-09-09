@@ -13,6 +13,27 @@
 
 @synthesize dimensions = _dimensions;
 
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    float x = [aDecoder decodeFloatForKey:@"BounceArenaPositionX"];
+    float y = [aDecoder decodeFloatForKey:@"BounceArenaPositionY"];
+    float width = [aDecoder decodeFloatForKey:@"BounceArenaWidth"];
+    float height = [aDecoder decodeFloatForKey:@"BounceArenaHeight"];
+    CGRect rect = CGRectMake(x-width*.5, 
+                             y-height*.5,
+                             width, 
+                             height);
+    
+    return [self initWithRect:rect];
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    vec2 pos = self.position;
+    [aCoder encodeFloat:pos.x forKey:@"BounceArenaPositionX"];
+    [aCoder encodeFloat:pos.y forKey:@"BounceArenaPositionY"];
+    [aCoder encodeFloat:_dimensions.width forKey:@"BounceArenaWidth"];
+    [aCoder encodeFloat:_dimensions.height forKey:@"BounceArenaHeight"];
+}
+
 -(id)initWithRect:(CGRect)rect {
     self = [super initStatic];
     
@@ -45,6 +66,11 @@
         }
     }
     return self;
+}
+
+-(CGRect)rect {
+    vec2 loc = self.position;
+    return CGRectMake(loc.x-.5*_dimensions.width, loc.y-.5*_dimensions.height, _dimensions.width, _dimensions.height);
 }
 
 -(BOOL)isInBounds:(BounceObject*)obj  {

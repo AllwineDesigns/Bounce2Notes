@@ -113,6 +113,10 @@ class Vector2f
             return Vector2f(x-v.x, y-v.y);
         }
         
+        const bool operator==(const Vector2f& v) {
+            return x == v.x && y == v.y;
+        }
+        
         friend const Vector2f operator+(const Vector2f& v1, const Vector2f& v2) {
             return Vector2f(v1.x+v2.x, v1.y+v2.y);
         }

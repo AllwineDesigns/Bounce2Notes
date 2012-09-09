@@ -8,6 +8,7 @@
 
 #import "FSAAudioPlayer.h"
 #import "FSAUtil.h"
+#import "Accelerate/Accelerate.h"
 
 static OSStatus inputRenderCallback (void *inRefCon,
                                      AudioUnitRenderActionFlags *ioActionFlags,
@@ -45,12 +46,12 @@ static OSStatus inputRenderCallback (void *inRefCon,
     if(sound == NULL) {
         *ioActionFlags |= kAudioUnitRenderAction_OutputIsSilence;
     }
-    float vol = 0;
+    float maxSample = 0;
     while(sound != NULL) {
-        vol += sound->volume;
+        maxSample += sound->volume*sound->data->maxLeftSample[sound->sampleNumber];
         sound = sound->next;  
     }
-    callbackData->curVolume = vol;
+    callbackData->curMaxSample = maxSample;
 
     sound = prev->next;
 
@@ -68,14 +69,30 @@ static OSStatus inputRenderCallback (void *inRefCon,
         UInt32 sampleNumber = sound->sampleNumber;
         Float32 volume = sound->volume;
         UInt32 frameCount = sound->data->frameCount;
+        UInt32 numFrames  = inNumberFrames;
+        if(sampleNumber+numFrames >= frameCount) {
+            numFrames = frameCount-sampleNumber;
+        }
+        
+        /*
+         int volume8_24 = volume*(1<<24);
 
-        for (UInt32 frameNumber = 0; frameNumber < inNumberFrames && sampleNumber < frameCount; ++frameNumber) {
-            float t = sampleNumber/1000.;
-            if(t > 1) t = 1;
-            t = t*t*t*volume;
+        NSLog(@"inNumberFrames: %lu\n", inNumberFrames);
+        NSLog(@"numFrames: %lu\n", numFrames);
+        NSLog(@"frameCount: %lu\n", frameCount);
+        NSLog(@"sampleNumber: %lu\n", sampleNumber);
+        NSLog(@"int: %lu\n", sizeof(int));
+        NSLog(@"AudioUnitSampleType: %lu\n", sizeof(AudioUnitSampleType));
+        vDSP_vrampmuladd_s8_24((const int*)&dataInLeft[sampleNumber], 1, &volume8_24, 0, (int*)outSamplesChannelLeft, 1, numFrames);
+        vDSP_vrampmuladd_s8_24((const int*)&dataInRight[sampleNumber], 1, &volume8_24, 0, (int*)outSamplesChannelRight, 1, numFrames);
+
+        sampleNumber += numFrames;
+        */
+
+        for (UInt32 frameNumber = 0; frameNumber < numFrames; ++frameNumber) {
             
-            outSamplesChannelLeft[frameNumber] += t*dataInLeft[sampleNumber];
-            outSamplesChannelRight[frameNumber] += t*dataInRight[sampleNumber];
+            outSamplesChannelLeft[frameNumber] += volume*dataInLeft[sampleNumber];
+            outSamplesChannelRight[frameNumber] += volume*dataInRight[sampleNumber];
             
             ++sampleNumber;
         }
@@ -267,10 +284,24 @@ void audioRouteChangeListenerCallback (
     
     // Obtain the actual hardware sample rate and store it for later use in the audio processing graph.
     self.graphSampleRate = [mySession currentHardwareSampleRate];
+
+   // self.ioBufferDuration = 0.01;
+
+   // self.ioBufferDuration = 0.023220;
+   // self.ioBufferDuration = .1;
+
+//    [mySession setPreferredIOBufferDuration: ioBufferDuration
+  //                                    error: &audioSessionError];
     
-    self.ioBufferDuration = .01;
-    [mySession setPreferredIOBufferDuration: ioBufferDuration
-                                      error: &audioSessionError];
+    Float32 currentBufferDuration;  
+    UInt32 propertySize = sizeof(currentBufferDuration);
+    AudioSessionGetProperty (                                     // 2
+                             kAudioSessionProperty_CurrentHardwareIOBufferDuration,
+                             &propertySize,
+                             &currentBufferDuration
+                             );
+    NSLog(@"%f currentBufferDuration", currentBufferDuration);
+    
     
     // Register the audio route change listener callback function with the audio session.
     AudioSessionAddPropertyListener (
@@ -352,8 +383,9 @@ void audioRouteChangeListenerCallback (
         _allocatedSounds *= 2;
         soundData = (FSASoundData**)realloc(soundData, _allocatedSounds*sizeof(FSASoundData*));
     }    
-    soundData[_numSounds] = (FSASoundData*)malloc(sizeof(FSASoundData));
+    soundData[_numSounds] = (FSASoundData*)calloc(1,sizeof(FSASoundData));
     FSASoundData *data = soundData[_numSounds];
+    
     ++_numSounds;
 
     CFURLRef audioFile = (CFURLRef)[[NSBundle mainBundle] URLForResource:file withExtension:@""];
@@ -404,7 +436,9 @@ void audioRouteChangeListenerCallback (
         //    hold the right channel audio data
         data->left = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
         data->right = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
-        
+        data->maxLeftSample = (float*)calloc(totalFramesInFile, sizeof(float));
+        data->maxRightSample = (float*)calloc(totalFramesInFile, sizeof(float));
+
         if(data->left == NULL) {
             NSLog(@"error allocating memory for left channel data for sound %@", audioFile);
         }
@@ -415,6 +449,8 @@ void audioRouteChangeListenerCallback (
         importFormat = stereoStreamFormat;
     } else if(1 == channelCount) {
         data->left = (AudioUnitSampleType *) calloc (totalFramesInFile, sizeof (AudioUnitSampleType));
+        data->maxLeftSample = (float*)calloc(totalFramesInFile, sizeof(float));
+        
         data->isStereo = NO;
         importFormat = monoStreamFormat;
     } else {
@@ -504,6 +540,45 @@ void audioRouteChangeListenerCallback (
         }
         ExtAudioFileDispose (audioFileObject);            
         return NULL;
+    }
+    
+    float maxSample = 0;
+    for(int64_t i = numberOfPacketsToRead-1; i >= 0; i--) {
+        float t = i/1000.;
+        if(t > 1) t = 1;
+        t = t*t*t;
+        
+        data->left[i] *= t;
+        float sample = (float)data->left[i]/(1 << 24);
+        if(sample > maxSample) {
+            maxSample = sample;
+        }
+        data->maxLeftSample[i] = maxSample;
+    }
+    
+    if(channelCount == 2) {
+        for(UInt32 i = 0; i < numberOfPacketsToRead; i++) {
+            float t = i/1000.;
+            if(t > 1) t = 1;
+            t = t*t*t;
+            
+            data->right[i] *= t;
+            float maxSample = 0;
+            for(int64_t i = numberOfPacketsToRead-1; i >= 0; i--) {
+                float t = i/1000.;
+                if(t > 1) t = 1;
+                t = t*t*t;
+                
+                data->right[i] *= t;
+                float sample = (float)data->right[i]/(1 << 24);
+                if(sample > maxSample) {
+                    maxSample = sample;
+                }
+                data->maxRightSample[i] = maxSample;
+            }
+        }
+    } else {
+        data->maxRightSample = data->maxLeftSample;
     }
     
     NSLog (@"Finished reading file %@ into memory", audioFile);
@@ -730,21 +805,23 @@ void audioRouteChangeListenerCallback (
             soundList.pending_tail = sound;
         }
     }
-    float maxNewVol = (5-callbackData.curVolume);
-    if(maxNewVol < 0) maxNewVol = 0;
-    if(maxNewVol > .5) maxNewVol = .5;
-    
+   // NSLog(@"callbackdata.curMaxSample: %f\n", callbackData.curMaxSample);
+    float newMaxSample = (1-callbackData.curMaxSample);
+   // NSLog(@"newMaxSample: %f\n", newMaxSample);
+
     FSASoundStruct* sound = soundList.pending_head->next;
-    float vol = 0;
+    float maxSample = 0;
     while(sound != NULL) {
-        vol += sound->volume;
+        maxSample += sound->volume*sound->data->maxLeftSample[0];
         sound = sound->next;
     }
+   // NSLog(@"maxSample: %f\n", maxSample);
+
     
-    if(vol > maxNewVol) {
+    if(maxSample > newMaxSample) {
         sound = soundList.pending_head->next;
         while(sound != NULL) {
-            sound->volume *= maxNewVol/vol;
+            sound->volume *= newMaxSample/maxSample;
             sound = sound->next;
         }
     }

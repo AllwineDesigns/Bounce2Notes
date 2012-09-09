@@ -13,7 +13,8 @@
 
 @class BounceObject;
 
-@protocol BounceSound <FSASoundDelegate>
+@protocol BounceSound <NSObject,NSCoding>
+-(void)play: (float)volume;
 -(void)resized:(float)old_size;
 -(NSString*)label;
 @end
@@ -24,5 +25,30 @@
 }
 -(id)initWithSound:(id<FSASoundDelegate>)sound;
 -(id)initWithSound:(id<FSASoundDelegate>)sound label:(NSString*)label;
+@end
+
+@interface BounceSong : NSObject <BounceSound> {
+    unsigned int _curSound;
+    NSArray *_sounds;
+    NSString *_label;
+}
+
+-(id)initWithSounds:(NSArray*)sounds label:(NSString*)label;
+
+@end
+
+@interface BounceRandomSounds : NSObject <BounceSound> {
+    NSArray *_sounds;
+    NSString *_label;
+}
+
+-(id)initWithSounds:(NSArray*)sounds label:(NSString*)label;
+
+@end
+
+@interface BounceChordProgression : NSObject <BounceSound> {
+    
+}
+
 @end
 

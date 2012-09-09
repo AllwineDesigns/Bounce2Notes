@@ -11,6 +11,15 @@
 
 @implementation NSNumber (Lerp)
 
+-(float)interp:(id)b x:(id)x { // returns t such that [a lerp:b param:t] returns x
+    float v = [self floatValue];
+    float v2 = [b floatValue];
+    
+    float xv = [x floatValue];
+    
+    return (xv-v)/(v2-v);
+}
+
 -(id)lerp:(id)n param:(float)t {
     float v = [self floatValue];
     float v2 = [n floatValue];
@@ -115,6 +124,32 @@
     return self;
 }
 
+-(void)setValue:(id)value {
+    if(_continuous) {
+        unsigned int numValues = [_values count];
+        for(unsigned int i = 0; i < numValues-1; i++) {
+            id a = [_values objectAtIndex:i];
+            id b = [_values objectAtIndex:i+1];
+            float t = [a interp:b x:value];
+            if(t >= 0 && t <= 1) {
+                self.param = (float)(i+t)/(numValues-1);
+                return;
+            }
+        }
+    } else {
+        unsigned int numValues = [_values count];
+        for(unsigned int i = 0; i < numValues; i++) {
+            if([value isEqual:[_values objectAtIndex:i]]) {
+                self.index = i;
+                return;
+            }
+        }
+    }
+    
+    NSLog(@"invalid value for slider: %@", self);
+    NSAssert(NO, @"invalid value for slider");
+}
+
 -(void)setLabels:(NSArray *)labels {
     [_labels release];
     _labels = [labels copy];
@@ -169,6 +204,11 @@
     }
     
     return t;
+}
+
+-(void)setLayers:(cpLayers)l {
+    [self.handle setLayers:l];
+    [self.track setLayers:l];
 }
 
 -(void)update {
@@ -324,6 +364,15 @@
     //[self.handle setVelocity:vel];
 }
 
+-(void)setAngle:(float)angle {
+    [self.track setAngle:angle];
+    [self.handle setAngle:angle];
+}
+-(void)setAngVel:(float)angVel {
+    [self.track setAngVel:angVel];
+    [self.handle setAngVel:angVel];
+}
+
 -(void)draw {
     [_track draw];
     [_handle draw];
@@ -352,10 +401,11 @@
     if(self) {
         _slider = slider;
         self.secondarySize = .015;
-        self.isStationary = YES;
+        self.isStationary = NO;
         self.isPreviewable = NO;
         self.isRemovable = NO;
-        self.simulationWillDraw = NO;
+        self.simulationWillArchive = NO;
+        self.simulationWillDraw = YES;
         self.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
         [self makeStatic];
     }
@@ -415,10 +465,11 @@
     
     if(self) {
         _slider = slider;
-        self.isStationary = YES;
+        self.isStationary = NO;
         self.isPreviewable = NO;
         self.isRemovable = NO;
-        self.simulationWillDraw = NO;
+        self.simulationWillArchive = NO;
+        self.simulationWillDraw = YES;
         [self makeStatic];
     }
     

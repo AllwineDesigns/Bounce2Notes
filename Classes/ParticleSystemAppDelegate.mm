@@ -23,6 +23,9 @@
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     [self.viewController stopAnimation];
+    
+  //  NSLog(@"exiting now, saving to lastexit.bounce");
+   // [self.viewController saveSimulation:@"lastexit.bounce"];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -32,6 +35,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
+    
     [self.viewController stopAnimation];
 }
 

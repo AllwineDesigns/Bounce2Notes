@@ -38,7 +38,7 @@ static FSASoundManager* fsaSoundManager;
         FSASoundData* data = [_player readAudioFileIntoMemory:file];
         float volume = vol;
                 
-        sound = [[FSASound alloc] initWithAudioPlayer:_player soundData: data volume:volume];
+        sound = [[FSASound alloc] initWithKey:file audioPlayer:_player soundData: data volume:volume];
         
         [_sounds setObject:sound forKey:file];
         [sound release];

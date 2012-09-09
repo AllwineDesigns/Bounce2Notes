@@ -10,13 +10,21 @@
 
 @interface BounceConfigurationSimulation : BounceSimulation {
     MainBounceSimulation *_simulation;
+    
+    BouncePane *_pane;
 }
 
--(id)initWithRect:(CGRect)rect bounceSimulation: (BounceSimulation*)sim;
+@property (nonatomic, assign) BouncePane* pane;
 
+-(id)initWithRect:(CGRect)rect bounceSimulation: (MainBounceSimulation*)sim;
+-(void)setSimulation:(MainBounceSimulation*)sim;
 -(BOOL)isObjectBeingPreviewed:(BounceObject*)obj;
 -(BOOL)isAnyObjectBeingPreviewed;
 -(BOOL)isAnyObjectInBounds;
+
+-(void)updateSettings;
+-(void)drawObjectsParticipatingInGestures;
+-(void)prepare;
 
 
 @end

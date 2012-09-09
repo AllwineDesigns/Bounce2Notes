@@ -39,7 +39,6 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
     
     if(self) {
         _simulation = simulation;
-        [simulation retain];
         
         _rect = rect;
         
@@ -260,11 +259,6 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
     [shader enable];
     glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_INT, indices);
     [shader disable];
-}
-       
--(void)dealloc {
-    [_simulation release]; _simulation = nil;
-    [super dealloc];                
 }
 
 @end

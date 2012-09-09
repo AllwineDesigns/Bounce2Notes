@@ -18,8 +18,9 @@
     if(self) {
         self.isPreviewable = NO;
         self.isRemovable = NO;
-        self.simulationWillDraw = NO;
-        self.isStationary = YES;
+        self.simulationWillDraw = YES;
+        self.simulationWillArchive = NO;
+        self.isStationary = NO;
         [self makeStatic];
     }
     

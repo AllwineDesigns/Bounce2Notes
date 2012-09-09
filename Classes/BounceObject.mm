@@ -19,8 +19,9 @@
 
 static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt) {
     BounceObject *obj = (BounceObject*)cpBodyGetUserData(body);
-    
-    float d = obj->_damping;
+
+    float d = cpfpow(obj->_damping,dt);
+//    float d = damping;
     float scale = obj->_gravityScale;
     vec2 g = scale*obj->_simulation->_gravity;
     
@@ -37,6 +38,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
 @synthesize lastPlayed = _lastPlayed;
 @synthesize simulationWillDraw = _simulationWillDraw;
+@synthesize simulationWillArchive = _simulationWillArchive;
 @synthesize isPreviewable = _isPreviewable;
 @synthesize isRemovable = _isRemovable;
 @synthesize simulation = _simulation;
@@ -85,15 +87,91 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 }
 
 -(id)initRandomObjectWithShape: (BounceShape)bounceShape at: (const vec2&)loc withVelocity:(const vec2&)vel {
-    float maxSize = [BounceSettings instance].maxSize;
-    float minSize = [BounceSettings instance].maxSize;
-    float sizeT = random(loc*1.234);
-    float size = (1-sizeT)*minSize+sizeT*maxSize;
+    float size = [[BounceSettings instance].sizeGenerator size].width;
     vec4 color;
     color = [[[BounceSettings instance] colorGenerator] randomColorFromLocation:loc];
     float angle = 2*PI*random(34.2938*loc);
     
     return [self initObjectWithShape:bounceShape at:loc withVelocity:vel withColor:color withSize:size withAngle:angle];
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder {
+    BounceShape bounceShape = BounceShape([aDecoder decodeInt32ForKey:@"BounceObjectShape"]);
+    vec2 pos([aDecoder decodeFloatForKey:@"BounceObjectPositionX"], 
+             [aDecoder decodeFloatForKey:@"BounceObjectPositionY"]);
+    vec2 vel([aDecoder decodeFloatForKey:@"BounceObjectVelocityY"], 
+             [aDecoder decodeFloatForKey:@"BounceObjectVelocityY"]);
+    vec4 color([aDecoder decodeFloatForKey:@"BounceObjectColorR"],
+               [aDecoder decodeFloatForKey:@"BounceObjectColorG"],
+               [aDecoder decodeFloatForKey:@"BounceObjectColorB"],
+               [aDecoder decodeFloatForKey:@"BounceObjectColorA"]);
+    
+    float size = [aDecoder decodeFloatForKey:@"BounceObjectSize"];
+    float angle = [aDecoder decodeFloatForKey:@"BounceObjectAngle"];
+
+    self = [self initObjectWithShape:bounceShape at:pos withVelocity:vel withColor:color withSize:size withAngle:angle];
+    
+    self.angVel = [aDecoder decodeFloatForKey:@"BounceObjectAngVel"];
+    self.intensity = [aDecoder decodeFloatForKey:@"BounceObjectIntensity"];
+    [self setSize:size secondarySize:[aDecoder decodeFloatForKey:@"BounceObjectSecondarySize"]];
+    self.sound = [aDecoder decodeObjectForKey:@"BounceObjectSound"];
+    self.patternTexture = [[FSATextureManager instance] getTexture:[aDecoder decodeObjectForKey:@"BounceObjectPatternTexture"]];
+    
+    self.bounciness = [aDecoder decodeFloatForKey:@"BounceObjectBounciness"];
+    self.friction = [aDecoder decodeFloatForKey:@"BounceObjectFriction"];
+    self.gravityScale = [aDecoder decodeFloatForKey:@"BounceObjectGravityScale"];
+    self.damping = [aDecoder decodeFloatForKey:@"BounceObjectDamping"];
+    self.velocityLimit = [aDecoder decodeFloatForKey:@"BounceObjectVelocityLimit"];
+    
+    self.isStationary = [aDecoder decodeBoolForKey:@"BounceObjectIsStationary"];
+    if(self.isStationary) {
+        [self makeStatic];
+    }
+    
+    self.isPreviewable = [aDecoder decodeBoolForKey:@"BounceObjectIsPreviewable"];
+    self.isRemovable = [aDecoder decodeBoolForKey:@"BounceObjectIsRemovable"];
+    self.simulationWillDraw = [aDecoder decodeBoolForKey:@"BounceObjectSimulationWillDraw"];
+    self.simulationWillArchive = [aDecoder decodeBoolForKey:@"BounceObjectSimulationWillArchive"];
+    
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder {
+    vec2 pos = self.position;
+    vec2 vel = self.velocity;
+    float angle = self.angle;
+    float angVel = self.angVel;
+    
+    [aCoder encodeObject:_sound forKey:@"BounceObjectSound"];
+    [aCoder encodeObject:_patternTexture.key forKey:@"BounceObjectPatternTexture"];
+    
+    [aCoder encodeInt32:_bounceShape forKey:@"BounceObjectShape"];
+    [aCoder encodeFloat:pos.x forKey:@"BounceObjectPositionX"];
+    [aCoder encodeFloat:pos.y forKey:@"BounceObjectPositionY"];
+    [aCoder encodeFloat:vel.x forKey:@"BounceObjectVelocityX"];
+    [aCoder encodeFloat:vel.y forKey:@"BounceObjectVelocityY"];
+    [aCoder encodeFloat:angle forKey:@"BounceObjectAngle"];
+    [aCoder encodeFloat:angVel forKey:@"BounceObjectAngVel"];
+    [aCoder encodeFloat:_color.x forKey:@"BounceObjectColorR"];
+    [aCoder encodeFloat:_color.y forKey:@"BounceObjectColorG"];
+    [aCoder encodeFloat:_color.z forKey:@"BounceObjectColorB"];
+    [aCoder encodeFloat:_color.w forKey:@"BounceObjectColorA"];
+    [aCoder encodeFloat:_size forKey:@"BounceObjectSize"];
+    [aCoder encodeFloat:_size2 forKey:@"BounceObjectSecondarySize"];
+    [aCoder encodeFloat:_intensity forKey:@"BounceObjectIntensity"];
+    
+    [aCoder encodeFloat:_bounciness forKey:@"BounceObjectBounciness"];
+    [aCoder encodeFloat:_friction forKey:@"BounceObjectFriction"];
+    [aCoder encodeFloat:_gravityScale forKey:@"BounceObjectGravityScale"];
+    [aCoder encodeFloat:_damping forKey:@"BounceObjectDamping"];
+    [aCoder encodeFloat:_velLimit forKey:@"BounceObjectVelocityLimit"];
+    
+    [aCoder encodeBool:_isStationary forKey:@"BounceObjectIsStationary"];
+    
+    [aCoder encodeBool:_isPreviewable forKey:@"BounceObjectIsPreviewable"];
+    [aCoder encodeBool:_isRemovable forKey:@"BounceObjectIsRemovable"];
+    [aCoder encodeBool:_simulationWillDraw forKey:@"BounceObjectSimulationWillDraw"];
+    [aCoder encodeBool:_simulationWillArchive forKey:@"BounceObjectSimulationWillArchive"];
 }
 
 -(id)initObjectWithShape: (BounceShape)bounceShape at:(const vec2&)loc withVelocity:(const vec2&)vel withColor:(const vec4&)color  withSize:(float)size withAngle:(float)angle {
@@ -108,16 +186,17 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         _isPreviewable = YES;
         _isRemovable = YES;
         _simulationWillDraw = YES;
+        _simulationWillArchive = YES;
         _velLimit = INFINITY;
         _color = color;
         _intensity = 2.2;
         _isStationary = NO;
         self.patternTexture = [[[BounceSettings instance] patternTextureGenerator] randomPatternTextureWithLocation:loc];
         
-   //     unsigned int notes[] = { 0, 2,4,7};
-        unsigned int notes[] = { 0,1, 2,4,5,7};
+        unsigned int notes[] = { 0, 2,4,7};
+       // unsigned int notes[] = { 0,1, 2,4,5,7};
 
-        unsigned int note = (unsigned int)6*random(loc*29.1863);
+        unsigned int note = (unsigned int)4*random(loc*29.1863);
         _sound = [[BounceNoteManager instance] getNote:notes[note]];
         [_sound retain];
         
@@ -298,33 +377,17 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
 -(void)randomizeNote {
     vec2 loc = self.position;
-//    unsigned int notes[] = { 0, 2,4,7};
-    unsigned int notes[] = { 0, 1,2,4,5,7};
+    unsigned int notes[] = { 0, 2,4,7};
+//    unsigned int notes[] = { 0, 1,2,4,5,7};
 
-    unsigned int note = (unsigned int)6*random(loc*29.1863);
+    unsigned int note = (unsigned int)4*random(loc*29.1863);
     self.sound = [[BounceNoteManager instance] getNote:notes[note]];
-}
-
--(void)clampSize {
-    float minSize = [BounceSettings instance].minSize;
-    float maxSize = [BounceSettings instance].maxSize;
-    
-    float aspect = _size/_size2;
-    float invaspect = 1./aspect;
-    if(_size < minSize) {
-        [self setSize:minSize secondarySize:invaspect*minSize];
-    } else if(_size > maxSize) {
-        [self setSize:maxSize secondarySize:invaspect*maxSize];
-    }
 }
 
 -(void)randomizeSize {
     vec2 loc = self.position;
-    float minSize = [BounceSettings instance].minSize;
-    float maxSize = [BounceSettings instance].maxSize;
-    float size = random(loc*1.234)*(maxSize-minSize)+minSize;
-    _size2 = size*GOLDEN_RATIO;
-    self.size = size;
+    CGSize size = [[BounceSettings instance].sizeGenerator size];
+    [self setSize:size.width secondarySize:size.height];
 }
 
 -(void)randomizePattern {
@@ -643,12 +706,12 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     [self setMass:20*_size*_size];
 
     
-    float moment = 5*(cpMomentForPoly(_mass, numPts1, (const cpVect*)poly1, cpvzero)+
-                      cpMomentForPoly(_mass, numPts2, (const cpVect*)poly2, cpvzero)+
-                      cpMomentForPoly(_mass, numPts3, (const cpVect*)poly3, cpvzero)+
-                      cpMomentForPoly(_mass, numPts4, (const cpVect*)poly4, cpvzero)+
-                      cpMomentForPoly(_mass, numPts5, (const cpVect*)poly5, cpvzero)+
-                      cpMomentForPoly(_mass, numPts6, (const cpVect*)poly6, cpvzero));
+    float moment = 5*(cpMomentForPoly(.4*_mass, numPts1, (const cpVect*)poly1, cpvzero)+
+                      cpMomentForPoly(.2*_mass, numPts2, (const cpVect*)poly2, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts3, (const cpVect*)poly3, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts4, (const cpVect*)poly4, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts5, (const cpVect*)poly5, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts6, (const cpVect*)poly6, cpvzero));
     
     [self setMoment:moment];
     
@@ -907,12 +970,12 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     [self setMass:20*_size*_size];
     
     
-    float moment = 5*(cpMomentForPoly(_mass, numPts1, (const cpVect*)poly1, cpvzero)+
-                      cpMomentForPoly(_mass, numPts2, (const cpVect*)poly2, cpvzero)+
-                      cpMomentForPoly(_mass, numPts3, (const cpVect*)poly3, cpvzero)+
-                      cpMomentForPoly(_mass, numPts4, (const cpVect*)poly4, cpvzero)+
-                      cpMomentForPoly(_mass, numPts5, (const cpVect*)poly5, cpvzero)+
-                      cpMomentForPoly(_mass, numPts6, (const cpVect*)poly6, cpvzero));
+    float moment = 5*(cpMomentForPoly(.4*_mass, numPts1, (const cpVect*)poly1, cpvzero)+
+                      cpMomentForPoly(.2*_mass, numPts2, (const cpVect*)poly2, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts3, (const cpVect*)poly3, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts4, (const cpVect*)poly4, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts5, (const cpVect*)poly5, cpvzero)+
+                      cpMomentForPoly(.1*_mass, numPts6, (const cpVect*)poly6, cpvzero));
     
     [self setMoment:moment];
     
@@ -1075,7 +1138,9 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
 
 -(void)step:(float)dt {
-    _intensity *= .9;
+   // _intensity *= cpfpow(.005, dt);
+    _intensity *= .9; // when dt = .02
+
     _age += dt;
     
     if(_beingGrabbed || _beingTransformed) {
@@ -1186,9 +1251,11 @@ drawShape(cpShape *shape, const vec4& color)
     [sim addObject:self];
 }
 -(void)removeFromSimulation {
-    [_simulation removeObject:self];
     [self removeFromSpace];
+    [self retain];
+    [_simulation removeObject:self];
     self.simulation = nil;
+    [self release];
 }
 -(void)postSolveRemoveFromSimulation {
     [_simulation postSolveRemoveObject:self];
@@ -1207,7 +1274,7 @@ drawShape(cpShape *shape, const vec4& color)
 
     if(_isStationary) {
         _isStationary = NO;
-    } else if(_age > .5 && _simulation != nil) {
+    } else if(_age > .5 && _isRemovable && _simulation != nil) {
         [self playSound:.2];
         [self removeFromSimulation];
     }
@@ -1238,12 +1305,7 @@ drawShape(cpShape *shape, const vec4& color)
     [_sound release];
     _sound = nil;
     [_renderable release];
-    _renderable = nil;
-    
-    if(_simulation) {
-        [self removeFromSimulation];
-        [_simulation release];
-    }
+    _renderable = nil;         
 
     [super dealloc];
 }

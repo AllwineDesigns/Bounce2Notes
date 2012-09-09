@@ -33,6 +33,7 @@
 -(void)useMajorIntervals;
 
 -(NSString*)getLabelForIndex:(unsigned int)index;
+-(FSASound*)getSound:(unsigned int)index;
 -(BounceNote*)getNote:(unsigned int)index;
 -(BounceNote*)getRest;
 

@@ -26,6 +26,7 @@ using namespace fsa;
         [pane retain];
         _isPreviewable = NO;
         _isRemovable = NO;
+        _simulationWillDraw = NO;
         _index = index;
         vec2 panePos = _pane.object.position;
         vec2 pos = panePos+offset;
@@ -54,18 +55,15 @@ using namespace fsa;
 }
 
 -(void)singleTapAt:(const vec2 &)loc {
-    [_pane setCurrentSimulation:_index];
+    [_pane tabSingleTappedAt:loc index:_index];
     _intensity = 2.2;
     [_renderable burst:5];
 }
 
 -(void)flickAt:(const vec2 &)loc withVelocity:(const vec2 &)vel {
-    float dot = vel.dot(0,1);
-    if(dot > 0) {
-        [self singleTapAt:loc];
-    } else {
-        [_pane deactivate];
-    }
+    [_pane tabFlickedAt:(const vec2&)loc withVelocity:(const vec2&)vel index:_index];
+    _intensity = 2.2;
+    [_renderable burst:5];
 }
 
 -(void)createCallbackWithSize:(float)size secondarySize:(float)size2 {
@@ -73,31 +71,10 @@ using namespace fsa;
 }
 
 -(void)grabCallbackWithPosition:(const vec2 &)pos velocity:(const vec2 &)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
-    [_pane setCurrentSimulation:_index];
-
-    vec2 springLoc(_pane.object.springLoc);
-    if([BounceSettings instance].paneUnlocked) {
-        springLoc.x = pos.x-_offset.x;
-    }
-    springLoc.y = pos.y-_offset.y;
-    [_pane.object setSpringLoc:springLoc];
-    [_pane.object setCustomSpringLoc:springLoc];
-
+    [_pane tabGrabbedAt:pos offset:_offset index:_index];
 }
 -(void)endGrabCallback {
-    vec2 springLoc = _pane.object.springLoc;
-    
-    BounceConstants *constants = [BounceConstants instance];
-    
-    float aspect = constants.aspect;
-    float invaspect = 1./aspect;
-
-    if(springLoc.y <  -invaspect) {
-        [_pane deactivate];
-    } else {
-        [_pane activate];
-        [_pane setCurrentSimulation:_index];
-    }
+    [_pane tabGrabEnded: _index];
 }
 
 -(void)cancelGrabCallback {
