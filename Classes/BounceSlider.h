@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "BounceObject.h"
+#import "BouncePages.h"
 
 @interface NSNumber (Lerp)
 
@@ -24,7 +25,7 @@
 
 @end
 
-@interface BounceSlider : NSObject {
+@interface BounceSlider : NSObject <BounceWidget> {
     BounceObject *_track;
     BounceObject *_handle;
         

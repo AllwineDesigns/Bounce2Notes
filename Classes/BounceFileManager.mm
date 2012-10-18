@@ -58,6 +58,7 @@ static BounceFileManager* bounceFileManager;
         }
     }
     @catch (NSException *exception) {
+        NSLog(@"exception happened during load: %@\n", exception);
     }
 
     return nil;

@@ -11,13 +11,13 @@
 #import "BounceSound.h"
 
 @interface BounceNoteManager : NSObject {
-    unsigned int *_intervals;
+    int *_intervals;
     
-    unsigned int *_major_intervals;
-    unsigned int *_minor_intervals;
+    int *_major_intervals;
+    int *_minor_intervals;
     
     NSString *_key;
-    unsigned int _octave;
+    int _octave;
     
     NSArray *_sounds;
     BounceNote *_rest;
@@ -27,14 +27,17 @@
 }
 
 @property (nonatomic,retain) NSString* key;
-@property (nonatomic) unsigned int octave;
+@property (nonatomic) int octave;
 
 -(void)useMinorIntervals;
 -(void)useMajorIntervals;
 
--(NSString*)getLabelForIndex:(unsigned int)index;
--(FSASound*)getSound:(unsigned int)index;
--(BounceNote*)getNote:(unsigned int)index;
+-(NSString*)getLabelForIndex:(int)index;
+-(NSString*)getLabelForIndex:(int)index forKey:(NSString*)key;
+
+-(FSASound*)getSound:(int)index forKey:(NSString*)key forOctave:(int)octave;
+-(FSASound*)getSound:(int)index;
+-(BounceNote*)getNote:(int)index;
 -(BounceNote*)getRest;
 
 +(BounceNoteManager*)instance;

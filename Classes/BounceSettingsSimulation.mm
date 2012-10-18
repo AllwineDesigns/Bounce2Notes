@@ -406,6 +406,7 @@
 -(void)changedAffectsAllObjectsSlider:(BounceSlider *)slider {
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     [BounceSettings instance].affectAllObjects = [slider.value boolValue];
+    /*
     if([slider.value boolValue] && !_updatingSettings) {
         [self changedBouncinessSlider:_bouncinessSlider];
         [self changedColorSlider:_colorSlider];
@@ -416,7 +417,7 @@
         [self changedSizeSlider:_sizeSlider];
         [self changedVelLimitSlider:_velLimitSlider];
         [self changedShapesSlider:_shapesSlider];
-    }
+    }*/
 }
 
 -(void)setupAllNewSliders {
@@ -902,13 +903,15 @@
             [pageLabels addObject:@""];
         }
         _pageSlider = [[BounceSlider alloc] initWithLabels:pageLabels index:0];
-        _pageSlider.padding = .08*dimensions.width+.005;
         _pageSlider.handle.bounceShape = BOUNCE_CAPSULE;
-        _pageSlider.handle.size = .08*dimensions.width;
+        _pageSlider.handle.size = .04*dimensions.width;
         _pageSlider.handle.secondarySize = .01;
         _pageSlider.handle.sound = [[BounceNoteManager instance] getRest];
         _pageSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
         _pageSlider.handle.isStationary = NO;
+        
+        _pageSlider.padding = _pageSlider.handle.size+.005;
+
         
         
         _pageSlider.track.position = vec2(-2,0);
@@ -1056,7 +1059,7 @@
         [_simulation setBounciness:[slider.value floatValue]];
     }
     [_simulation.arena setBounciness:[slider.value floatValue]];
-    [_pane setBounciness:[slider.value floatValue]];
+  //  [_pane setBounciness:[slider.value floatValue]];
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
@@ -1068,7 +1071,7 @@
     if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setGravityScale:[slider.value floatValue]];
     }
-    [_pane setGravityScale:[slider.value floatValue]];
+ //   [_pane setGravityScale:[slider.value floatValue]];
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
@@ -1109,7 +1112,7 @@
     if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setDamping:[slider.value floatValue]];
     }
-    [_pane setDamping:[slider.value floatValue]];
+   // [_pane setDamping:[slider.value floatValue]];
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
@@ -1121,7 +1124,7 @@
     if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation setVelocityLimit:[slider.value floatValue]];
     }
-    [_pane setVelocityLimit:[slider.value floatValue]];
+  //  [_pane setVelocityLimit:[slider.value floatValue]];
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
@@ -1134,7 +1137,7 @@
         [_simulation setFriction:[slider.value floatValue]];
     }
     [_simulation.arena setFriction:[slider.value floatValue]];
-    [_pane setFriction:[slider.value floatValue]];
+   // [_pane setFriction:[slider.value floatValue]];
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];

@@ -46,7 +46,7 @@ using namespace fsa;
 -(void)step:(float)dt;
 -(void)setScroll:(float)scroll;
 -(void)finalizeScroll;
--(void)addWidget:(id)widget offset:(const vec2&)offset; 
+-(void)addWidget:(id<BounceWidget>)widget offset:(const vec2&)offset; 
 -(void)updatePositions:(const vec2&)panePosition;
 
 @end

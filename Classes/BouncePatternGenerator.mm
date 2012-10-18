@@ -28,8 +28,7 @@
 -(id)initWithPatternTexture:(FSATexture *)patternTexture {
     self = [super init];
     if(self) {
-        [_patternTexture retain];
-        _patternTexture = patternTexture;
+        _patternTexture = [patternTexture retain];
     }
     return self;
 }

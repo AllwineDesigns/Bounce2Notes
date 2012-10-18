@@ -8,14 +8,14 @@
 
 #import "BounceObject.h"
 
-@class BounceConfigurationPane;
+@class BouncePane;
 
 @interface BounceConfigurationTab : BounceObject {
     unsigned int _index;
-    BounceConfigurationPane *_pane;
+    BouncePane *_pane;
     vec2 _offset;
 }
 @property (nonatomic, readonly) const vec2& offset;
 
--(id)initWithPane:(BounceConfigurationPane*)pane index:(unsigned int)index offset:(const vec2&)offset;
+-(id)initWithPane:(BouncePane*)pane index:(unsigned int)index offset:(const vec2&)offset;
 @end

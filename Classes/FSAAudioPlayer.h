@@ -29,6 +29,7 @@ typedef struct FSASoundStruct {
 typedef struct FSASoundList {
     FSASoundStruct* playing;  // sounds that the audio callback has started playing. The render callback function has
                         // full access to this list (no synchronization necessary)
+    
     FSASoundStruct* pool;     // uninitialized sounds that are available for playing. Only the playSound method has
                         // access to the pool (no synchronization necessary).
     

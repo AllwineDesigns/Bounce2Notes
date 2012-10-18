@@ -18,37 +18,37 @@ static BounceNoteManager* bounceNoteManager;
 
 -(void)setupKeyIndices {
     NSMutableDictionary *keyIndices = [[NSMutableDictionary alloc] initWithCapacity:15];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:0] forKey:@"C"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:7] forKey:@"G"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:2] forKey:@"D"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:9] forKey:@"A"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:4] forKey:@"E"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:11] forKey:@"B"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:6] forKey:@"Fsharp"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:1] forKey:@"Csharp"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:5] forKey:@"F"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:10] forKey:@"Bflat"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:3] forKey:@"Eflat"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:8] forKey:@"Aflat"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:1] forKey:@"Dflat"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:6] forKey:@"Gflat"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:11] forKey:@"Cflat"];
+    [keyIndices setObject:[NSNumber numberWithInt:0] forKey:@"C"];
+    [keyIndices setObject:[NSNumber numberWithInt:7] forKey:@"G"];
+    [keyIndices setObject:[NSNumber numberWithInt:2] forKey:@"D"];
+    [keyIndices setObject:[NSNumber numberWithInt:9] forKey:@"A"];
+    [keyIndices setObject:[NSNumber numberWithInt:4] forKey:@"E"];
+    [keyIndices setObject:[NSNumber numberWithInt:11] forKey:@"B"];
+    [keyIndices setObject:[NSNumber numberWithInt:6] forKey:@"Fsharp"];
+    [keyIndices setObject:[NSNumber numberWithInt:1] forKey:@"Csharp"];
+    [keyIndices setObject:[NSNumber numberWithInt:5] forKey:@"F"];
+    [keyIndices setObject:[NSNumber numberWithInt:10] forKey:@"Bflat"];
+    [keyIndices setObject:[NSNumber numberWithInt:3] forKey:@"Eflat"];
+    [keyIndices setObject:[NSNumber numberWithInt:8] forKey:@"Aflat"];
+    [keyIndices setObject:[NSNumber numberWithInt:1] forKey:@"Dflat"];
+    [keyIndices setObject:[NSNumber numberWithInt:6] forKey:@"Gflat"];
+    [keyIndices setObject:[NSNumber numberWithInt:11] forKey:@"Cflat"];
     
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:9] forKey:@"Am"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:4] forKey:@"Em"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:11] forKey:@"Bm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:6] forKey:@"Fsharpm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:1] forKey:@"Csharpm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:8] forKey:@"Gsharpm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:3] forKey:@"Dsharpm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:10] forKey:@"Asharpm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:2] forKey:@"Dm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:7] forKey:@"Gm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:0] forKey:@"Cm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:5] forKey:@"Fm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:10] forKey:@"Bflatm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:3] forKey:@"Eflatm"];
-    [keyIndices setObject:[NSNumber numberWithUnsignedInt:8] forKey:@"Aflatm"];
+    [keyIndices setObject:[NSNumber numberWithInt:9] forKey:@"Am"];
+    [keyIndices setObject:[NSNumber numberWithInt:4] forKey:@"Em"];
+    [keyIndices setObject:[NSNumber numberWithInt:11] forKey:@"Bm"];
+    [keyIndices setObject:[NSNumber numberWithInt:6] forKey:@"Fsharpm"];
+    [keyIndices setObject:[NSNumber numberWithInt:1] forKey:@"Csharpm"];
+    [keyIndices setObject:[NSNumber numberWithInt:8] forKey:@"Gsharpm"];
+    [keyIndices setObject:[NSNumber numberWithInt:3] forKey:@"Dsharpm"];
+    [keyIndices setObject:[NSNumber numberWithInt:10] forKey:@"Asharpm"];
+    [keyIndices setObject:[NSNumber numberWithInt:2] forKey:@"Dm"];
+    [keyIndices setObject:[NSNumber numberWithInt:7] forKey:@"Gm"];
+    [keyIndices setObject:[NSNumber numberWithInt:0] forKey:@"Cm"];
+    [keyIndices setObject:[NSNumber numberWithInt:5] forKey:@"Fm"];
+    [keyIndices setObject:[NSNumber numberWithInt:10] forKey:@"Bflatm"];
+    [keyIndices setObject:[NSNumber numberWithInt:3] forKey:@"Eflatm"];
+    [keyIndices setObject:[NSNumber numberWithInt:8] forKey:@"Aflatm"];
     _keyIndices = keyIndices;
 }
 
@@ -95,8 +95,8 @@ static BounceNoteManager* bounceNoteManager;
     if(self) {
         [self setupKeyIndices];
         [self setupSharpsAndFlats];
-        _major_intervals = (unsigned int*)malloc(7*sizeof(unsigned int));
-        _minor_intervals = (unsigned int*)malloc(7*sizeof(unsigned int));
+        _major_intervals = (int*)malloc(7*sizeof(int));
+        _minor_intervals = (int*)malloc(7*sizeof(int));
         
         _major_intervals[0] = 0;
         _major_intervals[1] = 2;
@@ -214,8 +214,20 @@ static BounceNoteManager* bounceNoteManager;
     return self;
 }
 
--(NSString*)getLabelForIndex:(unsigned int)index {
-    int sharpsflats = [[_keySharpsAndFlats objectForKey:_key] intValue];
+-(NSString*)getLabelForIndex:(int)index {
+    return [self getLabelForIndex:index forKey:_key];
+}
+
+-(NSString*)getLabelForIndex:(int)index forKey:(NSString*)key {
+    int keyIndex = [[_keyIndices objectForKey:_key] intValue]; 
+    int intervalIndex = index;
+    while(intervalIndex < 0) {
+        intervalIndex += 7;
+    }
+    intervalIndex = intervalIndex%7;
+    index = (_intervals[intervalIndex]+keyIndex)%12;
+    
+    int sharpsflats = [[_keySharpsAndFlats objectForKey:key] intValue];
     switch(index) {
         case 0:
             if(sharpsflats == 7) {
@@ -302,17 +314,34 @@ static BounceNoteManager* bounceNoteManager;
 -(void)useMajorIntervals {
     _intervals = _major_intervals;
 }
--(FSASound*)getSound:(unsigned int)index {
-    unsigned int keyIndex = [[_keyIndices objectForKey:_key] unsignedIntValue]; 
-
-    return [_sounds objectAtIndex:(_intervals[index%7]+keyIndex+12*(_octave-2+index/7))];
+-(FSASound*)getSound:(int)index {
+    return [self getSound:index forKey:_key forOctave:_octave];
 }
 
--(BounceNote*)getNote:(unsigned int)index {
-    unsigned int keyIndex = [[_keyIndices objectForKey:_key] unsignedIntValue]; 
+-(FSASound*)getSound:(int)index forKey:(NSString *)key forOctave:(int)octave {
+    int keyIndex = [[_keyIndices objectForKey:key] intValue]; 
+    int intervalIndex = index;
+    while(intervalIndex < 0) {
+        intervalIndex += 7;
+        octave--;
+    }
+    intervalIndex = intervalIndex%7;
+    
+    return [_sounds objectAtIndex:(_intervals[intervalIndex]+keyIndex+12*(octave-2+index/7))];
+}
+
+-(BounceNote*)getNote:(int)index {
+   // int keyIndex = [[_keyIndices objectForKey:_key] intValue]; 
     
     FSASound *sound = [self getSound:index];
-    NSString *label = [self getLabelForIndex:(_intervals[index%7]+keyIndex)%12];
+    
+    int intervalIndex = index;
+    while(intervalIndex < 0) {
+        intervalIndex += 7;
+    }
+    intervalIndex = intervalIndex%7;
+    
+    NSString *label = [self getLabelForIndex:index forKey:_key];
     
     if(sound == [[FSASoundManager instance] getSound:@"rest"]) {
         return _rest;

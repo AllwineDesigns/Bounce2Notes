@@ -8,6 +8,7 @@
 
 #import "BounceSettings.h"
 #import "FSATextureManager.h"
+#import "BounceNoteManager.h"
 
 static BounceSettings *bounceSettings;
 
@@ -17,6 +18,7 @@ static BounceSettings *bounceSettings;
 @synthesize patternTextureGenerator = _patternTextureGenerator;
 @synthesize colorGenerator = _colorGenerator;
 @synthesize sizeGenerator = _sizeGenerator;
+@synthesize sound = _sound;
 
 @synthesize friction = _friction;  
 @synthesize velocityLimit = _velLimit;
@@ -36,6 +38,7 @@ static BounceSettings *bounceSettings;
     self.patternTextureGenerator = [aDecoder decodeObjectForKey:@"BounceSettingsPatternTextureGenerator"];
     self.colorGenerator = [aDecoder decodeObjectForKey:@"BounceSettingsColorGenerator"];
     self.sizeGenerator = [aDecoder decodeObjectForKey:@"BounceSettingsSizeGenerator"];
+    self.sound = [aDecoder decodeObjectForKey:@"BounceSettingsSound"];
     
     self.friction = [aDecoder decodeFloatForKey:@"BounceSettingsFriction"];
     self.damping = [aDecoder decodeFloatForKey:@"BounceSettingsDamping"];
@@ -58,6 +61,7 @@ static BounceSettings *bounceSettings;
     [aCoder encodeObject:_patternTextureGenerator forKey:@"BounceSettingsPatternTextureGenerator"];
     [aCoder encodeObject:_colorGenerator forKey:@"BounceSettingsColorGenerator"];
     [aCoder encodeObject:_sizeGenerator forKey:@"BounceSettingsSizeGenerator"];
+    [aCoder encodeObject:_sound forKey:@"BounceSettingsSound"];
     
     [aCoder encodeFloat:_friction forKey:@"BounceSettingsFriction"];
     [aCoder encodeFloat:_damping forKey:@"BounceSettingsDamping"];
@@ -78,6 +82,7 @@ static BounceSettings *bounceSettings;
     settings.patternTextureGenerator = self.patternTextureGenerator;
     settings.colorGenerator = self.colorGenerator;
     settings.sizeGenerator = self.sizeGenerator;
+    settings.sound = self.sound;
     settings.friction = self.friction;
     settings.damping = self.damping;
     settings.gravityScale = self.gravityScale;
@@ -101,6 +106,15 @@ static BounceSettings *bounceSettings;
         _patternTextureGenerator = [[BouncePatternGenerator alloc] initWithPatternTexture:[[FSATextureManager instance] getTexture:@"spiral.jpg"]];
         _colorGenerator = [[BouncePastelColorGenerator alloc] init];
         _sizeGenerator = [[BounceRandomSizeGenerator alloc] init];
+        BounceNoteManager *noteManager = [BounceNoteManager instance];
+        NSArray *sounds = [[NSArray alloc] initWithObjects:
+                           [noteManager getSound:0 forKey:@"C" forOctave:3],
+                           [noteManager getSound:0 forKey:@"C" forOctave:4],
+                           [noteManager getSound:2 forKey:@"C" forOctave:4],
+                           [noteManager getSound:4 forKey:@"C" forOctave:4],
+                           nil];
+        _sound = [[BounceRandomSounds alloc] initWithSounds:sounds label:@"C"];
+        [sounds release];
         _friction = .5;
         _damping = 1;
         _gravityScale = 9.789;
@@ -121,6 +135,8 @@ static BounceSettings *bounceSettings;
     self.patternTextureGenerator = settings.patternTextureGenerator;
     self.colorGenerator = settings.colorGenerator;
     self.sizeGenerator = settings.sizeGenerator;
+    self.sound = settings.sound;
+    
     self.friction = settings.friction;
     self.damping = settings.damping;
     self.gravityScale = settings.gravityScale;
@@ -139,6 +155,7 @@ static BounceSettings *bounceSettings;
     [_patternTextureGenerator release];
     [_colorGenerator release];
     [_sizeGenerator release];
+    [_sound release];
     [super dealloc];
 }
 +(void)initialize {

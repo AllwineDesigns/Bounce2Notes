@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BounceObject.h"
+#import "BouncePages.h"
 
 @class BounceButton;
 
@@ -17,7 +18,7 @@
 
 @end
 
-@interface BounceButton : BounceObject {
+@interface BounceButton : BounceObject <BounceWidget> {
     id<BounceButtonDelegate> _delegate;
 }
 

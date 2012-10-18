@@ -11,6 +11,7 @@
 #import "fsa/Noise.hpp"
 
 @interface BounceConfigurationObject : BounceObject {
+    BOOL _createOnTap;
     BOOL _painting;
     float _timeSinceLastCreate;
     
@@ -18,6 +19,7 @@
     NSMutableSet *_previewObjects;
 }
 
+@property (nonatomic) BOOL createOnTap;
 @property (nonatomic) BOOL painting;
 @property (nonatomic) float timeSinceLastCreate;
 
@@ -31,6 +33,7 @@
 -(id)originalValueForObject:(BounceObject*)obj;
 -(void)setConfigurationValueForObject:(BounceObject*)obj;
 -(void)setValue: (id)val forObject:(BounceObject*)obj;
+-(void)updateSetting;
 
 @end
 
@@ -108,6 +111,14 @@
 
 @interface BounceNoteConfigurationObject : BounceConfigurationObject {
 }
+@end;
+
+@interface BounceChordConfigurationObject : BounceNoteConfigurationObject {
+    unsigned int _chord;
+    BOOL _active;
+}
+@property (nonatomic) BOOL active;
+-(id)initWithChord:(unsigned int)chord;
 @end;
 
 @interface BouncePasteOriginal : NSObject {

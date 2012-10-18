@@ -78,39 +78,43 @@ static FSATextureManager* fsaTextureManager;
             
             [textures setObject:tex forKey:name];
         } else {
-            GLuint texId;
-            glGenTextures(1, &texId);
-            glBindTexture(GL_TEXTURE_2D, texId);
-            UIImage* image = [UIImage imageNamed:name];
-            
-            GLubyte* imageData = (GLubyte*)malloc(image.size.width * image.size.height * 4);
+            if(!name || ![[NSFileManager defaultManager] fileExistsAtPath:[[NSBundle mainBundle] pathForResource:name ofType:@""]]) {
+                return [textures objectForKey:@"black.jpg"];
+            } else {
+                GLuint texId;
+                glGenTextures(1, &texId);
+                glBindTexture(GL_TEXTURE_2D, texId);
+                UIImage* image = [UIImage imageNamed:name];
+                
+                GLubyte* imageData = (GLubyte*)malloc(image.size.width * image.size.height * 4);
 
-            
-            CGContextRef imageContext = CGBitmapContextCreate(imageData, image.size.width, image.size.height, 8, image.size.width * 4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
-            
-            if(!imageContext) {
-                NSLog(@"attempting to load %@", name);
-                NSAssert(imageContext, @"must have imageContext to continue");
+                
+                CGContextRef imageContext = CGBitmapContextCreate(imageData, image.size.width, image.size.height, 8, image.size.width * 4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
+                
+                if(!imageContext) {
+                    NSLog(@"attempting to load %@", name);
+                    NSAssert(imageContext, @"must have imageContext to continue");
+                }
+
+                CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
+                CGContextRelease(imageContext); 
+                
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+                
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size.width, image.size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+                free(imageData);
+                glGenerateMipmap(GL_TEXTURE_2D);
+                
+                tex = [[FSATexture alloc] initWithKey:name name:texId width:image.size.width height:image.size.height];
+                
+                [textures setObject:tex forKey:name];
+                
+                NSLog(@"loaded %@ into textureId %u", name, texId);
             }
-
-            CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
-            CGContextRelease(imageContext); 
-            
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-            
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size.width, image.size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-            free(imageData);
-            glGenerateMipmap(GL_TEXTURE_2D);
-            
-            tex = [[FSATexture alloc] initWithKey:name name:texId width:image.size.width height:image.size.height];
-            
-            [textures setObject:tex forKey:name];
-            
-            NSLog(@"loaded %@ into textureId %u", name, texId);
         }
     }
     

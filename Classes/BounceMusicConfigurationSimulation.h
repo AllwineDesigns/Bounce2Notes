@@ -12,9 +12,19 @@
 #import "BounceSlider.h"
 #import "BounceButton.h"
 #import "BouncePages.h"
+#import "BounceConfigurationObject.h"
 
 @interface BounceMusicConfigurationSimulation : BounceConfigurationSimulation {
-
+    BouncePages* _pages;
+    NSArray *_chordConfigObjects;
+    BounceChordConfigurationObject *_activeChord;
+    NSMutableSet *_playGestures;
 }
+
+@property (nonatomic, assign) BounceChordConfigurationObject* activeChord;
+
 -(id)initWithRect:(CGRect)rect bounceSimulation:(MainBounceSimulation*)sim;
+-(void)setActiveChord:(BounceChordConfigurationObject *)activeChord;
+-(void)switchActiveChord;
+
 @end

@@ -21,6 +21,7 @@
     if(self) {
         _isRemovable = NO;
         _isPreviewable = NO;
+        self.bounceShape = BOUNCE_CAPSULE;
         _file = [file retain];
         self.patternTexture = [[FSATextureManager instance] getTextTexture:_file];
         self.sound = [[BounceNoteManager instance] getRest];
@@ -62,6 +63,14 @@
     return self;
 }
 
+-(void)setAngle:(float)angle {
+    [super setAngle:angle];
+    [_save setAngle:angle];
+}
+-(void)setAngVel:(float)angVel {
+    [super setAngVel:angVel];
+    [_save setAngVel:angVel];
+}
 -(void)step:(float)dt {
     [_save step:dt];
 
@@ -106,6 +115,8 @@
     
     for(NSString* file in set) {
         BounceLoadObject *load = [[BounceLoadObject alloc] initWithFile:file];
+        load.size = self.arena.dimensions.width*.1;
+        load.secondarySize = self.arena.dimensions.width*.05;
         [load addToSimulation:self];
         [load release];
     }

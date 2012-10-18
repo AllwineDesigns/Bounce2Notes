@@ -38,6 +38,7 @@ typedef enum {
     BOOL _isRemovable;
     BOOL _simulationWillDraw;
     BOOL _simulationWillArchive;
+    int _order;
     
     NSTimeInterval _lastPlayed;
     
@@ -72,6 +73,7 @@ typedef enum {
     @public float _gravityScale;
 }
 
+@property (nonatomic) int order;
 @property (nonatomic) NSTimeInterval lastPlayed;
 @property (nonatomic) BOOL simulationWillDraw;
 @property (nonatomic) BOOL simulationWillArchive;

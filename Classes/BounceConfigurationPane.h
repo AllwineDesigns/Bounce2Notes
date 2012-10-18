@@ -10,7 +10,7 @@
 #import "BouncePane.h"
 
 @interface BounceConfigurationPane : BouncePane {
-
+    int _lastSwitch;
 }
 
 

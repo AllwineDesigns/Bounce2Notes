@@ -36,6 +36,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
 @implementation BounceObject
 
+@synthesize order = _order;
 @synthesize lastPlayed = _lastPlayed;
 @synthesize simulationWillDraw = _simulationWillDraw;
 @synthesize simulationWillArchive = _simulationWillArchive;
@@ -133,6 +134,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     self.simulationWillDraw = [aDecoder decodeBoolForKey:@"BounceObjectSimulationWillDraw"];
     self.simulationWillArchive = [aDecoder decodeBoolForKey:@"BounceObjectSimulationWillArchive"];
     
+    self.order = [aDecoder decodeInt32ForKey:@"BounceObjectOrder"] || 1;
+    
     return self;
 }
 
@@ -142,6 +145,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     float angle = self.angle;
     float angVel = self.angVel;
     
+    [aCoder encodeInt32:_order forKey:@"BounceObjectOrder"];
     [aCoder encodeObject:_sound forKey:@"BounceObjectSound"];
     [aCoder encodeObject:_patternTexture.key forKey:@"BounceObjectPatternTexture"];
     
@@ -192,12 +196,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         _intensity = 2.2;
         _isStationary = NO;
         self.patternTexture = [[[BounceSettings instance] patternTextureGenerator] randomPatternTextureWithLocation:loc];
-        
-        unsigned int notes[] = { 0, 2,4,7};
-       // unsigned int notes[] = { 0,1, 2,4,5,7};
 
-        unsigned int note = (unsigned int)4*random(loc*29.1863);
-        _sound = [[BounceNoteManager instance] getNote:notes[note]];
+        _sound = [BounceSettings instance].sound;
         [_sound retain];
         
         _inputs.intensity = &_intensity;
@@ -376,12 +376,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 }
 
 -(void)randomizeNote {
-    vec2 loc = self.position;
-    unsigned int notes[] = { 0, 2,4,7};
-//    unsigned int notes[] = { 0, 1,2,4,5,7};
-
-    unsigned int note = (unsigned int)4*random(loc*29.1863);
-    self.sound = [[BounceNoteManager instance] getNote:notes[note]];
+    self.sound = [BounceSettings instance].sound;
 }
 
 -(void)randomizeSize {
@@ -1241,6 +1236,7 @@ drawShape(cpShape *shape, const vec4& color)
     [self needsSize];
 }
 
+ 
 -(void)playSound:(float)volume {
     [_sound play:volume];
 }
@@ -1305,7 +1301,10 @@ drawShape(cpShape *shape, const vec4& color)
     [_sound release];
     _sound = nil;
     [_renderable release];
-    _renderable = nil;         
+    _renderable = nil;   
+    [_patternTexture release];
+    _patternTexture = nil;
+    
 
     [super dealloc];
 }

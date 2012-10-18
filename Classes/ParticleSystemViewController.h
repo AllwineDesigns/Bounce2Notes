@@ -24,13 +24,14 @@
 #import "MainBounceSimulation.h"
 #import "FSAAudioPlayer.h"
 #import "FSAGestureCurves.h"
-
+#import "BounceSaveLoadPane.h"
 @interface ParticleSystemViewController : UIViewController <BounceSaveLoadDelegate>
 {
     EAGLContext *context;
     
     MainBounceSimulation *simulation;
     BounceConfigurationPane *_configPane;
+    BounceSaveLoadPane *_saveLoadPane;
     
     float _dt;
     float _timeRemainder;

@@ -90,6 +90,7 @@ using namespace fsa;
 -(void)randomizeNote;
 -(void)randomizePattern;
 -(void)randomizeSize;
+-(void)setSound:(id<BounceSound>)sound;
 
 -(BOOL)isInBounds:(BounceObject*)obj;
 -(BOOL)isInBoundsAt:(const vec2&)loc;

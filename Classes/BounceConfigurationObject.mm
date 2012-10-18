@@ -13,9 +13,11 @@
 #import "FSAUtil.h"
 #import "BounceSettings.h"
 #import "BounceConfigurationSimulation.h"
+#import "BounceMusicConfigurationSimulation.h"
 
 @implementation BounceConfigurationObject
 
+@synthesize createOnTap = _createOnTap;
 @synthesize painting = _painting;
 @synthesize timeSinceLastCreate = _timeSinceLastCreate;
 
@@ -25,6 +27,7 @@
     if(self) {
         [(NSObject*)_sound release];
         _sound = [[[BounceNoteManager instance] getRest] retain];
+        _createOnTap = YES;
         
         _previewObjects = [[NSMutableSet alloc] initWithCapacity:10];
         _originals = [[NSMutableDictionary alloc] initWithCapacity:10];
@@ -46,14 +49,16 @@
 }
 
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
-    NSAssert(NO, @"setConfigurationValueForObject: must be implemented by subclass\n");
+    [self updateSetting];
 }
 -(id)originalValueForObject:(BounceObject *)objj {
     NSAssert(NO, @"originalValueForObject: must be implemented by subclass\n");
     return nil;
 }
 -(void)setValue:(id)val forObject:(BounceObject *)obj {
-    NSAssert(NO, @"setValue:forObject: must be implemented by subclass\n");
+}
+
+-(void)updateSetting {
 }
 
 -(void)cancelChanges {
@@ -131,11 +136,9 @@
 
 @implementation BounceShapeConfigurationObject
 
--(void)singleTapAt:(const vec2 &)loc {
-    [super singleTapAt:loc];
-    
+-(void)updateSetting {
     BounceShapeGenerator *gen = [[[BounceShapeGenerator alloc] initWithBounceShape:_bounceShape] autorelease];
-
+    
     if(![gen isEqual:[BounceSettings instance].bounceShapeGenerator]) {
         [BounceSettings instance].bounceShapeGenerator =   gen;  
         [[(BounceConfigurationSimulation*)_simulation pane] randomizeShape];
@@ -143,6 +146,7 @@
 }
 
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
+    [super setConfigurationValueForObject:obj];
     obj.bounceShape = _bounceShape;
 }
 
@@ -159,13 +163,14 @@
 
 @implementation BouncePatternConfigurationObject
 
--(void)singleTapAt:(const vec2 &)loc {
-    [super singleTapAt:loc];
-    
-    [BounceSettings instance].patternTextureGenerator = [[[BouncePatternGenerator alloc] initWithPatternTexture:_patternTexture] autorelease];    
+-(void)updateSetting {
+    BouncePatternGenerator *gen = [[BouncePatternGenerator alloc] initWithPatternTexture:_patternTexture];
+    [BounceSettings instance].patternTextureGenerator = gen;
+    [gen release];
 }
 
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
+    [super setConfigurationValueForObject:obj];
     obj.patternTexture = _patternTexture;
 }
 
@@ -196,13 +201,12 @@
 
 @implementation BounceSizeConfigurationObject
 
--(void)singleTapAt:(const vec2 &)loc {
-    [super singleTapAt:loc];
-    
+-(void)updateSetting {
     [BounceSettings instance].sizeGenerator = [[[BounceSizeGenerator alloc] initWithSize:_size] autorelease];    
 }
 
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
+    [super setConfigurationValueForObject:obj];
     [obj setSize:_size secondarySize:_size*GOLDEN_RATIO];
 }
 
@@ -233,18 +237,16 @@
 
 @implementation BounceColorConfigurationObject
 
--(void)singleTapAt:(const vec2 &)loc {
-    [super singleTapAt:loc];
-    
+-(void)updateSetting {
     [BounceSettings instance].colorGenerator = _colorGenerator;
     [[(BounceConfigurationSimulation*)_simulation pane] randomizeColor];
 }
-
 
 -(void)setColor:(const vec4 &)color {
 }
 
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
+    [super setConfigurationValueForObject:obj];
     vec2 loc = self.position;
     obj.color = [_colorGenerator randomColorFromLocation:loc];
 }
@@ -386,7 +388,15 @@
 
 }
 
+-(void)updateSetting {
+    [BounceSettings instance].sound = self.sound;
+    if([BounceSettings instance].affectAllObjects) {
+        [[[(BounceConfigurationSimulation*)_simulation pane] simulation] setSound:self.sound];
+    }
+}
+
 -(void)setConfigurationValueForObject:(BounceObject *)obj {
+    [super setConfigurationValueForObject:obj];
     obj.sound = _sound;
     [_sound play:.2];
 }
@@ -400,6 +410,74 @@
     [val play:.2];
 
 }
+
+@end
+
+@implementation BounceChordConfigurationObject
+
+@synthesize active = _active;
+
+-(id)initWithChord:(unsigned int)chord {
+    self = [super initObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2() withColor:vec4() withSize:.1 withAngle:0];
+    
+    if(self) {
+        _chord = chord;
+        _createOnTap = NO;
+        [self changeInversion];
+    }
+    
+    return self;
+}
+
+-(void)step:(float)dt {
+    [super step:dt];
+    if(_active && _intensity < 1) {
+        _intensity = 1;
+    }
+}
+
+
+-(void)changeInversion {
+    BounceNoteManager *noteManager = [BounceNoteManager instance];
+    NSString *key = noteManager.key;
+    
+    int inv = RANDFLOAT*3;
+    
+    int rootOffset = (inv == 1 || inv == 2) ? 7 : 0;
+    int thirdOffset = (inv == 2) ? 7 : 0;
+    int fifthOffset =  0;
+
+    NSArray *sounds = [[NSArray alloc] initWithObjects:
+                       [noteManager getSound:_chord forKey:key forOctave:3],
+                       [noteManager getSound:_chord+rootOffset],
+                       [noteManager getSound:_chord+2+thirdOffset],
+                       [noteManager getSound:_chord+4+fifthOffset],
+                       nil];
+    BounceRandomSounds *s = [[BounceRandomSounds alloc] initWithSounds:sounds label:@""];
+    self.sound = s;
+    [s release];
+    [sounds release];
+}
+
+-(void)singleTapAt:(const vec2 &)loc {
+    [self changeInversion];
+    BounceNoteManager *noteManager = [BounceNoteManager instance];
+    
+    NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
+    if(now-_lastPlayed > .02) {
+        [[noteManager getSound:_chord] play:.2];
+        _lastPlayed = now;
+    }
+    [self updateSetting];
+    [(BounceMusicConfigurationSimulation*)_simulation setActiveChord:self];
+    [super singleTapAt:loc];
+}
+
+-(void)endGrabCallback {
+    [self changeInversion];
+    [super endGrabCallback];
+}
+
 
 @end
 
@@ -419,6 +497,14 @@
 -(void)playSound:(float)volume {
     
 }
+-(void)randomizeColor {
+    
+}
+
+-(void)updateSetting {
+    
+}
+
 -(void)setConfigurationValueForObject:(BounceObject*)obj {
     if(_hasCopied) {
         obj.bounceShape = _bounceShape;
@@ -454,10 +540,15 @@
 
 @implementation BounceCopyConfigurationObject
 
+-(void)updateSetting {
+    
+}
+
 -(id)initWithPasteObject:(BouncePasteConfigurationObject*)pasteObj {
     self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-2) withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:.15 withAngle:0];
     if(self) {
         _pasteObj = [pasteObj retain];
+        _createOnTap = NO;
     }
     return self;
 

@@ -33,6 +33,7 @@
         _name = name;
         _width = width;
         _height = height;
+        _key = key;
         
         _aspect = (float)width/height;
         _invaspect = 1./_aspect;

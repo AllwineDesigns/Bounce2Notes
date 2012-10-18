@@ -8,6 +8,7 @@
 
 #import "ChipmunkObject.h"
 #import "BounceObject.h"
+#import "BouncePages.h"
 
 #define WALL_TYPE 222
 

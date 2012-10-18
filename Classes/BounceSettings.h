@@ -18,6 +18,7 @@
     BouncePatternGenerator *_patternTextureGenerator;
     BounceColorGenerator *_colorGenerator;
     BounceSizeGenerator *_sizeGenerator;
+    id<BounceSound> _sound;
     
     float _bounciness;
     float _friction;
@@ -38,6 +39,7 @@
 @property (nonatomic, retain) BouncePatternGenerator* patternTextureGenerator;
 @property (nonatomic, retain) BounceColorGenerator* colorGenerator;
 @property (nonatomic, retain) BounceSizeGenerator* sizeGenerator;
+@property (nonatomic, retain) id<BounceSound> sound;
 
 @property (nonatomic) float bounciness;
 @property (nonatomic) float friction;

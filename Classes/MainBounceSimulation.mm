@@ -10,6 +10,7 @@
 #import "BounceConstants.h"
 #import "FSAShaderManager.h"
 #import "BounceSettings.h"
+#import "FSATextureManager.h"
 
 @implementation MainBounceSimulation
 
@@ -18,10 +19,20 @@
 -(id)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     
-    _aspect = [aDecoder decodeFloatForKey:@"MainBounceSimulationAspect"];
+    float aspect = [BounceConstants instance].aspect;
+
+    
+    _aspect = aspect;
+    
+   // _aspect = [aDecoder decodeFloatForKey:@"MainBounceSimulationAspect"];
     
     float invaspect = 1./_aspect;
     CGRect rect = CGRectMake(-1,-invaspect, 2, 2*invaspect);
+    
+    [_arena removeFromSpace];
+    [_arena release];
+    _arena = [[BounceArena alloc] initWithRect:rect];
+    [_arena addToSpace:_space];
     
     _killArena = [[BounceKillArena alloc] initWithRect:rect simulation:self];
     [_killArena addToSpace:_space];
@@ -48,6 +59,13 @@
         [_killArena addToSpace:_space];
                 
         [[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()] addToSimulation:self];
+        
+        /*
+        BounceObject *obj = [BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()];
+        
+        obj.patternTexture = [[FSATextureManager instance] getTexture:@"John Allwine"];
+        [obj addToSimulation:self];
+         */
     }
     
     return self;

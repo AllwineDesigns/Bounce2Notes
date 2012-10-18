@@ -20,8 +20,8 @@
 #import "BounceSettings.h"
 #import "BounceSaveLoadSimulation.h"
 
-BouncePaneSideInfo bouncePaneSideInfo[4] = { {vec2(0,-1),vec2(0,1)},
-    {vec2(-1,0),vec2(1,0)},{vec2(0,1),vec2(0,-1)},{vec2(1,0),vec2(-1,0)} };
+BouncePaneSideInfo bouncePaneSideInfo[4] = { {vec2(0,-1),vec2(0,1),0},
+    {vec2(-1,0),vec2(1,0), -M_PI_2},{vec2(0,1),vec2(0,-1), M_PI},{vec2(1,0),vec2(-1,0), M_PI_2} };
 
 float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
 
@@ -50,7 +50,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
         _aspect = constants.aspect;
         _invaspect = 1./_aspect;
         
-        _paneSize.width = 1.8;
+        _paneSize.width = 1.6;
         _paneSize.height = _upi;
         
         _inactivePadding = .5;
@@ -324,6 +324,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
 
 @implementation BouncePane
 
+@synthesize simulation = _simulation;
 @synthesize object = _object;
 
 -(id)initWithBounceSimulation:(MainBounceSimulation *)simulation {
@@ -388,16 +389,17 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
         vec4 color = [[[BounceSettings instance] colorGenerator] randomColor];
         [tab setColor:color];
     }
-    BounceSimulation *miscSim = [_simulations objectAtIndex:5];
     for(BounceSimulation *sim in _simulations) {
-        if(miscSim != sim) {
-            [sim randomizeColor];
-        }
+        [sim randomizeColor];
     }
 }
 
 -(void)tabSingleTappedAt:(const vec2 &)loc index:(unsigned int)index {
-    [self setCurrentSimulation:index];
+    if(index == _curSimulation && _state == BOUNCE_PANE_ACTIVATED) {
+        [self deactivate];
+    } else {
+        [self setCurrentSimulation:index];
+    }
 }
 
 -(void)tabFlickedAt:(const vec2 &)loc withVelocity:(const vec2 &)vel index:(unsigned int)index {
@@ -458,7 +460,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
     
     vec2 l = loc;
     l -= info.pos;
-    l.rotate(self.object.angle);
+    l.rotate(info.angle);
     
     return _state == BOUNCE_PANE_DEACTIVATED &&
     l.y <= top && l.x >= left && l.x <= right;
@@ -694,7 +696,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
     }
     
     
-    CGSize paneSize = [_object paneSize];
+  //  CGSize paneSize = [_object paneSize];
     
     if(_switchToSimulation != _curSimulation && [_object isHidden]) {
         _curSimulation = _switchToSimulation;
@@ -718,11 +720,6 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
         [sim updateSettings];
     }
 }
-
--(void)updateSavedSimulations {
-    [[_simulations objectAtIndex:5] updateSavedSimulations];
-}
-
 
 -(void)drawRectangle {
     vec2 pos = self.object.position;

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <chipmunk/chipmunk.h>
 #import <fsa/Vector.hpp>
+#import "BouncePages.h"
 
 using namespace fsa;
 
@@ -20,7 +21,7 @@ typedef enum {
     CHIPMUNK_OBJECT_INFINITE_ROGUE
 } ChipmunkObjectState;
 
-@interface ChipmunkObject : NSObject {
+@interface ChipmunkObject : NSObject <BounceWidget> {
     ChipmunkObjectState _state;
     cpSpace *_space;
     cpBody *_body;

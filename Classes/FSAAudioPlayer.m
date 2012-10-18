@@ -285,13 +285,13 @@ void audioRouteChangeListenerCallback (
     // Obtain the actual hardware sample rate and store it for later use in the audio processing graph.
     self.graphSampleRate = [mySession currentHardwareSampleRate];
 
-   // self.ioBufferDuration = 0.01;
+  //  self.ioBufferDuration = 0.01;
 
    // self.ioBufferDuration = 0.023220;
    // self.ioBufferDuration = .1;
 
-//    [mySession setPreferredIOBufferDuration: ioBufferDuration
-  //                                    error: &audioSessionError];
+  //  [mySession setPreferredIOBufferDuration: ioBufferDuration
+   //                                   error: &audioSessionError];
     
     Float32 currentBufferDuration;  
     UInt32 propertySize = sizeof(currentBufferDuration);
@@ -728,7 +728,7 @@ void audioRouteChangeListenerCallback (
 }
 
 - (void) playSound:(FSASoundData*)data volume:(Float32)volume {
-    if(volume < .00000001) {
+    if(volume < .0001) {
         return;
     }
     [callbackData.finished_lock lock];

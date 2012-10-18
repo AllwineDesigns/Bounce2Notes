@@ -154,7 +154,7 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     _gravity.x = [aDecoder decodeFloatForKey:@"BounceSimulationGravityX"];
     _gravity.y = [aDecoder decodeFloatForKey:@"BounceSimulationGravityY"];
             
-    NSSet *objects = [aDecoder decodeObjectForKey:@"BounceSimulationObjects"];
+    NSArray *objects = [aDecoder decodeObjectForKey:@"BounceSimulationObjects"];
     for(BounceObject *obj in objects) {
         obj.simulation = self;
         [obj addToSpace:self.space];
@@ -165,14 +165,14 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder {
-    NSMutableSet *set = [[NSMutableSet alloc] initWithCapacity:[_objects count]];
+    NSMutableArray *objects = [[NSMutableArray alloc] initWithCapacity:[_objects count]];
     for(BounceObject *obj in _objects) {
         if(obj.simulationWillArchive) {
-            [set addObject:obj];
+            [objects addObject:obj];
         }
     }
-    [aCoder encodeObject:set forKey:@"BounceSimulationObjects"];
-    [set release];
+    [aCoder encodeObject:objects forKey:@"BounceSimulationObjects"];
+    [objects release];
     
     [aCoder encodeObject:_arena forKey:@"BounceSimulationArena"];
     [aCoder encodeFloat:_gravity.x forKey:@"BounceSimulationGravityX"];
@@ -283,6 +283,15 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     [object setFriction:settings.friction];
     [object setGravityScale:settings.gravityScale];
     [object setDamping:settings.damping];
+    
+    int order = 1;
+    for(BounceObject *obj in _objects) {
+        if(obj.isPreviewable && obj.order >= order) {
+            order = obj.order+1;
+        }
+    }
+    object.order = order;
+
     [_objects addObject:object];
 }
 -(void)removeObject: (BounceObject*)object {
@@ -366,7 +375,7 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
     ChipmunkObject *obj = (ChipmunkObject*)cpBodyGetUserData(body);
     
     if([obj isKindOfClass:[BounceObject class]]) {
-        if(dist < queryStruct->minDist) {
+        if((dist < queryStruct->minDist && queryStruct->minDist > 0) || ([(BounceObject*)obj order] > [queryStruct->nearest order] && dist < 0)) {
             queryStruct->nearest = (BounceObject*)obj;
             queryStruct->minDist = dist;
         }
@@ -386,6 +395,9 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
 -(BounceObject*)objectAt:(const vec2 &)loc {
     BounceQueryStruct queryStruct;
     
+    NSMutableSet *objects = [NSMutableSet setWithCapacity:10];
+
+    queryStruct.set = objects;
     queryStruct.nearest = nil;
     queryStruct.minDist = 10000;
     queryStruct.simulation = self;
@@ -769,6 +781,12 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
 -(void)setVelocityLimit:(float)limit {
     for(BounceObject *obj in _objects) {
         [obj setVelocityLimit:limit];
+    }
+}
+
+-(void)setSound:(id<BounceSound>)sound {
+    for(BounceObject *obj in _objects) {
+        obj.sound = sound;
     }
 }
 

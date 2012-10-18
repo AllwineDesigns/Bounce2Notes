@@ -111,6 +111,28 @@
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
     
+    UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+    switch (deviceOrientation) {
+        case UIDeviceOrientationPortrait:
+            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortrait];
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortraitUpsideDown];
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft];
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight];
+            break;
+        case UIDeviceOrientationFaceUp:
+            break;
+        case UIDeviceOrientationFaceDown:
+            break;
+            
+        default:                
+            break;
+    }    
  //   [[UIApplication sharedApplication] setStatusBarOrientation:
  //    UIInterfaceOrientationLandscapeRight];
 }
@@ -121,15 +143,29 @@
         switch (deviceOrientation) {
             case UIDeviceOrientationPortrait:
                 _configPane.orientation = BOUNCE_PANE_PORTRAIT;
+                _saveLoadPane.orientation = BOUNCE_PANE_PORTRAIT;
+                [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortrait];
                 break;
             case UIDeviceOrientationPortraitUpsideDown:
                 _configPane.orientation = BOUNCE_PANE_PORTRAIT_UPSIDE_DOWN;
+                _saveLoadPane.orientation = BOUNCE_PANE_PORTRAIT_UPSIDE_DOWN;
+                [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationPortraitUpsideDown];
+
+
                 break;
             case UIDeviceOrientationLandscapeRight:
                 _configPane.orientation = BOUNCE_PANE_LANDSCAPE_RIGHT;
+                _saveLoadPane.orientation = BOUNCE_PANE_LANDSCAPE_RIGHT;
+                [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeLeft];
+
+
                 break;
             case UIDeviceOrientationLandscapeLeft:
                 _configPane.orientation = BOUNCE_PANE_LANDSCAPE_LEFT;
+                _saveLoadPane.orientation = BOUNCE_PANE_LANDSCAPE_LEFT;
+                [[UIApplication sharedApplication] setStatusBarOrientation:UIInterfaceOrientationLandscapeRight];
+
+
                 break;
             case UIDeviceOrientationFaceUp:
                 break;
@@ -191,7 +227,17 @@
     for(NSString* texName in texturesToCache) {
         [texture_manager addSmartTexture:texName];
     }
+    [texture_manager generateTextureForText:@"John Allwine" forKey:@"John Allwine" withFontSize:40 withOffset:vec2() ];
+ //   [texture_manager generateTextureForText:@"Travis Buck" forKey:@"Travis Buck" withFontSize:30 withOffset:vec2() ];
+   // [texture_manager generateTextureForText:@"Kristen Wells" forKey:@"Kristen Wells" withFontSize:25 withOffset:vec2() ];
+   // [texture_manager generateTextureForText:@"Bob Afifi" forKey:@"Bob Afifi" withFontSize:30 withOffset:vec2() ];
+   // [texture_manager generateTextureForText:@"Scott Peterson" forKey:@"Scott Peterson" withFontSize:40 withOffset:vec2() ];
+   // [texture_manager generateTextureForText:@"Jason Waltman" forKey:@"Jason Waltman" withFontSize:40 withOffset:vec2() ];
+    //[texture_manager generateTextureForText:@"Nixon Hazard" forKey:@"Nixon Hazard" withFontSize:35 withOffset:vec2() ];
+
     
+    [texture_manager generateTextureForText:@"Contributors"];
+
     [texture_manager generateTextureForText:@"Shapes"];
     [texture_manager generateTextureForText:@"Patterns"];
     [texture_manager generateTextureForText:@"Sizes"];
@@ -326,6 +372,7 @@
     lastUpdate = [[NSProcessInfo processInfo] systemUptime];
     
     _configPane = [[BounceConfigurationPane alloc] initWithBounceSimulation:simulation];
+    _saveLoadPane = [[BounceSaveLoadPane alloc] initWithBounceSimulation:simulation];
 
     NSLog(@"loaded textures and created simulation\n");
     
@@ -348,8 +395,10 @@
         if(load) {
             [[BounceSettings instance] updateSettings:load.settings];
             [_configPane updateSettings];
+            [_saveLoadPane updateSettings];
             
             _configPane.simulation = load.simulation;
+            _saveLoadPane.simulation = load.simulation;
             [simulation release];
             simulation = [load.simulation retain];
             simulation.delegate = self;
@@ -372,6 +421,7 @@
     [alertView release];
     [context release];
     [_configPane release];
+    [_saveLoadPane release];
     [simulation release];
     [gestureCurves release];
     
@@ -395,7 +445,7 @@
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    if(![_configPane singleTap:gesture at:loc]) {
+    if(![_configPane singleTap:gesture at:loc] && ![_saveLoadPane singleTap:gesture at:loc]) {
         if([BounceSettings instance].playMode && [simulation gestureForKey:gesture] == nil) {
             
         } else {
@@ -436,7 +486,7 @@
                         // TODO do are you sure you want to overwrite?
                     } else {
                         [fileManager save:simulation withSettings:[BounceSettings instance] toFile:file];
-                        [_configPane updateSavedSimulations];
+                        [_saveLoadPane updateSavedSimulations];
                     }
                 }
                 break;
@@ -533,7 +583,7 @@
     
     [gestureCurves beginDrag:gesture at:loc];
     
-    if(![_configPane beginDrag:gesture at:loc]) {
+    if(![_configPane beginDrag:gesture at:loc] && ![_saveLoadPane beginDrag:gesture at:loc]) {
         [simulation beginDrag:gesture at:loc];
     }
 }
@@ -542,7 +592,7 @@
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
     
-    if(![_configPane longTouch:gesture at:loc]) {
+    if(![_configPane longTouch:gesture at:loc] && ![_saveLoadPane longTouch:gesture at:loc]) {
         [simulation longTouch:gesture at:loc];
     }
 }
@@ -556,7 +606,7 @@
     
     vec2 dir = loc-loc2;
     NSTimeInterval time = gesture.timestamp-gesture.beginTimestamp;
-    if(![_configPane flick:gesture at:loc2 inDirection:dir time:time]) {
+    if(![_configPane flick:gesture at:loc2 inDirection:dir time:time] && ![_saveLoadPane flick:gesture at:loc2 inDirection:dir time:time]) {
         [simulation flick:gesture at:loc2 inDirection:dir time:time];
     }
 }
@@ -567,7 +617,7 @@
     
     [gestureCurves drag:gesture at:loc];
 
-    if(![_configPane drag:gesture at:loc]) {
+    if(![_configPane drag:gesture at:loc] && ![_saveLoadPane drag:gesture at:loc]) {
         [simulation drag:gesture at:loc];
     }
 }
@@ -578,7 +628,7 @@
     
     [gestureCurves endDrag:gesture at:loc];
 
-    if(![_configPane endDrag:gesture at:loc]) {
+    if(![_configPane endDrag:gesture at:loc] && ![_saveLoadPane endDrag:gesture at:loc]) {
         [simulation endDrag:gesture at:loc];
     }
 }
@@ -591,7 +641,7 @@
     
     [gestureCurves cancelDrag:gesture at:loc];
 
-    if(![_configPane cancelDrag:gesture at:loc2]) {
+    if(![_configPane cancelDrag:gesture at:loc2] && ![_saveLoadPane cancelDrag:gesture at:loc2]) {
         [simulation cancelDrag:gesture at:loc2];
     }
 }
@@ -674,7 +724,7 @@
 
 
 - (void)drawFrame
-{
+{ 
     [(EAGLView *)self.view setFramebuffer];
     
     glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -702,11 +752,13 @@
             add_to_vel *= -.2;
             [simulation addToVelocity:add_to_vel];
             [_configPane addToVelocity:add_to_vel];
+            [_saveLoadPane addToVelocity:add_to_vel];
         }
         
         vec2 g(acceleration.x, acceleration.y);
         [simulation setGravity:g];
         [_configPane setGravity:g];
+        [_saveLoadPane setGravity:g];
                 
         float t = timeSinceLastDraw+_timeRemainder;
         if(t > 5*_dt) {
@@ -716,12 +768,14 @@
         while(t >= _dt) {
             [simulation step:_dt];
             [_configPane step:_dt];
+            [_saveLoadPane step:_dt];
             t -= _dt;
         }
         
         _timeRemainder = t;
         
         [simulation draw];
+        [_saveLoadPane draw];
         [_configPane draw];
         
         [gestureCurves step:timeSinceLastDraw];

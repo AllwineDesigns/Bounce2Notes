@@ -8,7 +8,7 @@
 
 #import "BounceConfigurationTab.h"
 #import "fsa/Vector.hpp"
-#import "BounceConfigurationPane.h"
+#import "BouncePane.h"
 #import "BounceConstants.h"
 #import "BounceSettings.h"
 
@@ -18,7 +18,7 @@ using namespace fsa;
 
 @synthesize offset = _offset;
 
--(id)initWithPane:(BounceConfigurationPane *)pane index:(unsigned int)index offset:(const vec2 &)offset {
+-(id)initWithPane:(BouncePane *)pane index:(unsigned int)index offset:(const vec2 &)offset {
     self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-5) withVelocity:vec2() withColor:vec4() withSize:.15 withAngle:0];
     
     if(self) {
@@ -27,6 +27,8 @@ using namespace fsa;
         _isPreviewable = NO;
         _isRemovable = NO;
         _simulationWillDraw = NO;
+        _simulationWillArchive = NO;
+        _order = 1000000;
         _index = index;
         vec2 panePos = _pane.object.position;
         vec2 pos = panePos+offset;
@@ -40,6 +42,10 @@ using namespace fsa;
     }
     
     return self;
+}
+
+-(void)setOrder:(int)order {
+    
 }
 
 -(void)makeSimulated {

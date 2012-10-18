@@ -48,6 +48,7 @@
     [_pages addObject:page];
 }
 -(void)step:(float)dt {
+    /*
     float spring_k = 130;
     float drag = .2;
     
@@ -56,6 +57,13 @@
     float a = spring_k*(_springLoc-_pos);
     
     _vel +=  a*dt-drag*_vel;
+     */
+    
+    float lastPos = _pos;
+    float t = .2;
+    _pos = t*_springLoc+(1-t)*_pos;
+    
+    _vel = (_pos-lastPos)/dt;
     
     for(BouncePage* page in _pages) {
         [page step:dt];
@@ -136,7 +144,7 @@
     _verticalScroll = 0;
 }
 
--(void)addWidget:(id)widget offset:(const vec2&)offset {
+-(void)addWidget:(id<BounceWidget>)widget offset:(const vec2&)offset {
     if(-offset.y-_parent.pageHeight*.5 < _top) {
         _top = offset.y-_parent.pageHeight*.5;
     } else if(-offset.y+_parent.pageHeight*.5 > _bottom) {

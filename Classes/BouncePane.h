@@ -17,6 +17,7 @@
 typedef struct {
     vec2 pos;
     vec2 dir;
+    float angle;
 } BouncePaneSideInfo;
 
 typedef enum {
@@ -114,6 +115,7 @@ typedef enum {
     BouncePaneState _state;
 }
 
+@property (nonatomic, assign) MainBounceSimulation* simulation;
 @property (nonatomic) BouncePaneSide side;
 @property (nonatomic) BouncePaneOrientation orientation;
 @property (nonatomic,readonly) BounceConfigurationPaneObject* object;
@@ -153,7 +155,6 @@ typedef enum {
 -(BOOL)cancelDrag:(void*)uniqueId at:(const vec2&)loc;
 
 -(void)updateSettings;
--(void)updateSavedSimulations;
 
 -(void)reset;
 -(void)activate;

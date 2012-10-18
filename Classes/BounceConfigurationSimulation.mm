@@ -44,13 +44,25 @@
 }
 
 -(void)tapObject:(BounceObject *)obj at:(const vec2&)loc {
-    if([obj isKindOfClass:[BounceConfigurationObject class]] && ![obj isKindOfClass:[BounceCopyConfigurationObject class]]) {
+    if([obj isKindOfClass:[BounceConfigurationObject class]] && [(BounceConfigurationObject*)obj createOnTap]) {
         BounceConfigurationObject *configObj = (BounceConfigurationObject*)obj;
         vec2 pos = configObj.position;
         BounceObject *newobj = [BounceObject randomObjectAt:pos];
         
-        if([self isInBoundsAt:pos]) {
-            [newobj setPosition:vec2()];
+        if([self isInBounds:configObj]) {
+            switch(self.pane.orientation) {
+                case BOUNCE_PANE_PORTRAIT:
+                case BOUNCE_PANE_PORTRAIT_UPSIDE_DOWN:
+                    [newobj setPosition:vec2()];
+                    break;
+                case BOUNCE_PANE_LANDSCAPE_LEFT:
+                    [newobj setPosition:vec2(.5,0)];
+                    break;
+                case BOUNCE_PANE_LANDSCAPE_RIGHT:
+                    [newobj setPosition:vec2(-.5,0)];
+                    break;
+
+            }
         }
         
         [configObj setConfigurationValueForObject:newobj];

@@ -8,6 +8,7 @@
 
 #import "BounceArena.h"
 #import "BounceSimulation.h"
+#import <algorithm>
 
 @implementation BounceArena
 
@@ -76,13 +77,44 @@
 -(BOOL)isInBounds:(BounceObject*)obj  {
     vec2 pos = self.position;
     
-    float left = pos.x-_dimensions.width*.5;
-    float right = pos.x+_dimensions.width*.5;
+    float left = -_dimensions.width*.5;
+    float right = _dimensions.width*.5;
     
-    float top = pos.y+_dimensions.height*.5;
-    float bottom = pos.y-_dimensions.height*.5;
+    float top = _dimensions.height*.5;
+    float bottom = -_dimensions.height*.5;
     
-    cpBB bb = cpBBNew(left, bottom, right, top);
+    vec2 tl = vec2(left,top);
+    vec2 tr = vec2(right,top);
+    vec2 bl = vec2(left,bottom);
+    vec2 br = vec2(right, bottom);
+    
+    float angle = self.angle;
+    float cosa = cos(angle);
+    float sina = sin(angle);
+    
+    tl.rotate(cosa,sina);
+    tr.rotate(cosa,sina);
+    bl.rotate(cosa,sina);
+    br.rotate(cosa,sina);
+    
+    float xs[4];
+    xs[0] = tl.x;
+    xs[1] = tr.x;
+    xs[2] = bl.x;
+    xs[3] = br.x;
+    
+    float ys[4];
+    ys[0] = tl.y;
+    ys[1] = tr.y;
+    ys[2] = bl.y;
+    ys[3] = br.y;
+    
+    left = *std::min_element(xs, xs+4);
+    right = *std::max_element(xs, xs+4);
+    top = *std::max_element(ys, ys+4);
+    bottom = *std::min_element(ys, ys+4);
+    
+    cpBB bb = cpBBNew(left+pos.x, bottom+pos.y, right+pos.x, top+pos.y);
     
     cpShape **shapes = obj.shapes;
     int numShapes = obj.numShapes;
@@ -98,25 +130,21 @@
 -(BOOL)isInBoundsAt:(const vec2 &)loc withPadding:(float)pad {
     vec2 pos = self.position;
     
-    float left = pos.x-_dimensions.width*.5-pad;
-    float right = pos.x+_dimensions.width*.5+pad;
+    float left = -_dimensions.width*.5-pad;
+    float right = _dimensions.width*.5+pad;
     
-    float top = pos.y+_dimensions.height*.5+pad;
-    float bottom = pos.y-_dimensions.height*.5-pad;
+    float top = _dimensions.height*.5+pad;
+    float bottom = -_dimensions.height*.5-pad;
     
-    return loc.x >= left && loc.x <= right && loc.y >= bottom && loc.y <= top;
+    vec2 l = loc;
+    l -= pos;
+    l.rotate(self.angle);
+    
+    return l.x >= left && l.x <= right && l.y >= bottom && l.y <= top;
 }
 
 -(BOOL)isInBoundsAt:(const vec2 &)loc {
-    vec2 pos = self.position;
-    
-    float left = pos.x-_dimensions.width*.5;
-    float right = pos.x+_dimensions.width*.5;
-
-    float top = pos.y+_dimensions.height*.5;
-    float bottom = pos.y-_dimensions.height*.5;
-
-    return loc.x >= left && loc.x <= right && loc.y >= bottom && loc.y <= top;
+    return [self isInBoundsAt:loc withPadding:0];
 }
 
 -(void)setBounciness:(float)b {
