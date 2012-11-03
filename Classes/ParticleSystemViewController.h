@@ -25,13 +25,19 @@
 #import "FSAAudioPlayer.h"
 #import "FSAGestureCurves.h"
 #import "BounceSaveLoadPane.h"
-@interface ParticleSystemViewController : UIViewController <BounceSaveLoadDelegate>
+#import "BounceLock.h"
+#import "BounceLoadingObject.h"
+
+@interface ParticleSystemViewController : UIViewController <BounceSaveLoadDelegate,UITextFieldDelegate>
 {
     EAGLContext *context;
     
     MainBounceSimulation *simulation;
     BounceConfigurationPane *_configPane;
     BounceSaveLoadPane *_saveLoadPane;
+    BounceLoadingObject *_loadingObject;
+    
+    BounceLock *_bounceLock;
     
     float _dt;
     float _timeRemainder;
@@ -53,6 +59,11 @@
     UIAlertView *alertView;
     UIAlertView *saveView;
     UIAlertView *fileExistsView;
+    UIAlertView *deleteFileView;
+    UIAlertView *invalidFileView;
+    
+    NSString *_deleteFile;
+    NSString *_saveFile;
     
     BOOL dismissAllUpgradeAlerts;
 }
@@ -62,6 +73,7 @@
 
 - (void)startAnimation;
 - (void)stopAnimation;
+- (void)resignActive;
 - (void)pixels2sim: (vec2&) loc;
 - (void)vectorPixels2sim: (vec2&) vec;
 - (void)displayUpgradeAlert;

@@ -20,6 +20,8 @@
     BounceSizeGenerator *_sizeGenerator;
     id<BounceSound> _sound;
     
+    BOOL _bounceLocked;
+    
     float _bounciness;
     float _friction;
     float _velLimit;
@@ -40,6 +42,8 @@
 @property (nonatomic, retain) BounceColorGenerator* colorGenerator;
 @property (nonatomic, retain) BounceSizeGenerator* sizeGenerator;
 @property (nonatomic, retain) id<BounceSound> sound;
+
+@property (nonatomic) BOOL bounceLocked;
 
 @property (nonatomic) float bounciness;
 @property (nonatomic) float friction;

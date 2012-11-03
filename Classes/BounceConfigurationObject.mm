@@ -443,8 +443,8 @@
     
     int inv = RANDFLOAT*3;
     
-    int rootOffset = (inv == 1 || inv == 2) ? 7 : 0;
-    int thirdOffset = (inv == 2) ? 7 : 0;
+    int rootOffset = ((inv == 1 || inv == 2) && _chord+7 <= 71) ? 7 : 0;
+    int thirdOffset = (inv == 2 && _chord+2+thirdOffset <= 71) ? 7 : 0;
     int fifthOffset =  0;
 
     NSArray *sounds = [[NSArray alloc] initWithObjects:

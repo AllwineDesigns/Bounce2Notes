@@ -12,6 +12,7 @@
 @interface BounceConfigurationPane : BouncePane {
     int _lastSwitch;
 }
-
+-(void)updateSavedSimulations;
+-(void)issueContributorsRequest;
 
 @end

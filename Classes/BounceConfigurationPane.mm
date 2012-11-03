@@ -19,6 +19,8 @@
 #import "BounceMusicConfigurationSimulation.h"
 #import "BounceSettings.h"
 #import "BounceSaveLoadSimulation.h"
+#import "BounceHowToSimulation.h"
+#import "BounceContributorsSimulation.h"
 
 #define NUM_TABS 7
 
@@ -328,54 +330,14 @@
 
 -(void)addContributorsSimulation {
     FSATextureManager *texManager = [FSATextureManager instance];
-    BounceConfigurationSimulation *sim = [[BounceConfigurationSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
-    
-    float size = .15;
-    
-    vec4 color = vec4(.8,0,0,1);
-    BounceObject * configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"John Allwine"];
-    [configObject release];
-    
-    /*
-    configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_TRIANGLE at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:.12 withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Travis Buck"];
-    [configObject release];
-    
-    configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_CAPSULE at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Scott Peterson"];
-    [configObject release];
-    
-    configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_RECTANGLE at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Jason Waltman"];
-    [configObject release];
-    
-    configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_NOTE at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Bob Afifi"];
-    [configObject release];
-    
-    configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_STAR at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:size withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Kristen Wells"];
-    [configObject release];
-    
-    configObject = [[BounceObject alloc] initObjectWithShape:BOUNCE_SQUARE at:vec2(-.2, -_invaspect-.5) withVelocity:vec2() withColor:color withSize:.1 withAngle:0];
-    [configObject addToSimulation:sim];
-    configObject.patternTexture = [texManager getTexture:@"Nixon Hazard"];
-    [configObject release];
-    */
+    BounceConfigurationSimulation *sim = [[BounceContributorsSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
     
     [self addSimulation:sim];
     
     CGSize paneSize = [_object paneSize];
     CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, paneSize.width/NUM_TABS*GOLDEN_RATIO);
     
-    vec2 offset(-paneSize.width*.5-tabSize.width*.4, tabSize.width);
+    vec2 offset(-paneSize.width*.5-tabSize.width*.4, .5*tabSize.width);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
@@ -422,7 +384,7 @@
     CGSize paneSize = [_object paneSize];
     CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, paneSize.width/NUM_TABS*GOLDEN_RATIO);
 
-    vec2 offset(paneSize.width*.5+tabSize.width*.4, tabSize.width);
+    vec2 offset(paneSize.width*.5+tabSize.width*.4, .5*tabSize.width);
     
     BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
     
@@ -433,6 +395,58 @@
     [tab addToSimulation:_simulation];
     
     [_simulationTabs addObject:tab];
+}
+
+-(void)addSaveLoadSimulation {
+    FSATextureManager *texManager = [FSATextureManager instance];
+    
+    BounceConfigurationSimulation *sim = [[BounceSaveLoadSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
+    
+    [self addSimulation:sim];
+    [sim setPosition:self.object.position];
+    
+    CGSize paneSize = [_object paneSize];
+    CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, paneSize.width/NUM_TABS*GOLDEN_RATIO);
+    
+    vec2 offset(paneSize.width*.5+tabSize.width*.4, -.5*tabSize.width);
+    
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
+    
+    tab.patternTexture = [texManager getTexture:@"Save/Load"];
+    [tab addToSimulation:_simulation];
+    
+    [_simulationTabs addObject:tab];
+}
+
+-(void)addHowToSimulation {
+    FSATextureManager *texManager = [FSATextureManager instance];
+    
+    BounceConfigurationSimulation *sim = [[BounceHowToSimulation alloc] initWithRect:_rect bounceSimulation:_simulation];
+    
+    [self addSimulation:sim];
+    [sim setPosition:self.object.position];
+    
+    CGSize paneSize = [_object paneSize];
+    CGSize tabSize = CGSizeMake(paneSize.width/NUM_TABS, paneSize.width/NUM_TABS*GOLDEN_RATIO);
+    
+    vec2 offset(-paneSize.width*.5-tabSize.width*.4, -.5*tabSize.width);
+    
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    
+    tab.size = tabSize.width*.5;
+    tab.secondarySize = tabSize.height*.5;
+    
+    tab.patternTexture = [texManager getTexture:@"Help"];
+    [tab addToSimulation:_simulation];
+    
+    [_simulationTabs addObject:tab];
+}
+
+-(void)updateSavedSimulations {
+    [[_simulations objectAtIndex:6] updateSavedSimulations];
 }
 
 -(void)step:(float)dt {
@@ -457,14 +471,59 @@
         [self addSizesSimulation];
         [self addColorsSimulation];
         [self addMusicSimulation];
-       // [self addSaveLoadSimulation];
         [self addSettingsSimulation];
+        [self addSaveLoadSimulation];
+        [self addHowToSimulation];
         [self addContributorsSimulation];
+        
+        NSString *device = machineName();
+        if(![device hasPrefix:@"iPad"]) {
+            int i = 0;
+            float scale = 1.3;
+            for(BounceConfigurationTab *tab in _simulationTabs) {
+                float size = tab.size;
+                float size2 = tab.secondarySize;
+                
+                [tab setSize:size*scale secondarySize:size2*scale];
+                
+                vec2 offset = tab.offset;
+                
+                if(i < 5) {
+                    offset.x *= scale;
+                } else {
+                    offset.y *= scale;
+                }
+                [tab setOffset:offset];
+                i++;
+            }
+            
+            i = 0;
+            for(BounceSimulation *sim in _simulations) {
+                if(i < 5) {
+                    NSArray *objects = [sim objects];
+                    for(BounceObject *obj in objects) {
+                        float size = obj.size;
+                        float size2 = obj.secondarySize;
+                        if(i == 2 || i == 4) {
+                            [obj setSize:size*1.5 secondarySize:size2*1.5];
+                        } else {
+                            [obj setSize:size*1.3 secondarySize:size2*1.3];
+                        }
+                    }
+                }
+                i++;
+            }
+        }
+
         
         [self setBounciness:.5];
     }
     
     return self;
+}
+
+-(void)issueContributorsRequest {
+    [(BounceContributorsSimulation*)[_simulations objectAtIndex:8]  issueContributorsRequest];
 }
 
 -(void)prepareCurrentSimulation {

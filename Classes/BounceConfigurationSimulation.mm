@@ -153,6 +153,8 @@
                 [configObj setPreviewObject:newobj];
             }
         }
+        
+        [self longTouchObject:[gesture object] at:loc];
     }
 }
 
@@ -251,7 +253,6 @@
 
 -(BOOL)isAnyObjectInBounds {
     for(BounceObject *o in _objects) {
-        vec2 pos = o.position;
         if([_simulation isInBounds:o]) {
             return YES;
         }
@@ -314,6 +315,16 @@
             [obj setPatternTexture:patternTexture];
         }
     }
+}
+
+-(void)addObject:(BounceObject *)object {
+    [object setVelocityLimit:10];
+    [object setBounciness:.9];
+    [object setFriction:.5];
+    [object setGravityScale:9.789];
+    [object setDamping:1];
+    
+    [super addObject:object];
 }
 
 

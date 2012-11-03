@@ -21,9 +21,9 @@
 @synthesize activeChord = _activeChord;
 
 -(void)switchActiveChord {
-    int r = RANDFLOAT*[_chordConfigObjects count];
+   // int r = RANDFLOAT*[_chordConfigObjects count];
     
-    BounceChordConfigurationObject* obj = [[_chordConfigObjects objectAtIndex:r] object];
+   // BounceChordConfigurationObject* obj = [[_chordConfigObjects objectAtIndex:r] object];
     
   //  [obj updateSetting];
   //  [self setActiveChord:obj];
@@ -138,11 +138,11 @@
 }
 
 -(void)setupChordObjects {
-    float size = .15;
+//    float size = .15;
     
     BounceSimulation *sim = self;
     FSATextureManager *texManager = [FSATextureManager instance];
-    BounceNoteManager *noteManager = [BounceNoteManager instance];
+//    BounceNoteManager *noteManager = [BounceNoteManager instance];
     
     vec4 color;
     int i = 0;
@@ -154,7 +154,7 @@
     int notes = [keys count];
     
     NSMutableArray *anchoredObjects = [[NSMutableArray alloc] initWithCapacity:7];
-    int octaveOffset = 0;
+//    int octaveOffset = 0;
     for(NSString *key in keys) {
         /*
         if(i == 7) {
@@ -215,7 +215,7 @@
     _pages = [[BouncePages alloc] initWithPageWidth:dimensions.width pageHeight:dimensions.height];
     
     BouncePage *page = [[BouncePage alloc] init];
-    cpLayers layers = (1 << [_pages count]);
+ //   cpLayers layers = (1 << [_pages count]);
     
     float pad = .05*dimensions.width;
     float objTotalWidth = 0;

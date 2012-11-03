@@ -15,7 +15,8 @@
     BouncePane *_pane;
     vec2 _offset;
 }
-@property (nonatomic, readonly) const vec2& offset;
 
+-(const vec2&)offset;
+-(void)setOffset:(const vec2&)offset;
 -(id)initWithPane:(BouncePane*)pane index:(unsigned int)index offset:(const vec2&)offset;
 @end

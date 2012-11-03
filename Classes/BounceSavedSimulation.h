@@ -13,6 +13,7 @@
 #define BOUNCE_SAVED_MAJOR_VERSION 1
 #define BOUNCE_SAVED_MINOR_VERSION 0
 
+// represents a serialized MainBounceSimulation and BounceSettings object
 @interface BounceSavedSimulation : NSObject <NSCoding> {
     MainBounceSimulation *_simulation;
     BounceSettings *_settings;

@@ -14,6 +14,8 @@
 
 -(void)saveSimulation;
 -(void)loadSimulation:(NSString*)file;
+-(void)loadBuiltInSimulation:(NSString*)file;
+-(void)deleteSimulation:(NSString*)file;
 
 @end
 

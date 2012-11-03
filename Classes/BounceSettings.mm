@@ -20,6 +20,8 @@ static BounceSettings *bounceSettings;
 @synthesize sizeGenerator = _sizeGenerator;
 @synthesize sound = _sound;
 
+@synthesize bounceLocked = _bounceLocked;
+
 @synthesize friction = _friction;  
 @synthesize velocityLimit = _velLimit;
 @synthesize damping = _damping;
@@ -34,6 +36,7 @@ static BounceSettings *bounceSettings;
 @synthesize playMode = _playMode;
 
 -(id)initWithCoder:(NSCoder *)aDecoder {
+    self.bounceLocked = [aDecoder decodeBoolForKey:@"BounceSettingsBounceLocked"];
     self.bounceShapeGenerator = [aDecoder decodeObjectForKey:@"BounceSettingsShapeGenerator"];
     self.patternTextureGenerator = [aDecoder decodeObjectForKey:@"BounceSettingsPatternTextureGenerator"];
     self.colorGenerator = [aDecoder decodeObjectForKey:@"BounceSettingsColorGenerator"];
@@ -57,6 +60,7 @@ static BounceSettings *bounceSettings;
 }
 
 -(void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeBool:_bounceLocked forKey:@"BounceSettingsBounceLocked"];
     [aCoder encodeObject:_bounceShapeGenerator forKey:@"BounceSettingsShapeGenerator"];
     [aCoder encodeObject:_patternTextureGenerator forKey:@"BounceSettingsPatternTextureGenerator"];
     [aCoder encodeObject:_colorGenerator forKey:@"BounceSettingsColorGenerator"];
@@ -78,6 +82,7 @@ static BounceSettings *bounceSettings;
 
 -(id)copyWithZone:(NSZone *)zone {
     BounceSettings *settings = [[BounceSettings allocWithZone:zone] init];
+    settings.bounceLocked = self.bounceLocked;
     settings.bounceShapeGenerator = self.bounceShapeGenerator;
     settings.patternTextureGenerator = self.patternTextureGenerator;
     settings.colorGenerator = self.colorGenerator;
@@ -102,6 +107,7 @@ static BounceSettings *bounceSettings;
 -(id)init {
     self = [super init];
     if(self) {
+        _bounceLocked = NO;
         _bounceShapeGenerator = [[BounceShapeGenerator alloc] initWithBounceShape:BOUNCE_BALL];
         _patternTextureGenerator = [[BouncePatternGenerator alloc] initWithPatternTexture:[[FSATextureManager instance] getTexture:@"spiral.jpg"]];
         _colorGenerator = [[BouncePastelColorGenerator alloc] init];
@@ -131,6 +137,7 @@ static BounceSettings *bounceSettings;
     return self;
 }
 -(void)updateSettings:(BounceSettings *)settings {
+    self.bounceLocked = settings.bounceLocked;
     self.bounceShapeGenerator = settings.bounceShapeGenerator;
     self.patternTextureGenerator = settings.patternTextureGenerator;
     self.colorGenerator = settings.colorGenerator;

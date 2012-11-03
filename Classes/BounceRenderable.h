@@ -57,21 +57,28 @@ typedef struct {
 @property (nonatomic) GLenum blendMode;
 @property (nonatomic) BounceRenderableInputs inputs;
 @property (nonatomic) float bounciness;
-@property (nonatomic, readonly) FSATexture* shapeTexture;
-@property (nonatomic, readonly) FSATexture* stationaryTexture;
+@property (nonatomic, retain) FSATexture* shapeTexture;
+@property (nonatomic, retain) FSATexture* stationaryTexture;
 
+-(id)initWithData:(BounceRenderableData&) data;
 -(id)initWithInputs: (BounceRenderableInputs)inputs;
 -(void)step: (float)dt;
 -(void)draw;
 -(void)drawSelected;
 -(void)burst:(float)scale;
 -(void)collideAt:(const vec2 &)pos withVelocity:(const vec2 &)vel;
+-(void)scalePatternUVs:(const vec2&)scale;
+-(void)translatePatternUVs:(const vec2&)translate;
 -(void)setPatternUVsForTextureSheetAtRow:(unsigned int)row col:(unsigned int)col numRows:(unsigned int)rows numCols:(unsigned int)cols;
 
 
 @end
 
 @interface BounceBallRenderable : BounceRenderable {
+}
+@end
+
+@interface BounceGenericRenderable : BounceRenderable {
 }
 @end
 

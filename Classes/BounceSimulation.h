@@ -107,6 +107,7 @@ using namespace fsa;
 -(BOOL)isObjectBeingTransformedAt:(const vec2&)loc;
 -(BOOL)isStationaryObjectAt:(const vec2&)loc;
 
+-(void)longTouchObject:(BounceObject*)obj at:(const vec2&)loc;
 -(void)tapObject:(BounceObject*)obj at:(const vec2&)loc;
 -(void)tapSpaceAt:(const vec2&)loc;
 

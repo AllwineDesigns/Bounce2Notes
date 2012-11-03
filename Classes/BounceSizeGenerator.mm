@@ -99,6 +99,12 @@
     size.width = (1-t)*.03+t*.2;
     size.height = size.width*GOLDEN_RATIO;
     
+    NSString *device = machineName();
+    if(![device hasPrefix:@"iPad"]) {
+        size.width *= 1.5;
+        size.height *= 1.5;
+    }
+    
     return size;
 }
 

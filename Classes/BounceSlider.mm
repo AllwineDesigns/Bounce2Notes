@@ -63,8 +63,13 @@
         _index = index;
         _value = [labels objectAtIndex:index];
         _label = [labels objectAtIndex:index];
-        _curT = (float)index/([labels count]-1);
-        _actualT = _curT;
+        if([labels count] == 1) {
+            _curT = .5;
+            _actualT = .5;
+        } else {
+            _curT = (float)index/([labels count]-1);
+            _actualT = _curT;
+        }
         
         _values = [labels copy];
         _labels = [labels copy];
@@ -87,8 +92,14 @@
         _label = [_labels objectAtIndex:index];
         [_label retain];
         _index = _index;
-        _curT = (float)index/([labels count]-1);
-        _actualT = _curT;
+        
+        if([labels count] == 1) {
+            _curT = .5;
+            _actualT = .5;
+        } else {
+            _curT = (float)index/([labels count]-1);
+            _actualT = _curT;
+        }
         _selector = @selector(changed:);
 
         
@@ -114,8 +125,13 @@
         [_label retain];
         
         _index = index;
-        _curT = (float)index/([labels count]-1);
-        _actualT = _curT;
+        if([labels count] == 1) {
+            _curT = .5;
+            _actualT = .5;
+        } else {
+            _curT = (float)index/([labels count]-1);
+            _actualT = _curT;
+        }
         
         _selector = @selector(changed:);
         
@@ -125,6 +141,14 @@
 }
 
 -(void)setValue:(id)value {
+    if([_values count] == 1) {
+        if(_continuous) {
+            self.param = .5;
+        } else {
+            self.index = 0;
+        }
+        return;
+    }
     if(_continuous) {
         unsigned int numValues = [_values count];
         for(unsigned int i = 0; i < numValues-1; i++) {
@@ -146,8 +170,11 @@
         }
     }
     
-    NSLog(@"invalid value for slider: %@", self);
-    NSAssert(NO, @"invalid value for slider");
+    // invalid value to choose the first thing
+    self.index = 0;
+    
+ //   NSLog(@"invalid value for slider: %@", self);
+  //  NSAssert(NO, @"invalid value for slider");
 }
 
 -(void)setLabels:(NSArray *)labels {
@@ -163,6 +190,11 @@
 -(void)addToSimulation:(BounceSimulation *)simulation {
     [_track addToSimulation:simulation];
     [_handle addToSimulation:simulation];
+}
+
+-(void)removeFromSimulation {
+    [_track removeFromSimulation];
+    [_handle removeFromSimulation];
 }
 
 -(float)paramFromLocation:(const vec2&)loc {
@@ -199,8 +231,12 @@
     }    
     if(!_continuous) {
         int maxNum = [_values count]-1;
+        if(maxNum == 0) {
+            t = .5;
+        } else {
+            t = roundf(t*maxNum)/maxNum;
+        }
         
-        t = roundf(t*maxNum)/maxNum;
     }
     
     return t;
@@ -222,7 +258,7 @@
         id newValue;
         id value1 = [_values objectAtIndex:(int)index];
 
-        if(t < 1) {
+        if(t < 1 && [_values count] > 1) {
             id value2 = [_values objectAtIndex:(int)(index+1)];
             newValue = [value1 lerp:value2 param:tt];
         } else {
@@ -307,7 +343,11 @@
 }
 
 -(void)setIndex:(unsigned int)index {
-    _actualT = (float)index/([_values count]-1);
+    if([_values count] == 1) {
+        _actualT = .5;
+    } else {
+        _actualT = (float)index/([_values count]-1);
+    }
     [self update];
 }
 

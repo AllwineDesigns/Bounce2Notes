@@ -16,8 +16,6 @@ using namespace fsa;
 
 @implementation BounceConfigurationTab
 
-@synthesize offset = _offset;
-
 -(id)initWithPane:(BouncePane *)pane index:(unsigned int)index offset:(const vec2 &)offset {
     self = [super initObjectWithShape:BOUNCE_BALL at:vec2(0,-5) withVelocity:vec2() withColor:vec4() withSize:.15 withAngle:0];
     
@@ -42,6 +40,12 @@ using namespace fsa;
     }
     
     return self;
+}
+-(const vec2&)offset {
+    return _offset;
+}
+-(void)setOffset:(const vec2&)offset {
+    _offset = offset;
 }
 
 -(void)setOrder:(int)order {

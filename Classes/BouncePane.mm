@@ -20,12 +20,89 @@
 #import "BounceSettings.h"
 #import "BounceSaveLoadSimulation.h"
 
-BouncePaneSideInfo bouncePaneSideInfo[4] = { {vec2(0,-1),vec2(0,1),0},
-    {vec2(-1,0),vec2(1,0), -M_PI_2},{vec2(0,1),vec2(0,-1), M_PI},{vec2(1,0),vec2(-1,0), M_PI_2} };
+BouncePaneSideInfo bouncePaneSideInfo[4] = { {vec2(0,-1),vec2(0,1),0,0},
+    {vec2(-1,0),vec2(1,0), -M_PI_2,1},{vec2(0,1),vec2(0,-1), M_PI,0},{vec2(1,0),vec2(-1,0), M_PI_2,1} };
 
-float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
+float bouncePaneAngles[4] = {0,-M_PI_2,M_PI,M_PI_2};
 
-@implementation BounceConfigurationPaneObject 
+static BouncePaneOrientation bounceOrientation = BOUNCE_PANE_PORTRAIT;
+
+void updateBounceOrientation(UIInterfaceOrientation orientation) {
+    switch (orientation) {
+        case UIDeviceOrientationPortrait:
+            bounceOrientation = BOUNCE_PANE_PORTRAIT;
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            bounceOrientation = BOUNCE_PANE_PORTRAIT_UPSIDE_DOWN;
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            bounceOrientation = BOUNCE_PANE_LANDSCAPE_RIGHT;
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            bounceOrientation = BOUNCE_PANE_LANDSCAPE_LEFT;
+            break;
+        case UIDeviceOrientationFaceUp:
+            break;
+        case UIDeviceOrientationFaceDown:
+            break;
+            
+        default:
+            
+            break;
+    }
+}
+
+void updateBounceOrientation() {
+    UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
+    switch (deviceOrientation) {
+        case UIDeviceOrientationPortrait:
+            bounceOrientation = BOUNCE_PANE_PORTRAIT;
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            bounceOrientation = BOUNCE_PANE_PORTRAIT_UPSIDE_DOWN;
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            bounceOrientation = BOUNCE_PANE_LANDSCAPE_RIGHT;
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            bounceOrientation = BOUNCE_PANE_LANDSCAPE_LEFT;
+            break;
+        case UIDeviceOrientationFaceUp:
+            break;
+        case UIDeviceOrientationFaceDown:
+            break;
+            
+        default:
+            
+            break;
+    }
+}
+
+float getBouncePaneAngle(BouncePaneOrientation orientation) {
+    return bouncePaneAngles[orientation];
+}
+
+BouncePaneSideInfo getBouncePaneSideInfo(BouncePaneSide side, BouncePaneOrientation orientation) {
+    float aspect = [[BounceConstants instance] aspect];
+    float invaspect =  1./aspect;
+    BouncePaneSideInfo info = bouncePaneSideInfo[(side+orientation)%4];
+    info.pos.y *= invaspect;
+    
+    if(info.length) {
+        info.length = 2*invaspect;
+    } else {
+        info.length = 2;
+    }
+    
+    
+    return info;
+}
+
+BouncePaneOrientation getBouncePaneOrientation() {
+    return bounceOrientation;
+}
+
+@implementation BounceConfigurationPaneObject
 
 @synthesize springAngle = _springAngle;
 @synthesize inactivePadding = _inactivePadding;
@@ -122,8 +199,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
 }
 
 -(BouncePaneSideInfo)getSideInfo {
-    BouncePaneSideInfo info = bouncePaneSideInfo[(_side+_orientation)%4];
-    info.pos.y *= _invaspect;
+    BouncePaneSideInfo info = getBouncePaneSideInfo(_side, _orientation);
     
     return info;
 }
@@ -406,15 +482,15 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
     BouncePaneSideInfo info = [self.object getSideInfo];
     
     float dot = vel.dot(info.dir);
-    if(dot > 0) {
+    if((dot > 0 && _state == BOUNCE_PANE_TAPPED) || vel.length() < 1) {
         [self setCurrentSimulation:index];
-    } else {
+    } else if(dot < 0) {
         [self deactivate];
     }
 }
 
 -(void)tabGrabbedAt:(const vec2 &)loc offset:(const vec2 &)offset index:(unsigned int)index {
-    [self setCurrentSimulation:index];
+  //  [self setCurrentSimulation:index];
 
     vec2 o = offset;
     o.rotate(-self.object.angle);
@@ -446,7 +522,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
         [self deactivate];
     } else {
         [self activate];
-        [self setCurrentSimulation:index];
+       // [self setCurrentSimulation:index];
     }
 }
 
@@ -540,6 +616,15 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
 
 
 -(BOOL)singleTap:(void*)uniqueId at:(const vec2&)loc {
+    if([self isHandleAreaAt:loc] && ![[BounceSettings instance] bounceLocked]) {
+        _state = BOUNCE_PANE_TAPPED;
+        _time = 0;
+        [_object tap];
+        [self randomizeColor];
+        
+        return YES;
+    }
+    
     for(BounceSimulation *sim in _simulations) {
         BOOL responds = [sim respondsToGesture:uniqueId];
         if(responds) {
@@ -552,6 +637,13 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
 }
 
 -(BOOL)flick: (void*)uniqueId at:(const vec2&)loc inDirection:(const vec2&)dir time:(NSTimeInterval)time {
+    if([self isHandleAreaAt:loc] && ![[BounceSettings instance] bounceLocked]) {
+        [self randomizeColor];
+        [self activate];
+        
+        return YES;
+    }
+    
     for(BounceSimulation *sim in _simulations) {
         BOOL responds = [sim respondsToGesture:uniqueId];
         if(responds) {
@@ -584,7 +676,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
         [sim beginDrag:uniqueId at:loc];
         return YES;
     }
-    
+    /*
     if([self isHandleAreaAt:loc]) {
         _state = BOUNCE_PANE_TAPPED;
         _time = 0;
@@ -593,6 +685,7 @@ float bouncePaneAngles[4] = { 0, -M_PI_2, M_PI, M_PI_2 };
         
         return YES;
     }
+     */
     
     return NO;
 }

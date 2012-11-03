@@ -24,11 +24,13 @@ static FSABackgroundQueue* fsaBackgroundQueue;
 
 -(void)resume {
     [self setSuspended:NO];
+    NSLog(@"resuming background thread");
+
 }
 
 -(void)suspendFor:(NSTimeInterval)seconds {
     [self setSuspended:YES];
-    
+    NSLog(@"suspending background thread");
     [self performSelector:@selector(resume) withObject:nil afterDelay:seconds];
 }
 

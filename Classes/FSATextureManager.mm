@@ -21,6 +21,7 @@ static FSATextureManager* fsaTextureManager;
     self = [super init];
     
     if(self) {
+        _lastTextTextureId = 0;
         textures = [[NSMutableDictionary alloc] initWithCapacity:5];
 
         largeTextures = [[NSMutableDictionary alloc] initWithCapacity:5];
@@ -31,7 +32,7 @@ static FSATextureManager* fsaTextureManager;
         NSString *device = machineName();
         
 
-        if([device hasPrefix:@"iPhone"] || [device isEqualToString:@"iPad3,3"]) {
+        if([device hasPrefix:@"iPhone"] || [device hasPrefix:@"iPad3"] || [device hasPrefix:@"iPad2,5"]) {
             startTextTextureSize = nextPowerOfTwo(size.width*.25);
         } else {
             startTextTextureSize = nextPowerOfTwo(size.width*.1);
@@ -41,6 +42,16 @@ static FSATextureManager* fsaTextureManager;
     return self;
 }
 
+-(FSATexture*)getNewTextTexture {
+    FSATextTexture *tex = [[FSATextTexture alloc] init];
+    
+    NSString *key = [NSString stringWithFormat:@"texttexture%d", _lastTextTextureId];
+    _lastTextTextureId++;
+    [textures setObject:tex forKey:key];
+    
+    return [tex autorelease];
+}
+
 -(void)memoryWarning {
     [[FSABackgroundQueue instance] suspendFor:5];
     lastMemoryWarning = [[NSProcessInfo processInfo] systemUptime];
@@ -48,6 +59,12 @@ static FSATextureManager* fsaTextureManager;
         [tex memoryWarning];
     }
 }
+-(void)addTextTexture:(NSString *)name {
+    FSATextTexture *tex = [[FSATextTexture alloc] init];
+    [textures setObject:tex forKey:name];
+    [tex release];
+}
+
 -(void)addSmartTexture:(NSString *)name {
     CGSize size = screenSize();
     
@@ -55,7 +72,9 @@ static FSATextureManager* fsaTextureManager;
     unsigned int max = nextPowerOfTwo(size.width);
 
     FSASmartTexture *tex = [[FSASmartTexture alloc] initWithFile:name minPrefix:min maxPrefix:max];
+    
     [textures setObject:tex forKey:name];
+    [tex release];
 }
 -(void)addLargeTexture:(NSString *)name {
     NSString *largeName = [NSString stringWithFormat:@"%d%@", largeTexturePrefix, name];
@@ -63,59 +82,72 @@ static FSATextureManager* fsaTextureManager;
     [self getTexture:largeName];
 }
 
+-(FSATexture*)temporaryTexture:(NSString *)name {
+    FSATexture* tex;
+    
+    if([name hasSuffix:@".pvrtc"]) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
+        PVRTexture *pvrtex = [[PVRTexture alloc] initWithContentsOfFile:path];
+        
+        tex = [[FSATexture alloc] initWithKey:name name:pvrtex.name width:pvrtex.width height:pvrtex.height];
+    } else {
+        if(!name || ![[NSFileManager defaultManager] fileExistsAtPath:[[NSBundle mainBundle] pathForResource:name ofType:@""]]) {
+            NSLog(@"file doesn't exist: %@", name);
+            return nil;
+        } else {
+            GLuint texId;
+            glGenTextures(1, &texId);
+            glBindTexture(GL_TEXTURE_2D, texId);
+            UIImage* image = [UIImage imageNamed:name];
+            
+            GLubyte* imageData = (GLubyte*)malloc(image.size.width * image.size.height * 4);
+            
+            
+            CGContextRef imageContext = CGBitmapContextCreate(imageData, image.size.width, image.size.height, 8, image.size.width * 4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
+            
+            if(!imageContext) {
+                NSLog(@"attempting to load %@", name);
+                NSAssert(imageContext, @"must have imageContext to continue");
+            }
+            
+            CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
+            CGContextRelease(imageContext);
+            
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            
+            
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size.width, image.size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+            free(imageData);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            
+            tex = [[FSATexture alloc] initWithKey:name name:texId width:image.size.width height:image.size.height];
+            
+            
+        }
+    }
+    return [tex autorelease];
+}
+
+-(void)addTexture:(NSString *)name forKey:(NSString *)key {
+    FSATexture* tex = [self temporaryTexture:name];
+    [textures setObject:tex forKey:key];
+  //  NSLog(@"loaded %@ into textureId %u", name, tex.name);
+}
+
 -(FSATexture*)getTexture:(NSString *)name {
     NSString* largeName = [largeTextures objectForKey:name];
     if(largeName != nil) {
         name = largeName;
     }
+
     FSATexture *tex = [textures objectForKey:name];
     if(tex == nil) {
-        if([name hasSuffix:@".pvrtc"]) {
-            NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];            
-            PVRTexture *pvrtex = [[PVRTexture alloc] initWithContentsOfFile:path];
-            
-            tex = [[FSATexture alloc] initWithKey:name name:pvrtex.name width:pvrtex.width height:pvrtex.height];
-            
-            [textures setObject:tex forKey:name];
-        } else {
-            if(!name || ![[NSFileManager defaultManager] fileExistsAtPath:[[NSBundle mainBundle] pathForResource:name ofType:@""]]) {
-                return [textures objectForKey:@"black.jpg"];
-            } else {
-                GLuint texId;
-                glGenTextures(1, &texId);
-                glBindTexture(GL_TEXTURE_2D, texId);
-                UIImage* image = [UIImage imageNamed:name];
-                
-                GLubyte* imageData = (GLubyte*)malloc(image.size.width * image.size.height * 4);
-
-                
-                CGContextRef imageContext = CGBitmapContextCreate(imageData, image.size.width, image.size.height, 8, image.size.width * 4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
-                
-                if(!imageContext) {
-                    NSLog(@"attempting to load %@", name);
-                    NSAssert(imageContext, @"must have imageContext to continue");
-                }
-
-                CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
-                CGContextRelease(imageContext); 
-                
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size.width, image.size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
-                free(imageData);
-                glGenerateMipmap(GL_TEXTURE_2D);
-                
-                tex = [[FSATexture alloc] initWithKey:name name:texId width:image.size.width height:image.size.height];
-                
-                [textures setObject:tex forKey:name];
-                
-                NSLog(@"loaded %@ into textureId %u", name, texId);
-            }
-        }
+        [self addTexture:name forKey:name];
+        
+        tex = [textures objectForKey:name];
     }
     
     return tex;
@@ -212,9 +244,10 @@ static FSATextureManager* fsaTextureManager;
     NSAssert(([textures objectForKey:key] == nil), ([NSString stringWithFormat:@"texture exists for key: %@\n", key]));
     FSATexture *tex = [self generateTemporaryTextureForText:txt withFontName:fontName withFontSize:size withOffset:offset];
     tex.key = key;
-    [textures setObject:tex forKey:key];
     
-    NSLog(@"loaded text \"%@\" into textureId %d as %@\n", txt, tex.name, key);
+    [textures setObject:tex forKey:key];
+        
+  //  NSLog(@"loaded text \"%@\" into textureId %d as %@\n", txt, tex.name, key);
     
 
 }

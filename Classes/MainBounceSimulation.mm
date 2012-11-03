@@ -58,8 +58,10 @@
         _killArena = [[BounceKillArena alloc] initWithRect:rect simulation:self];
         [_killArena addToSpace:_space];
                 
-        [[BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()] addToSimulation:self];
-        
+        BounceObject *obj = [[BounceObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2() withColor: vec4(.46,.68,.76,1) withSize:.15 withAngle:0];
+        obj.angVel = -100;
+        [obj addToSimulation:self];
+        [obj release];
         /*
         BounceObject *obj = [BounceObject randomObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2()];
         
@@ -102,9 +104,29 @@
         [super longTouch:uniqueId at:loc];
     }
 }
+-(void)beginCreate:(void *)uniqueId at:(const vec2 &)loc {
+    [super beginCreate:uniqueId at:loc];
+
+    if([[BounceSettings instance] bounceLocked]) {
+        BounceGesture *gesture = [self gestureForKey:uniqueId];
+        if(gesture == nil) {
+            return;
+        }
+        BounceObject *obj = [gesture object];
+        
+        if(![obj hasBeenAddedToSimulation]) {
+            [obj randomizeSize];
+            [obj addToSimulation:self];
+            [obj playSound:.2];
+        }
+        
+        [gesture beginGrabAt:loc];
+    }
+}
+
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
     if([BounceSettings instance].playMode && ![[self objectAt:loc] isKindOfClass:[BounceConfigurationTab class]]) {
-        NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+        NSSet *objects = [self objectsAt:loc withinRadius:0.06875];
         for(BounceObject *o in objects) {
             NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
             if(now-o.lastPlayed > .02) {
@@ -120,7 +142,7 @@
 }
 -(void)drag:(void*)uniqueId at:(const vec2&)loc {
     if([BounceSettings instance].playMode && [self gestureForKey:uniqueId] == nil) {
-        NSSet *objects = [self objectsAt:loc withinRadius:.2*[BounceConstants instance].unitsPerInch];
+        NSSet *objects = [self objectsAt:loc withinRadius:0.06875];
         for(BounceObject *o in objects) {
             NSTimeInterval now = [[NSProcessInfo processInfo] systemUptime];
             if(now-o.lastPlayed > .02) {
@@ -217,12 +239,31 @@
     }
 }
 
+-(void)addObject:(BounceObject *)object {
+    BounceSettings *settings = [BounceSettings instance];
+    [object setVelocityLimit:settings.velocityLimit];
+    [object setBounciness:settings.bounciness];
+    [object setFriction:settings.friction];
+    [object setGravityScale:settings.gravityScale];
+    [object setDamping:settings.damping];
+    
+    [super addObject:object];
+}
+
 -(void)saveSimulation {
     [_delegate saveSimulation];
 }
 
 -(void)loadSimulation:(NSString *)file {
     [_delegate loadSimulation:file];
+}
+
+-(void)loadBuiltInSimulation:(NSString *)file {
+    [_delegate loadBuiltInSimulation:file];
+}
+
+-(void)deleteSimulation:(NSString *)file {
+    [_delegate deleteSimulation:file];
 }
 
 -(void)draw {

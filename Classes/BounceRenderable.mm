@@ -19,6 +19,18 @@
 @synthesize shapeTexture = _shapeTexture;
 @synthesize stationaryTexture = _stationaryTexture;
 
+-(id)initWithData:(BounceRenderableData &)data {
+    BounceRenderableInputs inputs;
+    inputs.intensity = &data.intensity;
+    inputs.isStationary = &data.isStationary;
+    inputs.color = &data.color;
+    inputs.position = &data.position;
+    inputs.size = &data.size;
+    inputs.angle = &data.angle;
+    inputs.patternTexture = &data.patternTexture;
+       
+    return [self initWithInputs:inputs];
+}
 -(id)initWithInputs:(BounceRenderableInputs)inputs {
     self = [super init];
     if(self) {
@@ -117,6 +129,18 @@
      */
     [_indexBuffer unbind];
     glDisable(GL_BLEND);
+}
+
+-(void)scalePatternUVs:(const vec2 &)scale {
+    for(int i = 0; i < _numVerts; i++) {
+        _vertPatternUVs[i] *= scale;
+    }
+}
+
+-(void)translatePatternUVs:(const vec2 &)translate {
+    for(int i = 0; i < _numVerts; i++) {
+        _vertPatternUVs[i] += translate;
+    }
 }
 
 -(void)burst:(float)scale {
@@ -309,6 +333,61 @@
 
 @end
 
+@implementation BounceGenericRenderable
+
++(void)initialize {
+    unsigned int indices[4];
+    indices[0] = 0;
+    indices[1] = 1;
+    indices[2] = 3;
+    indices[3] = 2;
+    
+    FSABuffer *buffer = [[FSABuffer alloc] initElementArrayWithData:indices count:4];
+    [[FSABufferManager instance] addBuffer:buffer name:@"lockedBuffer"];
+}
+
+-(id)initWithInputs:(BounceRenderableInputs)inputs {
+    self = [super initWithInputs:inputs];
+    
+    if(self) {
+        _numVerts = 4;
+        _verts = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertsUntransformed = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertOffsets = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertVels = (vec2*)malloc(_numVerts*sizeof(vec2));
+        
+        _vertShapeUVs = (vec2*)malloc(_numVerts*sizeof(vec2));
+        _vertPatternUVs = (vec2*)malloc(_numVerts*sizeof(vec2));
+        
+        memset(_vertOffsets, 0, _numVerts*sizeof(vec2));
+        memset(_vertVels, 0, _numVerts*sizeof(vec2));
+        
+        _indexBuffer = [[FSABufferManager instance] getBuffer:@"lockedBuffer"];
+        [_indexBuffer retain];
+        
+        _vertsUntransformed[0] = vec2(1,1);
+        _vertsUntransformed[1] = vec2(-1,1);
+        _vertsUntransformed[2] = vec2(-1,-1);
+        _vertsUntransformed[3] = vec2(1,-1);
+        
+        _vertShapeUVs[0] = vec2(1,0);
+        _vertShapeUVs[1] = vec2(0,0);
+        _vertShapeUVs[2] = vec2(0,1);
+        _vertShapeUVs[3] = vec2(1,1);
+        
+        _vertPatternUVs[0] = vec2(1,0);
+        _vertPatternUVs[1] = vec2(0,0);
+        _vertPatternUVs[2] = vec2(0,1);
+        _vertPatternUVs[3] = vec2(1,1);
+        
+        _shapeTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
+        _stationaryTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
+    }
+    
+    return self;
+}
+
+@end
 
 @implementation BounceTriangleRenderable
 

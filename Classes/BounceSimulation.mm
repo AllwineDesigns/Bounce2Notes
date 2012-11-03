@@ -277,13 +277,6 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 -(void)addObject: (BounceObject*)object {
-    BounceSettings *settings = [BounceSettings instance];
-    [object setVelocityLimit:settings.velocityLimit];
-    [object setBounciness:settings.bounciness];
-    [object setFriction:settings.friction];
-    [object setGravityScale:settings.gravityScale];
-    [object setDamping:settings.damping];
-    
     int order = 1;
     for(BounceObject *obj in _objects) {
         if(obj.isPreviewable && obj.order >= order) {
@@ -667,8 +660,14 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
         if(obj.isPreviewable) {
             obj.isStationary = YES;
         }
+        [self longTouchObject:obj at:loc];
     }
 }
+
+-(void)longTouchObject:(BounceObject *)obj at:(const vec2 &)loc {
+    
+}
+
 -(void)beginCreate:(void*)uniqueId at:(const vec2&)loc {
     BounceObject *obj = [BounceObject randomObjectAt:loc];  
     obj.size = .01;

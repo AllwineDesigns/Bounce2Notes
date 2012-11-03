@@ -92,7 +92,7 @@ int presolve_kill(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 -(BOOL)isEnabled {
-    return _killTop || _killBottom || _killLeft || _killRight;
+    return _killTop || _killBottom || _killLeft || _killRight || [[BounceSettings instance] bounceLocked];
 }
 -(BOOL)isTopEnabled {
     return _killTop;

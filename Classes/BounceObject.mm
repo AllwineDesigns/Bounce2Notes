@@ -134,7 +134,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     self.simulationWillDraw = [aDecoder decodeBoolForKey:@"BounceObjectSimulationWillDraw"];
     self.simulationWillArchive = [aDecoder decodeBoolForKey:@"BounceObjectSimulationWillArchive"];
     
-    self.order = [aDecoder decodeInt32ForKey:@"BounceObjectOrder"] || 1;
+    self.order = [aDecoder decodeInt32ForKey:@"BounceObjectOrder"];
+    if(!self.order) self.order = 1;
     
     return self;
 }
@@ -380,7 +381,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 }
 
 -(void)randomizeSize {
-    vec2 loc = self.position;
     CGSize size = [[BounceSettings instance].sizeGenerator size];
     [self setSize:size.width secondarySize:size.height];
 }
@@ -392,12 +392,10 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 }
 
 -(void)randomizeColor {
-    vec2 loc = self.position;
     
     _color = [[[BounceSettings instance] colorGenerator] randomColor];
 }
 -(void)randomizeShape {
-    vec2 loc = self.position;
 
     self.bounceShape = [[[BounceSettings instance] bounceShapeGenerator] bounceShape];
     

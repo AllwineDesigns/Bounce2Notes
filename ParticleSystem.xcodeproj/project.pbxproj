@@ -13,18 +13,12 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		2514C27B10084DCA00A42282 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27910084DCA00A42282 /* Shader.fsh */; };
 		2514C27C10084DCA00A42282 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27A10084DCA00A42282 /* Shader.vsh */; };
-		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28EC4C5911D54ECE0027AA9F /* ParticleSystemViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */; };
-		28EC4C5A11D54ECE0027AA9F /* ParticleSystemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */; };
 		28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
-		B217CBC21607A7E7001A57EC /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = B217CBC11607A7E7001A57EC /* View.xib */; };
-		B217CBC31607A7E7001A57EC /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = B217CBC11607A7E7001A57EC /* View.xib */; };
 		B21A12FD15965E46005DFBA0 /* BounceGesture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21A12FC15965E46005DFBA0 /* BounceGesture.mm */; };
 		B21A12FE15965E46005DFBA0 /* BounceGesture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21A12FC15965E46005DFBA0 /* BounceGesture.mm */; };
-		B21A13061596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */; };
-		B21A13071596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */; };
 		B21A132A15991987005DFBA0 /* FSAShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A132915991987005DFBA0 /* FSAShaderManager.m */; };
 		B21A132B15991987005DFBA0 /* FSAShaderManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B21A132915991987005DFBA0 /* FSAShaderManager.m */; };
 		B21A93BD1559954A002D2BEE /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B21A93BC1559954A002D2BEE /* AVFoundation.framework */; };
@@ -35,6 +29,12 @@
 		B21F02E915F3C77200339071 /* BounceSavedSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21F02E715F3C77200339071 /* BounceSavedSimulation.mm */; };
 		B21F02EC15F4229000339071 /* BounceSaveLoadSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */; };
 		B21F02ED15F4229000339071 /* BounceSaveLoadSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */; };
+		B23324B0163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */; };
+		B23324B1163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */; };
+		B23324B4164053BD00F7E185 /* BounceLoadingObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324B3164053BB00F7E185 /* BounceLoadingObject.mm */; };
+		B23324B5164053BD00F7E185 /* BounceLoadingObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324B3164053BB00F7E185 /* BounceLoadingObject.mm */; };
+		B23324F41640921800F7E185 /* Saves in Resources */ = {isa = PBXBuildFile; fileRef = B23324F31640921700F7E185 /* Saves */; };
+		B23324F51640921800F7E185 /* Saves in Resources */ = {isa = PBXBuildFile; fileRef = B23324F31640921700F7E185 /* Saves */; };
 		B23CEDC815D2F9B90078CFA4 /* libChipmunk-iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B23CEDC715D2F9B90078CFA4 /* libChipmunk-iPhone.a */; };
 		B23CEDC915D2F9B90078CFA4 /* libChipmunk-iPhone.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B23CEDC715D2F9B90078CFA4 /* libChipmunk-iPhone.a */; };
 		B23CEDE615D6C72D0078CFA4 /* rest.png in Resources */ = {isa = PBXBuildFile; fileRef = B23CEDE515D6C72D0078CFA4 /* rest.png */; };
@@ -277,8 +277,6 @@
 		B23F12ED15703AEF00FE4D09 /* BallShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B29630C31547199C009B483D /* BallShader.vsh */; };
 		B23F12EE15703AEF00FE4D09 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27910084DCA00A42282 /* Shader.fsh */; };
 		B23F12EF15703AEF00FE4D09 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 2514C27A10084DCA00A42282 /* Shader.vsh */; };
-		B23F12F015703AEF00FE4D09 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
-		B23F12F115703AEF00FE4D09 /* ParticleSystemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */; };
 		B23F130115703AEF00FE4D09 /* black.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B280573A15647C9300C2E7A2 /* black.jpg */; };
 		B23F130215703AEF00FE4D09 /* white.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B280573B15647C9300C2E7A2 /* white.jpg */; };
 		B23F132115703AEF00FE4D09 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
@@ -299,20 +297,14 @@
 		B23F133A15703AEF00FE4D09 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		B23F133B15703AEF00FE4D09 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		B23F133C15703AEF00FE4D09 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
-		B24159F415A3879F00E8AB74 /* FSATexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B24159F315A3879F00E8AB74 /* FSATexture.m */; };
-		B24159F515A3879F00E8AB74 /* FSATexture.m in Sources */ = {isa = PBXBuildFile; fileRef = B24159F315A3879F00E8AB74 /* FSATexture.m */; };
+		B24159F415A3879F00E8AB74 /* FSATexture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B24159F315A3879F00E8AB74 /* FSATexture.mm */; };
+		B24159F515A3879F00E8AB74 /* FSATexture.mm in Sources */ = {isa = PBXBuildFile; fileRef = B24159F315A3879F00E8AB74 /* FSATexture.mm */; };
 		B24159FC15A391A300E8AB74 /* BillboardShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F615A38CFC00E8AB74 /* BillboardShader.fsh */; };
 		B24159FD15A391A300E8AB74 /* BillboardShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F915A38D1100E8AB74 /* BillboardShader.vsh */; };
 		B24159FE15A391AE00E8AB74 /* BillboardShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F615A38CFC00E8AB74 /* BillboardShader.fsh */; };
 		B24159FF15A391AE00E8AB74 /* BillboardShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B24159F915A38D1100E8AB74 /* BillboardShader.vsh */; };
 		B2415A0A15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */; };
 		B2415A0B15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */; };
-		B2415A1315AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */; };
-		B2415A1415AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */; };
-		B2415A1515AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */; };
-		B2415A1615AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */; };
-		B2415A1715AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */; };
-		B2415A1815AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */; };
 		B2415A7315BB749500E8AB74 /* FSACurve.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A7215BB749300E8AB74 /* FSACurve.mm */; };
 		B2415A7415BB749500E8AB74 /* FSACurve.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A7215BB749300E8AB74 /* FSACurve.mm */; };
 		B2415A7715BB78F000E8AB74 /* FSAGlowyGestureCurve.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2415A7615BB78EE00E8AB74 /* FSAGlowyGestureCurve.mm */; };
@@ -339,6 +331,11 @@
 		B2415AA115BBAFA300E8AB74 /* IntensityShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2415A9F15BBAE7A00E8AB74 /* IntensityShader.vsh */; };
 		B2415AA215BBAFAF00E8AB74 /* IntensityShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2415A9E15BBAE6300E8AB74 /* IntensityShader.fsh */; };
 		B2415AA315BBAFAF00E8AB74 /* IntensityShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2415A9F15BBAE7A00E8AB74 /* IntensityShader.vsh */; };
+		B2441E281631ACAB008D6B7D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B2441E271631ACAB008D6B7D /* Default-568h@2x.png */; };
+		B2441E2B16335719008D6B7D /* 128locked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2441E2916335719008D6B7D /* 128locked.jpg */; };
+		B2441E2C16335719008D6B7D /* 128locked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2441E2916335719008D6B7D /* 128locked.jpg */; };
+		B2441E2D16335719008D6B7D /* 128unlocked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2441E2A16335719008D6B7D /* 128unlocked.jpg */; };
+		B2441E2E16335719008D6B7D /* 128unlocked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2441E2A16335719008D6B7D /* 128unlocked.jpg */; };
 		B2454B4B154CDF5600FB5576 /* FSAMultiGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */; };
 		B256657015F66B220077F496 /* BounceFileManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B256656F15F66B200077F496 /* BounceFileManager.mm */; };
 		B256657115F66B220077F496 /* BounceFileManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B256656F15F66B200077F496 /* BounceFileManager.mm */; };
@@ -470,6 +467,26 @@
 		B2D0734F155D6A6F0001DF70 /* FSAAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */; };
 		B2D07351155DAA4F0001DF70 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */; };
 		B2D073AC1560C1880001DF70 /* BounceSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D073AB1560C1870001DF70 /* BounceSimulation.mm */; };
+		B2D08B9A163604D200C088CB /* BounceLock.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D08B99163604D200C088CB /* BounceLock.mm */; };
+		B2D08B9B163604D200C088CB /* BounceLock.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D08B99163604D200C088CB /* BounceLock.mm */; };
+		B2D08B9E1637036F00C088CB /* 256locked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D08B9C1637036F00C088CB /* 256locked.jpg */; };
+		B2D08B9F1637036F00C088CB /* 256locked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D08B9C1637036F00C088CB /* 256locked.jpg */; };
+		B2D08BA01637036F00C088CB /* 256unlocked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D08B9D1637036F00C088CB /* 256unlocked.jpg */; };
+		B2D08BA11637036F00C088CB /* 256unlocked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D08B9D1637036F00C088CB /* 256unlocked.jpg */; };
+		B2D08BA41638B8CE00C088CB /* BounceHowToSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D08BA31638B8CC00C088CB /* BounceHowToSimulation.mm */; };
+		B2D08BA51638B8CE00C088CB /* BounceHowToSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2D08BA31638B8CC00C088CB /* BounceHowToSimulation.mm */; };
+		B2D08C721641BC4F00129AB2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C711641BC4F00129AB2 /* MainWindow.xib */; };
+		B2D08C731641BC4F00129AB2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C711641BC4F00129AB2 /* MainWindow.xib */; };
+		B2D08C751641D55700129AB2 /* ParticleSystemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C741641D55700129AB2 /* ParticleSystemViewController.xib */; };
+		B2D08C761641D55700129AB2 /* ParticleSystemViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C741641D55700129AB2 /* ParticleSystemViewController.xib */; };
+		B2D08C781643128400129AB2 /* gray.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C771643128400129AB2 /* gray.jpg */; };
+		B2D08C791643128400129AB2 /* gray.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C771643128400129AB2 /* gray.jpg */; };
+		B2D08C7D1644913900129AB2 /* 256bounce2notes.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C7A1644913900129AB2 /* 256bounce2notes.png */; };
+		B2D08C7E1644913900129AB2 /* 256bounce2notes.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C7A1644913900129AB2 /* 256bounce2notes.png */; };
+		B2D08C7F1644913900129AB2 /* 512bounce2notes.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C7B1644913900129AB2 /* 512bounce2notes.png */; };
+		B2D08C801644913900129AB2 /* 512bounce2notes.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C7B1644913900129AB2 /* 512bounce2notes.png */; };
+		B2D08C811644913900129AB2 /* 1024bounce2notes.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C7C1644913900129AB2 /* 1024bounce2notes.png */; };
+		B2D08C821644913900129AB2 /* 1024bounce2notes.png in Resources */ = {isa = PBXBuildFile; fileRef = B2D08C7C1644913900129AB2 /* 1024bounce2notes.png */; };
 		B2DE9DAB1590174000D23FAA /* FSAUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.mm */; };
 		B2DE9DD315926A8500D23FAA /* SingleObjectGlowShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */; };
 		B2DE9DD415926A8500D23FAA /* SingleObjectGlowShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */; };
@@ -479,19 +496,6 @@
 		B2E54A12158CC463009880FE /* FSATextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.mm */; };
 		B2E54A13158CC463009880FE /* FSATextureManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A11158CC462009880FE /* FSATextureManager.mm */; };
 		B2E54A17158CED77009880FE /* FSAUtil.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2E54A15158CED76009880FE /* FSAUtil.mm */; };
-		B2E8B540157047DD00318FFC /* bounce_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53C157047DD00318FFC /* bounce_icon57.png */; };
-		B2E8B541157047DD00318FFC /* bounce_icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53D157047DD00318FFC /* bounce_icon72.png */; };
-		B2E8B542157047DD00318FFC /* bounce_icon114.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53E157047DD00318FFC /* bounce_icon114.png */; };
-		B2E8B543157047DD00318FFC /* bounce_icon144.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53F157047DD00318FFC /* bounce_icon144.png */; };
-		B2E8B5481570496A00318FFC /* bounce_lite_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5441570496A00318FFC /* bounce_lite_icon57.png */; };
-		B2E8B5491570496A00318FFC /* bounce_lite_icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5451570496A00318FFC /* bounce_lite_icon72.png */; };
-		B2E8B54A1570496A00318FFC /* bounce_lite_icon114.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5461570496A00318FFC /* bounce_lite_icon114.png */; };
-		B2E8B54B1570496A00318FFC /* bounce_lite_icon144.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5471570496A00318FFC /* bounce_lite_icon144.png */; };
-		B2E8B54C1570497C00318FFC /* bounce_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B53C157047DD00318FFC /* bounce_icon57.png */; };
-		B2E8B54D1570498100318FFC /* bounce_lite_icon57.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5441570496A00318FFC /* bounce_lite_icon57.png */; };
-		B2E8B54E1570498900318FFC /* bounce_lite_icon114.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5461570496A00318FFC /* bounce_lite_icon114.png */; };
-		B2E8B54F1570498E00318FFC /* bounce_lite_icon72.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5451570496A00318FFC /* bounce_lite_icon72.png */; };
-		B2E8B5501570499000318FFC /* bounce_lite_icon144.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5471570496A00318FFC /* bounce_lite_icon144.png */; };
 		B2E8B56D157060A000318FFC /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B56C157060A000318FFC /* Default.png */; };
 		B2E8B56F157060A600318FFC /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B56E157060A600318FFC /* Default@2x.png */; };
 		B2E8B571157060AD00318FFC /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B570157060AD00318FFC /* Default-Portrait~ipad.png */; };
@@ -542,25 +546,21 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* ParticleSystemAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystemAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* ParticleSystemAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ParticleSystemAppDelegate.mm; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Bounce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bounce.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* Bounce 2: Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce 2: Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2514C27910084DCA00A42282 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
 		2514C27A10084DCA00A42282 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
-		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		28EC4C5611D54ECE0027AA9F /* ParticleSystemViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystemViewController.h; sourceTree = "<group>"; };
 		28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ParticleSystemViewController.mm; sourceTree = "<group>"; };
-		28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ParticleSystemViewController.xib; sourceTree = "<group>"; };
 		28FD14FC0DC6FC130079059D /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
 		28FD14FD0DC6FC130079059D /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
 		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* ParticleSystem_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParticleSystem_Prefix.pch; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* Bounce-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Bounce-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		B217CBC11607A7E7001A57EC /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Bounce2Notes-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Bounce2Notes-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		B21A12FB15965E46005DFBA0 /* BounceGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceGesture.h; sourceTree = "<group>"; };
 		B21A12FC15965E46005DFBA0 /* BounceGesture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceGesture.mm; sourceTree = "<group>"; };
-		B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = music_texture_sheet.jpg; sourceTree = "<group>"; };
 		B21A132615991965005DFBA0 /* FSAShaderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAShaderManager.h; sourceTree = "<group>"; };
 		B21A132915991987005DFBA0 /* FSAShaderManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAShaderManager.m; sourceTree = "<group>"; };
 		B21A93BC1559954A002D2BEE /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -571,6 +571,11 @@
 		B21F02E715F3C77200339071 /* BounceSavedSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSavedSimulation.mm; sourceTree = "<group>"; };
 		B21F02EA15F4228D00339071 /* BounceSaveLoadSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSaveLoadSimulation.h; sourceTree = "<group>"; };
 		B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSaveLoadSimulation.mm; sourceTree = "<group>"; };
+		B23324AE163DC1FB00F7E185 /* BounceContributorsSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceContributorsSimulation.h; sourceTree = "<group>"; };
+		B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceContributorsSimulation.mm; sourceTree = "<group>"; };
+		B23324B2164053BA00F7E185 /* BounceLoadingObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceLoadingObject.h; sourceTree = "<group>"; };
+		B23324B3164053BB00F7E185 /* BounceLoadingObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceLoadingObject.mm; sourceTree = "<group>"; };
+		B23324F31640921700F7E185 /* Saves */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Saves; sourceTree = "<group>"; };
 		B23CEDC715D2F9B90078CFA4 /* libChipmunk-iPhone.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libChipmunk-iPhone.a"; sourceTree = "<group>"; };
 		B23CEDCB15D6B8740078CFA4 /* chipmunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk.h; sourceTree = "<group>"; };
 		B23CEDCC15D6B8740078CFA4 /* chipmunk_ffi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chipmunk_ffi.h; sourceTree = "<group>"; };
@@ -727,14 +732,11 @@
 		B23F134215703AEF00FE4D09 /* Bounce Lite.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce Lite.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B23F134415703AEF00FE4D09 /* Bounce Lite-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Bounce Lite-Info.plist"; path = "/Users/jallwine/Documents/iPhoneApps/ParticleSystem/Bounce Lite-Info.plist"; sourceTree = "<absolute>"; };
 		B24159F215A3879F00E8AB74 /* FSATexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSATexture.h; sourceTree = "<group>"; };
-		B24159F315A3879F00E8AB74 /* FSATexture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSATexture.m; sourceTree = "<group>"; };
+		B24159F315A3879F00E8AB74 /* FSATexture.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSATexture.mm; sourceTree = "<group>"; };
 		B24159F615A38CFC00E8AB74 /* BillboardShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BillboardShader.fsh; path = Shaders/BillboardShader.fsh; sourceTree = "<group>"; };
 		B24159F915A38D1100E8AB74 /* BillboardShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BillboardShader.vsh; path = Shaders/BillboardShader.vsh; sourceTree = "<group>"; };
 		B2415A0815AE0AEF00E8AB74 /* BounceConfigurationTab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceConfigurationTab.h; sourceTree = "<group>"; };
 		B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceConfigurationTab.mm; sourceTree = "<group>"; };
-		B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 512music_texture_sheet.jpg; sourceTree = "<group>"; };
-		B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1024music_texture_sheet.jpg; sourceTree = "<group>"; };
-		B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2048music_texture_sheet.jpg; sourceTree = "<group>"; };
 		B2415A7115BB749100E8AB74 /* FSACurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSACurve.h; sourceTree = "<group>"; };
 		B2415A7215BB749300E8AB74 /* FSACurve.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSACurve.mm; sourceTree = "<group>"; };
 		B2415A7515BB78EB00E8AB74 /* FSAGlowyGestureCurve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAGlowyGestureCurve.h; sourceTree = "<group>"; };
@@ -752,6 +754,9 @@
 		B2415A9715BB8A9C00E8AB74 /* GestureGlowShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = GestureGlowShader.vsh; path = Shaders/GestureGlowShader.vsh; sourceTree = "<group>"; };
 		B2415A9E15BBAE6300E8AB74 /* IntensityShader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = IntensityShader.fsh; path = Shaders/IntensityShader.fsh; sourceTree = "<group>"; };
 		B2415A9F15BBAE7A00E8AB74 /* IntensityShader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = IntensityShader.vsh; path = Shaders/IntensityShader.vsh; sourceTree = "<group>"; };
+		B2441E271631ACAB008D6B7D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		B2441E2916335719008D6B7D /* 128locked.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 128locked.jpg; sourceTree = "<group>"; };
+		B2441E2A16335719008D6B7D /* 128unlocked.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 128unlocked.jpg; sourceTree = "<group>"; };
 		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
 		B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAMultiGestureRecognizer.m; sourceTree = "<group>"; };
 		B256656E15F66B1F0077F496 /* BounceFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceFileManager.h; sourceTree = "<group>"; };
@@ -848,6 +853,18 @@
 		B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		B2D073AA1560C1870001DF70 /* BounceSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSimulation.h; sourceTree = "<group>"; };
 		B2D073AB1560C1870001DF70 /* BounceSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSimulation.mm; sourceTree = "<group>"; };
+		B2D08B98163604D200C088CB /* BounceLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceLock.h; sourceTree = "<group>"; };
+		B2D08B99163604D200C088CB /* BounceLock.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceLock.mm; sourceTree = "<group>"; };
+		B2D08B9C1637036F00C088CB /* 256locked.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 256locked.jpg; sourceTree = "<group>"; };
+		B2D08B9D1637036F00C088CB /* 256unlocked.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 256unlocked.jpg; sourceTree = "<group>"; };
+		B2D08BA21638B8CB00C088CB /* BounceHowToSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceHowToSimulation.h; sourceTree = "<group>"; };
+		B2D08BA31638B8CC00C088CB /* BounceHowToSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceHowToSimulation.mm; sourceTree = "<group>"; };
+		B2D08C711641BC4F00129AB2 /* MainWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		B2D08C741641D55700129AB2 /* ParticleSystemViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ParticleSystemViewController.xib; sourceTree = "<group>"; };
+		B2D08C771643128400129AB2 /* gray.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = gray.jpg; sourceTree = "<group>"; };
+		B2D08C7A1644913900129AB2 /* 256bounce2notes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 256bounce2notes.png; sourceTree = "<group>"; };
+		B2D08C7B1644913900129AB2 /* 512bounce2notes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 512bounce2notes.png; sourceTree = "<group>"; };
+		B2D08C7C1644913900129AB2 /* 1024bounce2notes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1024bounce2notes.png; sourceTree = "<group>"; };
 		B2DE9DCD159268B700D23FAA /* SingleObjectGlowShader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectGlowShader.fsh; sourceTree = "<group>"; };
 		B2DE9DD0159268C900D23FAA /* SingleObjectGlowShader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = SingleObjectGlowShader.vsh; sourceTree = "<group>"; };
 		B2E4648F1545DC03000F2F48 /* BasicParticleSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BasicParticleSystem.cpp; sourceTree = "<group>"; };
@@ -856,14 +873,6 @@
 		B2E54A11158CC462009880FE /* FSATextureManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSATextureManager.mm; sourceTree = "<group>"; };
 		B2E54A14158CED0A009880FE /* FSAUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSAUtil.h; sourceTree = "<group>"; };
 		B2E54A15158CED76009880FE /* FSAUtil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FSAUtil.mm; sourceTree = "<group>"; };
-		B2E8B53C157047DD00318FFC /* bounce_icon57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon57.png; sourceTree = "<group>"; };
-		B2E8B53D157047DD00318FFC /* bounce_icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon72.png; sourceTree = "<group>"; };
-		B2E8B53E157047DD00318FFC /* bounce_icon114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon114.png; sourceTree = "<group>"; };
-		B2E8B53F157047DD00318FFC /* bounce_icon144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_icon144.png; sourceTree = "<group>"; };
-		B2E8B5441570496A00318FFC /* bounce_lite_icon57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_lite_icon57.png; sourceTree = "<group>"; };
-		B2E8B5451570496A00318FFC /* bounce_lite_icon72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_lite_icon72.png; sourceTree = "<group>"; };
-		B2E8B5461570496A00318FFC /* bounce_lite_icon114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_lite_icon114.png; sourceTree = "<group>"; };
-		B2E8B5471570496A00318FFC /* bounce_lite_icon144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce_lite_icon144.png; sourceTree = "<group>"; };
 		B2E8B56C157060A000318FFC /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		B2E8B56E157060A600318FFC /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		B2E8B570157060AD00318FFC /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
@@ -954,30 +963,19 @@
 				B2415A7615BB78EE00E8AB74 /* FSAGlowyGestureCurve.mm */,
 				B2415A7D15BB810E00E8AB74 /* FSAGestureCurves.h */,
 				B2415A7E15BB811100E8AB74 /* FSAGestureCurves.mm */,
-				B21A132615991965005DFBA0 /* FSAShaderManager.h */,
-				B21A132915991987005DFBA0 /* FSAShaderManager.m */,
-				B2E54A10158CC462009880FE /* FSATextureManager.h */,
-				B2E54A11158CC462009880FE /* FSATextureManager.mm */,
 				B23CEDEC15D7FCE20078CFA4 /* FSABuffer.h */,
 				B23CEDED15D7FCE30078CFA4 /* FSABuffer.m */,
-				B23CEDF015D802B00078CFA4 /* FSABufferManager.h */,
-				B23CEDF115D802B10078CFA4 /* FSABufferManager.m */,
 				B24159F215A3879F00E8AB74 /* FSATexture.h */,
-				B24159F315A3879F00E8AB74 /* FSATexture.m */,
-				B2A9700815D1B1510020DEA8 /* FSABackgroundQueue.h */,
-				B2A9700915D1B1530020DEA8 /* FSABackgroundQueue.m */,
+				B24159F315A3879F00E8AB74 /* FSATexture.mm */,
 				B23E3BD5159A115800E42730 /* PVRTexture.h */,
+				B23324AC163DBF5200F7E185 /* FSA Singletons */,
 				B23E3BD6159A115800E42730 /* PVRTexture.m */,
-				B23E3C8B159BC12800E42730 /* FSASoundManager.h */,
-				B23E3C8C159BC14300E42730 /* FSASoundManager.m */,
 				B23E3C8F159BC24200E42730 /* FSASound.h */,
 				B23E3C90159BC24300E42730 /* FSASound.m */,
 				B23E3C93159BE30800E42730 /* BounceSound.h */,
 				B23E3C94159BE30800E42730 /* BounceSound.mm */,
 				B2D0734D155D6A6F0001DF70 /* FSAAudioPlayer.h */,
 				B2D0734E155D6A6F0001DF70 /* FSAAudioPlayer.m */,
-				B23CEE8B15DACAD60078CFA4 /* BounceNoteManager.h */,
-				B23CEE8C15DACAD70078CFA4 /* BounceNoteManager.m */,
 				B2E54A14158CED0A009880FE /* FSAUtil.h */,
 				B2E54A15158CED76009880FE /* FSAUtil.mm */,
 				B2F1D6B0158FE3EA00EE06B9 /* ChipmunkObject.h */,
@@ -990,38 +988,19 @@
 				B2F1D6B9158FE51200EE06B9 /* BounceArena.mm */,
 				B2F1D6BC158FE57C00EE06B9 /* BounceKillArena.h */,
 				B2F1D6BD158FE57C00EE06B9 /* BounceKillArena.mm */,
-				B2F1D6C0158FE5E100EE06B9 /* BounceConstants.h */,
-				B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */,
-				B278359E15E04AB900A0C0C6 /* BounceSettings.h */,
-				B278359F15E04AB900A0C0C6 /* BounceSettings.mm */,
+				B23324AB163DBF2600F7E185 /* Bounce Singletons */,
 				B21A12FB15965E46005DFBA0 /* BounceGesture.h */,
 				B21A12FC15965E46005DFBA0 /* BounceGesture.mm */,
 				B21F02E615F3C77200339071 /* BounceSavedSimulation.h */,
 				B21F02E715F3C77200339071 /* BounceSavedSimulation.mm */,
 				B23E3C7B159B530D00E42730 /* MainBounceSimulation.h */,
 				B23E3C7C159B530D00E42730 /* MainBounceSimulation.mm */,
-				B27E3F62159F766C001B86E3 /* BounceConfigurationObject.h */,
-				B27E3F63159F766C001B86E3 /* BounceConfigurationObject.mm */,
-				B2415A0815AE0AEF00E8AB74 /* BounceConfigurationTab.h */,
-				B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */,
-				B23E3C87159B8B8C00E42730 /* BounceConfigurationPane.h */,
-				B23E3C88159B8B8D00E42730 /* BounceConfigurationPane.mm */,
-				B2F433E41603F0F600AF62DE /* BounceSaveLoadPane.h */,
-				B2F433E51603F10500AF62DE /* BounceSaveLoadPane.mm */,
-				B2F433D015FA8A4C00AF62DE /* BouncePane.h */,
-				B2F433D115FA8A4D00AF62DE /* BouncePane.mm */,
-				B23E3C7F159B543500E42730 /* BounceConfigurationSimulation.h */,
-				B23E3C80159B543500E42730 /* BounceConfigurationSimulation.mm */,
-				B290B2D515BE27CD00CB7DC6 /* BounceSlider.h */,
-				B290B2D615BE27CE00CB7DC6 /* BounceSlider.mm */,
-				B2F433D815FD29F500AF62DE /* AnchoredBounceObject.h */,
-				B2F433D915FD29F900AF62DE /* AnchoredBounceObject.mm */,
+				B23324AD163DBF9200F7E185 /* Bounce UI Elements */,
+				B23324AA163DBC0B00F7E185 /* Config Pane Simulations */,
 				B2F433DC1602149300AF62DE /* BounceMusicButton.h */,
 				B2F433DD1602149800AF62DE /* BounceMusicButton.mm */,
 				B2F433E01602187500AF62DE /* BounceKeyboard.h */,
 				B2F433E11602187700AF62DE /* BounceKeyboard.mm */,
-				B27835A615E1540700A0C0C6 /* BounceButton.h */,
-				B27835A715E1540800A0C0C6 /* BounceButton.mm */,
 				B27835AE15E7F0C400A0C0C6 /* BounceShapeGenerator.h */,
 				B27835AF15E7F0C500A0C0C6 /* BounceShapeGenerator.mm */,
 				B27835B215E7FCC400A0C0C6 /* BouncePatternGenerator.h */,
@@ -1030,16 +1009,10 @@
 				B27835AB15E5713F00A0C0C6 /* BounceColorGenerator.mm */,
 				B2F433D415FBC9F500AF62DE /* BounceSizeGenerator.h */,
 				B2F433D515FBC9F600AF62DE /* BounceSizeGenerator.mm */,
-				B256656E15F66B1F0077F496 /* BounceFileManager.h */,
-				B256656F15F66B200077F496 /* BounceFileManager.mm */,
-				B2A96FFD15C873230020DEA8 /* BounceMusicConfigurationSimulation.h */,
-				B2A96FFE15C873240020DEA8 /* BounceMusicConfigurationSimulation.mm */,
-				B290B2D115BE271C00CB7DC6 /* BounceSettingsSimulation.h */,
-				B290B2D215BE271D00CB7DC6 /* BounceSettingsSimulation.mm */,
-				B2F433CC15F9758000AF62DE /* BouncePages.h */,
-				B2F433CD15F9758000AF62DE /* BouncePages.mm */,
-				B21F02EA15F4228D00339071 /* BounceSaveLoadSimulation.h */,
-				B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */,
+				B2D08B98163604D200C088CB /* BounceLock.h */,
+				B2D08B99163604D200C088CB /* BounceLock.mm */,
+				B23324B2164053BA00F7E185 /* BounceLoadingObject.h */,
+				B23324B3164053BB00F7E185 /* BounceLoadingObject.mm */,
 				B2D073AA1560C1870001DF70 /* BounceSimulation.h */,
 				B2D073AB1560C1870001DF70 /* BounceSimulation.mm */,
 				B2E464951545DC2B000F2F48 /* BasicParticleSystem.h */,
@@ -1062,7 +1035,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Bounce.app */,
+				1D6058910D05DD3D006BFB54 /* Bounce 2: Notes.app */,
 				B23F134215703AEF00FE4D09 /* Bounce Lite.app */,
 			);
 			name = Products;
@@ -1100,18 +1073,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				B217CBC11607A7E7001A57EC /* View.xib */,
-				B2F433EE16040E7B00AF62DE /* bounce2_icon144.png */,
-				B2F433EC16040E7400AF62DE /* bounce2_icon72.png */,
-				B2F433EA16040E6300AF62DE /* bounce2_icon114.png */,
-				B2F433E816040E5A00AF62DE /* bounce2_icon57.png */,
-				B21F02E315F257DF00339071 /* Accelerate.framework */,
-				B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */,
-				B2E8B5781570866C00318FFC /* Default-Landscape~ipad.png */,
-				B2E8B572157060B000318FFC /* Default-Portrait@2x~ipad.png */,
-				B2E8B570157060AD00318FFC /* Default-Portrait~ipad.png */,
-				B2E8B56E157060A600318FFC /* Default@2x.png */,
-				B2E8B56C157060A000318FFC /* Default.png */,
+				B23324F31640921700F7E185 /* Saves */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				2514C27610084DB600A42282 /* Shaders */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -1134,6 +1096,27 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B2D08C7A1644913900129AB2 /* 256bounce2notes.png */,
+				B2D08C7B1644913900129AB2 /* 512bounce2notes.png */,
+				B2D08C7C1644913900129AB2 /* 1024bounce2notes.png */,
+				B2D08C771643128400129AB2 /* gray.jpg */,
+				B2D08C741641D55700129AB2 /* ParticleSystemViewController.xib */,
+				B2D08C711641BC4F00129AB2 /* MainWindow.xib */,
+				B2441E271631ACAB008D6B7D /* Default-568h@2x.png */,
+				B2F433EE16040E7B00AF62DE /* bounce2_icon144.png */,
+				B2F433EC16040E7400AF62DE /* bounce2_icon72.png */,
+				B2F433EA16040E6300AF62DE /* bounce2_icon114.png */,
+				B2F433E816040E5A00AF62DE /* bounce2_icon57.png */,
+				B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */,
+				B2E8B5781570866C00318FFC /* Default-Landscape~ipad.png */,
+				B2E8B572157060B000318FFC /* Default-Portrait@2x~ipad.png */,
+				B2E8B570157060AD00318FFC /* Default-Portrait~ipad.png */,
+				B2E8B56E157060A600318FFC /* Default@2x.png */,
+				B2E8B56C157060A000318FFC /* Default.png */,
+				B2D08B9C1637036F00C088CB /* 256locked.jpg */,
+				B2D08B9D1637036F00C088CB /* 256unlocked.jpg */,
+				B2441E2916335719008D6B7D /* 128locked.jpg */,
+				B2441E2A16335719008D6B7D /* 128unlocked.jpg */,
 				B23CEE8F15DB6C790078CFA4 /* 128note.jpg */,
 				B23CEE9015DB6C7B0078CFA4 /* 128stationary_note.png */,
 				B23CEE9115DB6C7C0078CFA4 /* 256note.jpg */,
@@ -1241,9 +1224,6 @@
 				B2415A8B15BB8A1A00E8AB74 /* 512glow.jpg */,
 				B2415A8C15BB8A1A00E8AB74 /* 1024glow.jpg */,
 				B2415A8D15BB8A1B00E8AB74 /* 2048glow.jpg */,
-				B2415A1015AF9CFD00E8AB74 /* 512music_texture_sheet.jpg */,
-				B2415A1115AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg */,
-				B2415A1215AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg */,
 				B23E3BF4159ACCAA00E42730 /* 512ball.jpg */,
 				B23E3BF5159ACCAA00E42730 /* 512checkered.jpg */,
 				B23E3BF6159ACCAA00E42730 /* 512pentagon.jpg */,
@@ -1289,20 +1269,9 @@
 				B23E3C1E159ACCAA00E42730 /* 2048stripes.jpg */,
 				B23E3C1F159ACCAA00E42730 /* 2048triangle.jpg */,
 				B23E3C20159ACCAA00E42730 /* 2048weave.jpg */,
-				B21A13051596A48D005DFBA0 /* music_texture_sheet.jpg */,
-				B2E8B5441570496A00318FFC /* bounce_lite_icon57.png */,
-				B2E8B5451570496A00318FFC /* bounce_lite_icon72.png */,
-				B2E8B5461570496A00318FFC /* bounce_lite_icon114.png */,
-				B2E8B5471570496A00318FFC /* bounce_lite_icon144.png */,
-				B2E8B53C157047DD00318FFC /* bounce_icon57.png */,
-				B2E8B53D157047DD00318FFC /* bounce_icon72.png */,
-				B2E8B53E157047DD00318FFC /* bounce_icon114.png */,
-				B2E8B53F157047DD00318FFC /* bounce_icon144.png */,
 				B280573A15647C9300C2E7A2 /* black.jpg */,
 				B280573B15647C9300C2E7A2 /* white.jpg */,
-				28EC4C5811D54ECE0027AA9F /* ParticleSystemViewController.xib */,
-				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
-				8D1107310486CEB800E47090 /* Bounce-Info.plist */,
+				8D1107310486CEB800E47090 /* Bounce2Notes-Info.plist */,
 				B23F134415703AEF00FE4D09 /* Bounce Lite-Info.plist */,
 			);
 			name = Resources;
@@ -1311,6 +1280,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B21F02E315F257DF00339071 /* Accelerate.framework */,
 				B23CEDC715D2F9B90078CFA4 /* libChipmunk-iPhone.a */,
 				B2D07350155DAA4F0001DF70 /* AudioToolbox.framework */,
 				B21A93BC1559954A002D2BEE /* AVFoundation.framework */,
@@ -1322,6 +1292,82 @@
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B23324AA163DBC0B00F7E185 /* Config Pane Simulations */ = {
+			isa = PBXGroup;
+			children = (
+				B27E3F62159F766C001B86E3 /* BounceConfigurationObject.h */,
+				B27E3F63159F766C001B86E3 /* BounceConfigurationObject.mm */,
+				B23E3C7F159B543500E42730 /* BounceConfigurationSimulation.h */,
+				B23E3C80159B543500E42730 /* BounceConfigurationSimulation.mm */,
+				B2D08BA21638B8CB00C088CB /* BounceHowToSimulation.h */,
+				B2D08BA31638B8CC00C088CB /* BounceHowToSimulation.mm */,
+				B2A96FFD15C873230020DEA8 /* BounceMusicConfigurationSimulation.h */,
+				B2A96FFE15C873240020DEA8 /* BounceMusicConfigurationSimulation.mm */,
+				B21F02EA15F4228D00339071 /* BounceSaveLoadSimulation.h */,
+				B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */,
+				B290B2D115BE271C00CB7DC6 /* BounceSettingsSimulation.h */,
+				B290B2D215BE271D00CB7DC6 /* BounceSettingsSimulation.mm */,
+				B23324AE163DC1FB00F7E185 /* BounceContributorsSimulation.h */,
+				B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */,
+			);
+			name = "Config Pane Simulations";
+			sourceTree = "<group>";
+		};
+		B23324AB163DBF2600F7E185 /* Bounce Singletons */ = {
+			isa = PBXGroup;
+			children = (
+				B23CEE8B15DACAD60078CFA4 /* BounceNoteManager.h */,
+				B23CEE8C15DACAD70078CFA4 /* BounceNoteManager.m */,
+				B2F1D6C0158FE5E100EE06B9 /* BounceConstants.h */,
+				B2F1D6C1158FE5E100EE06B9 /* BounceConstants.m */,
+				B278359E15E04AB900A0C0C6 /* BounceSettings.h */,
+				B278359F15E04AB900A0C0C6 /* BounceSettings.mm */,
+				B256656E15F66B1F0077F496 /* BounceFileManager.h */,
+				B256656F15F66B200077F496 /* BounceFileManager.mm */,
+			);
+			name = "Bounce Singletons";
+			sourceTree = "<group>";
+		};
+		B23324AC163DBF5200F7E185 /* FSA Singletons */ = {
+			isa = PBXGroup;
+			children = (
+				B21A132615991965005DFBA0 /* FSAShaderManager.h */,
+				B21A132915991987005DFBA0 /* FSAShaderManager.m */,
+				B2E54A10158CC462009880FE /* FSATextureManager.h */,
+				B2E54A11158CC462009880FE /* FSATextureManager.mm */,
+				B23CEDF015D802B00078CFA4 /* FSABufferManager.h */,
+				B23CEDF115D802B10078CFA4 /* FSABufferManager.m */,
+				B2A9700815D1B1510020DEA8 /* FSABackgroundQueue.h */,
+				B2A9700915D1B1530020DEA8 /* FSABackgroundQueue.m */,
+				B23E3C8B159BC12800E42730 /* FSASoundManager.h */,
+				B23E3C8C159BC14300E42730 /* FSASoundManager.m */,
+			);
+			name = "FSA Singletons";
+			sourceTree = "<group>";
+		};
+		B23324AD163DBF9200F7E185 /* Bounce UI Elements */ = {
+			isa = PBXGroup;
+			children = (
+				B2415A0815AE0AEF00E8AB74 /* BounceConfigurationTab.h */,
+				B2415A0915AE0AF000E8AB74 /* BounceConfigurationTab.mm */,
+				B23E3C87159B8B8C00E42730 /* BounceConfigurationPane.h */,
+				B23E3C88159B8B8D00E42730 /* BounceConfigurationPane.mm */,
+				B2F433E41603F0F600AF62DE /* BounceSaveLoadPane.h */,
+				B2F433E51603F10500AF62DE /* BounceSaveLoadPane.mm */,
+				B27835A615E1540700A0C0C6 /* BounceButton.h */,
+				B27835A715E1540800A0C0C6 /* BounceButton.mm */,
+				B2F433D015FA8A4C00AF62DE /* BouncePane.h */,
+				B2F433D115FA8A4D00AF62DE /* BouncePane.mm */,
+				B290B2D515BE27CD00CB7DC6 /* BounceSlider.h */,
+				B290B2D615BE27CE00CB7DC6 /* BounceSlider.mm */,
+				B2F433D815FD29F500AF62DE /* AnchoredBounceObject.h */,
+				B2F433D915FD29F900AF62DE /* AnchoredBounceObject.mm */,
+				B2F433CC15F9758000AF62DE /* BouncePages.h */,
+				B2F433CD15F9758000AF62DE /* BouncePages.mm */,
+			);
+			name = "Bounce UI Elements";
 			sourceTree = "<group>";
 		};
 		B23CEDCA15D6B8740078CFA4 /* chipmunk */ = {
@@ -1423,9 +1469,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Bounce */ = {
+		1D6058900D05DD3D006BFB54 /* Bounce2Notes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bounce" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bounce2Notes" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -1435,9 +1481,9 @@
 			);
 			dependencies = (
 			);
-			name = Bounce;
+			name = Bounce2Notes;
 			productName = ParticleSystem;
-			productReference = 1D6058910D05DD3D006BFB54 /* Bounce.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* Bounce 2: Notes.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B23F12E815703AEF00FE4D09 /* Bounce Lite */ = {
@@ -1479,7 +1525,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Bounce */,
+				1D6058900D05DD3D006BFB54 /* Bounce2Notes */,
 				B23F12E815703AEF00FE4D09 /* Bounce Lite */,
 			);
 		};
@@ -1509,18 +1555,8 @@
 				B29630CA15472C46009B483D /* BallShader.vsh in Resources */,
 				2514C27B10084DCA00A42282 /* Shader.fsh in Resources */,
 				2514C27C10084DCA00A42282 /* Shader.vsh in Resources */,
-				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				28EC4C5A11D54ECE0027AA9F /* ParticleSystemViewController.xib in Resources */,
 				B280573C15647C9300C2E7A2 /* black.jpg in Resources */,
 				B280573D15647C9300C2E7A2 /* white.jpg in Resources */,
-				B2E8B540157047DD00318FFC /* bounce_icon57.png in Resources */,
-				B2E8B541157047DD00318FFC /* bounce_icon72.png in Resources */,
-				B2E8B542157047DD00318FFC /* bounce_icon114.png in Resources */,
-				B2E8B543157047DD00318FFC /* bounce_icon144.png in Resources */,
-				B2E8B5481570496A00318FFC /* bounce_lite_icon57.png in Resources */,
-				B2E8B5491570496A00318FFC /* bounce_lite_icon72.png in Resources */,
-				B2E8B54A1570496A00318FFC /* bounce_lite_icon114.png in Resources */,
-				B2E8B54B1570496A00318FFC /* bounce_lite_icon144.png in Resources */,
 				B2E8B574157060BE00318FFC /* Default-Portrait~ipad.png in Resources */,
 				B2E8B575157060C500318FFC /* Default-Portrait@2x~ipad.png in Resources */,
 				B2E8B576157060CD00318FFC /* Default.png in Resources */,
@@ -1530,7 +1566,6 @@
 				B28AE1E61583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
 				B2F1D6C5158FEF6400EE06B9 /* SingleObjectShader.fsh in Resources */,
 				B2F1D6C8158FEF7700EE06B9 /* SingleObjectShader.vsh in Resources */,
-				B21A13061596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */,
 				B23E3C21159ACCAA00E42730 /* 512ball.jpg in Resources */,
 				B23E3C23159ACCAA00E42730 /* 512checkered.jpg in Resources */,
 				B23E3C25159ACCAA00E42730 /* 512pentagon.jpg in Resources */,
@@ -1576,9 +1611,6 @@
 				B23E3C75159ACCAA00E42730 /* 2048stripes.jpg in Resources */,
 				B23E3C77159ACCAA00E42730 /* 2048triangle.jpg in Resources */,
 				B23E3C79159ACCAA00E42730 /* 2048weave.jpg in Resources */,
-				B2415A1315AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */,
-				B2415A1515AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */,
-				B2415A1715AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */,
 				B2415A8E15BB8A1B00E8AB74 /* 512glow.jpg in Resources */,
 				B2415A9015BB8A1B00E8AB74 /* 1024glow.jpg in Resources */,
 				B2415A9215BB8A1B00E8AB74 /* 2048glow.jpg in Resources */,
@@ -1690,7 +1722,18 @@
 				B2F433EB16040E6500AF62DE /* bounce2_icon114.png in Resources */,
 				B2F433ED16040E7600AF62DE /* bounce2_icon72.png in Resources */,
 				B2F433EF16040E7D00AF62DE /* bounce2_icon144.png in Resources */,
-				B217CBC21607A7E7001A57EC /* View.xib in Resources */,
+				B2441E281631ACAB008D6B7D /* Default-568h@2x.png in Resources */,
+				B2441E2B16335719008D6B7D /* 128locked.jpg in Resources */,
+				B2441E2D16335719008D6B7D /* 128unlocked.jpg in Resources */,
+				B2D08B9E1637036F00C088CB /* 256locked.jpg in Resources */,
+				B2D08BA01637036F00C088CB /* 256unlocked.jpg in Resources */,
+				B23324F41640921800F7E185 /* Saves in Resources */,
+				B2D08C721641BC4F00129AB2 /* MainWindow.xib in Resources */,
+				B2D08C751641D55700129AB2 /* ParticleSystemViewController.xib in Resources */,
+				B2D08C781643128400129AB2 /* gray.jpg in Resources */,
+				B2D08C7D1644913900129AB2 /* 256bounce2notes.png in Resources */,
+				B2D08C7F1644913900129AB2 /* 512bounce2notes.png in Resources */,
+				B2D08C811644913900129AB2 /* 1024bounce2notes.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1717,15 +1760,8 @@
 				B23F12ED15703AEF00FE4D09 /* BallShader.vsh in Resources */,
 				B23F12EE15703AEF00FE4D09 /* Shader.fsh in Resources */,
 				B23F12EF15703AEF00FE4D09 /* Shader.vsh in Resources */,
-				B23F12F015703AEF00FE4D09 /* MainWindow.xib in Resources */,
-				B23F12F115703AEF00FE4D09 /* ParticleSystemViewController.xib in Resources */,
 				B23F130115703AEF00FE4D09 /* black.jpg in Resources */,
 				B23F130215703AEF00FE4D09 /* white.jpg in Resources */,
-				B2E8B54C1570497C00318FFC /* bounce_icon57.png in Resources */,
-				B2E8B54D1570498100318FFC /* bounce_lite_icon57.png in Resources */,
-				B2E8B54E1570498900318FFC /* bounce_lite_icon114.png in Resources */,
-				B2E8B54F1570498E00318FFC /* bounce_lite_icon72.png in Resources */,
-				B2E8B5501570499000318FFC /* bounce_lite_icon144.png in Resources */,
 				B2E8B56D157060A000318FFC /* Default.png in Resources */,
 				B2E8B56F157060A600318FFC /* Default@2x.png in Resources */,
 				B2E8B571157060AD00318FFC /* Default-Portrait~ipad.png in Resources */,
@@ -1735,7 +1771,6 @@
 				B28AE1E71583B1E300C6487A /* BounceKillBoxShader.fsh in Resources */,
 				B2F1D6C6158FEF6400EE06B9 /* SingleObjectShader.fsh in Resources */,
 				B2F1D6C9158FEF7700EE06B9 /* SingleObjectShader.vsh in Resources */,
-				B21A13071596A48D005DFBA0 /* music_texture_sheet.jpg in Resources */,
 				B23E3C22159ACCAA00E42730 /* 512ball.jpg in Resources */,
 				B23E3C24159ACCAA00E42730 /* 512checkered.jpg in Resources */,
 				B23E3C26159ACCAA00E42730 /* 512pentagon.jpg in Resources */,
@@ -1781,9 +1816,6 @@
 				B23E3C76159ACCAA00E42730 /* 2048stripes.jpg in Resources */,
 				B23E3C78159ACCAA00E42730 /* 2048triangle.jpg in Resources */,
 				B23E3C7A159ACCAA00E42730 /* 2048weave.jpg in Resources */,
-				B2415A1415AF9CFD00E8AB74 /* 512music_texture_sheet.jpg in Resources */,
-				B2415A1615AF9CFD00E8AB74 /* 1024music_texture_sheet.jpg in Resources */,
-				B2415A1815AF9CFD00E8AB74 /* 2048music_texture_sheet.jpg in Resources */,
 				B2415A8F15BB8A1B00E8AB74 /* 512glow.jpg in Resources */,
 				B2415A9115BB8A1B00E8AB74 /* 1024glow.jpg in Resources */,
 				B2415A9315BB8A1B00E8AB74 /* 2048glow.jpg in Resources */,
@@ -1891,7 +1923,17 @@
 				B23CEEA815DB6C820078CFA4 /* 1024stationary_note.png in Resources */,
 				B23CEEAA15DB6C820078CFA4 /* 2048note.jpg in Resources */,
 				B23CEEAC15DB6C820078CFA4 /* 2048stationary_note.png in Resources */,
-				B217CBC31607A7E7001A57EC /* View.xib in Resources */,
+				B2441E2C16335719008D6B7D /* 128locked.jpg in Resources */,
+				B2441E2E16335719008D6B7D /* 128unlocked.jpg in Resources */,
+				B2D08B9F1637036F00C088CB /* 256locked.jpg in Resources */,
+				B2D08BA11637036F00C088CB /* 256unlocked.jpg in Resources */,
+				B23324F51640921800F7E185 /* Saves in Resources */,
+				B2D08C731641BC4F00129AB2 /* MainWindow.xib in Resources */,
+				B2D08C761641D55700129AB2 /* ParticleSystemViewController.xib in Resources */,
+				B2D08C791643128400129AB2 /* gray.jpg in Resources */,
+				B2D08C7E1644913900129AB2 /* 256bounce2notes.png in Resources */,
+				B2D08C801644913900129AB2 /* 512bounce2notes.png in Resources */,
+				B2D08C821644913900129AB2 /* 1024bounce2notes.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1930,7 +1972,7 @@
 				B23E3C95159BE30900E42730 /* BounceSound.mm in Sources */,
 				B27E3F64159F766C001B86E3 /* BounceConfigurationObject.mm in Sources */,
 				B2AFC61215A234D500D06591 /* BounceRenderable.mm in Sources */,
-				B24159F415A3879F00E8AB74 /* FSATexture.m in Sources */,
+				B24159F415A3879F00E8AB74 /* FSATexture.mm in Sources */,
 				B2415A0A15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */,
 				B2415A7315BB749500E8AB74 /* FSACurve.mm in Sources */,
 				B2415A7715BB78F000E8AB74 /* FSAGlowyGestureCurve.mm in Sources */,
@@ -1959,6 +2001,10 @@
 				B2F433DE1602149D00AF62DE /* BounceMusicButton.mm in Sources */,
 				B2F433E21602187B00AF62DE /* BounceKeyboard.mm in Sources */,
 				B2F433E61603F10D00AF62DE /* BounceSaveLoadPane.mm in Sources */,
+				B2D08B9A163604D200C088CB /* BounceLock.mm in Sources */,
+				B2D08BA41638B8CE00C088CB /* BounceHowToSimulation.mm in Sources */,
+				B23324B0163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */,
+				B23324B4164053BD00F7E185 /* BounceLoadingObject.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1994,7 +2040,7 @@
 				B23E3C96159BE30900E42730 /* BounceSound.mm in Sources */,
 				B27E3F65159F766C001B86E3 /* BounceConfigurationObject.mm in Sources */,
 				B2AFC61315A234D500D06591 /* BounceRenderable.mm in Sources */,
-				B24159F515A3879F00E8AB74 /* FSATexture.m in Sources */,
+				B24159F515A3879F00E8AB74 /* FSATexture.mm in Sources */,
 				B2415A0B15AE0AF100E8AB74 /* BounceConfigurationTab.mm in Sources */,
 				B2415A7415BB749500E8AB74 /* FSACurve.mm in Sources */,
 				B2415A7815BB78F000E8AB74 /* FSAGlowyGestureCurve.mm in Sources */,
@@ -2023,6 +2069,10 @@
 				B2F433DF1602149D00AF62DE /* BounceMusicButton.mm in Sources */,
 				B2F433E31602187B00AF62DE /* BounceKeyboard.mm in Sources */,
 				B2F433E71603F10D00AF62DE /* BounceSaveLoadPane.mm in Sources */,
+				B2D08B9B163604D200C088CB /* BounceLock.mm in Sources */,
+				B2D08BA51638B8CE00C088CB /* BounceHowToSimulation.mm in Sources */,
+				B23324B1163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */,
+				B23324B5164053BD00F7E185 /* BounceLoadingObject.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2049,10 +2099,10 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
-				INFOPLIST_FILE = "Bounce-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
-				PRODUCT_NAME = Bounce;
+				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2068,8 +2118,8 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 					armv6,
 				);
-				CODE_SIGN_IDENTITY = "iPhone Distribution: John Allwine";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: John Allwine";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
@@ -2079,12 +2129,12 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
-				INFOPLIST_FILE = "Bounce-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
-				PRODUCT_NAME = Bounce;
-				PROVISIONING_PROFILE = "E711CB22-FC33-49CE-9817-D9B5267ECC96";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "E711CB22-FC33-49CE-9817-D9B5267ECC96";
+				PRODUCT_NAME = "Bounce 2: Notes";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2128,8 +2178,8 @@
 					"$(ARCHS_STANDARD_32_BIT)",
 					armv6,
 				);
-				CODE_SIGN_IDENTITY = "iPhone Distribution: John Allwine";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: John Allwine";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
@@ -2139,12 +2189,12 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
-				INFOPLIST_FILE = "Bounce-Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
-				PRODUCT_NAME = Bounce;
-				PROVISIONING_PROFILE = "AA9FC69F-4C71-44AF-9417-626D49A4EF7D";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AA9FC69F-4C71-44AF-9417-626D49A4EF7D";
+				PRODUCT_NAME = "Bounce 2: Notes";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SKIP_INSTALL = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2300,7 +2350,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bounce" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Bounce2Notes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,

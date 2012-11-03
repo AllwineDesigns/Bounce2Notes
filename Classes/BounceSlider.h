@@ -72,6 +72,7 @@
 -(id)initWithLabels:(NSArray*)labels values:(NSArray*)values index:(unsigned int)index;
 -(id)initContinuousWithLabels:(NSArray*)labels values:(NSArray*)values index:(unsigned int)index;
 -(void)addToSimulation:(BounceSimulation*)simulation;
+-(void)removeFromSimulation;
 -(void)draw;
 -(void)slideTo:(const vec2&)loc;
 -(void)step: (float)dt;

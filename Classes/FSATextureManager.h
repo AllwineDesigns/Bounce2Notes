@@ -23,6 +23,7 @@ using namespace fsa;
     int largeTexturePrefix;
     
     int startTextTextureSize;
+    int _lastTextTextureId;
     
     NSTimeInterval lastMemoryWarning;
 }
@@ -40,10 +41,13 @@ using namespace fsa;
 
 -(FSATexture*)getTextTexture:(NSString*)name;
 
-
+-(FSATexture*)temporaryTexture:(NSString*)name;
+-(FSATexture*)getNewTextTexture;
 -(FSATexture*)getTexture: (NSString*)name;
+-(void)addTexture: (NSString*)name forKey:(NSString*)key;
 -(void)addLargeTexture: (NSString*)name;
 -(void)addSmartTexture: (NSString*)name;
+-(void)addTextTexture:(NSString*)name;
 -(void)memoryWarning;
 
 +(FSATextureManager*)instance;

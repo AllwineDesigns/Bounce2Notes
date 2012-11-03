@@ -12,6 +12,14 @@ static BounceFileManager* bounceFileManager;
 
 @implementation BounceFileManager
 
+-(NSString*)pathToBuiltInFile:(NSString*)file {
+    NSString *dir = [[NSBundle mainBundle] resourcePath];
+    dir = [dir stringByAppendingPathComponent:@"Saves"];
+    NSString *filePath = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.bounce", file]];
+    
+    return filePath;
+}
+
 -(NSString*)pathToFile:(NSString*)file {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
@@ -20,37 +28,50 @@ static BounceFileManager* bounceFileManager;
     return filePath;
 }
 
+-(NSArray*)allBuiltInFiles {
+    NSString *dir = [[NSBundle mainBundle] resourcePath];
+    dir = [dir stringByAppendingPathComponent:@"Saves"];
+    
+    NSArray *longfiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:dir error:nil];
+    
+    NSMutableArray *files = [[NSMutableArray alloc] initWithCapacity:[longfiles count]];
+    for(NSString* longfile in longfiles) {
+        [files addObject:[longfile stringByReplacingOccurrencesOfString:@".bounce" withString:@""]];
+    }
+    
+    return [files autorelease];
+    
+}
+
 -(NSArray*)allFiles {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     
     NSArray *longfiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectory error:nil];
     
-    NSMutableArray *files = [[NSMutableArray alloc] initWithCapacity:[paths count]];
+    NSMutableArray *files = [[NSMutableArray alloc] initWithCapacity:[longfiles count]];
     for(NSString* longfile in longfiles) {
         [files addObject:[longfile stringByReplacingOccurrencesOfString:@".bounce" withString:@""]];
     }
         
-    return files;
+    return [files autorelease];
     
 }
 -(void)deleteFile:(NSString*)file {
     [[NSFileManager defaultManager] removeItemAtPath:[self pathToFile:file] error:nil];
     
 }
+-(BOOL)builtInFileExists:(NSString*)file {
+    return [[NSFileManager defaultManager] fileExistsAtPath:[self pathToBuiltInFile:file]];
+
+}
 -(BOOL)fileExists:(NSString*)file {
     return [[NSFileManager defaultManager] fileExistsAtPath:[self pathToFile:file]];
     
 }
--(BounceSavedSimulation*)loadBuiltInFile:(NSString*)file {
-}
--(BounceSavedSimulation*)loadFile:(NSString*)file {
-    if(![self fileExists:file]) {
-        return nil;
-    }
-    
+-(BounceSavedSimulation*)loadSimulationWithPath:(NSString*)path {
     @try {
-        BounceSavedSimulation *load = [NSKeyedUnarchiver unarchiveObjectWithFile:[self pathToFile:file]];
+        BounceSavedSimulation *load = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
         
         if(load.simulation && load.settings && load.majorVersion == BOUNCE_SAVED_MAJOR_VERSION &&
            load.minorVersion == BOUNCE_SAVED_MINOR_VERSION) {
@@ -60,8 +81,21 @@ static BounceFileManager* bounceFileManager;
     @catch (NSException *exception) {
         NSLog(@"exception happened during load: %@\n", exception);
     }
-
     return nil;
+}
+-(BounceSavedSimulation*)loadBuiltInFile:(NSString*)file {
+    if(![self builtInFileExists:file]) {
+        return nil;
+    }
+    
+    return [self loadSimulationWithPath:[self pathToBuiltInFile:file]];
+}
+-(BounceSavedSimulation*)loadFile:(NSString*)file {
+    if(![self fileExists:file]) {
+        return nil;
+    }
+    
+    return [self loadSimulationWithPath:[self pathToFile:file]];
 }
 -(void)save:(MainBounceSimulation*)sim withSettings:(BounceSettings *)settings toFile:(NSString *)file {
     BounceSavedSimulation *saved = [[BounceSavedSimulation alloc] initWithBounceSimulation:sim withSettings:settings];

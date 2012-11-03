@@ -35,7 +35,7 @@ void main()
     
     col = t*color+(1.-sa)*r*color*patColor+color*s*(patColor+vec4(.2,.2,.2,0.));
     
-    col.a = r*patColor.a;
+    col.a = r*patColor.a*color.a;
     
     gl_FragColor = col;
 }

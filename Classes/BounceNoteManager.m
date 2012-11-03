@@ -327,7 +327,11 @@ static BounceNoteManager* bounceNoteManager;
     }
     intervalIndex = intervalIndex%7;
     
-    return [_sounds objectAtIndex:(_intervals[intervalIndex]+keyIndex+12*(octave-2+index/7))];
+    int arrayIndex = (_intervals[intervalIndex]+keyIndex+12*(octave-2+index/7));
+    if(arrayIndex >= [_sounds count] || arrayIndex < 0) {
+        return [[FSASoundManager instance] getSound:@"rest"];
+    }
+    return [_sounds objectAtIndex:arrayIndex];
 }
 
 -(BounceNote*)getNote:(int)index {

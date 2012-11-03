@@ -358,9 +358,13 @@ void audioRouteChangeListenerCallback (
 - (void) setupSoundList {
     NSString *device = machineName();
     int max_sounds = 15;
-    if([device isEqualToString:@"iPhone2,1"]) {
+    if([device hasPrefix:@"iPhone2"]) {
         max_sounds = 10;
-    } else if([device isEqualToString:@"iPad3,3"]) {
+    } else if([device hasPrefix:@"iPad3"]) {
+        max_sounds = 40;
+    } else if([device hasPrefix:@"iPad2,5"]) {
+        max_sounds = 40;
+    } else if([device hasPrefix:@"iPhone5"]) {
         max_sounds = 40;
     }
     

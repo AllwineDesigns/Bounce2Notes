@@ -112,7 +112,7 @@
             curLength += segmentLength;
             t = tFromLength(curLength, &lengths[0], lengths.size());
             
-            vec2 pt = pointAt(&_points[0], _points.size(), t);
+           // vec2 pt = pointAt(&_points[0], _points.size(), t);
            // if((pt-_resampledPoints[_resampledPoints.size()-1]).length() >= segmentLength) {
             _resampledPoints.push_back(pointAt(&_points[0], _points.size(), t));
             _resampledTimes.push_back(valueAt(&_times[0], _times.size(), t));

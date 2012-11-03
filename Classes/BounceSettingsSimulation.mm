@@ -15,6 +15,7 @@
 #import "BounceShapeGenerator.h"
 #import "BounceConfigurationObject.h"
 #import "BounceSizeGenerator.h"
+#import "FSAUtil.h"
 
 @implementation BounceSettingsSimulation
 
@@ -54,7 +55,10 @@
     slider.track.size = dimensions.width*.05;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"major_minor"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"major_minor"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     
     slider.delegate = self;
     slider.selector = @selector(changedMusicSlider:);
@@ -76,7 +80,10 @@
     slider.track.size = dimensions.width*.05;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"play_mode"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"play_mode"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     
     slider.delegate = self;
     slider.selector = @selector(changedMusicSlider:);
@@ -103,7 +110,9 @@
     slider.track.size = dimensions.width*.375;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"octave"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"octave"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     
     slider.delegate = self;
     slider.selector = @selector(changedMusicSlider:);
@@ -141,7 +150,10 @@
     slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"friction"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"friction"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     slider.selector = @selector(changedFrictionSlider:);
     slider.padding = .07*dimensions.width;
@@ -174,7 +186,10 @@
     slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"vel_limit"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"vel_limit"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     slider.selector = @selector(changedVelLimitSlider:);
     slider.padding = .07*dimensions.width;
@@ -205,7 +220,10 @@
     slider.track.size = .4*dimensions.width;
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"damping"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"damping"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     slider.selector = @selector(changedDampingSlider:);
     slider.padding = .07*dimensions.width;
@@ -340,13 +358,29 @@
     CGSize dimensions = self.arena.dimensions;
         
     NSArray *labels = [NSArray arrayWithObjects:@"Teeny", @"Tiny", @"Small", @"Medium", @"Large", @"Random", nil];
-    NSArray *values = [NSArray arrayWithObjects:[[BounceSizeGenerator alloc] initWithSize:.03],
-                       [[BounceSizeGenerator alloc] initWithSize:.05],
-                       [[BounceSizeGenerator alloc] initWithSize:.1],
-                       [[BounceSizeGenerator alloc] initWithSize:.15],
-                       [[BounceSizeGenerator alloc] initWithSize:.2],
-                       [[BounceRandomSizeGenerator alloc] init],
-                       nil];
+    NSArray *values;
+
+    
+    NSString *device = machineName();
+    if([device hasPrefix:@"iPad"]) {
+       values = [NSArray arrayWithObjects:[[BounceSizeGenerator alloc] initWithSize:.03],
+           [[BounceSizeGenerator alloc] initWithSize:.05],
+           [[BounceSizeGenerator alloc] initWithSize:.1],
+           [[BounceSizeGenerator alloc] initWithSize:.15],
+           [[BounceSizeGenerator alloc] initWithSize:.2],
+           [[BounceRandomSizeGenerator alloc] init],
+           nil];
+    } else {
+        float mult = 1.5;
+        values = [NSArray arrayWithObjects:[[BounceSizeGenerator alloc] initWithSize:mult*.03],
+                  [[BounceSizeGenerator alloc] initWithSize:mult*.05],
+                  [[BounceSizeGenerator alloc] initWithSize:mult*.1],
+                  [[BounceSizeGenerator alloc] initWithSize:mult*.15],
+                  [[BounceSizeGenerator alloc] initWithSize:mult*.2],
+                  [[BounceRandomSizeGenerator alloc] init],
+                  nil];
+
+    }
     
     for(NSObject *v in values) {
         [v release];
@@ -395,7 +429,10 @@
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.padding = .015*dimensions.width;
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"all_new"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"all_new"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     
     [slider addToSimulation:self];
@@ -404,7 +441,7 @@
 }
 
 -(void)changedAffectsAllObjectsSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     [BounceSettings instance].affectAllObjects = [slider.value boolValue];
     /*
     if([slider.value boolValue] && !_updatingSettings) {
@@ -446,7 +483,10 @@
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.padding = .015*dimensions.width;
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"paint_mode"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"paint_mode"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     slider.selector = @selector(changedPaintModeSlider:);
     
@@ -476,7 +516,10 @@
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.padding = .015*dimensions.width;
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"spin_mode"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"spin_mode"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     slider.selector = @selector(changedGrabRotatesSlider:);
     
@@ -506,7 +549,10 @@
     slider.track.sound = [[BounceNoteManager instance] getRest];
     
     slider.padding = .015*dimensions.width;
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [[FSATextureManager instance] addTextTexture:@"pane_locked"];
+    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"pane_locked"];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
+
     slider.delegate = self;
     slider.selector = @selector(changedPaneUnlockedSlider:);
     
@@ -838,8 +884,8 @@
         _bouncinessSlider.track.isStationary = NO;
 
         _bouncinessSlider.track.sound = [[BounceNoteManager instance] getRest];
-        
-        _bouncinessSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:_bouncinessSlider.label];
+        [[FSATextureManager instance] addTextTexture:@"bounciness"];
+        _bouncinessSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"bounciness"];
 
         _bouncinessSlider.delegate = self;
         _bouncinessSlider.selector = @selector(changedBouncinessSlider:);
@@ -871,9 +917,8 @@
         _gravitySlider.track.sound = [[BounceNoteManager instance] getRest];
         _gravitySlider.track.isStationary = NO;
 
-        
-        _gravitySlider.handle.patternTexture = [[FSATextureManager instance] getTexture:_gravitySlider.label];
-
+        [[FSATextureManager instance] addTextTexture:@"gravity"];
+        _gravitySlider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"gravity"];
         
         _gravitySlider.delegate = self;
         _gravitySlider.selector = @selector(changedGravitySlider:);
@@ -905,7 +950,7 @@
         _pageSlider = [[BounceSlider alloc] initWithLabels:pageLabels index:0];
         _pageSlider.handle.bounceShape = BOUNCE_CAPSULE;
         _pageSlider.handle.size = .04*dimensions.width;
-        _pageSlider.handle.secondarySize = .01;
+        _pageSlider.handle.secondarySize = .04*[[BounceConstants instance] unitsPerInch];
         _pageSlider.handle.sound = [[BounceNoteManager instance] getRest];
         _pageSlider.handle.patternTexture = [[FSATextureManager instance] getTexture:@"white.jpg"];
         _pageSlider.handle.isStationary = NO;
@@ -916,7 +961,7 @@
         
         _pageSlider.track.position = vec2(-2,0);
         _pageSlider.track.size = .35*dimensions.width;
-        _pageSlider.track.secondarySize = .015;
+        _pageSlider.track.secondarySize = _pageSlider.handle.secondarySize*1.2;
         
         _pageSlider.track.sound = [[BounceNoteManager instance] getRest];
         _pageSlider.track.patternTexture = [[FSATextureManager instance] getTexture:@"black.jpg"];
@@ -927,8 +972,8 @@
         _pageSlider.delegate = self;
         _pageSlider.selector = @selector(changedPageSlider:);
         [_pageSlider addToSimulation:self];
-        [_pageSlider.handle setLayers:1];
-        [_pageSlider.track setLayers:1];
+        [_pageSlider.handle setLayers:CP_ALL_LAYERS];
+        [_pageSlider.track setLayers:CP_ALL_LAYERS];
 
     }
     
@@ -1060,7 +1105,7 @@
     }
     [_simulation.arena setBounciness:[slider.value floatValue]];
   //  [_pane setBounciness:[slider.value floatValue]];
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
     }
@@ -1072,7 +1117,7 @@
         [_simulation setGravityScale:[slider.value floatValue]];
     }
  //   [_pane setGravityScale:[slider.value floatValue]];
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
     }
@@ -1097,6 +1142,7 @@
     BounceShapeGenerator* shapeGen = slider.value;
     [BounceSettings instance].bounceShapeGenerator = shapeGen;
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    
     slider.handle.bounceShape = [shapeGen bounceShape];
     _patternsSlider.handle.bounceShape = [shapeGen bounceShape];
     _colorSlider.handle.bounceShape = [shapeGen bounceShape];
@@ -1113,7 +1159,7 @@
         [_simulation setDamping:[slider.value floatValue]];
     }
    // [_pane setDamping:[slider.value floatValue]];
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
     }
@@ -1125,7 +1171,7 @@
         [_simulation setVelocityLimit:[slider.value floatValue]];
     }
   //  [_pane setVelocityLimit:[slider.value floatValue]];
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
     } 
@@ -1138,7 +1184,7 @@
     }
     [_simulation.arena setFriction:[slider.value floatValue]];
    // [_pane setFriction:[slider.value floatValue]];
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     if(slider.lastLabel != slider.label) {
         [slider.handle.renderable burst:5];
     } 
@@ -1147,7 +1193,7 @@
 -(void)changedColorSlider:(BounceSlider *)slider {
     [BounceSettings instance].colorGenerator = slider.value;
     slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
-    [slider.handle.renderable burst:5]; 
+    [slider.handle.renderable burst:5];
     [_pane randomizeColor];
     if([BounceSettings instance].affectAllObjects && !_updatingSettings) {
         [_simulation randomizeColor];
@@ -1175,6 +1221,8 @@
     [_keySlider setVelocity: vel];
     [_tonalitySlider setVelocity:vel];
     [_modeSlider setVelocity:vel];
+    [_pageSlider.handle setVelocity:vel];
+    [_pageSlider.track setVelocity:vel];
 }
 
 -(void)prepare {
@@ -1206,15 +1254,16 @@
 }
 
 -(void)changedMusicSlider:(BounceSlider *)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
     
     BounceNoteManager *noteManager = [BounceNoteManager instance];
     [slider.handle.renderable burst:5];
     
     if(slider == _keySlider) {
+        slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
         noteManager.key = slider.label;
         [self updateConfigObjects];
     } else if(slider == _tonalitySlider) {
+        [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
         if([slider.label isEqualToString:@"Major"]) {
             [noteManager useMajorIntervals];
             NSArray *labels = [NSArray arrayWithObjects:@"Cflat", @"Gflat", @"Dflat", @"Aflat", @"Eflat", @"Bflat", @"F", @"C", @"G", @"D", @"A", @"E", @"B", @"Fsharp", @"Csharp", nil];
@@ -1226,8 +1275,10 @@
             [_keySlider setLabels:labels];
         }
     } else if(slider == _modeSlider) {
+        [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
         [BounceSettings instance].playMode = [slider.value isEqualToString:@"Play Mode"];
     } else if(slider == _octaveSlider) {
+        [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
         noteManager.octave = [slider.value unsignedIntValue];
         [self updateConfigObjects];  
     }
@@ -1239,17 +1290,17 @@
 }
 
 -(void)changedPaintModeSlider:(BounceSlider*)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     [BounceSettings instance].paintMode = [slider.value boolValue];
 }
 
 -(void)changedGrabRotatesSlider:(BounceSlider*)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     [BounceSettings instance].grabRotates = [slider.value boolValue];
 }
 
 -(void)changedPaneUnlockedSlider:(BounceSlider*)slider {
-    slider.handle.patternTexture = [[FSATextureManager instance] getTexture:slider.label];
+    [(FSATextTexture*)slider.handle.patternTexture setText:slider.label];
     [BounceSettings instance].paneUnlocked = [slider.value boolValue];
     
     if([slider.value boolValue]) {

@@ -18,6 +18,7 @@ typedef struct {
     vec2 pos;
     vec2 dir;
     float angle;
+    float length;
 } BouncePaneSideInfo;
 
 typedef enum {
@@ -164,3 +165,10 @@ typedef enum {
 -(void)draw;
 
 @end
+
+float getBouncePaneAngle(BouncePaneOrientation orientation);
+BouncePaneOrientation getBouncePaneOrientation();
+void updateBounceOrientation();
+void updateBounceOrientation(UIInterfaceOrientation orientation);
+
+BouncePaneSideInfo getBouncePaneSideInfo(BouncePaneSide side, BouncePaneOrientation orientation);
