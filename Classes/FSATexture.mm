@@ -305,6 +305,9 @@ typedef struct {
     unsigned int _width;
     unsigned int _height;
     
+    float _fontSize;
+    NSString *_fontName;
+    
     unsigned int _startTextTextureSize;
 }
 
@@ -314,10 +317,13 @@ typedef struct {
 @synthesize height = _height;
 @synthesize text = _text;
 
--(id)initWithText:(NSString *)text forTexture:(FSATextTexture *)texture {
+-(id)initWithText:(NSString *)text fontSize:(float)fontSize fontName:(NSString*)fontName forTexture:(FSATextTexture *)texture {
     self = [super init];
     
     if(self) {
+        _fontSize = fontSize;
+        _fontName = [fontName copy];
+        
         self.texture = texture;
         _text = [text retain];
         
@@ -349,9 +355,9 @@ typedef struct {
         else if (![EAGLContext setCurrentContext:aContext])
             NSLog(@"Failed to set ES context current");
                 
-        float size = 50;
+        float size = _fontSize;
         
-        UIFont *font = [UIFont fontWithName:@"Arial" size:_startTextTextureSize/512.*size];
+        UIFont *font = [UIFont fontWithName:_fontName size:_startTextTextureSize/512.*size];
         CGSize renderedSize = [_text sizeWithFont:font];
         
         uint32_t height = _startTextTextureSize;
@@ -425,6 +431,7 @@ typedef struct {
 }
 
 -(void)dealloc {
+    [_fontName release];
     [_text release];
     [super dealloc];
 }
@@ -436,6 +443,8 @@ typedef struct {
     GLuint _name;
     unsigned int _width;
     unsigned int _height;
+    float _fontSize;
+    NSString* _fontName;
     
     float _aspect;
     float _invaspect;
@@ -443,6 +452,8 @@ typedef struct {
     NSMutableDictionary *_cache;
 }
 
+@synthesize fontSize = _fontSize;
+@synthesize fontName = _fontName;
 @synthesize name = _name;
 @synthesize text = _text;
 @synthesize width = _width;
@@ -456,8 +467,11 @@ typedef struct {
     _text = nil;
     _width = 0;
     _height = 0;
+    _fontSize = 50;
+    _fontName = @"Arial";
     
     _cache = [[NSMutableDictionary alloc] initWithCapacity:5];
+    [_cache setObject:[NSNumber numberWithUnsignedInt:[[FSATextureManager instance] getTexture:@"gray.jpg"].name ] forKey:@""];
     _loadOperations = [[NSMutableSet alloc] initWithCapacity:5];
 
     return self;
@@ -471,6 +485,8 @@ typedef struct {
 }
 
 -(void)memoryWarning {
+    [_cache removeObjectForKey:@""];
+    
     for(NSNumber *num in [_cache objectEnumerator]) {
         GLuint texId = [num unsignedIntValue];
         if(texId != _name) {
@@ -478,13 +494,17 @@ typedef struct {
         }
     }
     [_cache removeAllObjects];
+    [_cache setObject:[NSNumber numberWithUnsignedInt:[[FSATextureManager instance] getTexture:@"gray.jpg"].name ] forKey:@""];
+
     if(_text && _name) {
-        [_cache setObject:_text forKey:[NSNumber numberWithUnsignedInt:_name]];
+        [_cache setObject:[NSNumber numberWithUnsignedInt:_name] forKey:_text];
     }
 }
 
 -(void)setText:(NSString *)text {
-    if(!_text) _text = @"";
+    if(!_text) {
+        _text = @"";
+    }
 
     if([text isEqualToString:_text]) {
         return;
@@ -503,7 +523,7 @@ typedef struct {
                 return;
             }
         }
-        BackgroundTextTextureLoaderOperation *loader = [[BackgroundTextTextureLoaderOperation alloc] initWithText:text forTexture:self];
+        BackgroundTextTextureLoaderOperation *loader = [[BackgroundTextTextureLoaderOperation alloc] initWithText:text fontSize:_fontSize fontName:_fontName forTexture:self];
         
        // NSLog(@"loading text, %@", text);
         
@@ -535,6 +555,7 @@ typedef struct {
 }
 
 -(void)deleteTexture {
+    [_cache removeObjectForKey:@""];
     for(NSNumber *val in [_cache objectEnumerator]) {
         GLuint texId = [val unsignedIntValue];
         glDeleteTextures(1, &texId);

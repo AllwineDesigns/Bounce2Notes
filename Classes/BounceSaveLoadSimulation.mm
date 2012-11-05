@@ -261,6 +261,23 @@
     return self;
 }
 
+-(void)prepare {
+    [self setupPageSlider];
+}
+
+-(void)unload {
+    NSMutableArray *remove = [NSMutableArray arrayWithCapacity:5];
+    for(BounceObject *obj in _objects) {
+        if([obj isKindOfClass:[BounceLoadObject class]]) {
+            [remove addObject:obj];
+        }
+    }
+    
+    for(BounceObject *obj in remove) {
+        [obj removeFromSimulation];
+    }
+}
+
 -(void)setVelocity:(const vec2 &)vel {
     [super setVelocity:vel];
     

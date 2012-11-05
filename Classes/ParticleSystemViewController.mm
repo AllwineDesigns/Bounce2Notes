@@ -376,8 +376,6 @@
     
     [texture_manager generateTextureForText:@"Help"];
     [_loadingObject makeProgess];
-
-    [texture_manager generateTextureForText:@"Open In Safari" forKey:@"Open In Safari" withFontSize:30 withOffset:vec2()];
     
     [_loadingObject makeProgess];
     
@@ -596,6 +594,7 @@
 }
 
 -(void)resignActive {
+    [self didReceiveMemoryWarning];
     [[BounceFileManager instance] save:simulation withSettings:[BounceSettings instance] toFile:@"Last Exit"];
     [_configPane updateSavedSimulations];
 }

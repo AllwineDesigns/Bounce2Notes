@@ -32,7 +32,10 @@
 }
 
 -(void)issueContributorsRequest {
-    _connection = [[NSURLConnection alloc] initWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.bouncesimulation.com/bounce-services/contributors.txt"]] delegate:self];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.bouncesimulation.com/bounce-services/contributors.txt"]
+                                             cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                         timeoutInterval:60.0];
+    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 -(void)dealloc {
@@ -48,6 +51,10 @@
     }
     
     return _loading;
+}
+
+- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
+    return nil;
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse {
@@ -122,6 +129,20 @@
 
 -(void)update:(BounceContributorsList *)contributors {
     [self setupPageSlider];
+}
+
+-(void)prepare {
+    [super prepare];
+    
+    [self setupPageSlider];
+}
+
+-(void)unload {    
+    for(BounceObject *obj in _objects) {
+        if([obj isMemberOfClass:[BounceObject class]]) {
+            [(FSATextTexture*)obj.patternTexture setText:@""];
+        }
+    }
 }
 
 -(void)setupPageSlider {

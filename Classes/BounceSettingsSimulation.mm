@@ -1227,6 +1227,38 @@
 
 -(void)prepare {
     [self updateSettings];
+    
+    FSATextureManager *texManager = [FSATextureManager instance];
+    
+    [(FSATextTexture*)[texManager getTexture:@"major_minor"] setText:_tonalitySlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"play_mode"] setText:_modeSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"octave"] setText:_octaveSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"friction"] setText:_frictionSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"vel_limit"] setText:_velLimitSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"damping"] setText:_dampingSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"all_new"] setText:_affectsAllObjectsSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"paint_mode"] setText:_paintModeSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"spin_mode"] setText:_grabRotatesSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"pane_locked"] setText:_paneUnlockedSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"bounciness"] setText:_bouncinessSlider.label];
+    [(FSATextTexture*)[texManager getTexture:@"gravity"] setText:_gravitySlider.label];
+}
+
+-(void)unload {
+    FSATextureManager *texManager = [FSATextureManager instance];
+    
+    [(FSATextTexture*)[texManager getTexture:@"major_minor"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"play_mode"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"octave"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"friction"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"vel_limit"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"damping"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"all_new"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"paint_mode"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"spin_mode"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"pane_locked"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"bounciness"] setText:@""];
+    [(FSATextTexture*)[texManager getTexture:@"gravity"] setText:@""];
 }
 
 -(void)updateSettings {

@@ -589,8 +589,15 @@ BouncePaneOrientation getBouncePaneOrientation() {
     [sim prepare];
 }
 
+-(void)unloadCurrentSimulation{
+    BounceConfigurationSimulation *sim = [_simulations objectAtIndex:_curSimulation];
+    [sim unload];
+}
+
 -(void)setCurrentSimulation:(unsigned int)index {
-    if(_state == BOUNCE_PANE_TAPPED || [BounceSettings instance].paneUnlocked) {        
+    if(_state == BOUNCE_PANE_TAPPED || [BounceSettings instance].paneUnlocked) {
+        [self unloadCurrentSimulation];
+
         _switchToSimulation = index;
         _curSimulation = index;
         [self prepareCurrentSimulation];
@@ -792,6 +799,8 @@ BouncePaneOrientation getBouncePaneOrientation() {
   //  CGSize paneSize = [_object paneSize];
     
     if(_switchToSimulation != _curSimulation && [_object isHidden]) {
+        [self unloadCurrentSimulation];
+
         _curSimulation = _switchToSimulation;
         if(_state == BOUNCE_PANE_ACTIVATED) {
             [_object activate];

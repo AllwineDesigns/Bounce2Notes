@@ -126,6 +126,7 @@ typedef enum {
 -(void)setSimulation:(MainBounceSimulation*)simulation;
 -(void)setCurrentSimulation:(unsigned int)index;
 -(void)prepareCurrentSimulation;
+-(void)unloadCurrentSimulation;
 
 -(void)setFriction:(float)friction;
 -(void)setDamping:(float)damping;

@@ -10,7 +10,9 @@
 #import "BounceButton.h"
 
 @interface BounceHowToSimulation : BounceConfigurationSimulation <BounceButtonDelegate> {
-    BounceButton *_openInSafariButton;
+    BounceButton *_instructions;
+    BounceButton *_howto;
+    BounceButton *_faq;
 }
 
 @end

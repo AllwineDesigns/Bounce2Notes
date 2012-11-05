@@ -25,6 +25,7 @@
 -(void)updateSettings;
 -(void)drawObjectsParticipatingInGestures;
 -(void)prepare;
+-(void)unload;
 
 
 @end

@@ -2101,7 +2101,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)";
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = NO;
@@ -2131,7 +2131,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)";
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2157,7 +2157,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /Users/jallwine/fsa/include;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
@@ -2191,7 +2191,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)";
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2307,7 +2307,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /Users/jallwine/fsa/include;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2334,7 +2334,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = /Users/jallwine/fsa/include;
+				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";

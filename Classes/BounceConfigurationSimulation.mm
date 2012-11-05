@@ -31,7 +31,9 @@
 }
 
 -(void)prepare {
-    
+}
+
+-(void)unload {
 }
 
 -(void)setSimulation:(MainBounceSimulation *)sim {

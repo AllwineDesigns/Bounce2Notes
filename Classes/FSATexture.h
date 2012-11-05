@@ -48,11 +48,13 @@
 @property (nonatomic, readonly) NSString* text;
 @property (nonatomic, readonly) unsigned int width;
 @property (nonatomic, readonly) unsigned int height;
--(id)initWithText:(NSString*)txt forTexture:(FSATextTexture*)texture;
+-(id)initWithText:(NSString*)txt fontSize:(float)fontSize fontName:(NSString*)fontName forTexture:(FSATextTexture*)texture;
 @end
 
 @interface FSATextTexture : FSATexture
 @property (nonatomic, retain) NSString* text;
+@property (nonatomic) float fontSize;
+@property (nonatomic, copy) NSString* fontName;
 
 -(id)initWithText:(NSString*)text;
 -(void)finishedLoadingTexture:(BackgroundTextTextureLoaderOperation*)loader;
