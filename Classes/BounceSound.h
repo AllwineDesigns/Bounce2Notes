@@ -40,9 +40,12 @@
 @interface BounceRandomSounds : NSObject <BounceSound> {
     NSArray *_sounds;
     NSString *_label;
+    float _v;
 }
 
 -(id)initWithSounds:(NSArray*)sounds label:(NSString*)label;
+-(id)initWithSounds:(NSArray*)sounds label:(NSString*)label volume:(float)v;
+
 
 @end
 

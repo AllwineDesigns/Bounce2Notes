@@ -12,6 +12,8 @@
 @interface BounceFileManager : NSObject {
 }
 
+-(NSString*)pathToMidiFile:(NSString*)file;
+
 -(NSString*)pathToBuiltInFile:(NSString*)file;
 -(NSString*)pathToFile:(NSString*)file;
 -(NSArray*)allFiles;

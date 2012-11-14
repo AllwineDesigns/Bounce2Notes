@@ -358,6 +358,15 @@ static BounceNoteManager* bounceNoteManager;
     return _rest;
 }
 
+-(FSASound*)getSoundWithMidiNumber:(BounceMidiNumber)m {
+    int index = (int)m-36;
+    if(index >= 0 && index < [_sounds count]) {
+        return [_sounds objectAtIndex:m-36];
+    }
+    
+    return [[FSASoundManager instance] getSound:@"rest"];
+}
+
 +(BounceNoteManager*)instance {
     return bounceNoteManager;
 }

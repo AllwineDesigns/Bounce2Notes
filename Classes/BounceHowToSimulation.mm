@@ -152,6 +152,11 @@
     CGSize dimensions = self.arena.dimensions;
     
     vec2 offset(0, .25*dimensions.height);
+    offset.rotate(-self.arena.angle);
+    
+    vec2 offset2(0, -.25*dimensions.height);
+    offset2.rotate(-self.arena.angle);
+    
     [_instructions setPosition:pos];
     [_howto setPosition:pos+offset];
     [_faq setPosition:pos-offset];

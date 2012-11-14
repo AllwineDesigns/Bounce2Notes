@@ -508,6 +508,10 @@
 		B2E8B57B1570866F00318FFC /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */; };
 		B2E8B57C1570988800318FFC /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */; };
 		B2E8B57D1570989300318FFC /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = B2E8B5781570866C00318FFC /* Default-Landscape~ipad.png */; };
+		B2F11057164D72DF00D96DAD /* BounceMelodyPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F11056164D72DF00D96DAD /* BounceMelodyPlayer.mm */; };
+		B2F11058164D72DF00D96DAD /* BounceMelodyPlayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F11056164D72DF00D96DAD /* BounceMelodyPlayer.mm */; };
+		B2F110631650135600D96DAD /* MidiParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F110621650135600D96DAD /* MidiParser.m */; };
+		B2F110641650135600D96DAD /* MidiParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B2F110621650135600D96DAD /* MidiParser.m */; };
 		B2F1D6B2158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */; };
 		B2F1D6B3158FE3EA00EE06B9 /* ChipmunkObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */; };
 		B2F1D6B6158FE49C00EE06B9 /* BounceObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B2F1D6B5158FE49C00EE06B9 /* BounceObject.mm */; };
@@ -879,6 +883,10 @@
 		B2E8B572157060B000318FFC /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		B2E8B5781570866C00318FFC /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		B2E8B57A1570866F00318FFC /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		B2F11055164D72DE00D96DAD /* BounceMelodyPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceMelodyPlayer.h; sourceTree = "<group>"; };
+		B2F11056164D72DF00D96DAD /* BounceMelodyPlayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceMelodyPlayer.mm; sourceTree = "<group>"; };
+		B2F110611650135500D96DAD /* MidiParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MidiParser.h; sourceTree = "<group>"; };
+		B2F110621650135600D96DAD /* MidiParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MidiParser.m; sourceTree = "<group>"; };
 		B2F1D6B0158FE3EA00EE06B9 /* ChipmunkObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChipmunkObject.h; sourceTree = "<group>"; };
 		B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChipmunkObject.mm; sourceTree = "<group>"; };
 		B2F1D6B4158FE49C00EE06B9 /* BounceObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceObject.h; sourceTree = "<group>"; };
@@ -1026,6 +1034,10 @@
 				B21A93F2155B34E1002D2BEE /* FSAMultiTapAndDragRecognizer.m */,
 				B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */,
 				B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */,
+				B2F11055164D72DE00D96DAD /* BounceMelodyPlayer.h */,
+				B2F11056164D72DF00D96DAD /* BounceMelodyPlayer.mm */,
+				B2F110611650135500D96DAD /* MidiParser.h */,
+				B2F110621650135600D96DAD /* MidiParser.m */,
 				28EC4C5611D54ECE0027AA9F /* ParticleSystemViewController.h */,
 				28EC4C5711D54ECE0027AA9F /* ParticleSystemViewController.mm */,
 			);
@@ -2005,6 +2017,8 @@
 				B2D08BA41638B8CE00C088CB /* BounceHowToSimulation.mm in Sources */,
 				B23324B0163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */,
 				B23324B4164053BD00F7E185 /* BounceLoadingObject.mm in Sources */,
+				B2F11057164D72DF00D96DAD /* BounceMelodyPlayer.mm in Sources */,
+				B2F110631650135600D96DAD /* MidiParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2073,6 +2087,8 @@
 				B2D08BA51638B8CE00C088CB /* BounceHowToSimulation.mm in Sources */,
 				B23324B1163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */,
 				B23324B5164053BD00F7E185 /* BounceLoadingObject.mm in Sources */,
+				B2F11058164D72DF00D96DAD /* BounceMelodyPlayer.mm in Sources */,
+				B2F110641650135600D96DAD /* MidiParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

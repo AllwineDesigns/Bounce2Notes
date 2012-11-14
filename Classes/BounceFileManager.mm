@@ -12,6 +12,14 @@ static BounceFileManager* bounceFileManager;
 
 @implementation BounceFileManager
 
+-(NSString*)pathToMidiFile:(NSString*)file {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mid", file]];
+    
+    return filePath;
+}
+
 -(NSString*)pathToBuiltInFile:(NSString*)file {
     NSString *dir = [[NSBundle mainBundle] resourcePath];
     dir = [dir stringByAppendingPathComponent:@"Saves"];

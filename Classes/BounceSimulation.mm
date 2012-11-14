@@ -785,7 +785,9 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
 
 -(void)setSound:(id<BounceSound>)sound {
     for(BounceObject *obj in _objects) {
-        obj.sound = sound;
+        if(obj.isPreviewable) {
+            obj.sound = sound;
+        }
     }
 }
 

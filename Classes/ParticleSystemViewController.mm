@@ -179,6 +179,554 @@
     if([[FSABackgroundQueue instance] operationCount] == 0) {
         _ready = YES;
         [_loadingObject release];
+        /*
+        BounceNoteDuration notes[] = {
+            {BOUNCE_MIDI_C4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_E4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_F4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_QUARTER_NOTE}
+        };
+         */
+        BounceNoteDuration notes[] = {
+            // Page 1
+            
+            // Line 1
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            
+            // Line 2
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D5, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            
+            // Line 3
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D5, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D5, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            // Line 4
+            {BOUNCE_MIDI_D5, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D5, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            {BOUNCE_MIDI_D5, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D5, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_D5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            // Line 5
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+
+            // Page 2
+            
+            // Line 1
+            {0, BOUNCE_QUARTER_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            // Line 2
+            {0, BOUNCE_HALF_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_QUARTER_NOTE},
+            
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_QUARTER_NOTE},
+            
+            // Line 3
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            
+            // Line 4
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_QUARTER_NOTE},
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_QUARTER_NOTE},
+            
+            // Line 5
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_QUARTER_NOTE},
+
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_QUARTER_NOTE},
+            {0, 1.5*BOUNCE_HALF_NOTE},
+            
+            // Line 6
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_E4, BOUNCE_EIGHTH_NOTE},
+
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+
+            // Page 3
+            
+            // Line 1
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_E4, BOUNCE_EIGHTH_NOTE},
+            
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            
+            // Line 2
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_QUARTER_NOTE},
+            
+            {BOUNCE_MIDI_G4, BOUNCE_HALF_NOTE},
+            {0, BOUNCE_HALF_NOTE},
+            
+            {0, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+            // Line 3
+            {0, BOUNCE_HALF_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_QUARTER_NOTE},
+
+            // Line 4
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_EIGHTH_NOTE},
+            
+    
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_QUARTER_NOTE},
+            
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_QUARTER_NOTE},
+
+            // Line 5
+            {0, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, 1.5*BOUNCE_QUARTER_NOTE},
+            
+            {BOUNCE_MIDI_G4, BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_D4, 1.5*BOUNCE_EIGHTH_NOTE},
+
+            {0, BOUNCE_HALF_NOTE},
+            {BOUNCE_MIDI_B3, BOUNCE_SIXTEENTH_NOTE},
+            {BOUNCE_MIDI_D4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, 1.5*BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            
+            // Line 6
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_C5, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            
+            {0, 1.5*BOUNCE_QUARTER_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_B4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_A4, BOUNCE_EIGHTH_NOTE},
+            {BOUNCE_MIDI_G4, BOUNCE_EIGHTH_NOTE},
+
+
+
+        };
+        
+        [_harmonyPlayer setSimulation:simulation];
+  /*
+        BounceMidiNumber g_chord[] = {BOUNCE_MIDI_G3, BOUNCE_MIDI_G4, BOUNCE_MIDI_B4, BOUNCE_MIDI_D5};
+        BounceMidiNumber c_chord[] = {BOUNCE_MIDI_C3, BOUNCE_MIDI_C4, BOUNCE_MIDI_E4, BOUNCE_MIDI_G4};
+        BounceMidiNumber d_chord[] = {BOUNCE_MIDI_D3, BOUNCE_MIDI_D4, BOUNCE_MIDI_F_SHARP4, BOUNCE_MIDI_A4};
+        BounceMidiNumber e_chord[] = {BOUNCE_MIDI_E3, BOUNCE_MIDI_E4, BOUNCE_MIDI_G4, BOUNCE_MIDI_B4};
+   */
+        BounceMidiNumber g_chord[] = {BOUNCE_MIDI_G3, BOUNCE_MIDI_B3, BOUNCE_MIDI_D4};
+        BounceMidiNumber c_chord[] = {BOUNCE_MIDI_C3, BOUNCE_MIDI_E3, BOUNCE_MIDI_G3};
+        BounceMidiNumber d_chord[] = {BOUNCE_MIDI_D3, BOUNCE_MIDI_F_SHARP3, BOUNCE_MIDI_A3};
+        BounceMidiNumber e_chord[] = {BOUNCE_MIDI_E3, BOUNCE_MIDI_G3, BOUNCE_MIDI_B3};
+        BounceMidiNumber rest[] = {0};
+
+        
+        BounceMelody *harmony = [[BounceMelody alloc] init];
+        
+        // Page 1
+        // Line 1
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        
+        // Line 2
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        
+        // Line 3
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        
+        // Line 4
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 5
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        
+        // Page 2
+        
+        // Line 1
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 2
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+
+        // Line 3
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 4
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 5
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:rest numNotes:sizeof(rest)/sizeof(BounceMidiNumber) duration:8*BOUNCE_EIGHTH_NOTE];
+        
+        // Line 6
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Page 3
+        
+        // Line 1
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+
+        // Line 2
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:8*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 3
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+
+        // Line 4
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 5
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:d_chord numNotes:sizeof(d_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:e_chord numNotes:sizeof(e_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+
+        // Line 6
+        [harmony addChord:c_chord numNotes:sizeof(c_chord)/sizeof(BounceMidiNumber) duration:6*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:2*BOUNCE_EIGHTH_NOTE];
+        [harmony addChord:g_chord numNotes:sizeof(g_chord)/sizeof(BounceMidiNumber) duration:7*BOUNCE_EIGHTH_NOTE];
+
+        
+       // [_harmonyPlayer playMelody:harmony];
+        [harmony release];
+       //  [_harmonyPlayer playMelody:[[[BounceMelody alloc] initWithMidiFile:@"callmemaybe2"] autorelease]];
+       // [_melodyPlayer playMelody:[[[BounceMelody alloc] initWithMidiFile:@"callmemaybe2"] autorelease] ];
+
+       // [_melodyPlayer playMelody:[[[BounceMelody alloc] initWithBounceNoteDurations:notes numNotes:sizeof(notes)/sizeof(BounceNoteDuration)] autorelease] ];
     } else {
         [_loadingObject makeProgess];
         [self performSelector:@selector(checkIfReady) withObject:nil afterDelay:.02];
@@ -411,6 +959,10 @@
   //  NSLog(@"loaded textures in thread: %@\n", [NSThread currentThread]);
     
     glFlush();
+    
+    _melodyPlayer = [[BounceMelodyPlayer alloc] init];
+    _harmonyPlayer = [[BounceMelodyPlayer alloc] init];
+
     
     [aContext release];
     
@@ -853,7 +1405,7 @@
         _timeRemainder = t;
         
         [_loadingObject draw];
-    } else {
+    } else {        
         CMAccelerometerData *accelData = [motionManager accelerometerData];
         CMAcceleration acceleration = [accelData acceleration];
         
@@ -900,6 +1452,10 @@
         
         [gestureCurves step:timeSinceLastDraw];
         [gestureCurves draw];
+        
+        //[_melodyPlayer step];
+        //[_harmonyPlayer step];
+
     }
 
     [(EAGLView *)self.view presentFramebuffer];

@@ -143,18 +143,26 @@
 }
 
 -(id)initWithSounds:(NSArray *)sounds label:(NSString *)label {
+    self = [self initWithSounds:sounds label:label volume:1];
+    
+    return self;
+}
+-(id)initWithSounds:(NSArray *)sounds label:(NSString *)label volume:(float)v {
     self = [super init];
     if(self) {
         _sounds = [sounds retain];
         _label = [label retain];
+        _v = v;
     }
     
     return self;
 }
 
 -(void)play:(float)volume {
-    unsigned int i = RANDFLOAT*[_sounds count];
-    [[_sounds objectAtIndex:i] play:volume];
+    if([_sounds count] > 0) {
+        unsigned int i = RANDFLOAT*[_sounds count];
+        [[_sounds objectAtIndex:i] play:volume*_v];
+    }
 }
 
 -(void)resized:(float)old_size {

@@ -27,6 +27,7 @@
 #import "BounceSaveLoadPane.h"
 #import "BounceLock.h"
 #import "BounceLoadingObject.h"
+#import "BounceMelodyPlayer.h"
 
 @interface ParticleSystemViewController : UIViewController <BounceSaveLoadDelegate,UITextFieldDelegate>
 {
@@ -36,6 +37,8 @@
     BounceConfigurationPane *_configPane;
     BounceSaveLoadPane *_saveLoadPane;
     BounceLoadingObject *_loadingObject;
+    BounceMelodyPlayer *_melodyPlayer;
+    BounceMelodyPlayer *_harmonyPlayer;
     
     BounceLock *_bounceLock;
     
