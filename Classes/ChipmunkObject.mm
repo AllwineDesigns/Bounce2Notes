@@ -25,6 +25,7 @@
         _allocatedShapes = 1;
         _group = CP_NO_GROUP;
         _layers = CP_ALL_LAYERS;
+        _sensor = NO;
         
         _space = NULL;
         
@@ -45,6 +46,7 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
+        _sensor = NO;
         _group = CP_NO_GROUP;
         _layers = CP_ALL_LAYERS;
         
@@ -66,6 +68,7 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
+        _sensor = NO;
         _group = CP_NO_GROUP;
         _layers = CP_ALL_LAYERS;
         
@@ -87,6 +90,7 @@
         _numShapes = 0;
         _allocatedShapes = 1;
         
+        _sensor = NO;
         _group = CP_NO_GROUP;
         _layers = CP_ALL_LAYERS;
         
@@ -107,7 +111,8 @@
         _shapes = (cpShape**)malloc(sizeof(cpShape*));
         _numShapes = 0;
         _allocatedShapes = 1;
-        
+        _sensor = NO;
+
         _group = CP_NO_GROUP;
         _layers = CP_ALL_LAYERS;
         
@@ -143,11 +148,23 @@
     }
     _shapes[_numShapes] = shape;
     if(_space != NULL) {
+        cpShapeSetSensor(shape, _sensor);
         cpShapeSetLayers(shape, _layers);
         cpShapeSetGroup(shape, _group);
         cpSpaceAddShape(_space, shape);
     }
     _numShapes++;
+}
+
+-(BOOL)isSensor {
+    return _sensor;
+}
+
+-(void)setSensor:(BOOL)sensor {
+    _sensor = sensor;
+    for(int i = 0; i < _numShapes; i++) {
+        cpShapeSetSensor(_shapes[i], sensor);
+    }
 }
 
 -(void)removeAllShapes {

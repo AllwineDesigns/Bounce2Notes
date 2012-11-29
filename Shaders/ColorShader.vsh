@@ -13,4 +13,5 @@ uniform float aspect;
 void main()
 {
     gl_Position = vec4(position.x, position.y*aspect, 0., 1.);
+    gl_PointSize = 1.;
 }

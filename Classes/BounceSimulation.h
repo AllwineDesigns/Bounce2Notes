@@ -24,6 +24,8 @@ using namespace fsa;
         
     NSMutableArray *_objects;
     NSMutableSet *_delayedRemoveObjects;
+    NSMutableSet *_delayedAddObjects;
+
     NSMutableDictionary *_gestures;
             
     BounceArena *_arena;
@@ -45,6 +47,8 @@ using namespace fsa;
 -(BOOL)containsObject: (BounceObject*)object;
 
 -(void)postSolveRemoveObject: (BounceObject*)object;
+-(void)postSolveAddObject: (BounceObject*)object;
+
 -(BOOL)isObjectParticipatingInGesture: (BounceObject*)obj;
 -(BOOL)isObjectBeingCreatedOrGrabbed: (BounceObject*)obj;
 -(BOOL)isObjectBeingTransformed: (BounceObject*)obj;

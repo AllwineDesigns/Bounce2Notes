@@ -805,6 +805,18 @@
     [_pages addPage:page];
     [page release];
     
+    page = [[BouncePage alloc] init];
+    [page addWidget:_creatorDestroyerArena offset:vec2()];
+    layers = (1 << [_pages count]);
+    cpLayers creatorDestroyerLayers = layers;
+    [_creatorDestroyerArena setLayers:layers];
+    [_creatorObject setLayers:layers];
+    [_destroyerObject setLayers:layers];
+    [_normalObject setLayers:layers];
+
+    [_pages addPage:page];
+    [page release];
+    
     float slideDown = -.07*dimensions.height;
     page = [[BouncePage alloc] init];
     layers = (1 << [_pages count]);
@@ -830,7 +842,7 @@
     [_pages addPage:page];
     [page release];
     
-    cpLayers mainArenaLayers = CP_ALL_LAYERS ^ copyPasteLayers ^ musicLayers;
+    cpLayers mainArenaLayers = CP_ALL_LAYERS ^ copyPasteLayers ^ musicLayers ^ creatorDestroyerLayers;
 
     [_arena setLayers:mainArenaLayers];
 }
@@ -862,6 +874,44 @@
         }
         
     }
+}
+
+-(void)setupCreatorDestroyerObjects {
+    CGSize dimensions = self.arena.dimensions;
+    float size = dimensions.width*.1;
+    
+    BounceConfigurationObject *obj = [[BounceTypeConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:size withAngle:0];
+    
+    obj.bounceType = BOUNCE_CREATOR;
+    obj.isRemovable = NO;
+    obj.patternTexture = [[FSATextureManager instance] getTexture:@"Creator"];
+    [obj addToSimulation:self];
+    _creatorObject = obj;
+
+    [obj release];
+    
+    obj = [[BounceTypeConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:size withAngle:0];
+    obj.bounceType = BOUNCE_DESTROYER;
+    obj.isRemovable = NO;
+    obj.patternTexture = [[FSATextureManager instance] getTexture:@"Destroyer"];
+    [obj addToSimulation:self];
+    _destroyerObject = obj;
+    [obj release];
+    
+    
+    obj = [[BounceTypeConfigurationObject alloc] initObjectWithShape:BOUNCE_BALL at:vec2() withVelocity:vec2() withColor:vec4(1,1,1,1) withSize:size withAngle:0];
+    obj.bounceType = BOUNCE_NORMAL;
+    obj.isRemovable = NO;
+    obj.patternTexture = [[FSATextureManager instance] getTexture:@"Normal"];
+    [obj addToSimulation:self];
+    _normalObject = obj;
+    [obj release];
+    
+    CGRect rect = CGRectMake(-dimensions.width*.5, -dimensions.height*.5, dimensions.width, dimensions.height);
+
+    _creatorDestroyerArena = [[BounceArena alloc] initWithRect:rect];
+    [_creatorDestroyerArena addToSpace:_space];
+    
 }
 
 -(id)initWithRect:(CGRect)rect bounceSimulation:(MainBounceSimulation *)sim {
@@ -940,6 +990,7 @@
         [self setupCopyPaste];
         [self setupMusicSliders];
         [self setupMusicBounceObjects];
+        [self setupCreatorDestroyerObjects];
         [self setupPages];
         
         unsigned int numPages = [_pages count];

@@ -40,6 +40,7 @@
         [_obj makeHeavyRogue];
         _timestamp = [[NSProcessInfo processInfo] systemUptime];
         _creationTimestamp = _timestamp;
+        _begin = obj.position;
         
         [_obj beginCreateCallback];
 
@@ -138,6 +139,7 @@
             float size = _offset.length();
             
             [_obj createCallbackWithSize: size secondarySize:size/1.61803399];
+            [_obj createCallbackWithLoc1:_begin loc2:to];
 
             id<BounceSound> sound = _obj.sound;
             [sound resized:old_size];

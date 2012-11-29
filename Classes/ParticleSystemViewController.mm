@@ -850,8 +850,20 @@
   //  [texture_manager generateTextureForText:@"Note" forKey:@"Note" withFontSize:28 withOffset:vec2(-43,105) ];
     [texture_manager generateTextureForText:@"Note"];
     [_loadingObject makeProgess];
+    
+    [texture_manager generateTextureForText:@"Creator"];
+    [_loadingObject makeProgess];
+    
+    [texture_manager generateTextureForText:@"Destroyer"];
+    [_loadingObject makeProgess];
+    
+    [texture_manager generateTextureForText:@"Normal"];
+    [_loadingObject makeProgess];
 
     [texture_manager generateTextureForText:@"Rectangle"];
+    [_loadingObject makeProgess];
+    
+    [texture_manager generateTextureForText:@"Line"];
     [_loadingObject makeProgess];
 
     [texture_manager generateTextureForText:@"Capsule"];
@@ -1453,6 +1465,35 @@
         [gestureCurves step:timeSinceLastDraw];
         [gestureCurves draw];
         
+        
+        /*
+        BounceObject *obj = [[BounceObject alloc] initObjectWithShape:BOUNCE_NOTE at:vec2() withVelocity:vec2() withColor:vec4(.1,.2,.3,1) withSize:.2 withAngle:0];
+        obj.angle = [[NSProcessInfo processInfo] systemUptime];
+        obj.position = vec2(.5,.5);
+        obj.intensity = 0;
+        [obj draw];
+#define TOTAL_POINTS 1000
+        
+        vec2 points[TOTAL_POINTS];
+        
+        for(int i = 0; i < TOTAL_POINTS; i++) {
+            points[i] = [obj pointInObject];
+       //     points[i] = vec2(RANDFLOAT,RANDFLOAT);
+        }
+        
+        vec4 color = vec4(1,1,1,1);
+        FSAShader *shader = [[FSAShaderManager instance] getShader:@"ColorShader"];
+        
+        [shader setPtr:points forAttribute:@"position"];
+        [shader setPtr:&color forUniform:@"color"];
+        
+        glPointSize(1);
+        [shader enable];
+        glDrawArrays(GL_POINTS, 0, TOTAL_POINTS);
+        [shader disable];
+        
+        [obj release];
+         */
         //[_melodyPlayer step];
         //[_harmonyPlayer step];
 

@@ -80,6 +80,10 @@ using namespace fsa;
     
 }
 
+-(void)grabCallback:(const vec2 &)loc {
+    
+}
+
 -(void)grabCallbackWithPosition:(const vec2 &)pos velocity:(const vec2 &)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
     [_pane tabGrabbedAt:pos offset:_offset index:_index];
 }

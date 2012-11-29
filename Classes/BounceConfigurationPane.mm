@@ -91,6 +91,13 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
+    shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_LINE at:shapePos withVelocity:vec2() ];
+    shapeConfigObject.size = 1.5*shapeSize;
+    shapeConfigObject.secondarySize = .03;
+    shapeConfigObject.patternTexture = [texManager getTexture:@"Line"];
+    [shapeConfigObject addToSimulation:sim];
+    [shapeConfigObject release];
+    
     [self addSimulation:sim];
     
     CGSize paneSize = [_object paneSize];

@@ -266,6 +266,7 @@
     [_delegate deleteSimulation:file];
 }
 
+
 -(void)draw {
     [super draw];
     [_killArena draw];

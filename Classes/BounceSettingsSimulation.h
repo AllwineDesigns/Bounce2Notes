@@ -43,6 +43,10 @@
     
     BOOL _updatingSettings;
     
+    BounceArena *_creatorDestroyerArena;
+    BounceObject *_creatorObject;
+    BounceObject *_destroyerObject;
+    BounceObject *_normalObject;
     
     //Music page
     BounceSlider *_keySlider;

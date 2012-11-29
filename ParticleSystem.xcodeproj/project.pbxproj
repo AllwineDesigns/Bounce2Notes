@@ -29,6 +29,8 @@
 		B21F02E915F3C77200339071 /* BounceSavedSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21F02E715F3C77200339071 /* BounceSavedSimulation.mm */; };
 		B21F02EC15F4229000339071 /* BounceSaveLoadSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */; };
 		B21F02ED15F4229000339071 /* BounceSaveLoadSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */; };
+		B22D09DF1661941500B3337C /* libChipmunk-iPhoneSimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B22D09DE1661941500B3337C /* libChipmunk-iPhoneSimulator.a */; };
+		B22D09E01661941600B3337C /* libChipmunk-iPhoneSimulator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B22D09DE1661941500B3337C /* libChipmunk-iPhoneSimulator.a */; };
 		B23324B0163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */; };
 		B23324B1163DC1FB00F7E185 /* BounceContributorsSimulation.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */; };
 		B23324B4164053BD00F7E185 /* BounceLoadingObject.mm in Sources */ = {isa = PBXBuildFile; fileRef = B23324B3164053BB00F7E185 /* BounceLoadingObject.mm */; };
@@ -575,6 +577,7 @@
 		B21F02E715F3C77200339071 /* BounceSavedSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSavedSimulation.mm; sourceTree = "<group>"; };
 		B21F02EA15F4228D00339071 /* BounceSaveLoadSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceSaveLoadSimulation.h; sourceTree = "<group>"; };
 		B21F02EB15F4228E00339071 /* BounceSaveLoadSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceSaveLoadSimulation.mm; sourceTree = "<group>"; };
+		B22D09DE1661941500B3337C /* libChipmunk-iPhoneSimulator.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libChipmunk-iPhoneSimulator.a"; path = "../../../../libChipmunk-iPhoneSimulator.a"; sourceTree = "<group>"; };
 		B23324AE163DC1FB00F7E185 /* BounceContributorsSimulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceContributorsSimulation.h; sourceTree = "<group>"; };
 		B23324AF163DC1FB00F7E185 /* BounceContributorsSimulation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceContributorsSimulation.mm; sourceTree = "<group>"; };
 		B23324B2164053BA00F7E185 /* BounceLoadingObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceLoadingObject.h; sourceTree = "<group>"; };
@@ -934,6 +937,7 @@
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
 				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
 				B23CEDC815D2F9B90078CFA4 /* libChipmunk-iPhone.a in Frameworks */,
+				B22D09DF1661941500B3337C /* libChipmunk-iPhoneSimulator.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -951,6 +955,7 @@
 				B23F133B15703AEF00FE4D09 /* OpenGLES.framework in Frameworks */,
 				B23F133C15703AEF00FE4D09 /* QuartzCore.framework in Frameworks */,
 				B23CEDC915D2F9B90078CFA4 /* libChipmunk-iPhone.a in Frameworks */,
+				B22D09E01661941600B3337C /* libChipmunk-iPhoneSimulator.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -990,6 +995,7 @@
 				B2F1D6B1158FE3EA00EE06B9 /* ChipmunkObject.mm */,
 				B2F1D6B4158FE49C00EE06B9 /* BounceObject.h */,
 				B2F1D6B5158FE49C00EE06B9 /* BounceObject.mm */,
+				B22D09DE1661941500B3337C /* libChipmunk-iPhoneSimulator.a */,
 				B2AFC61015A234D500D06591 /* BounceRenderable.h */,
 				B2AFC61115A234D500D06591 /* BounceRenderable.mm */,
 				B2F1D6B8158FE51200EE06B9 /* BounceArena.h */,
@@ -2117,7 +2123,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"\"$(SRCROOT)/../../..\"",
+				);
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = NO;
@@ -2147,7 +2156,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"\"$(SRCROOT)/../../..\"",
+				);
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2207,7 +2219,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"\"$(SRCROOT)/../../..\"",
+				);
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2239,7 +2254,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "Bounce Lite-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)\"/**",
+					"\"$(SRCROOT)/../../..\"",
+				);
 				PRODUCT_NAME = "Bounce Lite";
 				PROVISIONING_PROFILE = "B43E93FB-2109-463E-BC6C-FC6B1918EA14";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B43E93FB-2109-463E-BC6C-FC6B1918EA14";
@@ -2272,7 +2290,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "Bounce Lite-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)\"/**",
+					"\"$(SRCROOT)/../../..\"",
+				);
 				PRODUCT_NAME = "Bounce Lite";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2299,7 +2320,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "Bounce Lite-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)\"/**";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SRCROOT)\"/**",
+					"\"$(SRCROOT)/../../..\"",
+				);
 				PRODUCT_NAME = "Bounce Lite";
 				PROVISIONING_PROFILE = "6DA870D0-3082-41B5-9A67-05CC6856CFCC";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "6DA870D0-3082-41B5-9A67-05CC6856CFCC";

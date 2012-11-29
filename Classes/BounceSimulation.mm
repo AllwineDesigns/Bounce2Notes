@@ -49,7 +49,7 @@ int preSolve(cpArbiter *arb, cpSpace *space, void *data) {
     BounceObject *obj1 = (BounceObject*)cpBodyGetUserData(body1);
     ChipmunkObject *cobj = (ChipmunkObject*)cpBodyGetUserData(body2);
     BounceObject *obj2 = nil;
-    
+        
     if([cobj isKindOfClass:[BounceObject class]]) {
         obj2 = (BounceObject*)cobj;
     }
@@ -77,6 +77,7 @@ void postSolve(cpArbiter *arb, cpSpace *space, void *data) {
     BounceObject *obj2 = nil;
     if([cobj isKindOfClass:[BounceObject class]]) {
         obj2 = (BounceObject*)cobj;
+        [obj1 collideWith:obj2];
     }
         
     float lastSpeed1 = obj1.lastVelocity.length();
@@ -184,7 +185,9 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 //    _objects = [[NSMutableSet alloc] initWithCapacity:10];
     _objects = [[NSMutableArray alloc] initWithCapacity:10];
     _delayedRemoveObjects = [[NSMutableSet alloc] initWithCapacity:10];
-        
+    _delayedAddObjects = [[NSMutableSet alloc] initWithCapacity:10];
+
+    
     _space = cpSpaceNew();
     cpSpaceSetCollisionSlop(_space, .02);
             
@@ -286,6 +289,7 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     object.order = order;
 
     [_objects addObject:object];
+
 }
 -(void)removeObject: (BounceObject*)object {
     [_objects removeObject:object];
@@ -296,6 +300,9 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 -(void)postSolveRemoveObject: (BounceObject*)object {
     [_delayedRemoveObjects addObject:object];
+}
+-(void)postSolveAddObject: (BounceObject*)object {
+    [_delayedAddObjects addObject:object];
 }
 
 -(void)addToSpace:(ChipmunkObject*)obj {
@@ -449,7 +456,12 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
         [obj removeFromSimulation];
     }
     
+    for(BounceObject *obj in _delayedAddObjects) {
+        [obj addToSimulation:self];
+    }
+    
     [_delayedRemoveObjects removeAllObjects];
+    [_delayedAddObjects removeAllObjects];
 }
 
 -(void)addToVelocity:(const vec2&)v {
@@ -669,8 +681,9 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
 }
 
 -(void)beginCreate:(void*)uniqueId at:(const vec2&)loc {
-    BounceObject *obj = [BounceObject randomObjectAt:loc];  
+    BounceObject *obj = [BounceObject randomObjectAt:loc];
     obj.size = .01;
+
   //  [obj addToSimulation:self];
     [self addGesture:[BounceGesture createGestureForObject:obj] forKey:uniqueId];
 }
@@ -797,6 +810,8 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
     }
     [_objects release]; _objects = nil;
     [_delayedRemoveObjects release]; _delayedRemoveObjects = nil;
+    [_delayedAddObjects release]; _delayedAddObjects = nil;
+
     [_arena removeFromSpace];
     [_arena release]; _arena = nil;
     

@@ -19,6 +19,8 @@ typedef enum {
     BounceObject *_obj;
     BounceGestureState _state;
     
+    vec2 _begin;
+    
     NSTimeInterval _creationTimestamp;
     NSTimeInterval _timestamp;
     

@@ -29,6 +29,8 @@ typedef enum {
     int _numShapes;
     int _allocatedShapes;
     
+    cpBool _sensor;
+    
     cpGroup _group;
     cpLayers _layers;
     
@@ -79,6 +81,9 @@ typedef enum {
 
 -(BOOL)isInfiniteRogue;
 -(void)makeInfiniteRogue;
+
+-(BOOL)isSensor;
+-(void)setSensor: (BOOL)sensor;
 
 -(BOOL)isRogue;
 -(void)makeRogue;

@@ -36,6 +36,17 @@
     return self;
 }
 
+-(void)grabCallbackWithPosition:(const vec2 &)pos velocity:(const vec2 &)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
+    self.angVel = angVel;
+    self.angle = angle;
+    _springLoc = pos;
+    self.isStationary = stationary;
+}
+
+-(void)grabCallback:(const vec2 &)loc {
+    
+}
+
 -(void)randomizeColor {
     vec2 loc = self.position;
     float t = [[NSProcessInfo processInfo] systemUptime]*loc.x*loc.y;
@@ -409,6 +420,32 @@
     obj.sound = val;
     [val play:.2];
 
+}
+
+@end
+
+@implementation BounceTypeConfigurationObject
+
+-(void)updateSetting {
+    
+}
+
+-(void)creatorCallback:(float)dt {
+    
+}
+
+-(void)setConfigurationValueForObject:(BounceObject *)obj {
+    [super setConfigurationValueForObject:obj];
+    obj.bounceType = self.bounceType;
+}
+
+-(id)originalValueForObject:(BounceObject *)obj {
+    NSValue *val = [NSNumber numberWithUnsignedInt:obj.bounceType];
+    return val;
+}
+
+-(void)setValue: (id)val forObject:(BounceObject *)obj {
+    obj.bounceType = BounceType([val unsignedIntValue]);
 }
 
 @end

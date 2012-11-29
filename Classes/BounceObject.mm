@@ -55,6 +55,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 @synthesize contactPoints = _contactPoints;
 @synthesize gravityScale = _gravityScale;
 @synthesize damping = _damping;
+@synthesize bounceType = _bounceType;
+@synthesize tempo = _tempo;
 
 +(id)randomObjectAt: (const vec2&)loc {
     BounceObject *obj = [[BounceObject alloc] initRandomObjectAt:loc];
@@ -84,6 +86,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 }
 -(id)initRandomObjectAt: (const vec2&)loc withVelocity:(const vec2&)vel {
     BounceShape bounceShape = [[BounceSettings instance].bounceShapeGenerator randomBounceShapeWithLocation:loc];
+    
     return [self initRandomObjectWithShape:bounceShape at:loc withVelocity:vel];
 }
 
@@ -195,7 +198,9 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         _velLimit = INFINITY;
         _color = color;
         _intensity = 2.2;
-        _isStationary = NO;
+        _tempo = 120;
+        _bounceType = BOUNCE_NORMAL;
+        
         self.patternTexture = [[[BounceSettings instance] patternTextureGenerator] randomPatternTextureWithLocation:loc];
 
         _sound = [BounceSettings instance].sound;
@@ -219,9 +224,29 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         
         cpBodySetVelLimit(_body, _velLimit);
         cpBodySetAngVelLimit(_body, 50);
+        
+        if(self.isStationary) {
+            [self makeStatic];
+        }
     }
     
     return self;
+}
+
+-(void)makeSimulated {
+    [super makeSimulated];
+    
+    [self setSensor:NO];
+}
+
+-(void)makeStatic {
+    [super makeStatic];
+    
+    if(_bounceType == BOUNCE_CREATOR) {
+        [self setSensor:YES];
+    } else {
+        [self setSensor:NO];
+    }
 }
 
 /*
@@ -274,6 +299,9 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
             break;
         case BOUNCE_RECTANGLE:
             [self setupRectangle];
+            break;
+        case BOUNCE_LINE:
+            [self setupCapsule];
             break;
         case BOUNCE_CAPSULE:
             [self setupCapsule];
@@ -333,6 +361,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     _bounciness = b;
     for(int i = 0; i < _numShapes; i++) {
         cpShapeSetElasticity(_shapes[i], .5*(1-b)+1*b);
+      //  cpShapeSetElasticity(_shapes[i], 1*(1-b)+.5*b);
+
     }
     _renderable.bounciness = b;
 }
@@ -367,7 +397,11 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         case BOUNCE_CAPSULE:
             [self resizeCapsule];
             break;
+        case BOUNCE_LINE:
+            [self resizeCapsule];
+            break;
         default:
+            
             break;
     }
     if(_space != NULL) {
@@ -408,35 +442,137 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     
 }
 -(void)createCallbackWithSize: (float)size secondarySize:(float)size2 {
-    if(size > 1) {
-        size = 1;
-        size2 = GOLDEN_RATIO;
+    switch(_bounceShape) {
+        case BOUNCE_LINE:
+            self.isStationary = YES;
+            break;
+        default:
+            if(size > 1) {
+                size = 1;
+                size2 = GOLDEN_RATIO;
+            }
+            self.secondarySize = size2;
+            self.size = size;
     }
-    self.secondarySize = size2;
-    self.size = size;
+}
+-(void)createCallbackWithLoc1:(const vec2 &)loc1 loc2:(const vec2 &)loc2 {
+    switch(_bounceShape) {
+        case BOUNCE_LINE: {
+            vec2 p = (loc1+loc2)*.5;
+            vec2 dir = loc2-loc1;
+            float angle = atan2f(dir.y,dir.x);
+            self.angle = angle;
+            float size = dir.length()*.5;
+            float size2 = .01;
+            if(size > 1) {
+                size = 1;
+                p = loc1+.5*dir.unit();
+            }
+            if(size <  size2*INVERSE_GOLDEN_RATIO) {
+                size = INVERSE_GOLDEN_RATIO*size2;
+            }
+            [self setSize:size secondarySize:size2];
+            self.position = p;
+            break;
+        }
+        default:
+            break;
+    }
+    
 }
 -(void)endCreateCallback {
+    if(_bounceShape == BOUNCE_LINE) {
+        self.secondarySize = .03;
+        self.isStationary = YES;
+    }
     
 }
 -(void)cancelCreateCallback {
-    
+    if(_bounceShape == BOUNCE_LINE) {
+        self.secondarySize = .03;
+        self.isStationary = YES;
+    }
 }
 
 -(void)beginGrabCallback:(const vec2&)loc {
     _beingGrabbed = YES;
     _springLoc = [self position];
     _vel = [self velocity];
+
+    vec2 dir = vec2(1,0);
+    dir.rotate(-self.angle);
+    
+    switch(_bounceShape) {
+        case BOUNCE_LINE: {
+            vec2 loc2 = _springLoc-_size*dir;
+            vec2 loc1 = _springLoc+_size*dir;
+            
+            float dist1 = (loc1-loc).length();
+            float dist2 = (loc2-loc).length();
+            
+            if(dist1 < dist2) {
+                _begin = loc2;
+                _draggingRightSide = YES;
+            } else {
+                _begin = loc1;
+                _draggingRightSide = NO;
+            }
+            break;
+        }
+        default:
+            break;
+    }
 }
 -(void)grabCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
-    
-    self.angVel = angVel;
-   // [self setVelocity:vel];
-     self.angle = angle;
-    _springLoc = pos;
-   // [self setPosition:pos];
-    self.isStationary = stationary;
+
+    switch(_bounceShape) {
+        case BOUNCE_LINE:
+            break;
+        default:
+            self.angVel = angVel;
+             self.angle = angle;
+            _springLoc = pos;
+            self.isStationary = stationary;
+            break;
+    }
 }
 -(void)grabCallback:(const vec2 &)loc {
+    vec2 loc1;
+    vec2 loc2;
+    
+    if(_draggingRightSide) {
+        loc2 = loc;
+        loc1 = _begin;
+    } else {
+        loc1 = loc;
+        loc2 = _begin;
+    }
+
+    switch(_bounceShape) {
+        case BOUNCE_LINE: {
+            vec2 p = (loc1+loc2)*.5;
+            vec2 dir = loc2-loc1;
+            float angle = atan2f(dir.y,dir.x);
+            self.angle = angle;
+            float size = dir.length()*.5;
+            float size2 = _size2;
+
+            if(size <  size2*INVERSE_GOLDEN_RATIO) {
+                size = INVERSE_GOLDEN_RATIO*size2;
+            }
+            if(size > 1) {
+                size = 1;
+                p = loc1+.5*dir.unit();
+            }
+            [self setSize:size secondarySize:size2];
+            self.position = p;
+            _springLoc = p;
+            break;
+        }
+        default:
+
+            break;
+    }
     
 }
 -(void)endGrabCallback {
@@ -530,6 +666,9 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         case BOUNCE_RECTANGLE:
             [self resizeRectangle];
             break;
+        case BOUNCE_LINE:
+            [self resizeCapsule];
+            break;
         case BOUNCE_CAPSULE:
             [self resizeCapsule];
             break;
@@ -584,6 +723,9 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
             [self resizeRectangle];
             break;
         case BOUNCE_CAPSULE:
+            [self resizeCapsule];
+            break;
+        case BOUNCE_LINE:
             [self resizeCapsule];
             break;
         case BOUNCE_STAR:
@@ -1128,6 +1270,19 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     [self setMoment:moment];    
 }
 
+-(void)creatorCallback:(float)dt {
+    if(_bounceType == BOUNCE_CREATOR && self.simulation) {
+        _lastBeat += dt;
+        if(_lastBeat > 60./_tempo) {
+            _lastBeat -= 60./_tempo;
+            vec2 pos = [self pointInObject];
+            BounceObject *newobj = [BounceObject randomObjectAt:pos];
+            [self.simulation postSolveAddObject:newobj];
+            [newobj playSound:.2];
+        }
+    }
+}
+
 
 
 -(void)step:(float)dt {
@@ -1135,6 +1290,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     _intensity *= .9; // when dt = .02
 
     _age += dt;
+    
+    [self creatorCallback:dt];
     
     if(_beingGrabbed || _beingTransformed) {
         float spring_k = 300;
@@ -1195,7 +1352,7 @@ drawShape(cpShape *shape, const vec4& color)
 
 -(void)draw {
     [_renderable draw];
-   /* 
+   /*
     for(int i = 0; i < _numShapes; i++) {
         drawShape(_shapes[i], _color);
     }*/
@@ -1206,6 +1363,15 @@ drawShape(cpShape *shape, const vec4& color)
     [_renderable drawSelected];
 }
 
+-(void)collideWith:(BounceObject *)obj {
+    if(_bounceType == BOUNCE_DESTROYER && self.simulation && obj.isRemovable) {
+        [self.simulation postSolveRemoveObject:obj];
+    }
+    
+    if(obj.bounceType == BOUNCE_DESTROYER && obj.simulation && self.isRemovable) {
+        [obj.simulation postSolveRemoveObject:self];
+    }
+}
 
 -(void)separate {
     float angle = self.angle;  
@@ -1292,6 +1458,330 @@ drawShape(cpShape *shape, const vec4& color)
                 }
             }
         }
+    }
+}
+
+
+static vec2 pointInShapes(cpShape **shapes, int numShapes) {
+    float total_area = 0;
+    
+    float *area = (float*)malloc(sizeof(float)*numShapes);
+    
+    for(int i = 0; i < numShapes; i++) {
+        cpShape *shape = shapes[i];
+        switch(CP_PRIVATE(shape->klass)->type){
+            case CP_CIRCLE_SHAPE: {
+                cpCircleShape *circle = (cpCircleShape *)shape;
+                total_area += cpAreaForCircle(circle->r, 0);
+                break;
+            }
+            case CP_SEGMENT_SHAPE: {
+                cpSegmentShape *seg = (cpSegmentShape *)shape;
+                total_area += cpAreaForSegment(seg->a, seg->b, seg->r);
+                break;
+            }
+            case CP_POLY_SHAPE: {
+                cpPolyShape *poly = (cpPolyShape *)shape;
+                total_area += cpAreaForPoly(poly->numVerts, poly->verts);
+                
+                break;
+            }
+            default:
+                NSLog(@"pointInShapes not implemented for shape");
+                break;
+        }
+        area[i] = total_area;
+    }
+    
+    float a = RANDFLOAT*total_area;
+    vec2 p;
+    
+    for(int i = 0; i < numShapes; i++) {
+        if(a <= area[i]) {
+            cpShape *shape = shapes[i];
+            switch(CP_PRIVATE(shape->klass)->type){
+                case CP_CIRCLE_SHAPE: {
+                    cpCircleShape *circle = (cpCircleShape *)shape;
+                    
+                    float a = RANDFLOAT;
+                    float r = sqrt(RANDFLOAT);
+                    
+                    p = vec2(r*circle->r*cos(a*2*PI), r*circle->r*sin(a*2*PI));
+                    p += vec2(circle->tc);
+                    break;
+                }
+                case CP_SEGMENT_SHAPE: {
+                    cpSegmentShape *seg = (cpSegmentShape *)shape;
+                    vec2 pt1(seg->a);
+                    vec2 pt2(seg->b);
+                    float len = (pt1-pt2).length();
+                    float half_circle = PI*seg->r*seg->r*.5;
+                    float rectangle = len*seg->r*2;
+                    
+                    float total = 2*half_circle+rectangle;
+                    
+                    half_circle /= total;
+                    rectangle /= total;
+                    
+                    float which_shape = RANDFLOAT;
+                    
+                    if(which_shape < half_circle) {
+                        float a = RANDFLOAT;
+                        float r = sqrt(RANDFLOAT);
+                        
+                        p = vec2(r*seg->r*cos(a*PI+M_PI_2)-len*.5, r*seg->r*sin(a*PI+M_PI_2));
+                    } else if(which_shape < 2*half_circle) {
+                        float a = RANDFLOAT;
+                        float r = sqrt(RANDFLOAT);
+                        
+                        p = vec2(r*seg->r*cos(a*PI-M_PI_2)+len*.5, r*seg->r*sin(a*PI-M_PI_2));
+                    } else {
+                        float x = RANDFLOAT;
+                        float y = RANDFLOAT;
+                        
+                        p = vec2(.5*len*(2*x-1), seg->r*(2*y-1));
+                    }
+                    break;
+                }
+                case CP_POLY_SHAPE: {
+                    cpPolyShape *poly = (cpPolyShape *)shape;
+                    cpVect *pts = poly->verts;
+                    float *poly_area = (float*)malloc(sizeof(float)*poly->numVerts);
+                    float total_poly_area = 0;
+                    for(int j = 0; j < poly->numVerts-2; j++) {
+                        vec2 A(pts[0]);
+                        vec2 B(pts[j+1]);
+                        vec2 C(pts[j+2]);
+                        
+                        float tri = fabs(A.x*(B.y-C.y)+B.x*(C.y-A.y)+C.x*(A.y-B.y))*.5;
+                        
+                        total_poly_area += tri;
+                        poly_area[j] = total_poly_area;
+                    }
+                    
+                    float pa = RANDFLOAT*total_poly_area;
+                    for(int j = 0; j < poly->numVerts-2; j++) {
+                        if(pa <= poly_area[j]) {
+                            vec2 A(pts[0]);
+                            vec2 B(pts[j+1]);
+                            vec2 C(pts[j+2]);
+                            
+                            float a = RANDFLOAT;
+                            float b = sqrt(RANDFLOAT);
+                            
+                            vec2 v1 = B-A;
+                            vec2 v2 = C-A;
+                            
+                            p = A+v1*(1-b)+v2*b*a;
+                            
+                            break;
+                        }
+                    }
+                    free(poly_area);
+                    
+                    break;
+                }
+                default:
+                    NSLog(@"pointInShapes not implemented for shape");
+                    break;
+            }
+            break;
+        }
+    }
+    
+    free(area);
+    
+    return p;
+}
+
+-(vec2)pointInObject {
+    vec2 p;
+    switch(_bounceShape) {
+        case BOUNCE_BALL: {
+            float a = RANDFLOAT;
+            float r = sqrt(RANDFLOAT);
+            
+            p = vec2(r*_size*cos(a*2*PI), r*_size*sin(a*2*PI));
+        
+            break;
+        }
+        case BOUNCE_LINE:
+        case BOUNCE_CAPSULE: {
+            float half_circle = PI*_size2*_size2*.5;
+            float rectangle = (2*_size-2*_size2)*_size2*2;
+            
+            float total = 2*half_circle+rectangle;
+            
+            half_circle /= total;
+            rectangle /= total;
+            
+            float which_shape = RANDFLOAT;
+            
+            if(which_shape < half_circle) {
+                float a = RANDFLOAT;
+                float r = sqrt(RANDFLOAT);
+                
+                p = vec2(r*_size2*cos(a*PI+M_PI_2)-_size+_size2, r*_size2*sin(a*PI+M_PI_2));
+            } else if(which_shape < 2*half_circle) {
+                float a = RANDFLOAT;
+                float r = sqrt(RANDFLOAT);
+                
+                p = vec2(r*_size2*cos(a*PI-M_PI_2)+_size-_size2, r*_size2*sin(a*PI-M_PI_2));
+            } else {
+                float x = RANDFLOAT;
+                float y = RANDFLOAT;
+                
+                p = vec2((_size-_size2)*(2*x-1), _size2*(2*y-1));
+            }
+            
+            
+            break;
+        }
+        case BOUNCE_RECTANGLE:
+        {
+            float x = RANDFLOAT;
+            float y = RANDFLOAT;
+            
+            p = vec2(_size*(2*x-1), _size2*(2*y-1));
+            
+            break;
+        }
+        case BOUNCE_TRIANGLE: {
+            float a = RANDFLOAT;
+            float b = sqrt(RANDFLOAT);
+            
+            float cos30 = .866025403784; // sqrt(3)/2
+            float sin30 = .5;
+            
+            vec2 verts[3];
+            verts[0].x = 0;
+            verts[0].y = _size*1.333333;
+            
+            verts[1].x = _size*cos30*1.333333;
+            verts[1].y = -_size*sin30*1.333333;
+            
+            verts[2].x = -_size*cos30*1.333333;
+            verts[2].y = -_size*sin30*1.333333;
+            
+            vec2 v1 = verts[2]-verts[1];
+            vec2 v2 = verts[0]-verts[1];
+            
+            p = verts[1]+v1*(1-b)+v2*b*a;
+            
+            break;
+        }
+        case BOUNCE_SQUARE: {
+            float x = RANDFLOAT;
+            float y = RANDFLOAT;
+            
+            p = vec2(_size*(2*x-1), _size*(2*y-1));
+            
+            break;
+        }
+        case BOUNCE_PENTAGON: {
+            float a = RANDFLOAT;
+            float b = sqrt(RANDFLOAT);
+            
+            float cos72 = .309016994375;
+            float sin72 = .951056516295;
+            
+            vec2 v1(0, _size*1.1056);
+            vec2 v2 = v1;
+            v2.rotate(cos72,sin72);
+            
+            p = v1*(1-b)+v2*b*a;
+            
+            unsigned int i = RANDFLOAT*5;
+            
+            p.rotate(i*72.*PI/180);
+            
+            break;
+        }
+        case BOUNCE_STAR: {
+            float sin36 = .587785252292;
+            float cos36 = .809016994375;
+            
+            vec2 vert(0, _size*1.1056);
+            
+            vec2 verts[4];
+            verts[0] = vert;
+            
+            verts[1] = .5*vert;
+            verts[1].rotate(cos36,sin36);
+            
+            verts[2] = vec2();
+            
+            verts[3] = .5*vert;
+            verts[3].rotate(cos36,-sin36);
+            
+            vec2 A = verts[0];
+            vec2 B = verts[1];
+            vec2 C = verts[3];
+            
+            float tri1 = fabs(A.x*(B.y-C.y)+B.x*(C.y-A.y)+C.x*(A.y-B.y))*.5;
+            
+            A = verts[1];
+            B = verts[2];
+            C = verts[3];
+            
+            float tri2 = fabs(A.x*(B.y-C.y)+B.x*(C.y-A.y)+C.x*(A.y-B.y))*.5;
+            
+            float total = tri1+tri2;
+            
+            tri1 /= total;
+            tri2 /= total;
+            
+            float which_tri = RANDFLOAT;
+            
+            vec2 v1;
+            vec2 v2;
+                        
+            if(which_tri < tri1) {
+                v1 = verts[0]-verts[1];
+                v2 = verts[3]-verts[1];
+            } else {
+                v1 = verts[2]-verts[1];
+                v2 = verts[3]-verts[1];
+            }
+            
+            float a = RANDFLOAT;
+            float b = sqrt(RANDFLOAT);
+
+            p = verts[1]+v1*(1-b)+v2*b*a;
+
+            unsigned int i = RANDFLOAT*5;
+            
+            p.rotate(i*72.*PI/180);
+            
+            break;
+        }
+        case BOUNCE_NOTE:
+            p = pointInShapes(_shapes, _numShapes);
+            break;
+        default:
+            break;
+    }
+    p.rotate(-self.angle);
+    p += self.position;
+    
+    return p;
+}
+
+-(void)setBounceType:(BounceType)bounceType {
+    _bounceType = bounceType;
+    
+    switch(bounceType) {
+        case BOUNCE_NORMAL:
+        case BOUNCE_DESTROYER:
+            [self setSensor:NO];
+            break;
+        case BOUNCE_CREATOR:
+            if(self.isStatic) {
+                [self setSensor:YES];
+            }
+            break;
+        default:
+            break;
     }
 }
 

@@ -27,13 +27,25 @@ typedef enum {
     BOUNCE_CAPSULE,
     BOUNCE_STAR,
     BOUNCE_NOTE,
+    BOUNCE_LINE,
     NUM_BOUNCE_SHAPES
 } BounceShape;
+
+typedef enum {
+    BOUNCE_NORMAL,
+    BOUNCE_CREATOR,
+    BOUNCE_DESTROYER
+    
+} BounceType;
 
 @interface BounceObject : ChipmunkObject <NSCoding> { 
     id<BounceSound> _sound;
     BounceShape _bounceShape;
-        
+    
+    BounceType _bounceType;
+    float _tempo;
+    float _lastBeat;
+            
     BOOL _isPreviewable;
     BOOL _isRemovable;
     BOOL _simulationWillDraw;
@@ -62,6 +74,11 @@ typedef enum {
     
     vec2 _springLoc;
     vec2 _vel;
+    
+    // variables for grabbing rectangles and capsules
+    vec2 _begin;
+    BOOL _draggingRightSide;
+    //
     
     BOOL _beingGrabbed;
     BOOL _beingTransformed;
@@ -93,6 +110,9 @@ typedef enum {
 @property (nonatomic) float damping;
 @property (nonatomic) float gravityScale;
 
+@property (nonatomic) BounceType bounceType;
+@property (nonatomic) float tempo;
+
 +(id)randomObjectAt: (const vec2&)loc;
 +(id)randomObjectAt:(const vec2 &)loc withVelocity:(const vec2&)vel;
 +(id)randomObjectWithShape: (BounceShape)bounceShape at:(const vec2 &)loc withVelocity:(const vec2&)vel;
@@ -120,9 +140,11 @@ typedef enum {
 -(void)setVelocityLimit:(float)limit;
 
 -(void)separate;
+-(void)collideWith:(BounceObject*)obj;
 
 -(void)beginCreateCallback;
 -(void)createCallbackWithSize: (float)size secondarySize:(float)size2;
+-(void)createCallbackWithLoc1: (const vec2&)loc1 loc2:(const vec2&)loc2;
 -(void)endCreateCallback;
 -(void)cancelCreateCallback;
 
@@ -180,6 +202,8 @@ typedef enum {
 -(void)addToSimulation:(BounceSimulation*)sim;
 -(void)removeFromSimulation;
 -(void)postSolveRemoveFromSimulation;
+
+-(vec2)pointInObject;
 
 -(BOOL)hasBeenAddedToSimulation;
 

@@ -113,6 +113,10 @@
 }
 @end;
 
+@interface BounceTypeConfigurationObject : BounceConfigurationObject {
+}
+@end;
+
 @interface BounceChordConfigurationObject : BounceNoteConfigurationObject {
     unsigned int _chord;
     BOOL _active;
