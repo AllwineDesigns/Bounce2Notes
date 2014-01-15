@@ -55,6 +55,7 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
+#ifndef BOUNCE_LITE
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_PENTAGON at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     //        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:2 numRows:4 numCols:4];
@@ -84,6 +85,7 @@
     shapeConfigObject.patternTexture = [texManager getTexture:@"Capsule"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
+#endif
     
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_NOTE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
@@ -91,12 +93,6 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
-    shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_LINE at:shapePos withVelocity:vec2() ];
-    shapeConfigObject.size = 1.5*shapeSize;
-    shapeConfigObject.secondarySize = .03;
-    shapeConfigObject.patternTexture = [texManager getTexture:@"Line"];
-    [shapeConfigObject addToSimulation:sim];
-    [shapeConfigObject release];
     
     [self addSimulation:sim];
     
@@ -136,12 +132,14 @@
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
     
+#ifndef BOUNCE_LITE
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(.5, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
     patternConfigObject.secondarySize = patternConfigObject.size*GOLDEN_RATIO;
     patternConfigObject.patternTexture = [texManager getTexture:@"stripes.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
+#endif
     
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.4, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
@@ -159,6 +157,7 @@
     [patternConfigObject release];
      */
     
+#ifndef BOUNCE_LITE
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
     patternConfigObject.size = shapeSize;
     patternConfigObject.secondarySize = patternConfigObject.size*GOLDEN_RATIO;
@@ -179,6 +178,7 @@
     patternConfigObject.patternTexture = [texManager getTexture:@"weave.jpg"];
     [patternConfigObject addToSimulation:sim];
     [patternConfigObject release];
+#endif
     
     /*
     patternConfigObject = [[BouncePatternConfigurationObject alloc] initRandomObjectAt:vec2(-.6, -_invaspect-.5) withVelocity:vec2() ];
@@ -548,4 +548,5 @@
   //  }
     
 }
+
 @end

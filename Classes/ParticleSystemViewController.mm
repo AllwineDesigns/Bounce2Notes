@@ -22,7 +22,6 @@
 #import "BounceFileManager.h"
 #import "BounceConstants.h"
 
-#define BOUNCE_LITE_MAX_BALLS 15
 
 @interface ParticleSystemViewController ()
 @property (nonatomic, retain) EAGLContext *context;
@@ -52,7 +51,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:@"BounceContributors"];
         
-    alertView = [[UIAlertView alloc] initWithTitle:@"Upgrade to full version" message:@"You must have the full version to create more balls." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Buy!", @"Dismiss All",  nil];
+    alertView = [[UIAlertView alloc] initWithTitle:@"Upgrade to Bounce 2: Notes!" message:@"You must have the full version to be able to use the Bounce Window." delegate:self cancelButtonTitle:@"Dismiss" otherButtonTitles:@"Go to App Store!", @"Dismiss All",  nil];
     
     saveView = [[UIAlertView alloc] initWithTitle:@"Save" message:@"" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Save",  nil];
     saveView.alertViewStyle = UIAlertViewStylePlainTextInput;
@@ -179,6 +178,8 @@
     if([[FSABackgroundQueue instance] operationCount] == 0) {
         _ready = YES;
         [_loadingObject release];
+        _configPane.upgradeAlert = alertView;
+        
         /*
         BounceNoteDuration notes[] = {
             {BOUNCE_MIDI_C4, BOUNCE_QUARTER_NOTE},
@@ -1102,11 +1103,12 @@
         switch (buttonIndex) {
             case 2:
                 dismissAllUpgradeAlerts = YES;
+                _configPane.dismissAllAlerts = YES;
             case 0:    
                 break;
                 
             default:
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/bounce!!/id530767513?ls=1&mt=8"]];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://itunes.apple.com/us/app/bounce-2-notes/id573319418?ls=1&mt=8"]];
                 break;
         }
     } else if(view == saveView) {

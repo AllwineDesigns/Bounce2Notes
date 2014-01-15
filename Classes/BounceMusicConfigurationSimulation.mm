@@ -313,6 +313,9 @@
 }
 
 -(void)beginDrag:(void*)uniqueId at:(const vec2&)loc {
+#ifdef BOUNCE_LITE
+    [_pane showUpgradeAlert:@"In the Notes tab you can change what chord the shapes play when they collide. Get the full version of Bounce 2: Notes to try it out!"];
+#else
     BounceObject *obj = [self objectAt:loc];
     if(obj == nil || [obj isKindOfClass:[BounceChordConfigurationObject class]]) {
         [obj singleTapAt:loc];
@@ -321,6 +324,8 @@
     } else {
         [super beginDrag:uniqueId at:loc];
     }
+#endif
+
 }
 -(void)drag:(void*)uniqueId at:(const vec2&)loc {
     NSValue *key = [NSValue valueWithPointer:uniqueId];

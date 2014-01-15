@@ -300,9 +300,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         case BOUNCE_RECTANGLE:
             [self setupRectangle];
             break;
-        case BOUNCE_LINE:
-            [self setupCapsule];
-            break;
         case BOUNCE_CAPSULE:
             [self setupCapsule];
             break;
@@ -397,9 +394,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         case BOUNCE_CAPSULE:
             [self resizeCapsule];
             break;
-        case BOUNCE_LINE:
-            [self resizeCapsule];
-            break;
         default:
             
             break;
@@ -443,9 +437,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 }
 -(void)createCallbackWithSize: (float)size secondarySize:(float)size2 {
     switch(_bounceShape) {
-        case BOUNCE_LINE:
-            self.isStationary = YES;
-            break;
         default:
             if(size > 1) {
                 size = 1;
@@ -456,42 +447,13 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     }
 }
 -(void)createCallbackWithLoc1:(const vec2 &)loc1 loc2:(const vec2 &)loc2 {
-    switch(_bounceShape) {
-        case BOUNCE_LINE: {
-            vec2 p = (loc1+loc2)*.5;
-            vec2 dir = loc2-loc1;
-            float angle = atan2f(dir.y,dir.x);
-            self.angle = angle;
-            float size = dir.length()*.5;
-            float size2 = .01;
-            if(size > 1) {
-                size = 1;
-                p = loc1+.5*dir.unit();
-            }
-            if(size <  size2*INVERSE_GOLDEN_RATIO) {
-                size = INVERSE_GOLDEN_RATIO*size2;
-            }
-            [self setSize:size secondarySize:size2];
-            self.position = p;
-            break;
-        }
-        default:
-            break;
-    }
+
     
 }
 -(void)endCreateCallback {
-    if(_bounceShape == BOUNCE_LINE) {
-        self.secondarySize = .03;
-        self.isStationary = YES;
-    }
     
 }
 -(void)cancelCreateCallback {
-    if(_bounceShape == BOUNCE_LINE) {
-        self.secondarySize = .03;
-        self.isStationary = YES;
-    }
 }
 
 -(void)beginGrabCallback:(const vec2&)loc {
@@ -501,33 +463,10 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
     vec2 dir = vec2(1,0);
     dir.rotate(-self.angle);
-    
-    switch(_bounceShape) {
-        case BOUNCE_LINE: {
-            vec2 loc2 = _springLoc-_size*dir;
-            vec2 loc1 = _springLoc+_size*dir;
-            
-            float dist1 = (loc1-loc).length();
-            float dist2 = (loc2-loc).length();
-            
-            if(dist1 < dist2) {
-                _begin = loc2;
-                _draggingRightSide = YES;
-            } else {
-                _begin = loc1;
-                _draggingRightSide = NO;
-            }
-            break;
-        }
-        default:
-            break;
-    }
 }
 -(void)grabCallbackWithPosition:(const vec2&)pos velocity:(const vec2&)vel angle:(float)angle angVel:(float)angVel stationary:(BOOL)stationary {
 
     switch(_bounceShape) {
-        case BOUNCE_LINE:
-            break;
         default:
             self.angVel = angVel;
              self.angle = angle;
@@ -546,32 +485,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     } else {
         loc1 = loc;
         loc2 = _begin;
-    }
-
-    switch(_bounceShape) {
-        case BOUNCE_LINE: {
-            vec2 p = (loc1+loc2)*.5;
-            vec2 dir = loc2-loc1;
-            float angle = atan2f(dir.y,dir.x);
-            self.angle = angle;
-            float size = dir.length()*.5;
-            float size2 = _size2;
-
-            if(size <  size2*INVERSE_GOLDEN_RATIO) {
-                size = INVERSE_GOLDEN_RATIO*size2;
-            }
-            if(size > 1) {
-                size = 1;
-                p = loc1+.5*dir.unit();
-            }
-            [self setSize:size secondarySize:size2];
-            self.position = p;
-            _springLoc = p;
-            break;
-        }
-        default:
-
-            break;
     }
     
 }
@@ -666,9 +579,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
         case BOUNCE_RECTANGLE:
             [self resizeRectangle];
             break;
-        case BOUNCE_LINE:
-            [self resizeCapsule];
-            break;
         case BOUNCE_CAPSULE:
             [self resizeCapsule];
             break;
@@ -723,9 +633,6 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
             [self resizeRectangle];
             break;
         case BOUNCE_CAPSULE:
-            [self resizeCapsule];
-            break;
-        case BOUNCE_LINE:
             [self resizeCapsule];
             break;
         case BOUNCE_STAR:
@@ -1605,7 +1512,6 @@ static vec2 pointInShapes(cpShape **shapes, int numShapes) {
         
             break;
         }
-        case BOUNCE_LINE:
         case BOUNCE_CAPSULE: {
             float half_circle = PI*_size2*_size2*.5;
             float rectangle = (2*_size-2*_size2)*_size2*2;

@@ -68,13 +68,6 @@
         }
         
         [configObj setConfigurationValueForObject:newobj];
-
-        
-        if(newobj.bounceShape == BOUNCE_LINE) {
-            newobj.isStationary = YES;
-            [newobj makeStatic];
-            newobj.secondarySize = .03;
-        }
         
         [newobj addToSimulation:_simulation];
         

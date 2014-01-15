@@ -27,7 +27,6 @@ typedef enum {
     BOUNCE_CAPSULE,
     BOUNCE_STAR,
     BOUNCE_NOTE,
-    BOUNCE_LINE,
     NUM_BOUNCE_SHAPES
 } BounceShape;
 

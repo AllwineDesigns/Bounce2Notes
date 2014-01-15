@@ -65,6 +65,7 @@ typedef enum {
     
     float _springAngle;
     float _angVel;
+    
 }
 
 @property (nonatomic) float springAngle;
@@ -114,7 +115,14 @@ typedef enum {
     unsigned int _switchToSimulation;
     
     BouncePaneState _state;
+    
+    UIAlertView *_upgradeAlert;
+    BOOL _dismissAllAlerts;
+
 }
+@property (nonatomic, retain) UIAlertView* upgradeAlert;
+@property (nonatomic) BOOL dismissAllAlerts;
+
 
 @property (nonatomic, assign) MainBounceSimulation* simulation;
 @property (nonatomic) BouncePaneSide side;
@@ -157,7 +165,7 @@ typedef enum {
 -(BOOL)cancelDrag:(void*)uniqueId at:(const vec2&)loc;
 
 -(void)updateSettings;
-
+-(void)showUpgradeAlert:(NSString*)msg;
 -(void)reset;
 -(void)activate;
 -(void)deactivate;

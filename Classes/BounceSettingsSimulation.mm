@@ -1095,7 +1095,15 @@
         _sliding = uniqueId;
         _beginSlidingPos = loc;
     }
+#ifdef BOUNCE_LITE
+    if([self objectAt:loc] != _pageSlider.handle && [self objectAt:loc] != _pageSlider.track) {
+        [_pane showUpgradeAlert:@"The Advanced tab can be used to change many of the simulation's properties such as bounciness, friction and much more. Get the full version of Bounce 2: Notes to try it out!"];
+    } else {
+        [super beginDrag:uniqueId at:loc];
+    }
+#else
     [super beginDrag:uniqueId at:loc];
+#endif
 }
 
 -(void)drag:(void *)uniqueId at:(const vec2 &)loc {

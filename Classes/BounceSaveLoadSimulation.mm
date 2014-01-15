@@ -379,6 +379,16 @@
     }
 }
 
+-(void)beginDrag:(void *)uniqueId at:(const vec2 &)loc {
+#ifdef BOUNCE_LITE
+    if([self objectAt:loc] != _pageSlider.handle && [self objectAt:loc] != _pageSlider.track) {
+        [_pane showUpgradeAlert:@"The Save/Load tab is used to save the simulations you've created and to load many builtin simulations. Get the full version of Bounce 2: Notes to try it out!"];
+    } else {
+        [super beginDrag:uniqueId at:loc];
+    }
+#endif
+}
+
 -(void)longTouchObject:(BounceObject *)obj at:(const vec2 &)loc {
     if([obj isKindOfClass:[BounceLoadObject class]]) {
         BounceLoadObject *load = (BounceLoadObject*)obj;

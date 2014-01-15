@@ -400,6 +400,9 @@ BouncePaneOrientation getBouncePaneOrientation() {
 
 @implementation BouncePane
 
+@synthesize upgradeAlert=_upgradeAlert;
+@synthesize dismissAllAlerts=_dismissAllAlerts;
+
 @synthesize simulation = _simulation;
 @synthesize object = _object;
 
@@ -621,6 +624,13 @@ BouncePaneOrientation getBouncePaneOrientation() {
     [_object deactivate];
 }
 
+-(void)showUpgradeAlert:(NSString*)msg {
+    if(!_dismissAllAlerts) {
+        _upgradeAlert.message = msg;
+        [_upgradeAlert show];
+    }
+}
+
 
 -(BOOL)singleTap:(void*)uniqueId at:(const vec2&)loc {
     if([self isHandleAreaAt:loc] && ![[BounceSettings instance] bounceLocked]) {
@@ -654,6 +664,7 @@ BouncePaneOrientation getBouncePaneOrientation() {
     for(BounceSimulation *sim in _simulations) {
         BOOL responds = [sim respondsToGesture:uniqueId];
         if(responds) {
+
             [sim flick:uniqueId at:loc inDirection:dir time:time];
             return YES;
         }
@@ -666,7 +677,9 @@ BouncePaneOrientation getBouncePaneOrientation() {
     for(BounceSimulation *sim in _simulations) {
         BOOL responds = [sim respondsToGesture:uniqueId];
         if(responds) {
+
             [sim longTouch:uniqueId at:loc];
+
             return YES;
         }
     }
@@ -680,7 +693,9 @@ BouncePaneOrientation getBouncePaneOrientation() {
         if(![sim objectAt:loc] && [_simulationTabs containsObject:[_simulation objectAt:loc]]) {
             return NO;
         }
+
         [sim beginDrag:uniqueId at:loc];
+
         return YES;
     }
     /*
@@ -943,6 +958,8 @@ BouncePaneOrientation getBouncePaneOrientation() {
     [_simulationTabs release];
     
     [_simulations release];
+    [_upgradeAlert release];
+
     
     [super dealloc];
 }

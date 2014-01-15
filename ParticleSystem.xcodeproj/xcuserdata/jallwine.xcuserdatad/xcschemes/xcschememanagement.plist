@@ -4,15 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Bounce 2: Notes Lite.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
 		<key>Bounce 2: Notes.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>Bounce2Notes Lite.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -27,7 +27,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
+		<key>B2741E5916ECD76F00346960</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>B28057A31570361E00C2E7A2</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B2B5C53B16ECC9E5001313E1</key>
 		<dict>
 			<key>primary</key>
 			<true/>
