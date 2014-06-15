@@ -22,7 +22,7 @@ using namespace fsa;
 }
 
 -(unsigned int)numPoints {
-    return _points.size();
+    return (unsigned int)_points.size();
 }
 
 -(vec2*)points {

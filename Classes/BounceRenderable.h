@@ -10,6 +10,7 @@
 #import <fsa/Vector.hpp>
 #import "FSATexture.h"
 #import "FSABuffer.h"
+#import <chipmunk/chipmunk.h>
 
 using namespace fsa;
 

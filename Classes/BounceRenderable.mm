@@ -67,6 +67,7 @@
     float sinangle = sin(-angle);
     
     for(int i = 0; i < _numVerts; i++) {
+ //       _verts[i] = _vertsUntransformed[i];
         _verts[i] = _vertsUntransformed[i]*size+_vertOffsets[i];
         _verts[i].rotate(cosangle,sinangle);
         _verts[i] += pos;

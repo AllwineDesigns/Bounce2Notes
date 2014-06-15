@@ -47,14 +47,14 @@
     NSMutableArray *files = [NSMutableArray arrayWithCapacity:_filesPerPage];
 
     if(_page < _builtInPages) {
-        int numFiles = [_builtInFiles count];
+        int numFiles = (int)[_builtInFiles count];
         for(int i = 0; i < _filesPerPage; i++) {
             if(_page*_filesPerPage+i < numFiles) {
                 [files addObject:[_builtInFiles objectAtIndex:_page*_filesPerPage+i]];
             }
         }
     } else {
-        int numFiles = [_saveFiles count];
+        int numFiles = (int)[_saveFiles count];
         for(int i = 0; i < _filesPerPage; i++) {
             if((_page-_builtInPages)*_filesPerPage+i < numFiles) {
                 [files addObject:[_saveFiles objectAtIndex:(_page-_builtInPages)*_filesPerPage+i]];

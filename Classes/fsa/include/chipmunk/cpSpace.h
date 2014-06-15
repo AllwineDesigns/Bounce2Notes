@@ -201,8 +201,15 @@ cpBool cpSpaceContainsBody(cpSpace *space, cpBody *body);
 /// Test if a constraint has been added to the space.
 cpBool cpSpaceContainsConstraint(cpSpace *space, cpConstraint *constraint);
 
+/// Convert a dynamic rogue body to a static one.
+/// If the body is active, you must remove it from the space first.
+void cpSpaceConvertBodyToStatic(cpSpace *space, cpBody *body);
+/// Convert a body to a dynamic rogue body.
+/// If you want the body to be active after the transition, you must add it to the space also.
+void cpSpaceConvertBodyToDynamic(cpSpace *space, cpBody *body, cpFloat mass, cpFloat moment);
+
 /// Post Step callback function type.
-typedef void (*cpPostStepFunc)(cpSpace *space, void *obj, void *data);
+typedef void (*cpPostStepFunc)(cpSpace *space, void *key, void *data);
 /// Schedule a post-step callback to be called when cpSpaceStep() finishes.
 /// You can only register one callback per unique value for @c key.
 /// Returns true only if @c key has never been scheduled before.

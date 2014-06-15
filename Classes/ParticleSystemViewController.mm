@@ -8,6 +8,7 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#import <chipmunk/chipmunk.h>
 #import "ParticleSystemViewController.h"
 #import "EAGLView.h"
 #import "FSATextureManager.h"
@@ -34,6 +35,13 @@
 
 - (void)awakeFromNib
 {
+    NSLog(@"Size of cpFloat: %lu", sizeof(cpFloat));
+    NSLog(@"Size of float: %lu", sizeof(float));
+    NSLog(@"Size of double: %lu", sizeof(double));
+    NSLog(@"Size of GLuint: %lu", sizeof(GLuint));
+    NSLog(@"Size of GLfloat: %lu", sizeof(GLfloat));
+    NSLog(@"Size of unsigned int: %lu", sizeof(unsigned int));
+    
     EAGLContext *aContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     if (!aContext)
@@ -70,6 +78,8 @@
     
     CGRect frame = [self.view frame];
     aspect = frame.size.width/frame.size.height;
+    
+    NSLog(@"aspect ratio: %f", aspect);
     
     _dt = .02;
     
@@ -192,6 +202,7 @@
             {BOUNCE_MIDI_C5, BOUNCE_QUARTER_NOTE}
         };
          */
+        /*
         BounceNoteDuration notes[] = {
             // Page 1
             
@@ -578,6 +589,7 @@
 
 
         };
+         */
         
         [_harmonyPlayer setSimulation:simulation];
   /*

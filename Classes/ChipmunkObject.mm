@@ -194,7 +194,6 @@
     return pos;
 }
 -(void)setPosition:(const vec2&)loc {
-
     cpBodySetPos(_body, (const cpVect&)loc);
     if(_space != NULL) {
         for(int i = 0; i < _numShapes; i++) {
@@ -264,7 +263,9 @@
 -(void)setMoment:(float)m {
     _moment = m;
     if(_state == CHIPMUNK_OBJECT_SIMULATED || _state == CHIPMUNK_OBJECT_ROGUE) {
-        cpBodySetMoment(_body, _moment);
+        if(_moment > 0) {
+            cpBodySetMoment(_body, _moment);
+        }
     }
 }
 

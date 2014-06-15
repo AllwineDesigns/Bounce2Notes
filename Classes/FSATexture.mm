@@ -150,7 +150,7 @@ typedef struct {
         _curPrefix = _minPrefix;
         _curName = _minName;
         _curWidth = _minWidth;
-        _curHeight = _curHeight;
+        _curHeight = _minHeight;
         _aspect = (float)_curWidth/_curHeight;
         _invaspect = 1./_aspect;
     }
@@ -384,8 +384,8 @@ typedef struct {
         
         CGContextSetTextDrawingMode(context, kCGTextFillStroke);
         
-        float components[2] = { 1, 1 };
-        float components2[2] = { .26666667, 1 };
+        CGFloat components[2] = { 1, 1 };
+        CGFloat components2[2] = { .26666667, 1 };
         CGColorRef color = CGColorCreate(colorSpace, components);
         CGColorRef color2 = CGColorCreate(colorSpace, components2);
         

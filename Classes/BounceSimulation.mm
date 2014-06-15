@@ -357,7 +357,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
     }
 }
 
-static void getAllBounceObjectsNearestQueryFunc(cpShape *shape, float dist, cpVect p, void* data) {
+static void getAllBounceObjectsNearestQueryFunc(cpShape *shape, cpFloat dist, cpVect p, void* data) {
     BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;
     
     cpBody *body = cpShapeGetBody(shape);
@@ -368,7 +368,7 @@ static void getAllBounceObjectsNearestQueryFunc(cpShape *shape, float dist, cpVe
     }
 }
 
-static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, cpVect p, void* data) {
+static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, cpFloat dist, cpVect p, void* data) {
     BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;
     
     cpBody *body = cpShapeGetBody(shape);
@@ -388,7 +388,7 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, float dist, c
     queryStruct.set = objects;
     queryStruct.simulation = self;
     
-    cpSpaceNearestPointQuery(_space, (cpVect&)loc, radius, CP_ALL_LAYERS, CP_NO_GROUP, getAllBounceObjectsNearestQueryFunc, (void*)&queryStruct);
+    cpSpaceNearestPointQuery(_space, (cpVect&)loc, (cpFloat)radius, CP_ALL_LAYERS, CP_NO_GROUP, getAllBounceObjectsNearestQueryFunc, (void*)&queryStruct);
     
     return objects;
 }

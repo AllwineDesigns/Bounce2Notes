@@ -27,7 +27,7 @@
             AttributeInfo *info = (AttributeInfo*)malloc(sizeof(AttributeInfo));
             info->ptr = NULL;
             info->stride = 0;
-            info->loc = i;
+            info->loc = glGetUniformLocation(_program, n);
             info->type = type;
             info->size = size;
             
@@ -55,7 +55,7 @@
             AttributeInfo *info = (AttributeInfo*)malloc(sizeof(AttributeInfo));
             info->ptr = NULL;
             info->stride = 0;
-            info->loc = i;
+            info->loc = glGetAttribLocation(_program, n);
             info->type = type;
             info->size = size;
             
@@ -72,6 +72,8 @@
     self = [super init];
     
     if(self) {
+        _vert_shader_name = vert_shader;
+        _frag_shader_name = frag_shader;
         _uniforms = nil;
         _attributes = nil;
         
@@ -100,7 +102,8 @@
     info->stride = stride;
 }
 
--(void)enable {    
+-(void)enable {
+    //NSLog(@"enabling shader: %@", _vert_shader_name);
     glUseProgram(_program);
     
 #if DEBUG
@@ -110,6 +113,39 @@
     for(NSString *name in _uniforms) {
         NSValue *val = [_uniforms valueForKey:name];
         AttributeInfo *info = (AttributeInfo*)[val pointerValue];
+        /*
+        switch(info->type) {
+            case GL_INT:
+                NSLog(@"%@: (GL_INT) uniform (%d,%d,%d)", name, info->loc, info->size, ((int*)info->ptr)[0]);
+                break;
+            case GL_SAMPLER_2D:
+                NSLog(@"%@:(GL_SAMPLER_2D) uniform (%d,%d,%d)", name, info->loc, info->size, ((int*)info->ptr)[0]);
+                break;
+            case GL_INT_VEC2:
+                NSLog(@"%@: (GL_INT_VEC2) uniform (%d,%d,(%d,%d))", name, info->loc, info->size, ((int*)info->ptr)[0], ((int*)info->ptr)[1]);
+                break;
+            case GL_INT_VEC3:
+                NSLog(@"%@: (GL_INT_VEC3) uniform (%d,%d,(%d,%d,%d))", name, info->loc, info->size, ((int*)info->ptr)[0], ((int*)info->ptr)[1],((int*)info->ptr)[2]);
+                break;
+            case GL_INT_VEC4:
+                NSLog(@"%@: (GL_INT_VEC4) uniform (%d,%d,(%d,%d,%d,%d))", name, info->loc, info->size, ((int*)info->ptr)[0], ((int*)info->ptr)[1],((int*)info->ptr)[2],((int*)info->ptr)[3]);
+                break;
+            case GL_FLOAT:
+                NSLog(@"%@: (GL_FLOAT) uniform (%d,%d,%f)", name, info->loc, info->size, ((float*)info->ptr)[0]);
+                break;
+            case GL_FLOAT_VEC2:
+                NSLog(@"%@: (GL_FLOAT_VEC2) uniform (%d,%d,(%f,%f))", name, info->loc, info->size, ((float*)info->ptr)[0], ((float*)info->ptr)[1]);
+                break;
+            case GL_FLOAT_VEC3:
+                NSLog(@"%@: (GL_FLOAT_VEC3) uniform (%d,%d,(%f,%f,%f))", name, info->loc, info->size, ((float*)info->ptr)[0], ((float*)info->ptr)[1],((float*)info->ptr)[2]);
+                break;
+            case GL_FLOAT_VEC4:
+                NSLog(@"%@: (GL_FLOAT_VEC4) uniform (%d,%d,(%f,%f,%f,%f))", name, info->loc, info->size, ((float*)info->ptr)[0], ((float*)info->ptr)[1],((float*)info->ptr)[2],((float*)info->ptr)[3]);
+                break;
+        
+        }
+         */
+
         switch(info->type) {
             case GL_INT:
                 glUniform1iv(info->loc, info->size, info->ptr);
@@ -267,7 +303,7 @@
     *shader = glCreateShader(type);
     glShaderSource(*shader, 1, &source, NULL);
     glCompileShader(*shader);
-    
+
 #if defined(DEBUG)
     GLint logLength;
     glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &logLength);

@@ -40,11 +40,11 @@ natural_t getFreeMemory() {
     }
     
     /* Stats in bytes */
-    natural_t mem_free = vm_stat.free_count * pagesize;
+    natural_t mem_free = (natural_t)(vm_stat.free_count * pagesize);
     return mem_free;
 }
 
-void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
+void HSVtoRGB( CGFloat *r, CGFloat *g, CGFloat *b, CGFloat h, CGFloat s, CGFloat v )
 {
 	//NSLog(@"Hue %f",h);
 	int i;

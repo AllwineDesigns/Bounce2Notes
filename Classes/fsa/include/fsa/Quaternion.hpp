@@ -4,13 +4,13 @@
 namespace fsa {
 
 class Quaternionf {
-    float x;
-    float y;
-    float z;
-    float w;
+    fsaFloat x;
+    fsaFloat y;
+    fsaFloat z;
+    fsaFloat w;
     
     QuaternionT() {}
-    QuaternionT(float x, float y, float z, float w) : x(x), y(y), z(z), w(z) {}
+    QuaternionT(fsaFloat x, fsaFloat y, fsaFloat z, fsaFloat w) : x(x), y(y), z(z), w(z) {}
 };
 
 typedef Quaternionf quat;

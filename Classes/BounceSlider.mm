@@ -91,7 +91,7 @@
         [_value retain];
         _label = [_labels objectAtIndex:index];
         [_label retain];
-        _index = _index;
+        _index = index;
         
         if([labels count] == 1) {
             _curT = .5;
@@ -150,7 +150,7 @@
         return;
     }
     if(_continuous) {
-        unsigned int numValues = [_values count];
+        unsigned long numValues = [_values count];
         for(unsigned int i = 0; i < numValues-1; i++) {
             id a = [_values objectAtIndex:i];
             id b = [_values objectAtIndex:i+1];
@@ -161,7 +161,7 @@
             }
         }
     } else {
-        unsigned int numValues = [_values count];
+        unsigned long numValues = [_values count];
         for(unsigned int i = 0; i < numValues; i++) {
             if([value isEqual:[_values objectAtIndex:i]]) {
                 self.index = i;
@@ -230,7 +230,7 @@
         t = 1;
     }    
     if(!_continuous) {
-        int maxNum = [_values count]-1;
+        unsigned long maxNum = [_values count]-1;
         if(maxNum == 0) {
             t = .5;
         } else {

@@ -13,6 +13,8 @@ typedef struct {
 
 @interface FSAShader : NSObject {
     GLuint _program;
+    NSString *_vert_shader_name;
+    NSString *_frag_shader_name;
     NSDictionary *_uniforms;
     NSDictionary *_attributes;
 }

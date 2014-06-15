@@ -101,7 +101,7 @@
     
     vec2 offset(-1.5*tabSize.width-.1*paneSize.width, paneSize.height*.5+tabSize.height*.5);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -195,7 +195,7 @@
     
     vec2 offset(-.5*tabSize.width-.1*paneSize.width, paneSize.height*.5+tabSize.height*.5);
 
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
     tab.patternTexture = [texManager getTexture:@"Patterns"];
@@ -253,7 +253,7 @@
 
     vec2 offset(.5*tabSize.width+.1*paneSize.width, paneSize.height*.5+tabSize.height*.5);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -324,7 +324,7 @@
 
     vec2 offset(1.5*tabSize.width+.1*paneSize.width, paneSize.height*.5+tabSize.height*.5);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -346,7 +346,7 @@
     
     vec2 offset(-paneSize.width*.5-tabSize.width*.4, .5*tabSize.width);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -369,7 +369,7 @@
 
     vec2 offset(0, paneSize.height*.5+tabSize.height*.5);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -393,7 +393,7 @@
 
     vec2 offset(paneSize.width*.5+tabSize.width*.4, .5*tabSize.width);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -417,7 +417,7 @@
     
     vec2 offset(paneSize.width*.5+tabSize.width*.4, -.5*tabSize.width);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;
@@ -441,7 +441,7 @@
     
     vec2 offset(-paneSize.width*.5-tabSize.width*.4, -.5*tabSize.width);
     
-    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:[_simulations count]-1 offset:offset];
+    BounceConfigurationTab *tab = [[BounceConfigurationTab alloc] initWithPane:self index:(unsigned int)[_simulations count]-1 offset:offset];
     
     tab.size = tabSize.width*.5;
     tab.secondarySize = tabSize.height*.5;

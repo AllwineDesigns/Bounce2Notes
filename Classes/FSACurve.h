@@ -31,7 +31,7 @@ inline float tFromLength(float length, float *lengths, int numPoints) {
     return t;
 }
 
-inline vec2 pointAt(vec2 *points, int numPoints, float t) {
+inline vec2 pointAt(vec2 *points, unsigned int numPoints, float t) {
     if(t <= 0) {
         return points[0];
     }
@@ -49,7 +49,7 @@ inline vec2 pointAt(vec2 *points, int numPoints, float t) {
     return points[i0]*(1-tt)+points[i1]*tt;
 }
 
-inline float valueAt(float *values, int numPoints, float t) {
+inline float valueAt(float *values, unsigned int numPoints, float t) {
     if(t <= 0) {
         return values[0];
     }

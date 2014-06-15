@@ -202,7 +202,7 @@ typedef struct _PVRTexHeader
 	for (int i=0; i < [_imageData count]; i++)
 	{
 		data = [_imageData objectAtIndex:i];
-		glCompressedTexImage2D(GL_TEXTURE_2D, i, _internalFormat, width, height, 0, [data length], [data bytes]);
+		glCompressedTexImage2D(GL_TEXTURE_2D, i, _internalFormat, width, height, 0, (int)[data length], [data bytes]);
 		
 		err = glGetError();
 		if (err != GL_NO_ERROR)

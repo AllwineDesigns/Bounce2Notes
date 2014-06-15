@@ -315,7 +315,7 @@ void audioRouteChangeListenerCallback (
     
     // The AudioUnitSampleType data type is the recommended type for sample data in audio
     //    units. This obtains the byte size of the type for use in filling in the ASBD.
-    size_t bytesPerSample = sizeof (AudioUnitSampleType);
+    UInt32 bytesPerSample = sizeof (AudioUnitSampleType);
     
     // Fill the application audio format struct's fields to define a linear PCM, 
     //        stereo, noninterleaved stream at the hardware sample rate.
@@ -337,7 +337,7 @@ void audioRouteChangeListenerCallback (
     
     // The AudioUnitSampleType data type is the recommended type for sample data in audio
     //    units. This obtains the byte size of the type for use in filling in the ASBD.
-    size_t bytesPerSample = sizeof (AudioUnitSampleType);
+    UInt32 bytesPerSample = sizeof (AudioUnitSampleType);
     
     // Fill the application audio format struct's fields to define a linear PCM, 
     //        stereo, noninterleaved stream at the hardware sample rate.
@@ -415,7 +415,7 @@ void audioRouteChangeListenerCallback (
     
     if (noErr != result) {[self printErrorMessage: @"ExtAudioFileGetProperty (audio file length in frames)" withStatus: result]; return NULL;}
     
-    data->frameCount = totalFramesInFile;
+    data->frameCount = (UInt32)totalFramesInFile;
     
     // Get the audio file's number of channels.
     AudioStreamBasicDescription fileAudioFormat = {0};
@@ -509,12 +509,12 @@ void audioRouteChangeListenerCallback (
     
     // set up the AudioBuffer structs in the buffer list
     bufferList->mBuffers[0].mNumberChannels  = 1;
-    bufferList->mBuffers[0].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
+    bufferList->mBuffers[0].mDataByteSize    = (UInt32)totalFramesInFile * sizeof (AudioUnitSampleType);
     bufferList->mBuffers[0].mData            = data->left;
 
     if(2 == channelCount) {
         bufferList->mBuffers[1].mNumberChannels  = 1;
-        bufferList->mBuffers[1].mDataByteSize    = totalFramesInFile * sizeof (AudioUnitSampleType);
+        bufferList->mBuffers[1].mDataByteSize    = (UInt32)totalFramesInFile * sizeof (AudioUnitSampleType);
         bufferList->mBuffers[1].mData            = data->right;
     }
     
@@ -932,12 +932,12 @@ void audioRouteChangeListenerCallback (
     
     NSLog (@"  Sample Rate:         %10.0f",  asbd.mSampleRate);
     NSLog (@"  Format ID:           %10s",    formatIDString);
-    NSLog (@"  Format Flags:        %10lX",    asbd.mFormatFlags);
-    NSLog (@"  Bytes per Packet:    %10ld",    asbd.mBytesPerPacket);
-    NSLog (@"  Frames per Packet:   %10ld",    asbd.mFramesPerPacket);
-    NSLog (@"  Bytes per Frame:     %10ld",    asbd.mBytesPerFrame);
-    NSLog (@"  Channels per Frame:  %10ld",    asbd.mChannelsPerFrame);
-    NSLog (@"  Bits per Channel:    %10ld",    asbd.mBitsPerChannel);
+    NSLog (@"  Format Flags:        %10X",    (unsigned int)asbd.mFormatFlags);
+    NSLog (@"  Bytes per Packet:    %10u",    (unsigned int)asbd.mBytesPerPacket);
+    NSLog (@"  Frames per Packet:   %10u",    (unsigned int)asbd.mFramesPerPacket);
+    NSLog (@"  Bytes per Frame:     %10u",    (unsigned int)asbd.mBytesPerFrame);
+    NSLog (@"  Channels per Frame:  %10u",    (unsigned int)asbd.mChannelsPerFrame);
+    NSLog (@"  Bits per Channel:    %10u",    (unsigned int)asbd.mBitsPerChannel);
 }
 
 
@@ -947,7 +947,7 @@ void audioRouteChangeListenerCallback (
     UInt32 swappedResult = CFSwapInt32HostToBig (result);
     bcopy (&swappedResult, resultString, 4);
     resultString[4] = '\0';
-    NSLog(@"**** ERROR **** %@: %ld\n", errorString, result);
+    NSLog(@"**** ERROR **** %@: %ld\n", errorString, (long)result);
     /*
     NSLog (
            @"*** %@ error: %d %08X %4.4s\n",

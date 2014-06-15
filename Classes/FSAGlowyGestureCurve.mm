@@ -154,7 +154,7 @@
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
     [shader enable];
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, verts.size());
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, (int)verts.size());
   //  glDrawArrays(GL_LINE_STRIP, 0, verts.size());
     [shader disable];
     glDisable(GL_BLEND);

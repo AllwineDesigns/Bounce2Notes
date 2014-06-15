@@ -653,7 +653,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
 -(void)setupBall {
     [self setMass:100*_size*_size];
-    [self setMoment:.02*cpMomentForCircle(_mass, 0, _size, cpvzero)];
+    [self setMoment:(float).02*cpMomentForCircle(_mass, 0, _size, cpvzero)];
     [self addCircleShapeWithRadius:_size withOffset:cpvzero];
     
     [_renderable release];
@@ -1200,11 +1200,41 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     
     [self creatorCallback:dt];
     
+    /*
+    vec2 p = [self position];
+    if(std::isnan(p.x) || std::isnan(p.y)) {
+        NSLog(@"m: %f", _body->m);
+        NSLog(@"m_inv: %f", _body->m_inv);
+        NSLog(@"i: %f", _body->i);
+        NSLog(@"i_inv: %f", _body->i_inv);
+        NSLog(@"p: %f,%f", _body->p.x, _body->p.y);
+        NSLog(@"v: %f,%f", _body->v.x, _body->v.y);
+        NSLog(@"f: %f, %f", _body->f.x, _body->f.y);
+        NSLog(@"a: %f", _body->a);
+        NSLog(@"w: %f", _body->w);
+        NSLog(@"t: %f", _body->t);
+        NSLog(@"rot: %f,%f", _body->rot.x, _body->rot.y);
+
+        NSLog(@"isnan - %@", [self class]);
+        _body->p.x = 0;
+        _body->p.y = 0;
+        _body->v.x = 0;
+        _body->v.y = 0;
+        _body->a = 0;
+        _body->w = 0;
+        _body->rot.x = 1;
+        _body->rot.y = 0;
+     
+        CP_PRIVATE(_body->w_bias) = 0;
+        CP_PRIVATE(_body->v_bias) = cpvzero;
+    }*/
+    
     if(_beingGrabbed || _beingTransformed) {
         float spring_k = 300;
         float drag = .25;
         
         vec2 pos = [self position];
+
         pos += _vel*dt;
         vec2 a = -spring_k*(pos-_springLoc);
         _vel +=  a*dt-drag*_vel;
