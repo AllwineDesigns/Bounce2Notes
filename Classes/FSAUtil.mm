@@ -44,7 +44,7 @@ natural_t getFreeMemory() {
     return mem_free;
 }
 
-void HSVtoRGB( CGFloat *r, CGFloat *g, CGFloat *b, CGFloat h, CGFloat s, CGFloat v )
+    void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
 {
 	//NSLog(@"Hue %f",h);
 	int i;

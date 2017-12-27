@@ -32,10 +32,36 @@
 }
 
 -(void)issueContributorsRequest {
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://www.bouncesimulation.com/bounce-services/contributors.txt"]
+    /*
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.bouncesimulation.com/bounce-services/contributors.txt"]
                                              cachePolicy:NSURLRequestReloadIgnoringCacheData
                                          timeoutInterval:60.0];
-    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    _connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];*/
+    NSMutableArray *contributors = [NSMutableArray arrayWithCapacity:10];
+
+    NSString *responseText = @"D & S Murphy\t6\nScott Peterson\t5\nKristen Wells\t1\nJason Waltman\t2\nA Morselink\t3\nKevin O'Sullivan\t6\nTravis Buck\t3\nNixon Hazard\t4\nMindy Allwine Moran\t3\nOlivia Murphy\t6\nTeiki\t0\nT. R. Clark\t6\nAlex\t6";
+    
+    NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
+    [f setNumberStyle:NSNumberFormatterDecimalStyle];
+    
+    NSArray *lines = [responseText componentsSeparatedByString:@"\n"];
+    for(NSString* line in lines) {
+        NSArray *columns = [line componentsSeparatedByString:@"\t"];
+        
+        if([columns count] == 2) {
+            NSArray *contributor = [NSArray arrayWithObjects:[columns objectAtIndex:0], [f numberFromString:[columns    objectAtIndex:1]], nil];
+            
+            [contributors addObject:contributor];
+        }
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:contributors forKey:@"BounceContributors"];
+    [_contributors release];
+    _contributors = [contributors retain];
+    
+    [f release];
+    
 }
 
 -(void)dealloc {
@@ -80,7 +106,7 @@
     */
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {/*
     NSMutableArray *contributors = [NSMutableArray arrayWithCapacity:10];
     
     NSString *responseText = [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
@@ -106,7 +132,7 @@
     [f release];
     [responseText release];
     
-    [_delegate update:self];
+    [_delegate update:self];*/
 }
 
 // Handle basic authentication challenge if needed

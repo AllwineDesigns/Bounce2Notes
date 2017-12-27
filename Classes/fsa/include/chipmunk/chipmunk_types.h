@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <float.h>
 
+#define CP_USE_CGPOINTS 0
+#define CP_USE_DOUBLES 0
+
 #ifdef __APPLE__
    #include "TargetConditionals.h"
 #endif

@@ -7,6 +7,8 @@
 //
 
 #import "ChipmunkObject.h"
+#include <Foundation/Foundation.h>
+
 
 @implementation ChipmunkObject
 

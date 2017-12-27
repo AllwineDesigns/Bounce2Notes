@@ -386,6 +386,8 @@
     } else {
         [super beginDrag:uniqueId at:loc];
     }
+#else
+    [super beginDrag:uniqueId at:loc];
 #endif
 }
 

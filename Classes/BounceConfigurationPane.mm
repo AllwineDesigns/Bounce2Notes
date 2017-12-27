@@ -538,7 +538,6 @@
     
     BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
     BounceSettings* settings = [BounceSettings instance];
-    
     if(_curSimulation != 0 && _curSimulation != 5) {
         [sim setBounceShapesWithGenerator:settings.bounceShapeGenerator];
     }

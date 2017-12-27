@@ -27,7 +27,7 @@ inline uint32_t nextPowerOfTwo(uint32_t v)
     v++;
     return v;
 }
-void HSVtoRGB( CGFloat *r, CGFloat *g, CGFloat *b, CGFloat h, CGFloat s, CGFloat v );
+    void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 NSString* machineName();
 natural_t getFreeMemory();
 CGSize screenSize();

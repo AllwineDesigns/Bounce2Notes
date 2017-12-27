@@ -11,7 +11,7 @@
 
 using namespace fsa;
 
-inline float tFromLength(float length, float *lengths, int numPoints) {
+inline fsaFloat tFromLength(fsaFloat length, fsaFloat *lengths, int numPoints) {
     if(numPoints < 2) {
         return 0;
     }
@@ -24,10 +24,10 @@ inline float tFromLength(float length, float *lengths, int numPoints) {
         return 1;
     }
     
-    float length0 = lengths[i];
-    float length1 = lengths[i+1];
+    fsaFloat length0 = lengths[i];
+    fsaFloat length1 = lengths[i+1];
     
-    float t = ((float)i+(length-length0)/(length1-length0))/(numPoints-1);
+    fsaFloat t = ((fsaFloat)i+(length-length0)/(length1-length0))/(numPoints-1);
     return t;
 }
 

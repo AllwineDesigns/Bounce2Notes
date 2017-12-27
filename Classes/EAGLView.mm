@@ -77,6 +77,7 @@
 
 - (void)createFramebuffer
 {
+    NSLog(@"%@ %@", context, defaultFramebuffer);
     if (context && !defaultFramebuffer)
     {
         [EAGLContext setCurrentContext:context];
@@ -102,7 +103,7 @@
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilRenderbuffer);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthStencilRenderbuffer);
 
-        NSLog(@"%d, %d\n", framebufferWidth, framebufferHeight);
+        NSLog(@"here %d, %d\n", framebufferWidth, framebufferHeight);
         
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
         

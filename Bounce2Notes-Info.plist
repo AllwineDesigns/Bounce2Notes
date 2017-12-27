@@ -8,70 +8,8 @@
 	<string>Bounce 2</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string>bounce2_icon72.png</string>
-		<string>bounce2_icon144.png</string>
-		<string>bounce2_icon57.png</string>
-		<string>bounce2_icon114.png</string>
-		<string>Default-Landscape@2x~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default.png</string>
-		<string>Default@2x.png</string>
-		<string>Default@2x.png</string>
-		<string>Default-Portrait~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default-Portrait~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default-Landscape~ipad.png</string>
-		<string>Default-Landscape@2x~ipad.png</string>
-		<string>Default@2x.png</string>
-		<string>Default-Landscape@2x~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default-Portrait~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default-Portrait@2x~ipad.png</string>
-		<string>Default-Landscape@2x~ipad.png</string>
-		<string>Default-Landscape~ipad.png</string>
-		<string>Default-Portrait~ipad.png</string>
-	</array>
-	<key>CFBundleIcons</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>bounce2_icon72.png</string>
-				<string>bounce2_icon144.png</string>
-				<string>bounce2_icon57.png</string>
-				<string>bounce2_icon114.png</string>
-				<string>Default-Landscape@2x~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default.png</string>
-				<string>Default@2x.png</string>
-				<string>Default@2x.png</string>
-				<string>Default-Portrait~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default-Portrait~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default-Landscape~ipad.png</string>
-				<string>Default-Landscape@2x~ipad.png</string>
-				<string>Default@2x.png</string>
-				<string>Default-Landscape@2x~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default-Portrait~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default-Portrait@2x~ipad.png</string>
-				<string>Default-Landscape@2x~ipad.png</string>
-				<string>Default-Landscape~ipad.png</string>
-				<string>Default-Portrait~ipad.png</string>
-			</array>
-		</dict>
-	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>Allwine.Bounce2Notes</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -79,15 +17,19 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.1</string>
+	<string>2.4</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.1</string>
+	<string>2.4</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMainNibFile</key>
+	<string>MainWindow</string>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>UIRequiresFullScreen</key>
+	<string>1</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
@@ -97,9 +39,16 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UILaunchImages</key>
+	<array>
+		<dict>
+			<key>UILaunchImageName</key>
+			<string>Default</string>
+			<key>UILaunchImageSize</key>
+			<string>{320, 480}</string>
+		</dict>
+	</array>
 </dict>
 </plist>

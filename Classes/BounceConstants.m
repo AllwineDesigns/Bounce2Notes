@@ -29,6 +29,7 @@ static BounceConstants *bounceConstants;
         
         CGSize size = screenSize();
         _aspect = size.width/size.height;
+
     }
     
     return self;

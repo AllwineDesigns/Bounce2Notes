@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -165,6 +165,20 @@
 		B2441E2B16335719008D6B7D /* 128locked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2441E2916335719008D6B7D /* 128locked.jpg */; };
 		B2441E2D16335719008D6B7D /* 128unlocked.jpg in Resources */ = {isa = PBXBuildFile; fileRef = B2441E2A16335719008D6B7D /* 128unlocked.jpg */; };
 		B2454B4B154CDF5600FB5576 /* FSAMultiGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */; };
+		B246F6761FF350D900333744 /* bounce2_icon180.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F66C1FF350D400333744 /* bounce2_icon180.png */; };
+		B246F6771FF350D900333744 /* bounce2_icon40.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F66D1FF350D500333744 /* bounce2_icon40.png */; };
+		B246F6781FF350D900333744 /* bounce2_icon58.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F66E1FF350D500333744 /* bounce2_icon58.png */; };
+		B246F6791FF350D900333744 /* bounce2_icon76.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F66F1FF350D500333744 /* bounce2_icon76.png */; };
+		B246F67A1FF350D900333744 /* bounce2_icon80.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6701FF350D600333744 /* bounce2_icon80.png */; };
+		B246F67B1FF350D900333744 /* bounce2_icon152.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6711FF350D600333744 /* bounce2_icon152.png */; };
+		B246F67C1FF350D900333744 /* bounce2_icon167.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6721FF350D600333744 /* bounce2_icon167.png */; };
+		B246F67D1FF350D900333744 /* bounce2_icon87.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6731FF350D700333744 /* bounce2_icon87.png */; };
+		B246F67E1FF350D900333744 /* bounce2_icon120.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6741FF350D800333744 /* bounce2_icon120.png */; };
+		B246F67F1FF350D900333744 /* bounce2_icon29.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6751FF350D900333744 /* bounce2_icon29.png */; };
+		B246F6811FF354EE00333744 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B246F6801FF354EE00333744 /* Images.xcassets */; };
+		B246F6831FF3575A00333744 /* bounce2_icon1024.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6821FF3575900333744 /* bounce2_icon1024.png */; };
+		B246F6851FF35A8800333744 /* bounce2_icon60.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6841FF35A8800333744 /* bounce2_icon60.png */; };
+		B246F6871FF35AE700333744 /* bounce2_icon20.png in Resources */ = {isa = PBXBuildFile; fileRef = B246F6861FF35AE600333744 /* bounce2_icon20.png */; };
 		B256657015F66B220077F496 /* BounceFileManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B256656F15F66B200077F496 /* BounceFileManager.mm */; };
 		B2741E5B16ECD76F00346960 /* IntensityShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = B2415A9E15BBAE6300E8AB74 /* IntensityShader.fsh */; };
 		B2741E5C16ECD76F00346960 /* IntensityShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = B2415A9F15BBAE7A00E8AB74 /* IntensityShader.vsh */; };
@@ -745,6 +759,20 @@
 		B2441E2A16335719008D6B7D /* 128unlocked.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 128unlocked.jpg; sourceTree = "<group>"; };
 		B2454B49154CDF5600FB5576 /* FSAMultiGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSAMultiGestureRecognizer.h; sourceTree = "<group>"; };
 		B2454B4A154CDF5600FB5576 /* FSAMultiGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSAMultiGestureRecognizer.m; sourceTree = "<group>"; };
+		B246F66C1FF350D400333744 /* bounce2_icon180.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon180.png; sourceTree = "<group>"; };
+		B246F66D1FF350D500333744 /* bounce2_icon40.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon40.png; sourceTree = "<group>"; };
+		B246F66E1FF350D500333744 /* bounce2_icon58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon58.png; sourceTree = "<group>"; };
+		B246F66F1FF350D500333744 /* bounce2_icon76.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon76.png; sourceTree = "<group>"; };
+		B246F6701FF350D600333744 /* bounce2_icon80.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon80.png; sourceTree = "<group>"; };
+		B246F6711FF350D600333744 /* bounce2_icon152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon152.png; sourceTree = "<group>"; };
+		B246F6721FF350D600333744 /* bounce2_icon167.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon167.png; sourceTree = "<group>"; };
+		B246F6731FF350D700333744 /* bounce2_icon87.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon87.png; sourceTree = "<group>"; };
+		B246F6741FF350D800333744 /* bounce2_icon120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon120.png; sourceTree = "<group>"; };
+		B246F6751FF350D900333744 /* bounce2_icon29.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon29.png; sourceTree = "<group>"; };
+		B246F6801FF354EE00333744 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Bounce2Notes/Images.xcassets; sourceTree = "<group>"; };
+		B246F6821FF3575900333744 /* bounce2_icon1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon1024.png; sourceTree = "<group>"; };
+		B246F6841FF35A8800333744 /* bounce2_icon60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon60.png; sourceTree = "<group>"; };
+		B246F6861FF35AE600333744 /* bounce2_icon20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bounce2_icon20.png; sourceTree = "<group>"; };
 		B256656E15F66B1F0077F496 /* BounceFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BounceFileManager.h; sourceTree = "<group>"; };
 		B256656F15F66B200077F496 /* BounceFileManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BounceFileManager.mm; sourceTree = "<group>"; };
 		B2741F7116ECD76F00346960 /* Bounce2Notes copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bounce2Notes copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -829,7 +857,7 @@
 		B2AF540415D2F81C00B76F92 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Matrix.hpp; sourceTree = "<group>"; };
 		B2AF540515D2F81C00B76F92 /* Noise.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Noise.hpp; sourceTree = "<group>"; };
 		B2AF540615D2F81C00B76F92 /* Quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Quaternion.hpp; sourceTree = "<group>"; };
-		B2AF540715D2F81C00B76F92 /* Vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vector.hpp; sourceTree = "<group>"; };
+		B2AF540715D2F81C00B76F92 /* Vector.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = Vector.hpp; sourceTree = "<group>"; };
 		B2AF540915D2F81C00B76F92 /* Matrix.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Matrix.hpp; sourceTree = "<group>"; };
 		B2AF540A15D2F81C00B76F92 /* Quaternion.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Quaternion.hpp; sourceTree = "<group>"; };
 		B2AF540B15D2F81C00B76F92 /* Vector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Vector.hpp; sourceTree = "<group>"; };
@@ -1130,6 +1158,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B246F6801FF354EE00333744 /* Images.xcassets */,
+				B246F6861FF35AE600333744 /* bounce2_icon20.png */,
+				B246F6841FF35A8800333744 /* bounce2_icon60.png */,
 				B2D08C7A1644913900129AB2 /* 256bounce2notes.png */,
 				B2D08C7B1644913900129AB2 /* 512bounce2notes.png */,
 				B2D08C7C1644913900129AB2 /* 1024bounce2notes.png */,
@@ -1138,6 +1169,17 @@
 				B2D08C711641BC4F00129AB2 /* MainWindow.xib */,
 				B2441E271631ACAB008D6B7D /* Default-568h@2x.png */,
 				B2F433EE16040E7B00AF62DE /* bounce2_icon144.png */,
+				B246F6751FF350D900333744 /* bounce2_icon29.png */,
+				B246F66D1FF350D500333744 /* bounce2_icon40.png */,
+				B246F66E1FF350D500333744 /* bounce2_icon58.png */,
+				B246F66F1FF350D500333744 /* bounce2_icon76.png */,
+				B246F6701FF350D600333744 /* bounce2_icon80.png */,
+				B246F6731FF350D700333744 /* bounce2_icon87.png */,
+				B246F6741FF350D800333744 /* bounce2_icon120.png */,
+				B246F6711FF350D600333744 /* bounce2_icon152.png */,
+				B246F6721FF350D600333744 /* bounce2_icon167.png */,
+				B246F66C1FF350D400333744 /* bounce2_icon180.png */,
+				B246F6821FF3575900333744 /* bounce2_icon1024.png */,
 				B2F433EC16040E7400AF62DE /* bounce2_icon72.png */,
 				B2F433EA16040E6300AF62DE /* bounce2_icon114.png */,
 				B2F433E816040E5A00AF62DE /* bounce2_icon57.png */,
@@ -1542,10 +1584,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0920;
 				TargetAttributes = {
 					1D6058900D05DD3D006BFB54 = {
 						DevelopmentTeam = HU4V9P7JXU;
+						ProvisioningStyle = Automatic;
 					};
 					B2741E5916ECD76F00346960 = {
 						DevelopmentTeam = HU4V9P7JXU;
@@ -1553,7 +1596,7 @@
 				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ParticleSystem" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -1587,10 +1630,12 @@
 				B24159FD15A391A300E8AB74 /* BillboardShader.vsh in Resources */,
 				B23E3C9F159C191600E42730 /* ColorShader.fsh in Resources */,
 				B23E3CA0159C191600E42730 /* ColorShader.vsh in Resources */,
+				B246F6791FF350D900333744 /* bounce2_icon76.png in Resources */,
 				B2DE9DD515926A8E00D23FAA /* SingleObjectGlowShader.fsh in Resources */,
 				B2DE9DD615926A8E00D23FAA /* SingleObjectGlowShader.vsh in Resources */,
 				B28AE1EB1583B78200C6487A /* BounceKillBoxShader.vsh in Resources */,
 				B280578C156C1AC400C2E7A2 /* SingleObjectStationaryShader.fsh in Resources */,
+				B246F6811FF354EE00333744 /* Images.xcassets in Resources */,
 				B280578D156C1AC400C2E7A2 /* SingleObjectStationaryShader.vsh in Resources */,
 				B29630C915472C46009B483D /* BallShader.fsh in Resources */,
 				B29630CA15472C46009B483D /* BallShader.vsh in Resources */,
@@ -1632,9 +1677,11 @@
 				B23E3C4D159ACCAA00E42730 /* 1024squares.jpg in Resources */,
 				B23E3C4F159ACCAA00E42730 /* 1024stationary_ball.png in Resources */,
 				B23E3C51159ACCAA00E42730 /* 1024stationary_pentagon.png in Resources */,
+				B246F67D1FF350D900333744 /* bounce2_icon87.png in Resources */,
 				B23E3C53159ACCAA00E42730 /* 1024stationary_square.png in Resources */,
 				B23E3C55159ACCAA00E42730 /* 1024stationary_triangle.png in Resources */,
 				B23E3C57159ACCAA00E42730 /* 1024stripes.jpg in Resources */,
+				B246F6871FF35AE700333744 /* bounce2_icon20.png in Resources */,
 				B23E3C59159ACCAA00E42730 /* 1024triangle.jpg in Resources */,
 				B23E3C5B159ACCAA00E42730 /* 1024weave.jpg in Resources */,
 				B23E3C5D159ACCAA00E42730 /* 2048ball.jpg in Resources */,
@@ -1647,6 +1694,7 @@
 				B23E3C6B159ACCAA00E42730 /* 2048squares.jpg in Resources */,
 				B23E3C6D159ACCAA00E42730 /* 2048stationary_ball.png in Resources */,
 				B23E3C6F159ACCAA00E42730 /* 2048stationary_pentagon.png in Resources */,
+				B246F6761FF350D900333744 /* bounce2_icon180.png in Resources */,
 				B23E3C71159ACCAA00E42730 /* 2048stationary_square.png in Resources */,
 				B23E3C73159ACCAA00E42730 /* 2048stationary_triangle.png in Resources */,
 				B23E3C75159ACCAA00E42730 /* 2048stripes.jpg in Resources */,
@@ -1660,6 +1708,7 @@
 				B2A96FEF15C835C50020DEA8 /* 2048star.jpg in Resources */,
 				B2A96FF415C83AE30020DEA8 /* 512stationary_star.png in Resources */,
 				B2A96FF615C83AE30020DEA8 /* 1024stationary_star.png in Resources */,
+				B246F67F1FF350D900333744 /* bounce2_icon29.png in Resources */,
 				B2A96FF815C83AE30020DEA8 /* 2048stationary_star.png in Resources */,
 				B2A9703015D1CD2B0020DEA8 /* 128ball.jpg in Resources */,
 				B2A9703215D1CD2B0020DEA8 /* 128checkered.jpg in Resources */,
@@ -1668,6 +1717,7 @@
 				B2A9703815D1CD2B0020DEA8 /* 128pentagon.jpg in Resources */,
 				B2A9703A15D1CD2B0020DEA8 /* 128plasma.jpg in Resources */,
 				B2A9703C15D1CD2B0020DEA8 /* 128sections.jpg in Resources */,
+				B246F67E1FF350D900333744 /* bounce2_icon120.png in Resources */,
 				B2A9703E15D1CD2B0020DEA8 /* 128square.jpg in Resources */,
 				B2A9704015D1CD2B0020DEA8 /* 128squares.jpg in Resources */,
 				B2A9704215D1CD2B0020DEA8 /* 128star.jpg in Resources */,
@@ -1703,7 +1753,9 @@
 				B23CEE2915DACA4D0078CFA4 /* a2.caf in Resources */,
 				B23CEE2B15DACA4D0078CFA4 /* a3.caf in Resources */,
 				B23CEE2D15DACA4D0078CFA4 /* a4.caf in Resources */,
+				B246F6831FF3575A00333744 /* bounce2_icon1024.png in Resources */,
 				B23CEE2F15DACA4D0078CFA4 /* a5.caf in Resources */,
+				B246F67A1FF350D900333744 /* bounce2_icon80.png in Resources */,
 				B23CEE3115DACA4D0078CFA4 /* a6.caf in Resources */,
 				B23CEE3315DACA4D0078CFA4 /* asharp2.caf in Resources */,
 				B23CEE3515DACA4D0078CFA4 /* asharp3.caf in Resources */,
@@ -1734,6 +1786,8 @@
 				B23CEE6715DACA4D0078CFA4 /* e5.caf in Resources */,
 				B23CEE6915DACA4D0078CFA4 /* e6.caf in Resources */,
 				B23CEE6B15DACA4D0078CFA4 /* f3.caf in Resources */,
+				B246F6851FF35A8800333744 /* bounce2_icon60.png in Resources */,
+				B246F67B1FF350D900333744 /* bounce2_icon152.png in Resources */,
 				B23CEE6D15DACA4D0078CFA4 /* f4.caf in Resources */,
 				B23CEE6F15DACA4D0078CFA4 /* f5.caf in Resources */,
 				B23CEE7115DACA4D0078CFA4 /* f6.caf in Resources */,
@@ -1756,6 +1810,7 @@
 				B23CEEA115DB6C820078CFA4 /* 512note.jpg in Resources */,
 				B23CEEA315DB6C820078CFA4 /* 512stationary_note.png in Resources */,
 				B23CEEA515DB6C820078CFA4 /* 1024note.jpg in Resources */,
+				B246F67C1FF350D900333744 /* bounce2_icon167.png in Resources */,
 				B23CEEA715DB6C820078CFA4 /* 1024stationary_note.png in Resources */,
 				B23CEEA915DB6C820078CFA4 /* 2048note.jpg in Resources */,
 				B23CEEAB15DB6C820078CFA4 /* 2048stationary_note.png in Resources */,
@@ -1774,7 +1829,9 @@
 				B2D08C781643128400129AB2 /* gray.jpg in Resources */,
 				B2D08C7D1644913900129AB2 /* 256bounce2notes.png in Resources */,
 				B2D08C7F1644913900129AB2 /* 512bounce2notes.png in Resources */,
+				B246F6781FF350D900333744 /* bounce2_icon58.png in Resources */,
 				B2D08C811644913900129AB2 /* 1024bounce2notes.png in Resources */,
+				B246F6771FF350D900333744 /* bounce2_icon40.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2137,11 +2194,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = HU4V9P7JXU;
+				ENABLE_BITCODE = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
@@ -2152,15 +2214,18 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/../../..\\\"",
 					/Users/jallwine/work/bounce/ParticleSystem,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = Allwine.Bounce2Notes;
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -2170,10 +2235,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = HU4V9P7JXU;
+				ENABLE_BITCODE = YES;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -2183,16 +2253,19 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/../../..\\\"",
 					/Users/jallwine/work/bounce/ParticleSystem,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = Allwine.Bounce2Notes;
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -2202,20 +2275,38 @@
 		B226739C1582874100464124 /* Ad Hoc */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					armv6,
-				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
@@ -2231,10 +2322,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
+				DEVELOPMENT_TEAM = HU4V9P7JXU;
+				ENABLE_BITCODE = YES;
+				GCC_INPUT_FILETYPE = automatic;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ParticleSystem_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
@@ -2244,16 +2340,19 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "$(SRCROOT)/Bounce2Notes-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/../../..\\\"",
 					/Users/jallwine/work/bounce/ParticleSystem,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = Allwine.Bounce2Notes;
 				PRODUCT_NAME = "Bounce 2: Notes";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SYSTEM_HEADER_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -2264,10 +2363,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					armv6,
-				);
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -2282,12 +2377,13 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "Bounce2Notes copy2-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/../../..\\\"",
 					/Users/jallwine/work/bounce/ParticleSystem,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = Allwine.Bounce;
 				PRODUCT_NAME = "Bounce2Notes copy";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = NO;
@@ -2300,10 +2396,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					armv6,
-				);
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -2316,12 +2408,13 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "Bounce2Notes copy2-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/../../..\\\"",
 					/Users/jallwine/work/bounce/ParticleSystem,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = Allwine.Bounce;
 				PRODUCT_NAME = "Bounce2Notes copy";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2336,10 +2429,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					armv6,
-				);
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -2352,12 +2441,13 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Classes/fsa/include/**";
 				INFOPLIST_FILE = "Bounce2Notes copy2-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"\\\"$(SRCROOT)/../../..\\\"",
 					/Users/jallwine/work/bounce/ParticleSystem,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = Allwine.Bounce;
 				PRODUCT_NAME = "Bounce2Notes copy";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -2371,21 +2461,41 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					armv6,
-				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
+				ONLY_ACTIVE_ARCH = YES;
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -2398,20 +2508,38 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					"$(ARCHS_STANDARD_32_BIT)",
-					armv6,
-				);
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "/Users/jallwine/fsa/lib/**";
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = NO;

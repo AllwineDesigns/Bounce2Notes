@@ -150,9 +150,9 @@ void cpArbiterIgnore(cpArbiter *arb);
 static inline void cpArbiterGetShapes(const cpArbiter *arb, cpShape **a, cpShape **b)
 {
 	if(arb->CP_PRIVATE(swappedColl)){
-		(*a) = arb->CP_PRIVATE(b), (*b) = arb->CP_PRIVATE(a);
+        static_cast<void>((*a) = arb->CP_PRIVATE(b)), (*b) = arb->CP_PRIVATE(a);
 	} else {
-		(*a) = arb->CP_PRIVATE(a), (*b) = arb->CP_PRIVATE(b);
+        static_cast<void>((*a) = arb->CP_PRIVATE(a)), (*b) = arb->CP_PRIVATE(b);
 	}
 }
 /// A macro shortcut for defining and retrieving the shapes from an arbiter.

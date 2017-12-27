@@ -123,6 +123,7 @@
     self.displayLink = nil;
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationChanged:)
                                                  name:UIDeviceOrientationDidChangeNotification
@@ -138,6 +139,14 @@
 }
 
 #define ACCEPTABLE_CHARACTERS @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!. "
+
+- (BOOL)shouldAutorotate {
+    
+    [super shouldAutorotate];
+ 
+    return NO;
+    
+}
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
@@ -1094,7 +1103,6 @@
 -(void)singleTap:(FSAMultiGesture*)gesture {
     vec2 loc(gesture.location);
     [self pixels2sim:loc];
-    
     if(![_bounceLock singleTap:gesture at:loc] && ![_configPane singleTap:gesture at:loc]) {
         if([BounceSettings instance].playMode && [simulation gestureForKey:gesture] == nil) {
             

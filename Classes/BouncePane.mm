@@ -687,15 +687,14 @@ BouncePaneOrientation getBouncePaneOrientation() {
     return NO;
 }
 -(BOOL)beginDrag:(void*)uniqueId at:(const vec2&)loc {
-
     if([_object isPaneAt:loc]) {
         BounceSimulation *sim = [_simulations objectAtIndex:_curSimulation];
+
         if(![sim objectAt:loc] && [_simulationTabs containsObject:[_simulation objectAt:loc]]) {
             return NO;
         }
 
         [sim beginDrag:uniqueId at:loc];
-
         return YES;
     }
     /*

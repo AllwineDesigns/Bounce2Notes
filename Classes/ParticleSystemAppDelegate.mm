@@ -16,7 +16,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self.window addSubview:self.viewController.view];
+    //[self.window addSubview:self.viewController.view];
+    [self.window setRootViewController:viewController];
     return YES;
 }
 

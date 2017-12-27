@@ -15,12 +15,12 @@
 using namespace fsa;
 
 typedef struct {
-    float intensity;
+    fsaFloat intensity;
     BOOL isStationary;
     vec4 color;
     vec2 position;
-    float size;
-    float angle;
+    fsaFloat size;
+    fsaFloat angle;
     FSATexture* patternTexture;
 } BounceRenderableData;
 

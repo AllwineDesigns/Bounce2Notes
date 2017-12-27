@@ -591,7 +591,7 @@ static void getNearestBounceObjectNearestQueryFunc(cpShape *shape, cpFloat dist,
     obj.isStationary = NO;
     [obj setVelocity:[obj velocity]+vel];
     [obj makeSimulated];
-    NSLog(@"flicked stationary object\n");
+   // NSLog(@"flicked stationary object\n");
 }
 
 -(void)flickSpaceAt:(const vec2&)loc withVelocity:(const vec2&)vel {

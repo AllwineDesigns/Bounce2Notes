@@ -1,10 +1,13 @@
-#pragma once
+#ifndef __FSA_VECTOR_HPP__
+#define __FSA_VECTOR_HPP__
+
 #include <cmath>
-#import <CoreGraphics/CGBase.h>
+#include "chipmunk.h"
+#import <CoreGraphics/CoreGraphics.h>
 
 namespace fsa {
     
-typedef CGFloat fsaFloat;
+typedef float fsaFloat;
 
 const fsaFloat PI = 4 * std::atan(1.0f);
 const fsaFloat TWOPI = 2 * PI;
@@ -18,9 +21,8 @@ class Vector2f
 
         Vector2f() : x(0), y(0) {}
         Vector2f(fsaFloat x, fsaFloat y) : x(x), y(y) {}
-#if TARGET_OS_IPHONE
-        Vector2f(const CGPoint& p) : x(p.x), y(p.y) {}
-#endif
+        Vector2f(const cpVect &v) : x (v.x), y(v.y) {}
+        Vector2f(const CGPoint &p) : x(p.x), y(p.y) {}
 
         fsaFloat dot(const Vector2f &v) const {
             return x*v.x+y*v.y;
@@ -382,3 +384,4 @@ typedef Vector3f vec3;
 typedef Vector4f vec4;
 
 }
+#endif
