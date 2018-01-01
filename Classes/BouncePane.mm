@@ -907,6 +907,7 @@ BouncePaneOrientation getBouncePaneOrientation() {
             [tab draw];
         }
     }
+
     [curTab draw];
 }
 
@@ -916,6 +917,7 @@ BouncePaneOrientation getBouncePaneOrientation() {
     
     glEnable(GL_STENCIL_TEST);
     [[_simulations objectAtIndex:_curSimulation] draw];
+
   //  for(BounceConfigurationSimulation *sim in _simulations) {
    //     [sim draw];
     //}

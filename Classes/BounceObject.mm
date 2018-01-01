@@ -213,7 +213,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
 
         _inputs.angle = &_body->a;
         _inputs.position = (vec2*)&_body->p;
-
+        
         _inputs.patternTexture = &_patternTexture; 
                 
         [self setBounceShape:bounceShape];
@@ -673,7 +673,7 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
     
     square_verts[3].x = -_size;
     square_verts[3].y = _size;
-    
+        
     [self setMass:(4/PI)*100*_size*_size];
     [self setMoment:5*cpMomentForBox(_mass, _size*2, _size*2)];
     
@@ -1227,7 +1227,8 @@ static void BounceVelocityFunction(cpBody *body, cpVect gravity, cpFloat damping
      
         CP_PRIVATE(_body->w_bias) = 0;
         CP_PRIVATE(_body->v_bias) = cpvzero;
-    }*/
+    }
+     */
     
     if(_beingGrabbed || _beingTransformed) {
         float spring_k = 300;
@@ -1263,7 +1264,7 @@ void ChipmunkDebugDrawPolygon(int count, cpVect *verts, const vec4& lineColor, c
     glDrawArrays(GL_LINE_LOOP, 0, count);
     [shader disable];
 }
-
+/*
 static void
 drawShape(cpShape *shape, const vec4& color)
 {	
@@ -1286,6 +1287,7 @@ drawShape(cpShape *shape, const vec4& color)
 		default: break;
 	}
 }
+ */
 
 -(void)draw {
     [_renderable draw];

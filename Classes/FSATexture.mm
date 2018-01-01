@@ -12,7 +12,7 @@
 #import "FSATextureManager.h"
 
 @implementation FSATexture {
-    GLuint _name;
+    GLuint _glName;
     unsigned int _width;
     unsigned int _height;
     
@@ -21,17 +21,17 @@
 }
 
 @synthesize key = _key;
-@synthesize name = _name;
+@synthesize glName = _glName;
 @synthesize width = _width;
 @synthesize height = _height;
 @synthesize aspect = _aspect;
 @synthesize inverseAspect = _invaspect;
 
--(id)initWithKey:(NSString*)key name:(GLuint)name width:(unsigned int)width height:(unsigned int)height {
+-(id)initWithKey:(NSString*)key glName:(GLuint)glName width:(unsigned int)width height:(unsigned int)height {
     self = [super init];
     
     if(self) {
-        _name = name;
+        _glName = glName;
         _width = width;
         _height = height;
         _key = key;
@@ -52,7 +52,7 @@
 }
 
 -(void)deleteTexture {
-    glDeleteTextures(1, &_name);
+    glDeleteTextures(1, &_glName);
 }
 
 -(void)dealloc {
@@ -63,7 +63,7 @@
 @end
 
 typedef struct {
-    GLuint name;
+    GLuint glName;
     GLuint width;
     GLuint height;
     unsigned int prefix;
@@ -91,7 +91,7 @@ typedef struct {
     NSMutableSet *_loadOperations;
 }
 
-@synthesize name = _curName;
+@synthesize glName = _curName;
 @synthesize width = _curWidth;
 @synthesize height = _curHeight;
 @synthesize aspect = _aspect;
@@ -102,6 +102,9 @@ typedef struct {
     if(self) {
         _minPrefix = minPrefix;
         _maxPrefix = maxPrefix;
+        if(_maxPrefix > 2048) {
+            _maxPrefix = 2048;
+        }
         _curPrefix = minPrefix;
         _filename = file;
         _key = file;
@@ -111,9 +114,9 @@ typedef struct {
         glBindTexture(GL_TEXTURE_2D, texId);
         NSString *filename = [NSString stringWithFormat:@"%u%@", minPrefix, file];
         UIImage* image = [UIImage imageNamed:filename];
-        
+
         GLubyte* imageData = (GLubyte*)malloc(image.size.width * image.size.height * 4);
-            
+        
         CGContextRef imageContext = CGBitmapContextCreate(imageData, image.size.width, image.size.height, 8, image.size.width * 4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaPremultipliedLast);
         CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, image.size.width, image.size.height), image.CGImage);
         CGContextRelease(imageContext); 
@@ -122,6 +125,7 @@ typedef struct {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.size.width, image.size.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+
         free(imageData);
         glGenerateMipmap(GL_TEXTURE_2D);
         
@@ -144,7 +148,7 @@ typedef struct {
 
 -(void)memoryWarning {
     if(_curName != _minName) {
-       // NSLog(@"memory warning, deleting %u%@", _curPrefix, _filename);
+        NSLog(@"memory warning, deleting %u %u%@", _curName, _curPrefix, _filename);
 
         glDeleteTextures(1, &_curName);
         _curPrefix = _minPrefix;
@@ -160,14 +164,15 @@ typedef struct {
     [_loadOperations removeObject:loader];
 
     if(_curName != _minName) {
+        NSLog(@"deleting texture %u, %u%@", _curName, _curPrefix, _filename);
         glDeleteTextures(1, &_curName);
     }
 
-   // NSLog(@"finished loading texture %u%@\n", loader.prefix, _filename);
+    NSLog(@"finished loading texture %u %u%@\n", loader.glName, loader.prefix, _filename);
     //glFlush();
         
     _curPrefix = loader.prefix;
-    _curName = loader.name;
+    _curName = loader.glName;
     _curWidth = loader.width;
     _curHeight = loader.height;
     _aspect = (float)_curWidth/_curHeight;
@@ -220,14 +225,14 @@ typedef struct {
 @implementation BackgroundTextureLoaderOperation {
     FSASmartTexture* _texture;
     NSString* _file;
-    GLuint _name;
+    GLuint _glName;
     unsigned int _width;
     unsigned int _height;
     unsigned int _prefix;
 }
 
 @synthesize texture = _texture;
-@synthesize name = _name;
+@synthesize glName = _glName;
 @synthesize width = _width;
 @synthesize height = _height;
 @synthesize prefix = _prefix;
@@ -242,9 +247,7 @@ typedef struct {
         
         GLuint texId;
         glGenTextures(1, &texId);
-        _name = texId;
-        
-        [self setThreadPriority:0];
+        _glName = texId;
     }
     
     return self;
@@ -260,7 +263,7 @@ typedef struct {
         else if (![EAGLContext setCurrentContext:aContext])
             NSLog(@"Failed to set ES context current");
 
-        glBindTexture(GL_TEXTURE_2D, _name);
+        glBindTexture(GL_TEXTURE_2D, _glName);
         
         UIImage* image = [UIImage imageNamed:_file];
         [image retain];
@@ -301,7 +304,7 @@ typedef struct {
 @implementation BackgroundTextTextureLoaderOperation {
     FSATextTexture *_texture;
     NSString* _text;
-    GLuint _name;
+    GLuint _glName;
     unsigned int _width;
     unsigned int _height;
     
@@ -312,7 +315,7 @@ typedef struct {
 }
 
 @synthesize texture = _texture;
-@synthesize name = _name;
+@synthesize glName = _glName;
 @synthesize width = _width;
 @synthesize height = _height;
 @synthesize text = _text;
@@ -329,7 +332,7 @@ typedef struct {
         
         GLuint texId;
         glGenTextures(1, &texId);
-        _name = texId;
+        _glName = texId;
         
         CGSize size = screenSize();         
         NSString *device = machineName();
@@ -339,7 +342,6 @@ typedef struct {
         } else {
             _startTextTextureSize = nextPowerOfTwo(size.width*.1);
         }
-        [self setThreadPriority:0];
     }
     
     return self;
@@ -358,7 +360,10 @@ typedef struct {
         float size = _fontSize;
         
         UIFont *font = [UIFont fontWithName:_fontName size:_startTextTextureSize/512.*size];
-        CGSize renderedSize = [_text sizeWithFont:font];
+        NSDictionary *attributes = @{NSFontAttributeName: font,
+                                     NSForegroundColorAttributeName: [UIColor whiteColor]
+                                     };
+        CGSize renderedSize = [_text sizeWithAttributes:attributes];
         
         uint32_t height = _startTextTextureSize;
         uint32_t width = nextPowerOfTwo(renderedSize.width);
@@ -400,7 +405,7 @@ typedef struct {
         
         UIGraphicsPushContext(context);
         
-        [_text drawInRect:CGRectMake(.5*width-.5*renderedSize.width, .5*height-.5*renderedSize.height, width, height) withFont:font lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+        [_text drawInRect:CGRectMake(.5*width-.5*renderedSize.width, .5*height-.5*renderedSize.height, width, height) withAttributes:attributes];
         
         UIGraphicsPopContext();
         
@@ -409,7 +414,7 @@ typedef struct {
         CGColorRelease(color2);
         CGColorSpaceRelease(colorSpace);
         
-        glBindTexture(GL_TEXTURE_2D, _name);
+        glBindTexture(GL_TEXTURE_2D, _glName);
 
         
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -440,7 +445,7 @@ typedef struct {
 
 @implementation FSATextTexture {
     NSString *_text;
-    GLuint _name;
+    GLuint _glName;
     unsigned int _width;
     unsigned int _height;
     float _fontSize;
@@ -454,7 +459,7 @@ typedef struct {
 
 @synthesize fontSize = _fontSize;
 @synthesize fontName = _fontName;
-@synthesize name = _name;
+@synthesize glName = _glName;
 @synthesize text = _text;
 @synthesize width = _width;
 @synthesize height = _height;
@@ -463,7 +468,7 @@ typedef struct {
 @synthesize inverseAspect = _invaspect;
 
 -(id)init {
-    _name = [[FSATextureManager instance] getTexture:@"gray.jpg"].name;
+    _glName = [[FSATextureManager instance] getTexture:@"gray.jpg"].glName;
     _text = nil;
     _width = 0;
     _height = 0;
@@ -471,7 +476,7 @@ typedef struct {
     _fontName = @"Arial";
     
     _cache = [[NSMutableDictionary alloc] initWithCapacity:5];
-    [_cache setObject:[NSNumber numberWithUnsignedInt:[[FSATextureManager instance] getTexture:@"gray.jpg"].name ] forKey:@""];
+    [_cache setObject:[NSNumber numberWithUnsignedInt:[[FSATextureManager instance] getTexture:@"gray.jpg"].glName ] forKey:@""];
     _loadOperations = [[NSMutableSet alloc] initWithCapacity:5];
 
     return self;
@@ -489,15 +494,15 @@ typedef struct {
     
     for(NSNumber *num in [_cache objectEnumerator]) {
         GLuint texId = [num unsignedIntValue];
-        if(texId != _name) {
+        if(texId != _glName) {
             glDeleteTextures(1, &texId);
         }
     }
     [_cache removeAllObjects];
-    [_cache setObject:[NSNumber numberWithUnsignedInt:[[FSATextureManager instance] getTexture:@"gray.jpg"].name ] forKey:@""];
+    [_cache setObject:[NSNumber numberWithUnsignedInt:[[FSATextureManager instance] getTexture:@"gray.jpg"].glName ] forKey:@""];
 
-    if(_text && _name) {
-        [_cache setObject:[NSNumber numberWithUnsignedInt:_name] forKey:_text];
+    if(_text && _glName) {
+        [_cache setObject:[NSNumber numberWithUnsignedInt:_glName] forKey:_text];
     }
 }
 
@@ -512,7 +517,7 @@ typedef struct {
     
     NSNumber *num = [_cache objectForKey:text];
     if(num != nil) {
-        _name = [num unsignedIntValue];
+        _glName = [num unsignedIntValue];
         [text retain];
         [_text release];
         _text = text;
@@ -544,13 +549,13 @@ typedef struct {
     [_text release];
     _text = text;
         
-    _name = loader.name;
+    _glName = loader.glName;
     _width = loader.width;
     _height = loader.height;
     _aspect = (float)_height/_width;
     _invaspect = 1./_aspect;
         
-    [_cache setObject:[NSNumber numberWithUnsignedInt:_name] forKey:_text];
+    [_cache setObject:[NSNumber numberWithUnsignedInt:_glName] forKey:_text];
     [self release];
 }
 
@@ -563,6 +568,6 @@ typedef struct {
     [_loadOperations release];
     [_cache release];
 
-    glDeleteTextures(1, &_name);
+    glDeleteTextures(1, &_glName);
 }
 @end

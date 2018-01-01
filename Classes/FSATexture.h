@@ -12,13 +12,13 @@
     NSString *_key;
 }
 @property (nonatomic, retain) NSString *key;
-@property (nonatomic, readonly) GLuint name;
+@property (nonatomic, readonly) GLuint glName;
 @property (nonatomic, readonly) unsigned int width;
 @property (nonatomic, readonly) unsigned int height;
 @property (nonatomic, readonly) float aspect;
 @property (nonatomic, readonly) float inverseAspect;
 
--(id)initWithKey:(NSString*)key name: (GLuint)name width:(unsigned int)width height:(unsigned int)height;
+-(id)initWithKey:(NSString*)key glName: (GLuint)glName width:(unsigned int)width height:(unsigned int)height;
 -(void)memoryWarning;
 -(void)needsSize:(float)size;
 -(void)deleteTexture;
@@ -28,7 +28,7 @@
 @class FSASmartTexture;
 @interface BackgroundTextureLoaderOperation : NSOperation
 @property (nonatomic, retain) FSASmartTexture* texture;
-@property (nonatomic, readonly) GLuint name;
+@property (nonatomic, readonly) GLuint glName;
 @property (nonatomic, readonly) unsigned int width;
 @property (nonatomic, readonly) unsigned int height;
 @property (nonatomic, readonly) unsigned int prefix;
@@ -44,7 +44,7 @@
 @class FSATextTexture;
 @interface BackgroundTextTextureLoaderOperation : NSOperation
 @property (nonatomic, retain) FSATextTexture* texture;
-@property (nonatomic, readonly) GLuint name;
+@property (nonatomic, readonly) GLuint glName;
 @property (nonatomic, readonly) NSString* text;
 @property (nonatomic, readonly) unsigned int width;
 @property (nonatomic, readonly) unsigned int height;

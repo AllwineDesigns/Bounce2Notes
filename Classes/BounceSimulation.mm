@@ -346,6 +346,7 @@ void separate(cpArbiter *arb, cpSpace *space, void *data) {
     return NO;
 }
 
+/*
 static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *points, void* data) {
     BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;
     
@@ -356,6 +357,7 @@ static void getAllBounceObjectsQueryFunc(cpShape *shape, cpContactPointSet *poin
         [queryStruct->set addObject:obj];
     }
 }
+ */
 
 static void getAllBounceObjectsNearestQueryFunc(cpShape *shape, cpFloat dist, cpVect p, void* data) {
     BounceQueryStruct *queryStruct = (BounceQueryStruct*)data;

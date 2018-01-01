@@ -41,6 +41,7 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
+    
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_SQUARE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     // [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:1 numRows:4 numCols:4];
@@ -55,13 +56,17 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
+    
 #ifndef BOUNCE_LITE
+    
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_PENTAGON at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     //        [shapeConfigObject setPatternForTextureSheet:shapeTextureSheet row:0 col:2 numRows:4 numCols:4];
     shapeConfigObject.patternTexture = [texManager getTexture:@"Pentagon"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
+    
+    
     
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_STAR at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
@@ -78,6 +83,8 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
+    
+    
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_CAPSULE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
     shapeConfigObject.secondarySize = shapeSize2;
@@ -85,7 +92,9 @@
     shapeConfigObject.patternTexture = [texManager getTexture:@"Capsule"];
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
+    
 #endif
+    
     
     shapeConfigObject = [[BounceShapeConfigurationObject alloc] initRandomObjectWithShape:BOUNCE_NOTE at:shapePos withVelocity:vec2() ];
     shapeConfigObject.size = shapeSize;
@@ -93,7 +102,9 @@
     [shapeConfigObject addToSimulation:sim];
     [shapeConfigObject release];
     
+    //NSLog(@"(%f, %f), (%f, %f)", [shapeConfigObject position].x, [shapeConfigObject position].y, [shapeConfigObject velocity].x, [shapeConfigObject velocity].y);
     
+    //NSLog(@"in addShapesSimulation");
     [self addSimulation:sim];
     
     CGSize paneSize = [_object paneSize];

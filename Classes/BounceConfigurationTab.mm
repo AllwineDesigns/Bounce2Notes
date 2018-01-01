@@ -41,6 +41,7 @@ using namespace fsa;
     
     return self;
 }
+
 -(const vec2&)offset {
     return _offset;
 }

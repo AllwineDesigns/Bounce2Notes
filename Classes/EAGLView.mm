@@ -77,7 +77,6 @@
 
 - (void)createFramebuffer
 {
-    NSLog(@"%@ %@", context, defaultFramebuffer);
     if (context && !defaultFramebuffer)
     {
         [EAGLContext setCurrentContext:context];

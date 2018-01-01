@@ -35,6 +35,7 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     NSLog(@"Size of cpFloat: %lu", sizeof(cpFloat));
     NSLog(@"Size of float: %lu", sizeof(float));
     NSLog(@"Size of double: %lu", sizeof(double));
@@ -111,7 +112,6 @@
     queue.sharegroup = aContext.sharegroup;
     
     NSInvocationOperation *invocation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(loadResources) object:nil];
-    [invocation setThreadPriority:0];
     [queue addOperation:invocation];
     [invocation release];
 
@@ -129,7 +129,7 @@
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
 
-    updateBounceOrientation([self interfaceOrientation]);
+    updateBounceOrientation([[UIApplication sharedApplication] statusBarOrientation]);
     _loadingObject = [[BounceLoadingObject alloc] init];
 
     [NSThread setThreadPriority:1];

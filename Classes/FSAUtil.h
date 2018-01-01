@@ -13,7 +13,7 @@
 extern "C" {
 #endif
     
-#define RANDFLOAT ((float)arc4random()/4294967295)
+#define RANDFLOAT ((float)arc4random()/4294967296ul)
 
 //from bit twiddling hacks
 inline uint32_t nextPowerOfTwo(uint32_t v)
@@ -28,9 +28,9 @@ inline uint32_t nextPowerOfTwo(uint32_t v)
     return v;
 }
     void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
-NSString* machineName();
-natural_t getFreeMemory();
-CGSize screenSize();
+    NSString* machineName(void);
+    natural_t getFreeMemory(void);
+    CGSize screenSize(void);
     
     
 #ifdef __cplusplus

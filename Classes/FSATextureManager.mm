@@ -89,7 +89,7 @@ static FSATextureManager* fsaTextureManager;
         NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:nil];
         PVRTexture *pvrtex = [[PVRTexture alloc] initWithContentsOfFile:path];
         
-        tex = [[FSATexture alloc] initWithKey:name name:pvrtex.name width:pvrtex.width height:pvrtex.height];
+        tex = [[FSATexture alloc] initWithKey:name glName:pvrtex.name width:pvrtex.width height:pvrtex.height];
     } else {
         if(!name || ![[NSFileManager defaultManager] fileExistsAtPath:[[NSBundle mainBundle] pathForResource:name ofType:@""]]) {
             NSLog(@"file doesn't exist: %@", name);
@@ -123,7 +123,7 @@ static FSATextureManager* fsaTextureManager;
             free(imageData);
             glGenerateMipmap(GL_TEXTURE_2D);
             
-            tex = [[FSATexture alloc] initWithKey:name name:texId width:image.size.width height:image.size.height];
+            tex = [[FSATexture alloc] initWithKey:name glName:texId width:image.size.width height:image.size.height];
             
             
         }
@@ -165,7 +165,11 @@ static FSATextureManager* fsaTextureManager;
     
     UIFont *font = [UIFont fontWithName:fontName size:startTextTextureSize/512.*size];
     
-    CGSize renderedSize = [txt sizeWithFont:font];
+    // https://stackoverflow.com/questions/19145078/ios-7-sizewithattributes-replacement-for-sizewithfontconstrainedtosize
+    NSDictionary *attributes = @{NSFontAttributeName: font,
+                                 NSForegroundColorAttributeName: [UIColor whiteColor]
+                                 };
+    CGSize renderedSize = [txt sizeWithAttributes:attributes];
     
     uint32_t height = startTextTextureSize;
     uint32_t width = nextPowerOfTwo(renderedSize.width);
@@ -206,7 +210,7 @@ static FSATextureManager* fsaTextureManager;
     
     UIGraphicsPushContext(context);
     
-    [txt drawInRect:CGRectMake(.5*width-.5*renderedSize.width, .5*height-.5*renderedSize.height, width, height) withFont:font lineBreakMode:UILineBreakModeWordWrap alignment:UITextAlignmentLeft];
+    [txt drawInRect:CGRectMake(.5*width-.5*renderedSize.width, .5*height-.5*renderedSize.height, width, height) withAttributes:attributes];
     
     UIGraphicsPopContext();
     
@@ -229,7 +233,7 @@ static FSATextureManager* fsaTextureManager;
     
     delete [] data;
     
-    FSATexture *tex = [[FSATexture alloc] initWithKey:@"" name:textureID width:width height:height];
+    FSATexture *tex = [[FSATexture alloc] initWithKey:@"" glName:textureID width:width height:height];
     return [tex autorelease];
 }
 

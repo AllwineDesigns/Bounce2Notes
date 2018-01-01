@@ -140,6 +140,7 @@
     FSAShaderManager *shaderManager = [FSAShaderManager instance];
     FSAShader *shader = [shaderManager getShader:@"GestureGlowShader"];
     
+    if(verts.size() > 0) {
     [shader setPtr:&verts[0] forAttribute:@"position"];
     [shader setPtr:&uvs[0] forAttribute:@"uv"];
     [shader setPtr:&intensities[0] forAttribute:@"intensity"];
@@ -148,7 +149,7 @@
     
     GLuint texture = 0;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"glow.jpg"].name);
+    glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"glow.jpg"].glName);
     [shader setPtr:&texture forUniform:@"texture"];
     
     glEnable(GL_BLEND);
@@ -183,6 +184,7 @@
     _data.position = points[numPoints-1];
     
     [_ballRenderable draw];
+    }
 
 }
 

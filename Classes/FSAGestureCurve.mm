@@ -106,16 +106,16 @@
         
         float curLength = 0;
         float t = 0;
-        _resampledPoints.push_back(pointAt(&_points[0], _points.size(), t));
-        _resampledTimes.push_back(valueAt(&_times[0], _times.size(), t));
+        _resampledPoints.push_back(pointAt(&_points[0], (unsigned int)_points.size(), t));
+        _resampledTimes.push_back(valueAt(&_times[0], (unsigned int)_times.size(), t));
         while(t < 1) {
             curLength += segmentLength;
-            t = tFromLength(curLength, &lengths[0], lengths.size());
+            t = tFromLength(curLength, &lengths[0], (unsigned int)lengths.size());
             
            // vec2 pt = pointAt(&_points[0], _points.size(), t);
            // if((pt-_resampledPoints[_resampledPoints.size()-1]).length() >= segmentLength) {
-            _resampledPoints.push_back(pointAt(&_points[0], _points.size(), t));
-            _resampledTimes.push_back(valueAt(&_times[0], _times.size(), t));
+            _resampledPoints.push_back(pointAt(&_points[0], (unsigned int)_points.size(), t));
+            _resampledTimes.push_back(valueAt(&_times[0], (unsigned int)_times.size(), t));
           //  }
         }
         
@@ -132,7 +132,7 @@
     return &_resampledPoints[0];
 }
 -(unsigned int)resampledNumPoints {
-    return _resampledPoints.size();
+    return (unsigned int)_resampledPoints.size();
 }
 
 -(float*)times {

@@ -161,9 +161,7 @@
 -(void)play:(float)volume {
     if([_sounds count] > 0) {
         unsigned int i = RANDFLOAT*[_sounds count];
-        if(i < [_sounds count]) {
-          [[_sounds objectAtIndex:i] play:volume*_v];
-        }
+        [[_sounds objectAtIndex:i] play:volume*_v];
     }
 }
 

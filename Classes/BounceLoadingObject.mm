@@ -115,7 +115,7 @@
 -(void)draw {    
     GLuint texId = 0;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _tex.name);
+    glBindTexture(GL_TEXTURE_2D, _tex.glName);
     
     [_shader setPtr:&texId forUniform:@"texture"];
     [_shader setPtr:_verts forAttribute:@"position"];

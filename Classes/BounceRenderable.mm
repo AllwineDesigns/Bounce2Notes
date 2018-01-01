@@ -79,18 +79,17 @@
     GLuint shapeTex = 0;
     GLuint patternTex = 1;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _shapeTexture.name);
+    glBindTexture(GL_TEXTURE_2D, _shapeTexture.glName);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, patternTexture.name);
-    
+    glBindTexture(GL_TEXTURE_2D, patternTexture.glName);
     
     [objectShader setPtr:&shapeTex forUniform:@"shapeTexture"];
     [objectShader setPtr:&patternTex forUniform:@"patternTexture"];
     
     if(isStationary) {
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, _stationaryTexture.name);
+        glBindTexture(GL_TEXTURE_2D, _stationaryTexture.glName);
         GLuint stationaryTex = 2;
         [objectShader setPtr:&stationaryTex forUniform:@"stationaryTex"];
     }
@@ -113,9 +112,9 @@
         GLuint patternTex = 1;
         
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, _stationaryTexture.name);
+        glBindTexture(GL_TEXTURE_2D, _stationaryTexture.glName);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, patternTexture.name);
+        glBindTexture(GL_TEXTURE_2D, patternTexture.glName);
         [stationaryShader setPtr:&stationaryTex forUniform:@"texture"];
         [stationaryShader setPtr:&patternTex forUniform:@"pattern"];
         
@@ -173,9 +172,18 @@
             min_dist2 = dist;
         }
     }
-    
-    _vertVels[closest_j] += (1.1111111111*_bounciness)*vel;
-    _vertVels[closest_j2] += (1.1111111111*_bounciness)*vel;
+    if(closest_j < 0 || closest_j >= _numVerts) {
+        NSLog(@"closest_j out of bounds %d", closest_j);
+    }
+    if(closest_j2 < 0 || closest_j2 >= _numVerts) {
+        NSLog(@"closest_j2 out of bounds %d", closest_j2);
+    }
+    if(closest_j >= 0 && closest_j < _numVerts) {
+        _vertVels[closest_j] += (1.1111111111*_bounciness)*vel;
+    }
+    if(closest_j2 >= 0 && closest_j2 < _numVerts) {
+        _vertVels[closest_j2] += (1.1111111111*_bounciness)*vel;
+    }
 }
 
 -(void)drawSelected {
@@ -208,10 +216,10 @@
     GLuint shapeTex = 0;
     GLuint patternTex = 1;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _shapeTexture.name);
+    glBindTexture(GL_TEXTURE_2D, _shapeTexture.glName);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"black.jpg"].name);
+    glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"black.jpg"].glName);
     
     [objectShader setPtr:&shapeTex forUniform:@"shapeTexture"];
     [objectShader setPtr:&patternTex forUniform:@"patternTexture"];
@@ -586,10 +594,10 @@
     GLuint shapeTex = 0;
     GLuint patternTex = 1;
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _shapeTexture.name);
+    glBindTexture(GL_TEXTURE_2D, _shapeTexture.glName);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"black.jpg"].name);
+    glBindTexture(GL_TEXTURE_2D, [[FSATextureManager instance] getTexture:@"black.jpg"].glName);
     
     [objectShader setPtr:&shapeTex forUniform:@"shapeTexture"];
     [objectShader setPtr:&patternTex forUniform:@"patternTexture"];
@@ -977,9 +985,19 @@
             min_dist2 = dist;
         }
     }
+    if(closest_j < 0 || closest_j >= _numVerts) {
+        NSLog(@"closest_j out of bounds %d", closest_j);
+    }
+    if(closest_j2 < 0 || closest_j2 >= _numVerts) {
+        NSLog(@"closest_j2 out of bounds %d", closest_j2);
+    }
     
-    _vertVels[closest_j] += 1.1111111111*_bounciness*vel;
-    _vertVels[closest_j2] += 1.1111111111*_bounciness*vel;
+    if(closest_j >= 0 && closest_j < _numVerts) {
+        _vertVels[closest_j] += 1.1111111111*_bounciness*vel;
+    }
+    if(closest_j2 >= 0 && closest_j2 < _numVerts) {
+        _vertVels[closest_j2] += 1.1111111111*_bounciness*vel;
+    }
     
 }
 
